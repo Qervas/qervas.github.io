@@ -25,10 +25,10 @@ social: false # includes social icons at the bottom of the page
   <a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">
     <img src="../assets/img/icon/linkedin.png" alt="LinkedIn" width="30" height="30">
   </a>
-  <a href="#" target="_blank" rel="noopener noreferrer">
+  <a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">
     <img src="../assets/img/icon/youtube.png" alt="Twitter" width="30" height="30">
   </a>
-<a href="#" target="_blank" rel="noopener noreferrer" style="position: relative; left: -9px;">
+<a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer" style="position: relative; left: -9px;">
   <img src="../assets/img/icon/X.png" alt="X" width="45">
 </a>
 </div>
