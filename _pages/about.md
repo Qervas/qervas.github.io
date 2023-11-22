@@ -14,8 +14,9 @@ profile:
 news: true  # includes a list of news items
 latest_posts: true  # includes a list of the newest posts
 selected_papers: true # includes a list of papers marked as "selected={true}"
-social: true  # includes social icons at the bottom of the page
+social: false # includes social icons at the bottom of the page
 ---
+<html>
 <h1 id="name" onmouseover="hoverName()" onmouseout="normalName()">Shaoxuan Yin</h1>
 <div class="social-media-links">
   <a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">
@@ -30,8 +31,6 @@ social: true  # includes social icons at the bottom of the page
 <a href="#" target="_blank" rel="noopener noreferrer" style="position: relative; left: -9px;">
   <img src="../assets/img/icon/X.png" alt="X" width="45">
 </a>
-
-
 
 <script>
 function hoverName() {
@@ -53,6 +52,9 @@ function normalName() {
   color: #555; /* Change this to the color you want the text to change to on hover */
 }
 </style>
+
+</html>
+
 
 ### Education
 

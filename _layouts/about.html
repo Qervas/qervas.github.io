@@ -5,12 +5,33 @@ layout: default
 <!-- about.html -->
       <div class="post">
         <header class="post-header">
-          <h1 class="post-title">
-            {% if site.title == "blank" -%}<span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}{%- endif %}
+          <h1 class="post-title" id="name" onmouseover="hoverName()" onmouseout="normalName()">
+            Shaoxuan Yin
+
+            <!-- {% if site.title == "blank" -%}<span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }} {{ site.last_name }}{%- else -%}{{ site.title }}{%- endif %} -->
           </h1>
           <p class="desc">{{ page.subtitle }}</p>
         </header>
+        <script>
+        function hoverName() {
+          document.getElementById("name").textContent = "Frank Yin";
+        }
 
+        function normalName() {
+          document.getElementById("name").textContent = "Shaoxuan Yin";
+        }
+        </script>
+
+        <style>
+        #name {
+          transition: all 0.3s ease;
+          cursor: pointer;
+        }
+
+        #name:hover {
+          color: #555; /* Change this to the color you want the text to change to on hover */
+        }
+        </style>
         <article>
           {% if page.profile -%}
           <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
