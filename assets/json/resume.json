@@ -63,19 +63,19 @@
         "name": "Robotics - Martial Arts Arena Fighting Wheeled Robot",
         "description": "Teamwork project; won the third prize in the 2019 China Robotics Cup.",
         "startDate": "2019-01",
-        "endDate": "2019-12"
+        "endDate": "2019-08"
       },
       {
         "name": "Analysis of Skiing Action Based on OpenPose",
         "description": "Research project; involved OpenPose and STGCN for computer vision analysis.",
-        "startDate": "2020-01",
-        "endDate": "2020-12"
+        "startDate": "2021-01",
+        "endDate": "2021-12"
       },
       {
         "name": "OpenGL Demos",
         "description": "Basic OpenGL 3D components practices.",
         "startDate": "2022",
-        "endDate": ""
+        "endDate": "2023"
       },
       {
         "name": "Water Simulation Based on OpenGL",
@@ -86,8 +86,8 @@
       {
         "name": "Retro Vault (Unity 2D Game)",
         "description": "Co-developed a tiny 2D puzzle game using Unity engine.",
-        "startDate": "2023",
-        "endDate": ""
+        "startDate": "2023-09",
+        "endDate": "2023-10"
       }
   ],
   "publications": [
