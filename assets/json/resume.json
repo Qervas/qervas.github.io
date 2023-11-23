@@ -59,26 +59,36 @@
     }
   ],
   "projects": [
-    {
-      "name": "Robotics - Martial Arts Arena Fighting Wheeled Robot",
-      "summary": "Teamwork project; won the third prize in the 2019 China Robotics Cup."
-    },
-    {
-      "name": "Analysis of Skiing Action Based on OpenPose",
-      "summary": "Research project; involved OpenPose and STGCN for computer vision analysis."
-    },
-    {
-      "name": "OpenGL Demos",
-      "summary": "Basic OpenGL 3D components practices."
-    },
-    {
-      "name": "Water Simulation Based on OpenGL",
-      "summary": "Simulated water particles in real-time using SPH algorithm."
-    },
-    {
-      "name": "Retro Vault (Unity 2D Game)",
-      "summary": "Co-developed a tiny 2D puzzle game using Unity engine."
-    }
+      {
+        "name": "Robotics - Martial Arts Arena Fighting Wheeled Robot",
+        "description": "Teamwork project; won the third prize in the 2019 China Robotics Cup.",
+        "startDate": "2019-01",
+        "endDate": "2019-12"
+      },
+      {
+        "name": "Analysis of Skiing Action Based on OpenPose",
+        "description": "Research project; involved OpenPose and STGCN for computer vision analysis.",
+        "startDate": "2020-01",
+        "endDate": "2020-12"
+      },
+      {
+        "name": "OpenGL Demos",
+        "description": "Basic OpenGL 3D components practices.",
+        "startDate": "2022",
+        "endDate": ""
+      },
+      {
+        "name": "Water Simulation Based on OpenGL",
+        "description": "Simulated water particles in real-time using SPH algorithm.",
+        "startDate": "2023",
+        "endDate": ""
+      },
+      {
+        "name": "Retro Vault (Unity 2D Game)",
+        "description": "Co-developed a tiny 2D puzzle game using Unity engine.",
+        "startDate": "2023",
+        "endDate": ""
+      }
   ],
   "publications": [
     {
@@ -109,19 +119,19 @@
   "skills": [
     {
       "name": "Programming Languages",
-      "level": "C++, Python, C, Java"
+      "keywords": ["C++", "Python", "C", "Java"]
     },
     {
       "name": "Frameworks",
-      "level": "Qt, OpenGL, CUDA"
+      "keywords": ["Qt", "OpenGL", "CUDA"]
     },
     {
       "name": "Tools & Technologies",
-      "level": "CMake, Git, Docker, Linux"
+      "keywords": ["CMake", "Git", "Docker", "Linux"]
     },
     {
       "name": "Languages",
-      "level": "IELTS 7.0"
+      "keywords": ["IELTS 7.0"]
     }
   ]
 }
