@@ -1,15 +1,11 @@
 github_users:
-  # - torvalds
   - Qervas 
 
 github_repos:
-  # - alshedivat/al-folio
-  # - twbs/bootstrap
-  # - jekyll/jekyll
-  # - jquery/jquery
-  # - FortAwesome/Font-Awesome
-  # - jpswalsh/academicons
-  # - mathjax/MathJax
   - Qervas/Playground
   - Qervas/water_simulation
   - Qervas/Game
+
+ohaoTech_repos:
+  - OhaoTech/Melodic-Odyssey
+  - OhaoTech/ClinicManager

@@ -1,12 +1,23 @@
 ---
 layout: page
 permalink: /OhaoTech/
-title: Join Ohao Tech
+title: Ohao Tech
 description: Join the special interest group in computer graphics, AI, game development.
 nav: true
 nav_order: 5
 ---
-# Ohao Tech Organization
+## Repositories
+
+{% if site.data.repositories.ohaoTech_repos %}
+
+<div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
+  {% for repo in site.data.repositories.ohaoTech_repos %}
+    {% include repository/repo_org.html repository=repo %}
+  {% endfor %}
+</div>
+{% endif %}
+
+## README
 
 🌟 **Who We Are:** Ohao Tech is a dynamic special interest group composed of young, enthusiastic individuals deeply fascinated by the rapidly evolving realms of computer graphics, artificial intelligence, and game industry development. Based at the intersection of innovation and creativity, our group thrives on exploring the limitless possibilities these fields offer.
 
