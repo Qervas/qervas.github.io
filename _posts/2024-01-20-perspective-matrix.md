@@ -3,9 +3,9 @@ layout: post
 title:  OpenGL Perspective Matrix
 date: 2023-01-20 22:01:00
 description: perspective matrix
-tags: computer graphics
+tags: graphics
 categories: Tech
-thumbnail: assets/img/Jan20_perspective_matrix.png
+thumbnail: assets/img/date/Jan_20_2024/perspective_matrix.png
 ---
 On the learning 3D compute graphics for initial lab. I come into a problem. It's about near/far plane. When I adding more planets into the 3D solar system, some of them were culling for out of the perspective world.
 
@@ -19,7 +19,7 @@ Thus, I want to make some changes on the given perspective matrix $P$, which rep
 
 ```
 
-I don't know the meaning of each digits. From **[this passage](https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix.html)**, it demonstrates the maths principles behind it. Took me minutes reading it, And now I could construct a matrix with some variables which make it easier to control the whole perspective projection.
+I don't know the meaning of each digits. From **[this article](https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix.html)**, it demonstrates the maths principles behind it. Took me minutes reading it, And now I could construct a matrix with some variables which make it easier to control the whole perspective projection.
 
 ```c++
 	GLfloat fov = 60.f * M_PI / 180.0f;  // Convert to radians
