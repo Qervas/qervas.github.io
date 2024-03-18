@@ -31,6 +31,27 @@ layout: default
         #name:hover {
           color: #555; /* Change this to the color you want the text to change to on hover */
         }
+		.social-media-container {
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		    gap: 20px; /* Adjust the gap to your liking */
+		  }
+
+		  .social-media-link {
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    text-decoration: none;
+		    color: inherit; /* This makes the text color inherit from the parent element */
+		    font-weight: bold; /* Optional: if you want the text to be bold */
+		  }
+
+		  .social-media-icon {
+		    width: 30px; /* Adjust width and height to fit your design */
+		    height: 30px;
+		    margin-bottom: 8px; /* Space between icon and text */
+		  }
         </style>
         <article>
           {% if page.profile -%}

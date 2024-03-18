@@ -3,7 +3,7 @@ layout: about
 title: about
 # site-title: 
 permalink: /
-# subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+
 
 profile:
   align: right
@@ -17,38 +17,44 @@ latest_posts: false  # includes a list of the newest posts
 selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
+<style>
+  .compact-table td {
+    padding: 8px; /* Adjust padding to your preference */
+  }
+
+  .compact-table {
+    margin: 0 auto; /* Centers the table on the page, remove unnecessary space */
+    border-collapse: collapse; /* Eliminates space between table cells */
+  }
+
+  .compact-table img {
+    display: block; /* Removes bottom space below images */
+    margin: 0 auto; /* Centers images within the cell */
+  }
+</style>
+
 ## Contact Me
 
-<table>
-  <tr>
-    <td><a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">Github</a></td>
-    <td><a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">LinkedIn</a></td>
-    <td><a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">YouTube</a></td>
-    <td><a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer">X</a></td>
-  </tr>
-  <tr>
-    <td>
-      <a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">
-        <img src="../assets/img/icon/github.png" alt="GitHub" width="30" height="30">
-      </a>
-    </td>
-    <td>
-      <a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">
-        <img src="../assets/img/icon/linkedin.png" alt="LinkedIn" width="30" height="30">
-      </a>
-    </td>
-    <td>
-      <a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">
-        <img src="../assets/img/icon/youtube.png" alt="YouTube" width="30" height="30">
-      </a>
-    </td>
-    <td>
-      <a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer">
-        <img src="../assets/img/icon/X.png" alt="X" style="position: relative; left: -9px;" width="45">
-      </a>
-    </td>
-  </tr>
-</table>
+
+<div class="social-media-container">
+  <a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer" class="social-media-link">
+    <img src="../assets/img/icon/github.png" alt="GitHub" class="social-media-icon">
+    Github
+  </a>
+  <a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer" class="social-media-link">
+    <img src="../assets/img/icon/linkedin.png" alt="LinkedIn" class="social-media-icon">
+    LinkedIn
+  </a>
+  <a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer" class="social-media-link">
+    <img src="../assets/img/icon/youtube.png" alt="YouTube" class="social-media-icon">
+    YouTube
+  </a>
+  <a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer" class="social-media-link">
+    <img src="../assets/img/icon/X.png" alt="X" class="social-media-icon" style="position: relative; left: -9px;">
+    X
+  </a>
+</div>
+
 
 ### Education
 
