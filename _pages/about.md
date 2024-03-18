@@ -17,44 +17,61 @@ latest_posts: false  # includes a list of the newest posts
 selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 ---
-<div class="social-media-links">
-  <a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">
-    <img src="../assets/img/icon/github.png" alt="GitHub" width="30" height="30">
-  </a>
-  <a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">
-    <img src="../assets/img/icon/linkedin.png" alt="LinkedIn" width="30" height="30">
-  </a>
-  <a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">
-    <img src="../assets/img/icon/youtube.png" alt="Twitter" width="30" height="30">
-  </a>
-<a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer" style="position: relative; left: -9px;">
-  <img src="../assets/img/icon/X.png" alt="X" width="45">
-</a>
-</div>
+## Contact Me
+
+<table>
+  <tr>
+    <td><a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">Github</a></td>
+    <td><a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">LinkedIn</a></td>
+    <td><a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">YouTube</a></td>
+    <td><a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer">X</a></td>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://github.com/Qervas" target="_blank" rel="noopener noreferrer">
+        <img src="../assets/img/icon/github.png" alt="GitHub" width="30" height="30">
+      </a>
+    </td>
+    <td>
+      <a href="https://www.linkedin.com/in/shaoxuan-yin-021548170/" target="_blank" rel="noopener noreferrer">
+        <img src="../assets/img/icon/linkedin.png" alt="LinkedIn" width="30" height="30">
+      </a>
+    </td>
+    <td>
+      <a href="https://www.youtube.com/channel/UCpQsuzZtivtAUV1Xvcpt02w" target="_blank" rel="noopener noreferrer">
+        <img src="../assets/img/icon/youtube.png" alt="YouTube" width="30" height="30">
+      </a>
+    </td>
+    <td>
+      <a href="https://twitter.com/FrankYin17" target="_blank" rel="noopener noreferrer">
+        <img src="../assets/img/icon/X.png" alt="X" style="position: relative; left: -9px;" width="45">
+      </a>
+    </td>
+  </tr>
+</table>
 
 ### Education
 
 * **Linköping University, Sweden**
-  * Master of Science in Computer Science (Sep 2023 - June 2025)
+  * Master of Science in Computer Science (Sep 2023 - Present)
 * **Beijing Information Science & Technology University, China**
   * Bachelor of Engineering in Computer Science and Technology (Sep 2019 - June 2023)
   * GPA: 3.5
 
 ### Skills Summary
 
-* Proficient in  **Programming Languages** : C++, Python, C, Java, R, SQL, Rust, Javascript
-* Skilled in  **Frameworks** : Qt, OpenGL, CUDA, Vulkan, Three.js
-* Strong command of English,  **IELTS** : 7.0
-* Experienced with  **Tools & Technologies** : CMake, Git, Docker, Linux(both deb/rpm distros), Blender
+* Proficient in  **Programming Languages** : C++, Python, C, Java, Javascript, Shell, Rust, SQL, R
+* Skilled in  **Frameworks** : Qt, OpenGL, CUDA, Vulkan, Three.js, PyTorch
+* Experienced with  **Tools & Technologies** : CMake, Git, Docker, Linux(Desktop/Server), Blender
 
 ### Internship Experience
 
 * **GienTech Technology Co., Ltd.**
-  * Software Testing Engineer (July 2021 - August 2021)
-    * Worked on an online shopping mall applet project, writing scripts to test software for WeChat Mini Program.
+  * Software Engineer (July 2021 - August 2021)
+    * The project was about an online shopping platform for farmers to conveniently sell their products on WeChat Mini Program. I wrote Java for backend real-time order processing and the interfaces for responding to users' requests.
 * **Beijing Guoyao Xintiandi Information Technology Co., Ltd.**
   * C++ Development Engineer (August 2022 - September 2022)
-    * Developed front-end code based on Qt5 and network protocol modules.
+    * It's a geographic software I participated in. Implemented front-end code including user interfaces and 3D terrain rendering based on Qt and OpenGL. Also a part of the group implemented customized network protocol modules and socket communications.
 
 ### Personal Projects
 
@@ -77,6 +94,23 @@ social: false # includes social icons at the bottom of the page
 
 ### Honors and Awards
 
-* Secured the third prize in various national and regional contests, including the China Youth Cup Mathematical Contest, BISTU C Programming Contest, and BISTU Mathematics Competition.
+- Third prize of the China Youth Cup National Undergraduate Mathematical Modeling Contest - Jun, 2019
+- Third Prize of BISTU C Programming Contest - Nov, 2019
+- Third Prize of BISTU Mathematics Competition - Nov, 2019
+- Successful Participant as Mathematical Contest In Modeling - Feb, 2020
+- Second Prize of Beijing Intercollegiate Mathematical Modeling Contest - May, 2021
+
+### Social Welfare Activities
+
+- **Children's Home Caretaker**
+
+  - *Location:* Yuxi, Yunnan, China
+  - *Description:* Took care of children's daily needs, providing companionship to make them feel warm and happy.
+  - *Duration:* Feb, 2019
+- **Rural Area Poverty Alleviation Report**
+
+  - *Location:* Yuxi, Yunnan, China
+  - *Description:* Conducted interviews with villagers in remote regions to understand their lives compared to decades ago. Produced a video to raise awareness about their situation.
+  - *Duration:* July, 2020
 
 In this space, I'll share my journey, insights, and creations. Join me as we delve into the intricacies of computer science, and perhaps, learn something new together.
