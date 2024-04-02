@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  C++ templates (1)
-date: 2023-01-22 17:02:00
+date: 2024-01-22 17:02:00
 description: Parameter packs
 tags: C++
 categories: Tech
@@ -24,8 +24,6 @@ auto sizes = get_type_sizes<short, int, long, long long>();
   * > `sizeof(Ts)...`expands into a comma-seperated sequence as `sizeof(short), sizeof(int), sizeof(long), sizeof(long long)`, a number sequence.
     >
 
-
-
 ```c++
 template <typename... Ts, typename... Us>
 constexpr auto multipacks(Ts... args1, Us... args2)
@@ -40,7 +38,6 @@ multipacks<int, int, int, int, int, int>(1, 2, 3, 4, 5, 6); // 6,0
 ```
 
 * A parameter pack can be followed by other parameters including more parameter packs. First group of function parameters match template parameters one by one as `Ts... args1`, the remainings are `Us... args2`.
-
 
 ```c++
 #include<iostream>
