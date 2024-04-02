@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  NexusPlay: Project Proposal
+title:  NexusPlay Project Proposal
 date: 2024-04-01 15:23
 description: An Interactive Game Hub
 tags: Web
