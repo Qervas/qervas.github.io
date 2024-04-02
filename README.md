@@ -4,9 +4,3 @@
 ## Credit
 
 [Template](./Credit.md)
-
-Running on docker
-```shell
-docker compose pull # pull image
-docker compose up # run
-```
