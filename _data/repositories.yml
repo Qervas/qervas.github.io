@@ -4,8 +4,10 @@ github_users:
 github_repos:
   - Qervas/Playground
   - Qervas/water_simulation
+  - Qervas/NexusPlay
   - Qervas/Game
 
 ohaoTech_repos:
-  - OhaoTech/Melodic-Odyssey
+  - OhaoTech/somnambulate
+  - OhaoTech/paintbrushmagic
   - OhaoTech/ClinicManager

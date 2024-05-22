@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  NexusPlay DevLog
+title: NexusPlay DevLog
 date: 2024-04-02 04:07
 description: An Interactive Game Hub
 tags: Web
