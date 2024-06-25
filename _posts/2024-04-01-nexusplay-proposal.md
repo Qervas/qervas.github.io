@@ -7,8 +7,6 @@ tags: Web
 categories: Tech
 thumbnail: assets/img/proj/1_nexus/nexus.png
 ---
-# Game Hub Website Proposal
-
 ## Project Overview
 
 **This proposal outlines the development of an online game hub featuring a multiplayer shooter game. The platform will incorporate a chat room, user authentication, friend system, and game lobbies. This document specifies the technical approach, focusing on creating a robust, interactive web application using modern web technologies.**
