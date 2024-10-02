@@ -37,4 +37,20 @@ ENV JEKYLL_ENV=production
 
 EXPOSE 8080
 
-CMD ["/bin/bash", "-c", "rm -f Gemfile.lock && exec jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace"]
+CMD ["sh", "-c", "ls -la /srv/jekyll && whoami && id && bundle install && jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace"]
+
+RUN useradd -m jekyll
+RUN chown -R jekyll:jekyll /srv/jekyll
+RUN chmod -R 755 /srv/jekyll
+
+# ensure Gemfile.lock is writable
+RUN touch /srv/jekyll/Gemfile.lock && chown jekyll:jekyll /srv/jekyll/Gemfile.lock && chmod 644 /srv/jekyll/Gemfile.lock
+
+# ensure jekyll user has full permissions
+RUN chown -R jekyll:jekyll /srv/jekyll && \
+    chmod -R 777 /srv/jekyll
+
+USER jekyll
+
+# command to run when the container starts
+CMD ["sh", "-c", "ls -la /srv/jekyll && whoami && id && bundle install && jekyll serve --watch --port=8080 --host=0.0.0.0 --livereload --verbose --trace"]

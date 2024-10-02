@@ -1,9 +1,11 @@
-version: "3"
-# this file uses prebuilt image in dockerhub
+version: '3'
 services:
   jekyll:
-    image: amirpourmand/al-folio
+    build: .
     ports:
-      - 8080:8080
+      - 4000:8080
     volumes:
-      - .:/srv/jekyll
+      - .:/srv/jekyll:Z
+    user: jekyll
+    environment:
+      - JEKYLL_ENV=production
