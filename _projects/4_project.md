@@ -1,80 +1,60 @@
 ---
 layout: page
-title: project 4
-description: another without an image
-img:
-importance: 3
-category: fun
+title: Retro Vault
+description: Engaging 2D platform puzzle game
+img: projects/image/4_project/retro_vault.png
+importance: 4
+category: game
 ---
+>  Sincerely thanks to my team member Afshan.
 
-Every project has a beautiful feature showcase page.
-It's easy to include images in a flexible 3-column grid format.
-Make your photos 1/3, 2/3, or full width.
+## Project Overview
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
+Retro Vault is an **immersive 2D platform puzzle game** that blends classic gameplay with modern design principles. Built using the Unity engine, this project showcases the perfect fusion of nostalgic gaming elements with contemporary game development techniques.
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
+<div class="embed-responsive embed-responsive-16by9">
+	<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/c3z9XW8FTcQ" allowfullscreen></iframe>
+</div>
+<div class="caption">
+    <strong>Teaser Video</strong>
+</div>
+
+## Key Contributions
+
+As a core team member, my contributions were crucial to the game's development:
+
+1. **Character Logic and Animation**
+
+   - Implemented intricate character movement and interaction systems
+   - Designed fluid animations to enhance player experience
+2. **Level Design and Infrastructure**
+
+   - Created immersive and challenging level layouts
+   - Developed robust level infrastructure to support complex puzzle mechanics
+3. **Collaborative Game Development**
+
+   - Worked closely with team members to refine game mechanics
+   - Contributed to the design of innovative puzzles and obstacles
+
+## Technical Highlights
+
+- **Engine:** Unity
+- **Programming Language:** C#
+- **Development Period:** 2023 Fall
+
+## Project Showcase
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/1.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/3.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+        <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/cJxxEGaJsBo" allowfullscreen></iframe>
+        </div>
     </div>
 </div>
 <div class="caption">
-    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
-</div>
-<div class="row">
-    <div class="col-sm mt-3 mt-md-0">
-        {% include figure.html path="assets/img/5.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    This image can also have a caption. It's like magic.
+    <strong>Retro Vault Gameplay Demo</strong>
 </div>
 
-You can also put regular text between your rows of images.
-Say you wanted to write a little bit about your project before you posted the rest of the images.
-You describe how you toiled, sweated, *bled* for your project, and then... you reveal its glory in the next row of images.
+## Conclusion
 
-
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-<div class="caption">
-    You can also have artistically styled 2/3 + 1/3 images, like these.
-</div>
-
-
-The code is simple.
-Just wrap your images with `<div class="col-sm">` and place them inside `<div class="row">` (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/">Bootstrap Grid</a> system).
-To make images responsive, add `img-fluid` class to each; for rounded corners and shadows use `rounded` and `z-depth-1` classes.
-Here's the code for the last row of images above:
-
-{% raw %}
-```html
-<div class="row justify-content-sm-center">
-    <div class="col-sm-8 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-    <div class="col-sm-4 mt-3 mt-md-0">
-        {% include figure.html path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
-    </div>
-</div>
-```
-{% endraw %}
+Retro Vault stands as a testament to our team's ability to create engaging, nostalgic gaming experiences while leveraging modern development tools and techniques. This project not only honed our technical skills but also our creativity in game design and collaborative problem-solving.

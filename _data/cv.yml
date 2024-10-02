@@ -46,12 +46,32 @@
         - Worked on TCP/IP, UDP network protocol modules.
         - Responsible for coding and building software to test the correctness of the software.
 
-- title: Open Source Projects
+- title: Projects
   type: time_table
   contents:
-    - title: <a href="https://github.com/Qervas">Github</a>
-      year: 2018-now
-      description: My personal Github account.
+    - title: Monte-Carlo Ray Tracer
+      year: Sep 2024 - Present
+      description: Developing an advanced global illumination renderer implementing various materials, hemispherical calculations, and photon mapping for realistic lighting. Composing diverse scene geometries and employing physically-based rendering for increased photorealism.
+
+    - title: Paintbrush Magic
+      year: Jan 2024 - May 2024
+      description: Developed a website connecting AI art with physical products using OpenAI API, Gradio, Flask, Python, and Three.js. Implemented 3D product rendering with texture swapping.
+
+    - title: Retro Vault
+      year: 2023
+      description: Created a 2D platform puzzle game using Unity and C#. Implemented character logic, animation, and level infrastructure.
+
+    - title: Water Simulation Based on OpenGL
+      year: 2023
+      description: Implemented SPH algorithm and OpenGL to simulate and render water particles in real-time. Developed as part of Bachelor thesis.
+
+    - title: Analysis of skiing action based on OpenPose
+      year: 2021
+      description: Developed a real-time skiing movement classifier using OpenPose and STGCN, achieving 80% accuracy. Published an academic paper with team members.
+
+    - title: Martial Arts Arena Fighting Wheeled Robot
+      year: 2019
+      description: Led the development of an autonomous robot for the China Robotics Cup, winning third prize. Responsible for C programming and structure design.
 
 - title: Honors and Awards
   type: time_table

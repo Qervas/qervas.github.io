@@ -1,15 +1,22 @@
 ---
 layout: page
-title: NexusPlay
-description: An Interactive Game Hub
-img: assets/img/proj/1_nexus/nexus.png
+title: Monte-Carlo Ray Tracer
+description: Advanced global illumination renderer
+img: projects/image/1_project/raytracer.png
 importance: 1
-category: work
+category: graphics
 ---
-> An online game hub featuring a multiplayer shooter game.
 
-[Project Proposal](https://qervas.github.io/blog/2024/nexusplay-proposal)
+- Implementing sophisticated ray tracing algorithms across various materials
+- Integrating complex hemispherical calculations for realistic light-surface interactions
+- Applying advanced **photon mapping** techniques to achieve stunningly realistic complex lighting
+- Composing diverse and intricate scene geometries
+- Employing cutting-edge physically-based rendering for unparalleled photorealism
 
-[DevLog](https://qervas.github.io/blog/2024/nexusplay_devlog)
+This project showcases the pinnacle of computer graphics technology, pushing the boundaries of what's possible in digital rendering.
 
-[Github Repo](https://github.com/Qervas/NexusPlay)
+**Technologies:** C++, CUDA, OpenGL
+
+**Timeline:** September 2024 - Present
+
+[Github Repo](https://github.com/Qervas/Monte-Carlo-Ray-Tracer)
