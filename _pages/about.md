@@ -49,6 +49,34 @@ permalink: /
   </div>
 </section>
 
+<section class="experience">
+  <h2 class="section-title">Work Experience</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <h3>Beijing Guoyao Xintiandi Information Technology Co., Ltd.</h3>
+        <p class="job-title">C++ Development Engineer Intern</p>
+        <p class="date">August 2022 - September 2022</p>
+        <ul class="job-description">
+          <li>Implemented user interfaces and part of an interactive 3D terrain rendering system using Qt framework and the OpenGL module for a 3D Geographic Visualization Software.</li>
+          <li>Participated in custom network protocol development based on socket communication, reducing data transfer overhead and enhancing real-time capabilities.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <h3>GienTech Technology Co., Ltd.</h3>
+        <p class="job-title">Software Engineer Intern</p>
+        <p class="date">July 2021 - August 2021</p>
+        <ul class="job-description">
+          <li>Developed a WeChat Mini Program for an online farmer's market, handling thousands of active daily users.</li>
+          <li>Implemented microservices using Spring Cloud and optimized database queries for improved performance.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="skills">
   <h2 class="section-title">Skills</h2>
   <div class="skill-categories">
@@ -563,6 +591,20 @@ a.skill-tag:hover, .skill-tag:hover {
 
 .project-link:hover {
   background-color: var(--primary-color);
+}
+
+.job-title {
+  font-weight: bold;
+  color: var(--highlight-color);
+}
+
+.job-description {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.job-description li {
+  margin-bottom: 0.5rem;
 }
 </style>
 
