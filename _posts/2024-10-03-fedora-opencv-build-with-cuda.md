@@ -109,131 +109,135 @@ Python code to test OpenCV with CUDA:
 import cv2
 print(cv2.getBuildInformation())
 ```
-> ```
 
-General configuration for OpenCV 4.10.0-dev =====================================
-  Version control:               4.10.0-318-g08f7f13dfa
+Output:
 
-  Extra modules:
-    Location (extra):            /home/frankyin/opencv_build/opencv_contrib/modules
-    Version control (extra):     4.10.0-24-g80f1ca24
-
-  Platform:
-    Timestamp:                   2024-10-13T14:42:07Z
-    Host:                        Linux 6.10.12-100.fc39.x86_64 x86_64
-    CMake:                       3.27.7
-    CMake generator:             Unix Makefiles
-    CMake build tool:            /usr/bin/gmake
-    Configuration:               Release
-    Algorithm Hint:              ALGO_HINT_ACCURATE
-
-  CPU/HW features:
-    Baseline:                    SSE SSE2 SSE3
-      requested:                 SSE3
-    Dispatched code generation:  SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX
-      SSE4_1 (18 files):         + SSSE3 SSE4_1
-      SSE4_2 (2 files):          + SSSE3 SSE4_1 POPCNT SSE4_2
-      AVX (9 files):             + SSSE3 SSE4_1 POPCNT SSE4_2 AVX
-      FP16 (1 files):            + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16
-      AVX2 (38 files):           + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16 AVX2 FMA3
-      AVX512_SKX (8 files):      + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16 AVX2 FMA3 AVX_512F AVX512_COMMON AVX512_SKX
-
-  C/C++:
-    Built as dynamic libs?:      YES
-    C++ standard:                11
-    C++ Compiler:                /usr/lib64/ccache/c++  (ver 13.3.1)
-    C++ flags (Release):         -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Wsuggest-override -Wno-delete-non-virtual-dtor -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -fvisibility-inlines-hidden -O3 -DNDEBUG  -DNDEBUG
-    C++ flags (Debug):           -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Wsuggest-override -Wno-delete-non-virtual-dtor -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -fvisibility-inlines-hidden -g  -O0 -DDEBUG -D_DEBUG
-    C Compiler:                  /usr/lib64/ccache/cc
-    C flags (Release):           -fsigned-char -W -Wall -Wreturn-type -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wuninitialized -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -O3 -DNDEBUG  -DNDEBUG
-    C flags (Debug):             -fsigned-char -W -Wall -Wreturn-type -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wuninitialized -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -g  -O0 -DDEBUG -D_DEBUG
-    Linker flags (Release):      -Wl,--exclude-libs,libippicv.a -Wl,--exclude-libs,libippiw.a   -Wl,--gc-sections -Wl,--as-needed -Wl,--no-undefined
-    Linker flags (Debug):        -Wl,--exclude-libs,libippicv.a -Wl,--exclude-libs,libippiw.a   -Wl,--gc-sections -Wl,--as-needed -Wl,--no-undefined
-    ccache:                      YES
-    Precompiled headers:         NO
-    Extra dependencies:          /usr/local/cuda/lib64/libcudart_static.a /usr/local/cuda/lib64/libnppial.so /usr/local/cuda/lib64/libnppc.so /usr/local/cuda/lib64/libnppitc.so /usr/local/cuda/lib64/libnppig.so /usr/local/cuda/lib64/libnppist.so /usr/local/cuda/lib64/libnppidei.so /usr/local/cuda/lib64/libcublas.so /usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so /usr/local/cuda/lib64/libcufft.so /usr/local/cuda/lib64/libnppif.so /usr/local/cuda/lib64/libnppim.so /usr/local/cuda/lib64/libnppicc.so dl m pthread rt
-    3rdparty dependencies:
-
-  OpenCV modules:
-    To be built:                 alphamat aruco bgsegm bioinspired calib3d ccalib core cudaarithm cudabgsegm cudacodec cudafeatures2d cudafilters cudaimgproc cudalegacy cudaobjdetect cudaoptflow cudastereo cudawarping cudev datasets dnn dnn_objdetect dnn_superres dpm face features2d flann freetype fuzzy gapi hfs highgui img_hash imgcodecs imgproc intensity_transform line_descriptor mcc ml objdetect optflow phase_unwrapping photo plot python3 quality rapid reg rgbd saliency sfm shape signal stereo stitching structured_light superres surface_matching text tracking ts video videoio videostab wechat_qrcode world xfeatures2d ximgproc xobjdetect xphoto
-    Disabled:                    java_bindings_generator js_bindings_generator
-    Disabled by dependency:      -
-    Unavailable:                 cannops cvv hdf java julia matlab ovis python2 python2 viz
-    Applications:                tests perf_tests apps
-    Documentation:               NO
-    Non-free algorithms:         NO
-
-  GUI:
-    GTK+:                        YES (ver 3.24.43)
-    OpenGL support:              YES (/usr/lib64/libGL.so /usr/lib64/libGLU.so)
-    VTK support:                 NO
-
-  Media I/O:
-    ZLib:                        build (ver 1.3.1)
-    JPEG:                        build-libjpeg-turbo (ver 3.0.3-70)
-      SIMD Support Request:      YES
-      SIMD Support:              YES
-    WEBP:                        build (ver encoder: 0x020f)
-    PNG:                         build (ver 1.6.43)
-      SIMD Support Request:      YES
-      SIMD Support:              YES (Intel SSE)
-    TIFF:                        build (ver 42 - 4.6.0)
-    JPEG 2000:                   build (ver 2.5.0)
-    OpenEXR:                     build (ver 2.3.0)
-    HDR:                         YES
-    SUNRASTER:                   YES
-    PXM:                         YES
-    PFM:                         YES
-
-  Video I/O:
-    FFMPEG:                      YES
-      avcodec:                   YES (60.31.102)
-      avformat:                  YES (60.16.100)
-      avutil:                    YES (58.29.100)
-      swscale:                   YES (7.5.100)
-      avresample:                NO
-    GStreamer:                   NO
-    v4l/v4l2:                    YES (linux/videodev2.h)
-
-  Parallel framework:            pthreads
-
-  Trace:                         YES (with Intel ITT)
-
-  Other third-party libraries:
-    Intel IPP:                   2021.12.0 [2021.12.0]
-           at:                   /home/frankyin/opencv_build/opencv/build/3rdparty/ippicv/ippicv_lnx/icv
-    Intel IPP IW:                sources (2021.12.0)
-              at:                /home/frankyin/opencv_build/opencv/build/3rdparty/ippicv/ippicv_lnx/iw
-    VA:                          NO
-    Lapack:                      YES (/lib64/libopenblas.so)
-    Eigen:                       YES (ver 3.4.0)
-    Custom HAL:                  NO
-    Protobuf:                    build (3.19.1)
-    Flatbuffers:                 builtin/3rdparty (23.5.9)
-
-  NVIDIA CUDA:                   YES (ver 12.6.77, CUFFT CUBLAS NVCUVID NVCUVENC)
-    NVIDIA GPU arch:             90
-    NVIDIA PTX archs:
-
-  cuDNN:                         YES (ver 9.5.0)
-
-  Vulkan:                        YES
-    Include path:                /home/frankyin/opencv_build/opencv/3rdparty/include
-    Link libraries:              Dynamic load
-
-  OpenCL:                        YES (no extra features)
-    Include path:                /home/frankyin/opencv_build/opencv/3rdparty/include/opencl/1.2
-    Link libraries:              Dynamic load
-
-  Python 3:
-    Interpreter:                 /usr/bin/python3 (ver 3.12.6)
-    Libraries:                   /usr/lib64/libpython3.12.so (ver 3.12.6)
-    Limited API:                 NO
-    numpy:                       /home/frankyin/.local/lib/python3.12/site-packages/numpy/_core/include (ver 2.1.2)
-    install path:                lib/python3.12/site-packages/cv2/python-3.12
-
-  Python (for build):            /usr/bin/python3
-
-  Install to:                    /usr/local
------------------------------------------------------------------
-```
+>``` shell
+>General configuration for OpenCV 4.10.0-dev 
+>=====================================
+>  Version control:               4.10.0-318-g08f7f13dfa
+>
+>  Extra modules:
+>    Location (extra):            /home/frankyin/opencv_build/opencv_contrib/modules
+>    Version control (extra):     4.10.0-24-g80f1ca24
+>
+>  Platform:
+>    Timestamp:                   2024-10-13T14:42:07Z
+>    Host:                        Linux 6.10.12-100.fc39.x86_64 x86_64
+>    CMake:                       3.27.7
+>    CMake generator:             Unix Makefiles
+>    CMake build tool:            /usr/bin/gmake
+>    Configuration:               Release
+>    Algorithm Hint:              ALGO_HINT_ACCURATE
+>
+>  CPU/HW features:
+>    Baseline:                    SSE SSE2 SSE3
+>      requested:                 SSE3
+>    Dispatched code generation:  SSE4_1 SSE4_2 AVX FP16 AVX2 AVX512_SKX
+>      SSE4_1 (18 files):         + SSSE3 SSE4_1
+>      SSE4_2 (2 files):          + SSSE3 SSE4_1 POPCNT SSE4_2
+>      AVX (9 files):             + SSSE3 SSE4_1 POPCNT SSE4_2 AVX
+>      FP16 (1 files):            + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16
+>      AVX2 (38 files):           + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16 AVX2 FMA3
+>      AVX512_SKX (8 files):      + SSSE3 SSE4_1 POPCNT SSE4_2 AVX FP16 AVX2 FMA3 AVX_512F AVX512_COMMON AVX512_SKX
+>
+>  C/C++:
+>    Built as dynamic libs?:      YES
+>    C++ standard:                11
+>    C++ Compiler:                /usr/lib64/ccache/c++  (ver 13.3.1)
+>    C++ flags (Release):         -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Wsuggest-override -Wno-delete-non-virtual-dtor -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -fvisibility-inlines-hidden -O3 -DNDEBUG  -DNDEBUG
+>    C++ flags (Debug):           -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Wsuggest-override -Wno-delete-non-virtual-dtor -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -fvisibility-inlines-hidden -g  -O0 -DDEBUG -D_DEBUG
+>    C Compiler:                  /usr/lib64/ccache/cc
+>    C flags (Release):           -fsigned-char -W -Wall -Wreturn-type -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wuninitialized -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -O3 -DNDEBUG  -DNDEBUG
+>    C flags (Debug):             -fsigned-char -W -Wall -Wreturn-type -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wuninitialized -Wno-comment -Wimplicit-fallthrough=3 -Wno-strict-overflow -fdiagnostics-show-option -Wno-long-long -pthread -fomit-frame-pointer -ffunction-sections -fdata-sections  -msse3 -fvisibility=hidden -g  -O0 -DDEBUG -D_DEBUG
+>    Linker flags (Release):      -Wl,--exclude-libs,libippicv.a -Wl,--exclude-libs,libippiw.a   -Wl,--gc-sections -Wl,--as-needed -Wl,--no-undefined
+>    Linker flags (Debug):        -Wl,--exclude-libs,libippicv.a -Wl,--exclude-libs,libippiw.a   -Wl,--gc-sections -Wl,--as-needed -Wl,--no-undefined
+>    ccache:                      YES
+>    Precompiled headers:         NO
+>    Extra dependencies:          /usr/local/cuda/lib64/libcudart_static.a /usr/local/cuda/lib64/libnppial.so /usr/local/cuda/lib64/libnppc.so /usr/local/cuda/lib64/libnppitc.so /usr/local/cuda/lib64/libnppig.so /usr/local/cuda/lib64/libnppist.so /usr/local/cuda/lib64/libnppidei.so /usr/local/cuda/lib64/libcublas.so /usr/local/cuda-12.6/targets/x86_64-linux/lib/libcublasLt.so /usr/local/cuda/lib64/libcufft.so /usr/local/cuda/lib64/libnppif.so /usr/local/cuda/lib64/libnppim.so /usr/local/cuda/lib64/libnppicc.so dl m pthread rt
+>    3rdparty dependencies:
+>
+>  OpenCV modules:
+>    To be built:                 alphamat aruco bgsegm bioinspired calib3d ccalib core cudaarithm cudabgsegm cudacodec cudafeatures2d cudafilters cudaimgproc cudalegacy cudaobjdetect cudaoptflow cudastereo cudawarping cudev datasets dnn dnn_objdetect dnn_superres dpm face features2d flann freetype fuzzy gapi hfs highgui img_hash imgcodecs imgproc intensity_transform line_descriptor mcc ml objdetect optflow phase_unwrapping photo plot python3 quality rapid reg rgbd saliency sfm shape signal stereo stitching structured_light superres surface_matching text tracking ts video videoio videostab wechat_qrcode world xfeatures2d ximgproc xobjdetect xphoto
+>    Disabled:                    java_bindings_generator js_bindings_generator
+>    Disabled by dependency:      -
+>    Unavailable:                 cannops cvv hdf java julia matlab ovis python2 python2 viz
+>    Applications:                tests perf_tests apps
+>    Documentation:               NO
+>    Non-free algorithms:         NO
+>
+>  GUI:
+>    GTK+:                        YES (ver 3.24.43)
+>    OpenGL support:              YES (/usr/lib64/libGL.so /usr/lib64/libGLU.so)
+>    VTK support:                 NO
+>
+>  Media I/O:
+>    ZLib:                        build (ver 1.3.1)
+>    JPEG:                        build-libjpeg-turbo (ver 3.0.3-70)
+>      SIMD Support Request:      YES
+>      SIMD Support:              YES
+>    WEBP:                        build (ver encoder: 0x020f)
+>    PNG:                         build (ver 1.6.43)
+>      SIMD Support Request:      YES
+>      SIMD Support:              YES (Intel SSE)
+>    TIFF:                        build (ver 42 - 4.6.0)
+>    JPEG 2000:                   build (ver 2.5.0)
+>    OpenEXR:                     build (ver 2.3.0)
+>    HDR:                         YES
+>    SUNRASTER:                   YES
+>    PXM:                         YES
+>    PFM:                         YES
+>
+>  Video I/O:
+>    FFMPEG:                      YES
+>      avcodec:                   YES (60.31.102)
+>      avformat:                  YES (60.16.100)
+>      avutil:                    YES (58.29.100)
+>      swscale:                   YES (7.5.100)
+>      avresample:                NO
+>    GStreamer:                   NO
+>    v4l/v4l2:                    YES (linux/videodev2.h)
+>
+>  Parallel framework:            pthreads
+>
+>  Trace:                         YES (with Intel ITT)
+>
+>  Other third-party libraries:
+>    Intel IPP:                   2021.12.0 [2021.12.0]
+>           at:                   /home/frankyin/opencv_build/opencv/build/3rdparty/ippicv/ippicv_lnx/icv
+>    Intel IPP IW:                sources (2021.12.0)
+>              at:                /home/frankyin/opencv_build/opencv/build/3rdparty/ippicv/ippicv_lnx/iw
+>    VA:                          NO
+>    Lapack:                      YES (/lib64/libopenblas.so)
+>    Eigen:                       YES (ver 3.4.0)
+>    Custom HAL:                  NO
+>    Protobuf:                    build (3.19.1)
+>    Flatbuffers:                 builtin/3rdparty (23.5.9)
+>
+>  NVIDIA CUDA:                   YES (ver 12.6.77, CUFFT CUBLAS NVCUVID NVCUVENC)
+>    NVIDIA GPU arch:             90
+>    NVIDIA PTX archs:
+>
+>  cuDNN:                         YES (ver 9.5.0)
+>
+>  Vulkan:                        YES
+>    Include path:                /home/frankyin/opencv_build/opencv/3rdparty/include
+>    Link libraries:              Dynamic load
+>
+>  OpenCL:                        YES (no extra features)
+>    Include path:                /home/frankyin/opencv_build/opencv/3rdparty/include/opencl/1.2
+>    Link libraries:              Dynamic load
+>
+>  Python 3:
+>    Interpreter:                 /usr/bin/python3 (ver 3.12.6)
+>    Libraries:                   /usr/lib64/libpython3.12.so (ver 3.12.6)
+>    Limited API:                 NO
+>    numpy:                       /home/frankyin/.local/lib/python3.12/site-packages/numpy/_core/include (ver 2.1.2)
+>    install path:                lib/python3.12/site-packages/cv2/python-3.12
+>
+>  Python (for build):            /usr/bin/python3
+>
+>  Install to:                    /usr/local
+>-----------------------------------------------------------------
+>```
+>
