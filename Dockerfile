@@ -44,7 +44,7 @@ RUN chown -R jekyll:jekyll /srv/jekyll
 RUN chmod -R 755 /srv/jekyll
 
 # ensure Gemfile.lock is writable
-RUN touch /srv/jekyll/Gemfile.lock && chown jekyll:jekyll /srv/jekyll/Gemfile.lock && chmod 644 /srv/jekyll/Gemfile.lock
+RUN touch /srv/jekyll/Gemfile.lock && chown jekyll:jekyll /srv/jekyll/Gemfile.lock && chmod 666 /srv/jekyll/Gemfile.lock
 
 # ensure jekyll user has full permissions
 RUN chown -R jekyll:jekyll /srv/jekyll && \
