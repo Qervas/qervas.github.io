@@ -6,6 +6,6 @@ services:
       - 4000:8080
     volumes:
       - .:/srv/jekyll:Z
-    user: jekyll
+    user: "${UID}:${GID}"
     environment:
       - JEKYLL_ENV=production
