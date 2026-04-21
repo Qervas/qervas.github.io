@@ -1,12 +1,593 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirecting...</title>
-    <meta http-equiv="refresh" content="0; URL=https://ohao.tech">
-    <link rel="canonical" href="https://ohao.tech">
-  </head>
-  <body>
-    <p>Redirecting to <a href="https://ohao.tech">ohao.tech</a>...</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaoxuan (Frank) Yin — Graphics & Engine Engineer</title>
+  <meta name="description" content="Graphics & engine engineer building rendering systems, GPU programming, and creative infrastructure." />
+  <meta property="og:title" content="Shaoxuan (Frank) Yin" />
+  <meta property="og:description" content="Graphics & Engine Engineer — Vulkan, CUDA, rendering systems." />
+  <meta property="og:url" content="https://qervas.github.io" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #F2EFE9;
+      --bg2:    #EAE6DF;
+      --ink:    #1C1917;
+      --ink2:   #57534E;
+      --ink3:   #A8A29E;
+      --accent: #BF4F30;
+      --border: #D6D0C7;
+      --mono:   'JetBrains Mono', monospace;
+      --serif:  'Newsreader', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+
+    /* Header */
+    header { padding: 72px 0 52px; border-bottom: 1px solid var(--border); }
+
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .header-left h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+    }
+
+    .header-left .title {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .header-left .tagline {
+      font-size: 0.95rem;
+      color: var(--ink2);
+      margin-top: 10px;
+      font-style: italic;
+      max-width: 420px;
+    }
+
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .header-right a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--ink2);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-right a:hover { color: var(--accent); }
+    .header-right a svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 120px;
+      padding: 20px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 1.35rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      color: var(--ink3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    /* Sections */
+    section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.64rem;
+      font-weight: 500;
+      color: var(--ink3);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* About */
+    .about-prose p { font-size: 0.95rem; color: var(--ink2); margin-bottom: 14px; max-width: 640px; }
+    .about-prose p:last-child { margin-bottom: 0; }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 36px; }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4px 24px;
+    }
+
+    .tl-company { font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+    .tl-sep { color: var(--ink3); margin: 0 8px; font-family: var(--mono); font-size: 0.75rem; }
+    .tl-role { font-size: 0.85rem; color: var(--ink); }
+
+    .tl-period {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--ink3);
+      white-space: nowrap;
+      padding-top: 2px;
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .tl-bullets {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tl-bullets li {
+      font-size: 0.85rem;
+      color: var(--ink2);
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .tl-bullets li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--border);
+      font-family: var(--mono);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 18px 20px;
+    }
+
+    .skill-card-label {
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .skill-tag {
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      color: var(--ink2);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 8px;
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 22px 24px;
+      transition: border-color 0.15s;
+    }
+
+    .project-card:hover { border-color: var(--accent); }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .project-title { font-size: 0.9rem; font-weight: 600; }
+
+    .project-link {
+      color: var(--ink3);
+      text-decoration: none;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .project-link:hover { color: var(--accent); }
+    .project-link svg { width: 13px; height: 13px; }
+
+    .project-tech {
+      font-family: var(--mono);
+      font-size: 0.67rem;
+      color: var(--accent);
+      margin-top: 4px;
+    }
+
+    .project-desc { font-size: 0.83rem; color: var(--ink2); margin-top: 10px; line-height: 1.6; }
+
+    /* Publication */
+    .pub-card {
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      background: var(--bg2);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .pub-title { font-size: 0.9rem; font-style: italic; }
+    .pub-authors { font-size: 0.8rem; color: var(--ink2); margin-top: 6px; }
+    .pub-authors em { color: var(--accent); font-style: normal; }
+    .pub-venue { font-size: 0.76rem; color: var(--ink3); margin-top: 4px; font-family: var(--mono); }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer p { font-family: var(--mono); font-size: 0.7rem; color: var(--ink3); letter-spacing: 0.06em; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .reveal-group > * {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal-group.visible > *:nth-child(1) { opacity:1;transform:none;transition-delay:0.05s }
+    .reveal-group.visible > *:nth-child(2) { opacity:1;transform:none;transition-delay:0.10s }
+    .reveal-group.visible > *:nth-child(3) { opacity:1;transform:none;transition-delay:0.15s }
+    .reveal-group.visible > *:nth-child(4) { opacity:1;transform:none;transition-delay:0.20s }
+    .reveal-group.visible > *:nth-child(5) { opacity:1;transform:none;transition-delay:0.25s }
+    .reveal-group.visible > *:nth-child(6) { opacity:1;transform:none;transition-delay:0.30s }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .wrap { padding: 0 20px; }
+      header { padding: 48px 0 36px; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .header-right { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+      .tl-item { grid-template-columns: 1fr; }
+      .tl-period { grid-column: 1; grid-row: auto; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .stat { flex: 1 1 40%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap">
+      <div class="header-inner">
+        <div class="header-left">
+          <h1>Shaoxuan<br>(Frank) Yin</h1>
+          <p class="title">Graphics &amp; Engine Engineer</p>
+          <p class="tagline">I build the infrastructure that makes graphics possible.</p>
+        </div>
+        <div class="header-right">
+          <a href="mailto:frank@ohao.tech">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l9 6 9-6M3 8v10a1 1 0 001 1h16a1 1 0 001-1V8M3 8a1 1 0 011-1h16a1 1 0 011 1"/></svg>
+            frank@ohao.tech
+          </a>
+          <a href="https://github.com/Qervas" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            github.com/Qervas
+          </a>
+          <a href="https://linkedin.com/in/shaoxuan-yin-021548170" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            linkedin / shaoxuan-yin
+          </a>
+          <a href="https://ohao.tech" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            ohao.tech
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats-bar reveal">
+    <div class="stat"><div class="stat-value">170K+</div><div class="stat-label">lines of code</div></div>
+    <div class="stat"><div class="stat-value">37K</div><div class="stat-label">lines in Vulkan engine</div></div>
+    <div class="stat"><div class="stat-value">209 GB</div><div class="stat-label">neural rendering dataset</div></div>
+    <div class="stat"><div class="stat-value">6</div><div class="stat-label">major projects</div></div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <p class="section-label">About</p>
+      <div class="about-prose reveal">
+        <p>I build renderers, physics engines, and the math underneath. Most of my work sits at the intersection of graphics infrastructure, GPU programming, and systems that other people build on top of.</p>
+        <p>My work spans custom Vulkan engines, neural rendering research, simulation, and independent product engineering. I care about infrastructure rather than app surface area: rendering pipelines, data flow, performance, and the math behind the results.</p>
+        <p>Recently completed my MSc in Computer Science at Linköping University. Currently interning at Freedo Technology on physics simulation and differentiable rendering. Looking for full-time engineering roles in graphics, rendering, and engine systems.</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Experience</p>
+      <div class="timeline reveal-group">
+
+        <div class="tl-item">
+          <div>
+            <span class="tl-company">Freedo Technology</span>
+            <span class="tl-sep">/</span>
+            <span class="tl-role">Physics Simulation &amp; Rendering Intern</span>
+          </div>
+          <div class="tl-period">Feb 2026 — Present</div>
+          <ul class="tl-bullets">
+            <li>Fluid simulation and differentiable rendering systems using Taichi, NVIDIA Warp, and nvdiffrast</li>
+          </ul>
+        </div>
+
+        <div class="tl-item">
+          <div>
+            <span class="tl-company">Independent Product Project</span>
+            <span class="tl-sep">/</span>
+            <span class="tl-role">AI Platform Engineer (Part-time)</span>
+          </div>
+          <div class="tl-period">2025 — Present</div>
+          <ul class="tl-bullets">
+            <li>Built an AI-powered product for game asset workflows as an independent side project</li>
+            <li>Designed a serverless GPU pipeline for real-time inference across multiple media workflows</li>
+            <li>Implemented LLM orchestration, auth, payments, and full-stack integration</li>
+          </ul>
+        </div>
+
+        <div class="tl-item">
+          <div>
+            <span class="tl-company">Beijing Guoyao Xintiandi</span>
+            <span class="tl-sep">/</span>
+            <span class="tl-role">C++ Development Engineer Intern</span>
+          </div>
+          <div class="tl-period">Aug — Sep 2022</div>
+          <ul class="tl-bullets">
+            <li>3D visualization tool with Qt/OpenGL — 40% rendering performance improvement</li>
+            <li>Custom C++ network protocol — 50% data transmission efficiency gain</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Education</p>
+      <div class="timeline reveal-group">
+
+        <div class="tl-item">
+          <div>
+            <span class="tl-company">Linköping University</span>
+            <span class="tl-sep">/</span>
+            <span class="tl-role">MSc Computer Science — Graphics &amp; Visualization</span>
+          </div>
+          <div class="tl-period">2023 — 2025</div>
+          <ul class="tl-bullets">
+            <li>Top grades (5/5): Advanced Global Illumination, Modelling &amp; Animation, Computer Games Design</li>
+            <li>Thesis: Neural Rendering Dataset Collection — 12-camera capture system, 209GB public dataset</li>
+          </ul>
+        </div>
+
+        <div class="tl-item">
+          <div>
+            <span class="tl-company">BISTU</span>
+            <span class="tl-sep">/</span>
+            <span class="tl-role">BEng Computer Science</span>
+          </div>
+          <div class="tl-period">2018 — 2023</div>
+          <ul class="tl-bullets">
+            <li>GPA 3.53 — Advanced Mathematics 97, CPU Design 91</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Featured Projects</p>
+      <div class="projects-grid reveal-group">
+
+        <div class="project-card">
+          <div class="project-header"><div class="project-title">Custom Vulkan Engine</div></div>
+          <div class="project-tech">37,184 lines · C++/GLSL</div>
+          <p class="project-desc">Deferred renderer, Cook-Torrance GGX BRDF, CSM, TAA, SSAO, SSR. Physics with GJK/EPA + BVH. GDExtension for Godot 4.x.</p>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title">Neural Rendering Thesis</div>
+            <a class="project-link" href="https://github.com/Qervas/neural-rendering-thesis" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+          </div>
+          <div class="project-tech">7,950 lines · C++/C#</div>
+          <p class="project-desc">12-camera capture system, 209GB dataset for NeRF/3DGS. 3DGS achieves 11dB PSNR gain on reflective surfaces.</p>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header"><div class="project-title">SPH Water Simulation</div></div>
+          <div class="project-tech">30,337 lines · C++/CUDA</div>
+          <p class="project-desc">GPU-accelerated fluid simulation with Marching Cubes surface reconstruction and CUDA-OpenGL interop.</p>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title">CUDA Path Tracer</div>
+            <a class="project-link" href="https://github.com/Qervas/path_tracer" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+          </div>
+          <div class="project-tech">2,775 lines · C++/CUDA</div>
+          <p class="project-desc">Monte Carlo path tracer with BVH acceleration, Russian roulette termination. 40 FPS on RTX 4060 at 1280×720.</p>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div class="project-title">Chinese Chess AI</div>
+            <a class="project-link" href="https://github.com/Qervas/cn_chess_ai" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+            </a>
+          </div>
+          <div class="project-tech">2,927 lines · C++/Qt/CUDA</div>
+          <p class="project-desc">Full Xiangqi game in C++/Qt with a Deep Q-Learning agent, CUDA-accelerated training, self-play, and model save/load.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Skills</p>
+      <div class="skills-grid reveal-group">
+
+        <div class="skill-card">
+          <div class="skill-card-label">Languages</div>
+          <div class="skill-tags">
+            <span class="skill-tag">C++20</span><span class="skill-tag">CUDA</span><span class="skill-tag">Python</span><span class="skill-tag">Rust</span><span class="skill-tag">C#</span><span class="skill-tag">TypeScript</span><span class="skill-tag">GLSL</span><span class="skill-tag">HLSL</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-label">Graphics &amp; Rendering</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Vulkan</span><span class="skill-tag">OpenGL 4.3</span><span class="skill-tag">DirectX 12</span><span class="skill-tag">Deferred Rendering</span><span class="skill-tag">PBR</span><span class="skill-tag">Path Tracing</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-label">GPU Compute</div>
+          <div class="skill-tags">
+            <span class="skill-tag">CUDA</span><span class="skill-tag">Compute Shaders</span><span class="skill-tag">Nsight</span><span class="skill-tag">RenderDoc</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-label">AI / ML</div>
+          <div class="skill-tags">
+            <span class="skill-tag">PyTorch</span><span class="skill-tag">NeRF</span><span class="skill-tag">3D Gaussian Splatting</span><span class="skill-tag">LLM Orchestration</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-label">Engines &amp; Tools</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Custom (Vulkan)</span><span class="skill-tag">Godot</span><span class="skill-tag">Unreal Engine</span><span class="skill-tag">Blender</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-label">Web &amp; Infra</div>
+          <div class="skill-tags">
+            <span class="skill-tag">React</span><span class="skill-tag">Next.js</span><span class="skill-tag">Three.js</span><span class="skill-tag">FastAPI</span><span class="skill-tag">PostgreSQL</span><span class="skill-tag">Cloudflare</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section>
+      <p class="section-label">Publication</p>
+      <div class="pub-card reveal">
+        <p class="pub-title">"Skiing Action Analysis Based on OpenPose"</p>
+        <p class="pub-authors">Xu Z., Gao M., <em>Yin S.</em>, Cui J.</p>
+        <p class="pub-venue">Intelligent Computer and Applications, 2022</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="wrap">
+    <footer>
+      <p>Shaoxuan (Frank) Yin — <a href="mailto:frank@ohao.tech">frank@ohao.tech</a></p>
+      <p><a href="https://ohao.tech" target="_blank" rel="noopener">ohao.tech</a> &nbsp;·&nbsp; <a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal, .reveal-group').forEach(el => observer.observe(el));
+  </script>
+
+</body>
 </html>
