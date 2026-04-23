@@ -697,42 +697,42 @@
             </div>
           </article>
 
-          <!-- Ohao Engine PBR Showcase -->
+          <!-- Sponza — Complex Scene Showcase -->
           <article class="featured reverse">
             <div class="featured-visual">
               <div class="featured-gallery-2x2">
                 <div class="cell">
-                  <img src="assets/proof/ohao_chess_studio.jpg" alt="Chess scene rendered in Ohao under studio HDR environment" loading="lazy" />
-                  <span class="cell-label">Chess · path traced · studio HDR</span>
+                  <img src="assets/proof/ohao_sponza_outdoor.jpg" alt="Sponza atrium rendered in Ohao with outdoor HDR environment" loading="lazy" />
+                  <span class="cell-label">Sponza · outdoor HDR · path traced</span>
                 </div>
                 <div class="cell">
-                  <img src="assets/proof/ohao_chess_def.jpg" alt="Same chess scene rendered via the deferred pipeline" loading="lazy" />
-                  <span class="cell-label">Chess · deferred · real-time</span>
+                  <img src="assets/proof/ohao_sponza_studio.jpg" alt="Sponza atrium rendered with a studio HDR environment" loading="lazy" />
+                  <span class="cell-label">Sponza · studio HDR · path traced</span>
                 </div>
                 <div class="cell">
-                  <img src="assets/proof/ohao_lantern.jpg" alt="Lantern with emissive glass path traced" loading="lazy" />
-                  <span class="cell-label">Lantern · emissive + glass · PT</span>
+                  <img src="assets/proof/ohao_sponza_def.jpg" alt="Sponza rendered via the deferred real-time pipeline" loading="lazy" />
+                  <span class="cell-label">Sponza · deferred · real-time</span>
                 </div>
                 <div class="cell">
-                  <video src="assets/proof/ohao_lantern_turntable.mp4" autoplay loop muted playsinline></video>
-                  <span class="cell-label">Lantern · turntable · RT reflections</span>
+                  <video src="assets/proof/ohao_sponza_turntable.mp4" autoplay loop muted playsinline></video>
+                  <span class="cell-label">Sponza · turntable · RT env lighting</span>
                 </div>
               </div>
             </div>
             <div class="featured-copy">
-              <h3>Rendered in Ohao — Same Engine, Two Pipelines</h3>
-              <p class="featured-stack">glTF Sample Assets · 4K · 256 spp · OIDN</p>
+              <h3>Rendered in Ohao — Complex-Scene Path Tracing</h3>
+              <p class="featured-stack">Crytek Sponza · 35 BLAS · 4K · 256 spp · OIDN</p>
               <p>
-                The chess scene (33 materials, 2K PBR textures) runs through both the offline path-traced pipeline (Cook-Torrance GGX, NEE, MIS) and the deferred pipeline (G-buffer, cascaded shadow maps, SSAO), sharing the same bindless texture system and scene upload path.
+                Sponza — the graphics community's de facto architectural benchmark — rendered end-to-end through Ohao Engine. 35 bottom-level acceleration structures, dozens of materials, hundreds of thousands of triangles, traced with Cook-Torrance GGX, NEE multi-light sampling, and MIS.
               </p>
               <p>
-                Lantern tests emissive materials as light sources — the glass casing acts as a volumetric-ish participant, the inner emissive element drives the scene illumination, and the turntable sequence validates ray-traced reflection continuity across camera motion.
+                Two HDR environments (outdoor, studio) demonstrate the full IBL pipeline driving scene lighting; the deferred render of the same scene exercises the shared bindless texture and scene-upload path. A 60-frame turntable validates ray-traced reflection continuity under camera motion.
               </p>
               <p>
-                Each path-traced still was rendered at 4K, 256 spp, denoised with Intel OIDN. End-to-end render time: ~50 seconds per frame on RTX 4060.
+                End-to-end render time: ~12 seconds per 4K frame on RTX 4060 with path tracing + OIDN denoise. Classic glTF Sample Model loader path; no scene-specific code.
               </p>
               <div class="featured-links">
-                <a href="https://github.com/KhronosGroup/glTF-Sample-Assets" target="_blank" rel="noopener">glTF Sample Assets ↗</a>
+                <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Sponza" target="_blank" rel="noopener">Scene source (Crytek / Khronos) ↗</a>
               </div>
             </div>
           </article>
