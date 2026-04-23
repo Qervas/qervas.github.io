@@ -32,6 +32,13 @@
 
     html { scroll-behavior: smooth; }
 
+    .section[id] { scroll-margin-top: 18px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    }
+
     body {
       background: linear-gradient(180deg, #f7f3ec 0%, #efe7db 100%);
       color: var(--ink);
@@ -155,6 +162,37 @@
       color: var(--rule-strong);
     }
 
+    .contact-meta {
+      color: var(--soft);
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+    }
+
+    .section-nav {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      padding: 0 38px;
+      background: #fbf7ef;
+      border-bottom: 1px solid var(--rule);
+    }
+    .section-nav a {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 10px 14px;
+      border-right: 1px solid var(--rule);
+      transition: color 0.15s, background 0.15s;
+    }
+    .section-nav a:first-child { border-left: 1px solid var(--rule); }
+    .section-nav a:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
     /* ── Summary block ── */
     .summary-block {
       padding: 34px 38px;
@@ -178,6 +216,11 @@
       color: var(--muted);
       font-size: 0.95rem;
       max-width: 62ch;
+    }
+
+    .summary-sub strong {
+      color: var(--accent);
+      font-weight: 600;
     }
 
     /* ── Stats with context ── */
@@ -425,6 +468,212 @@
       backdrop-filter: blur(4px);
     }
 
+    /* ── Thesis visual: hero comparison slider + supporting row ── */
+    .thesis-visual {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 14px;
+    }
+
+    .thesis-compare-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .thesis-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .thesis-chip {
+      appearance: none;
+      border: 1px solid var(--rule);
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color 0.18s, border-color 0.18s, background 0.18s;
+    }
+    .thesis-chip:hover {
+      color: var(--ink);
+      border-color: var(--accent);
+    }
+    .thesis-chip.is-active {
+      color: #fdf9f3;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .thesis-chip:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .thesis-visual__row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .thesis-visual__row > .cell {
+      position: relative;
+      background: #1a1513;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+    }
+    .thesis-visual__row > .cell img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .thesis-visual__row .cell-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.68);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
+    }
+
+    .thesis-compare {
+      --split: 20%;
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      aspect-ratio: 7 / 10;
+      background: #0b0908;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+      cursor: ew-resize;
+    }
+    .thesis-compare__base,
+    .thesis-compare__top {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0b0908;
+      pointer-events: none;
+    }
+    .thesis-compare__reveal {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 0 0 var(--split));
+      will-change: clip-path;
+    }
+    .thesis-compare__divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--split);
+      width: 2px;
+      background: rgba(253, 249, 243, 0.85);
+      transform: translateX(-1px);
+      box-shadow: 0 0 0 1px rgba(12,10,8,0.35);
+      pointer-events: none;
+      will-change: left;
+    }
+    .thesis-compare__handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(253, 249, 243, 0.95);
+      color: #1a1513;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      font-size: 0.7rem;
+      font-family: var(--mono);
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 0 0 1px rgba(12,10,8,0.15);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .thesis-compare:hover .thesis-compare__handle,
+    .thesis-compare.is-active .thesis-compare__handle {
+      transform: translate(-50%, -50%) scale(1.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 0 0 1px rgba(12,10,8,0.2);
+    }
+    .thesis-compare__arrow {
+      line-height: 1;
+    }
+    .thesis-compare__tag {
+      position: absolute;
+      top: 12px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.72);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .thesis-compare__tag--left { left: 12px; }
+    .thesis-compare__tag--right {
+      right: 12px;
+      background: rgba(175, 100, 60, 0.9);
+      color: #0b0908;
+    }
+    .thesis-compare__hint {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(253, 249, 243, 0.88);
+      background: rgba(16,12,10,0.72);
+      padding: 4px 10px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: calc(100% - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity 0.3s ease;
+    }
+    .thesis-compare.is-active .thesis-compare__hint {
+      opacity: 0;
+    }
+    .thesis-compare.is-hinting .thesis-compare__reveal {
+      transition: clip-path 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    .thesis-compare.is-hinting .thesis-compare__divider {
+      transition: left 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
     .featured-copy {
       max-width: 72ch;
     }
@@ -441,6 +690,24 @@
       color: var(--accent);
       letter-spacing: 0.06em;
       margin-bottom: 14px;
+    }
+
+    .featured-subcaption {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 14px 0 6px;
+    }
+
+    .featured-copy strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .featured-copy em {
+      font-style: italic;
+      color: var(--accent);
     }
 
     .featured-copy p {
@@ -516,6 +783,11 @@
       line-height: 1.6;
     }
 
+    .entry li strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
     /* ── Selected projects grid ── */
     .project-grid {
       display: grid;
@@ -524,14 +796,34 @@
     }
 
     .project-item {
-      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
       border: 1px solid var(--rule);
       border-radius: 10px;
       background: #fffaf4;
-      transition: border-color 0.15s;
+      overflow: hidden;
+      transition: border-color 0.15s, transform 0.15s;
     }
 
     .project-item:hover { border-color: var(--accent); }
+
+    .project-thumb {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-bottom: 1px solid var(--rule);
+      background: #1a1513;
+      transition: opacity 0.15s;
+    }
+    .project-item:hover .project-thumb { opacity: 0.94; }
+
+    .project-body {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
 
     .project-item h3 {
       font: 600 0.98rem var(--serif);
@@ -697,6 +989,48 @@
       pointer-events: none;
     }
 
+    /* ── Print (Cmd+P → PDF) ── */
+    @media print {
+      @page { size: A4; margin: 14mm 12mm; }
+      body { background: #fff; color: #000; line-height: 1.45; font-size: 10.5pt; }
+      .page { width: 100%; max-width: none; margin: 0; box-shadow: none; border: none; background: #fff; }
+      a, a:hover { color: #000; text-decoration: none; }
+      .hero { aspect-ratio: auto; min-height: 0; height: auto; padding: 18mm 0 0; background: #fff; border-bottom: 1px solid #999; }
+      .hero img, .hero::after { display: none; }
+      .hero-inner { color: #000; padding: 0; position: static; }
+      .hero-mark, .hero-caption { color: #555; }
+      .hero-bottom h1 { color: #000; font-size: 26pt; line-height: 1.0; margin-bottom: 4px; }
+      .hero-role { color: #444; font-size: 9pt; }
+      .hero-top { margin-bottom: 12px; }
+      .summary-lead em, .featured-stack, .stat-label, .summary-sub strong, .featured-copy em, .featured-copy strong { color: #000; }
+      .stats { display: flex; flex-wrap: wrap; border: 1px solid #ccc; }
+      .stat { flex: 1 1 25%; border-right: 1px solid #ccc; padding: 8px 10px; break-inside: avoid; }
+      .stat-num { font-size: 11pt; }
+      .stat-context { font-size: 8pt; color: #555; }
+      .section { padding: 14px 0; break-inside: auto; border-bottom: 1px solid #ccc; }
+      .section-head { grid-template-columns: 110px 1fr; gap: 14px; }
+      .section-label { color: #555; font-size: 7.5pt; }
+      .featured { gap: 10px; margin-bottom: 16px; break-inside: avoid; }
+      .featured-visual, .featured-gallery-3, .featured-gallery-2x2, .thesis-visual__row { display: none !important; }
+      .thesis-compare-wrap, .thesis-chips, .thesis-compare { display: none !important; }
+      .featured-subcaption { display: none; }
+      .featured-copy h3 { font-size: 13pt; }
+      .featured-copy p { font-size: 9.5pt; line-height: 1.45; }
+      .project-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .project-thumb { display: none; }
+      .project-body { padding: 10px 12px; }
+      .project-item { break-inside: avoid; background: #fff; border: 1px solid #ccc; }
+      .project-item p { font-size: 9pt; }
+      .entry { break-inside: avoid; }
+      .entry li { font-size: 9pt; }
+      .skill-row { font-size: 9pt; }
+      .skill-row strong { font-size: 7.5pt; min-width: 100px; }
+      .lightbox, .footer, .section-nav { display: none !important; }
+      .ethos { font-size: 10pt; }
+      .contact-bar { padding: 8px 0; font-size: 9pt; border-bottom: 1px solid #ccc; }
+      .contact-bar .sep { color: #999; }
+    }
+
     /* ── Responsive ── */
     @media (max-width: 820px) {
       .hero-inner { padding: 22px 20px; }
@@ -709,6 +1043,14 @@
       .stat:nth-child(2n) { border-right: none; }
       .stat:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
       .skill-row strong { display: block; margin-bottom: 2px; }
+      .thesis-visual__row { grid-template-columns: 1fr; }
+      .thesis-compare { max-width: 340px; }
+      .thesis-compare__hint { font-size: 0.52rem; }
+      .featured-gallery-2x2 { grid-template-columns: 1fr; grid-template-rows: auto; }
+      .contact-meta { display: block; width: 100%; margin-top: 2px; }
+      .section-nav { padding: 0 20px; overflow-x: auto; flex-wrap: nowrap; }
+      .section-nav a { padding: 9px 11px; white-space: nowrap; }
+      .project-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -731,7 +1073,7 @@
     </section>
 
     <!-- ── Contact bar ── -->
-    <nav class="contact-bar">
+    <nav class="contact-bar" aria-label="Contact">
       <a href="mailto:shayi783@student.liu.se">shayi783@student.liu.se</a>
       <span class="sep">·</span>
       <a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a>
@@ -739,44 +1081,55 @@
       <a href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener">linkedin.com/in/sxyin</a>
       <span class="sep">·</span>
       <a href="https://ohao.tech" target="_blank" rel="noopener">ohao.tech</a>
+      <span class="sep">·</span>
+      <span class="contact-meta">Linköping, Sweden · open to relocation + visa sponsorship · EN fluent · 中文 native · SV basic</span>
+    </nav>
+
+    <!-- ── Section jump-nav ── -->
+    <nav class="section-nav" aria-label="Jump to section">
+      <a href="#featured-work">Featured Work</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
     </nav>
 
     <!-- ── Summary ── -->
     <section class="summary-block">
       <p class="summary-lead">
-        I build the <em>infrastructure that makes graphics possible</em> — renderers, engines, and the math underneath.
+        I build <em>renderers, physics engines, and the pipelines that feed them</em> — from hybrid deferred-plus-ray-traced Vulkan to CUDA path tracers with ReSTIR and OIDN, down to the capture and reconstruction infrastructure that turns photons into assets.
       </p>
       <p class="summary-sub">
-        MSc Computer Science, Linköping University (Graphics &amp; Visualization). Most of my work sits at the intersection of GPU programming, rendering pipelines, and systems that other people build on top of. Currently a physics simulation &amp; rendering intern at Freedo Technology; open to full-time engineering roles.
+        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), SOTA sampling (ReSTIR, MIS), production denoising (Intel OIDN), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Currently physics simulation &amp; rendering intern at Freedo Technology. <strong>Open to graphics / engine / GPU-systems roles — available full-time.</strong>
       </p>
     </section>
 
     <!-- ── Stats with context ── -->
     <section class="stats">
       <div class="stat">
-        <span class="stat-num">37,184</span>
+        <span class="stat-num">61K</span>
         <span class="stat-label">Lines · Vulkan Engine</span>
-        <span class="stat-context">Standalone C++/GLSL renderer with deferred + hardware ray-tracing paths.</span>
+        <span class="stat-context">Standalone C++ (50K+) + GLSL (11K) renderer — deferred PBR path and hardware ray-tracing path sharing one scene representation.</span>
       </div>
       <div class="stat">
         <span class="stat-num">11 dB</span>
-        <span class="stat-label">PSNR · Thesis Finding</span>
-        <span class="stat-context">3D Gaussian Splatting gain over NeRF on reflective surfaces (MSc thesis result).</span>
+        <span class="stat-label">PSNR · Thesis Result</span>
+        <span class="stat-context">3D Gaussian Splatting gain over NeRF on reflective surfaces — measured on a 209&nbsp;GB dataset I captured and released.</span>
       </div>
       <div class="stat">
-        <span class="stat-num">209 GB</span>
-        <span class="stat-label">Public Dataset</span>
-        <span class="stat-context">12-camera synchronized capture released for NeRF / 3DGS research.</span>
+        <span class="stat-num">12 cams</span>
+        <span class="stat-label">Capture Pipeline</span>
+        <span class="stat-context">Synchronized multi-camera rig with staggered triggers + Bluetooth turntable — built end-to-end in C++ / C# (~8K lines).</span>
       </div>
       <div class="stat">
         <span class="stat-num">40 FPS</span>
         <span class="stat-label">CUDA Path Tracer</span>
-        <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, consumer-GPU throughput.</span>
+        <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, OIDN denoising, consumer-GPU throughput.</span>
       </div>
     </section>
 
     <!-- ── Featured Work ── -->
-    <section class="section">
+    <section class="section" id="featured-work">
       <div class="section-head">
         <div class="section-label">Featured Work</div>
         <div class="section-body">
@@ -784,32 +1137,54 @@
           <!-- Ohao Engine -->
           <article class="featured">
             <div class="featured-visual">
+              <!-- Deferred PBR proof -->
               <div class="featured-gallery-3">
                 <div class="cell">
                   <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render — close-up with rich metal, glass, and cable detail" loading="lazy" />
-                  <span class="cell-label">Damaged Helmet · PBR detail · deferred</span>
+                  <span class="cell-label">Damaged Helmet · deferred PBR · full material stack</span>
                 </div>
                 <div class="cell">
                   <img src="assets/proof/ohao_lantern.jpg" alt="Lantern scene rendered in Ohao — emissive warm glow with wooden cross structure" loading="lazy" />
-                  <span class="cell-label">Lantern · emissive + PBR · path traced</span>
+                  <span class="cell-label">Lantern · emissive driving scene lighting</span>
                 </div>
                 <div class="cell">
                   <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration scene — rough to smooth, metal to non-metal gradient" loading="lazy" />
                   <span class="cell-label">MetalRoughSpheres · BRDF calibration</span>
                 </div>
               </div>
+              <!-- Path-tracing pipeline proof: ReSTIR + OIDN -->
+              <p class="featured-subcaption">Path-tracing pipeline · ReSTIR direct illumination + Intel OIDN denoising</p>
+              <div class="featured-gallery-2x2">
+                <div class="cell">
+                  <img src="assets/proof/ohao_restir_off.jpg" alt="Direct illumination at 1 spp without ReSTIR — extreme noise across 12 emissive light sources" loading="lazy" />
+                  <span class="cell-label">ReSTIR OFF · 1 spp · 12 lights · noise dominated</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_restir_on.jpg" alt="Direct illumination at 1 spp with ReSTIR — usable signal at the same sample count" loading="lazy" />
+                  <span class="cell-label">ReSTIR ON · 1 spp · 12 lights · usable signal</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
+                  <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_oidn_denoised.jpg" alt="Same helmet at 16 spp after Intel OIDN denoising — production-quality output" loading="lazy" />
+                  <span class="cell-label">Helmet · 16 spp · OIDN denoised</span>
+                </div>
+              </div>
             </div>
             <div class="featured-copy">
               <h3>Ohao Engine</h3>
-              <p class="featured-stack">C++20 · Vulkan · GLSL · ~37K lines</p>
+              <p class="featured-stack">C++20 · Vulkan KHR RT · GLSL · ~50K C++ + 11K GLSL</p>
               <p>
-                A standalone Vulkan engine I wrote from scratch. Hybrid renderer with a deferred G-buffer path and a hardware ray-tracing path sharing the same scene representation, bindless resources, and acceleration-structure workflow.
+                Standalone Vulkan engine written from scratch. Hybrid renderer: a deferred G-buffer path and a hardware ray-tracing path share one scene representation, bindless resources, and acceleration-structure workflow. Architecture spans <em>render</em> (22K LOC), <em>physics</em> (11K LOC), and a <em>gpu / Vulkan</em> abstraction layer (8K LOC).
               </p>
               <p>
-                Implements Cook-Torrance GGX BRDF, cascaded shadow maps, TAA, SSAO, and screen-space reflections on the deferred side; RT shadows and RT reflections via Vulkan KHR ray-tracing on the other. Physics layer uses GJK/EPA collision detection over a BVH.
+                <strong>Deferred path:</strong> Cook-Torrance GGX BRDF, cascaded shadow maps, TAA, SSAO, screen-space reflections.
+                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling, ReSTIR for direct illumination on many-light scenes (1 spp becomes usable instead of unrenderable), and Intel OIDN integration for production-quality output at low sample budgets. Adaptive sampling driven by per-tile variance.
               </p>
               <p>
-                Renders above: Khronos glTF Sample Assets rendered end-to-end through the engine — helmet (deferred PBR, full material stack), lantern (path-traced emissive driving scene lighting), and MetalRoughSpheres (BRDF calibration — the reference test rendering engineers use to verify their roughness / metallic response). 4K output, Intel OIDN denoiser.
+                <strong>Physics layer:</strong> GJK / EPA collision detection over a BVH. Top renders use Khronos glTF Sample Assets — a sanity-check that the engine reproduces the reference results graphics engineers actually verify against.
               </p>
               <div class="featured-links">
                 <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub Repo ↗</a>
@@ -820,18 +1195,40 @@
           <!-- Neural Rendering Thesis -->
           <article class="featured reverse">
             <div class="featured-visual">
-              <div class="featured-grid-3">
-                <div class="cell">
-                  <img src="assets/proof/granso_rc_aerial.jpg" alt="Aerial photogrammetric reconstruction of Gränsö Castle" />
-                  <span class="cell-label">Gränsö Castle · aerial photogrammetric reconstruction</span>
+              <div class="thesis-visual">
+                <!-- Hero: interactive NeRF vs 3DGS comparison (multi-material) -->
+                <div class="thesis-compare-wrap">
+                  <div class="thesis-chips" role="tablist" aria-label="Material to compare">
+                    <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-object="pot" data-nerf="assets/proof/thesis_pot_nerf.mp4" data-3dgs="assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
+                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-object="banana" data-nerf="assets/proof/thesis_banana_nerf.mp4" data-3dgs="assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
+                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-object="vase" data-nerf="assets/proof/thesis_vase_nerf.mp4" data-3dgs="assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass vase</button>
+                  </div>
+                  <div class="thesis-compare" id="thesisCompare" data-initial="20" aria-label="Interactive comparison: drag to reveal NeRF vs 3DGS reconstruction">
+                    <video class="thesis-compare__base" src="assets/proof/thesis_pot_nerf.mp4" autoplay loop muted playsinline preload="auto"></video>
+                    <div class="thesis-compare__reveal">
+                      <video class="thesis-compare__top" src="assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
+                    </div>
+                    <div class="thesis-compare__divider" aria-hidden="true">
+                      <div class="thesis-compare__handle">
+                        <span class="thesis-compare__arrow">◂</span>
+                        <span class="thesis-compare__arrow">▸</span>
+                      </div>
+                    </div>
+                    <span class="thesis-compare__tag thesis-compare__tag--left">NeRF</span>
+                    <span class="thesis-compare__tag thesis-compare__tag--right">3DGS · +11 dB PSNR</span>
+                    <span class="thesis-compare__hint" id="thesisCompareHint">Drag to compare · Reflective pot studio reconstruction</span>
+                  </div>
                 </div>
-                <div class="cell">
-                  <img src="assets/proof/thesis_rig_setup.png" alt="12-camera synchronized capture rig setup" />
-                  <span class="cell-label">12-camera synchronized capture rig</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/thesis_objects_overview.png" alt="Objects captured for the 209 GB dataset" />
-                  <span class="cell-label">Captured objects · 209 GB public dataset</span>
+                <!-- Supporting evidence -->
+                <div class="thesis-visual__row">
+                  <div class="cell">
+                    <img src="assets/proof/granso_rc_aerial.jpg" alt="Aerial photogrammetric reconstruction of Gränsö Castle" />
+                    <span class="cell-label">Gränsö Castle · aerial photogrammetric reconstruction</span>
+                  </div>
+                  <div class="cell">
+                    <img src="assets/proof/thesis_method_matrix.jpg" alt="Method comparison matrix: Input / RealityCapture / NeRF / 3DGS across studio objects including vase glass, stone, skull" />
+                    <span class="cell-label">Method matrix · RC / NeRF / 3DGS · glass, stone, skull</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -858,30 +1255,41 @@
     </section>
 
     <!-- ── Selected Projects ── -->
-    <section class="section">
+    <section class="section" id="projects">
       <div class="section-head">
         <div class="section-label">Selected Projects</div>
         <div class="section-body">
           <div class="project-grid">
 
             <article class="project-item">
-              <h3>CUDA Path Tracer</h3>
-              <div class="meta">C++ · CUDA · 2.8K lines</div>
-              <p>Monte Carlo path tracer with BVH acceleration, Russian roulette termination, multiple material models. 40 FPS on RTX 4060 at 1280×720.</p>
-              <a href="https://github.com/Qervas/path_tracer" target="_blank" rel="noopener">Repo ↗</a>
+              <img class="project-thumb" src="assets/proof/sx_hero_glass.jpg" alt="sx-engine hero render: ray-traced glass sphere over desert with cloud-reflecting environment" loading="lazy" />
+              <div class="project-body">
+                <h3>sx-engine — CUDA Path Tracer + Physics</h3>
+                <div class="meta">CUDA · Taichi · C++ · OIDN · ~3K LOC</div>
+                <p>CUDA path tracer with BVH, Schlick-Fresnel refraction, and optional Intel OIDN denoising. 16 parameterized liquid presets (ocean · honey · lava · milk · blood · crystal …) each with their own IOR and depth-absorption. Paired with a Taichi-GPU Position-Based Dynamics cloth solver — stretch + bend constraints, material-specific stiffness — exporting per-frame OBJ meshes back to the CUDA renderer. 58 production stills shipped.</p>
+                <a href="https://github.com/Qervas/sx-engine" target="_blank" rel="noopener">Repo ↗</a>
+              </div>
             </article>
 
             <article class="project-item">
-              <h3>SPH Water Simulation</h3>
-              <div class="meta">C++ · CUDA · OpenGL · 30K lines</div>
-              <p>GPU-accelerated SPH fluid with Marching Cubes surface reconstruction and CUDA/OpenGL interop for real-time visualization.</p>
+              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot from the thesis capture — the kind of object this inverse-rendering pipeline is designed to preprocess" loading="lazy" />
+              <div class="project-body">
+                <h3>Turntable Inverse Rendering · in progress</h3>
+                <div class="meta">Python · PyTorch · nvdiffrast · GGX/Disney BRDF</div>
+                <p>Foundation for a differentiable rendering pipeline that will learn per-point BRDF from turntable captures, then relight glossy objects uniformly so Structure-from-Motion actually converges. Full GGX stack shipped — D (GGX / Beckmann / anisotropic), G (Smith / Schlick-GGX), F (Schlick / roughness-aware) — plus nvdiffrast backend, turntable camera / mesh / lighting layers. Neural decomposition + training loop next. Built on NVIDIA nvdiffrast.</p>
+                <a href="https://github.com/Qervas/turntable-inverse-rendering" target="_blank" rel="noopener">Repo ↗</a>
+              </div>
             </article>
 
             <article class="project-item">
-              <h3>Chinese Chess AI</h3>
-              <div class="meta">C++ · Qt · CUDA · 2.9K lines</div>
-              <p>Full Xiangqi game in C++/Qt with a Deep Q-Learning agent, CUDA-accelerated training, self-play, and model save/load.</p>
-              <a href="https://github.com/Qervas/cn_chess_ai" target="_blank" rel="noopener">Repo ↗</a>
+              <img class="project-thumb" src="assets/proof/sph_water.jpg" alt="SPH particle fluid simulation with velocity-coded color visualization, confined in a tiled pool" loading="lazy" />
+              <div class="project-body">
+                <h3>SPH Water Simulation</h3>
+                <div class="meta">C++ · CUDA · OpenGL · BSc thesis</div>
+                <p>GPU-accelerated Smoothed Particle Hydrodynamics solver with Marching Cubes surface extraction and CUDA ↔ OpenGL interop for real-time visualization. Uniform-grid spatial hashing for neighbor search, cubic-spline density kernel with gradient / Laplacian variants for pressure and viscosity forces, plus surface-tension kernel. Bachelor thesis — the foundation my current fluid work builds on.</p>
+                <a href="https://github.com/Qervas/water_simulation" target="_blank" rel="noopener">Repo ↗</a>
+                <a href="https://youtu.be/V2EF1tZfBZM" target="_blank" rel="noopener">Demo video ↗</a>
+              </div>
             </article>
 
           </div>
@@ -890,7 +1298,7 @@
     </section>
 
     <!-- ── Experience ── -->
-    <section class="section">
+    <section class="section" id="experience">
       <div class="section-head">
         <div class="section-label">Experience</div>
         <div class="section-body entry-list">
@@ -904,21 +1312,21 @@
               <div class="entry-period">Feb 2026 — Present</div>
             </div>
             <ul>
-              <li>Fluid simulation and differentiable rendering systems using Taichi, NVIDIA Warp, and nvdiffrast.</li>
+              <li>Fluid simulation and differentiable rendering systems using <strong>Taichi</strong>, <strong>NVIDIA Warp</strong>, and <strong>nvdiffrast</strong> across graphics- and simulation-related workflows.</li>
             </ul>
           </article>
 
           <article class="entry">
             <div class="entry-head">
               <div>
-                <div class="entry-title">Independent Product Project</div>
-                <span class="entry-subtitle">AI Platform Engineer · Part-time</span>
+                <div class="entry-title">Independent AI Creative Platform (NDA)</div>
+                <span class="entry-subtitle">Founding Engineer · Part-time</span>
               </div>
               <div class="entry-period">2025 — Present</div>
             </div>
             <ul>
-              <li>Built GPU-backed media generation workflows and async job orchestration for AI-assisted creative tooling.</li>
-              <li>Worked across frontend, backend, storage, auth, billing, and production-facing technical systems — shipped end to end rather than a single-surface contribution.</li>
+              <li>Generative-media platform for creative tooling — GPU-backed image / video generation jobs orchestrated through an async queue with retry, prioritization, and tenant-isolated quotas.</li>
+              <li>Built the full vertical: TypeScript frontend, Python / Node backend, Postgres data layer, object storage, OAuth, billing integration, and a deployment / monitoring story. Reads as full-stack — anchored in the GPU work that pays the bills.</li>
             </ul>
           </article>
 
@@ -926,13 +1334,13 @@
             <div class="entry-head">
               <div>
                 <div class="entry-title">Beijing Guoyao Xintiandi Information Technology</div>
-                <span class="entry-subtitle">C++ Development Engineer Intern · Beijing, China</span>
+                <span class="entry-subtitle">C++ Development Engineer Intern · Beijing</span>
               </div>
               <div class="entry-period">Aug 2022 — Sep 2022</div>
             </div>
             <ul>
-              <li>Built a Qt/OpenGL 3D visualization tool; improved rendering performance by 40% through profiling and optimization.</li>
-              <li>Implemented a custom C++ network protocol; improved data transmission efficiency by 50%.</li>
+              <li>Rewrote rendering pipeline from legacy OpenGL to modern OpenGL for a Qt-based 3D medical visualization tool — shader programs, VBOs, modern state management.</li>
+              <li>Built a custom C++ network protocol layer for data transmission between client and backend.</li>
             </ul>
           </article>
 
@@ -941,7 +1349,7 @@
     </section>
 
     <!-- ── Skills ── -->
-    <section class="section">
+    <section class="section" id="skills">
       <div class="section-head">
         <div class="section-label">Skills</div>
         <div class="section-body skills-grid">
@@ -970,7 +1378,7 @@
     </section>
 
     <!-- ── Education ── -->
-    <section class="section">
+    <section class="section" id="education">
       <div class="section-head">
         <div class="section-label">Education</div>
         <div class="section-body entry-list">
@@ -1007,20 +1415,6 @@
       </div>
     </section>
 
-    <!-- ── Publication ── -->
-    <section class="section">
-      <div class="section-head">
-        <div class="section-label">Publication</div>
-        <div class="section-body">
-          <div class="pub">
-            <p class="pub-title">"Skiing Action Analysis Based on OpenPose"</p>
-            <p class="pub-authors">Xu Z., Gao M., <em>Yin S.</em>, Cui J.</p>
-            <p class="pub-venue">Intelligent Computer and Applications, 2022</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <footer class="footer">
       <div>Shaoxuan (Frank) Yin · <a href="mailto:shayi783@student.liu.se">shayi783@student.liu.se</a></div>
       <div><a href="https://ohao.tech" target="_blank" rel="noopener">ohao.tech</a> · <a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a></div>
@@ -1038,7 +1432,7 @@
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lb-img');
       const lbCap = document.getElementById('lb-caption');
-      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 .cell img';
+      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 .cell img, .thesis-visual__row .cell img';
       document.querySelectorAll(selector).forEach(el => {
         el.addEventListener('click', () => {
           lbImg.src = el.currentSrc || el.src;
@@ -1059,6 +1453,119 @@
       document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && lb.classList.contains('open')) close();
       });
+    })();
+
+    // ── Thesis NeRF ↔ 3DGS comparison slider (multi-material) ──
+    (() => {
+      const root = document.getElementById('thesisCompare');
+      if (!root) return;
+      const base = root.querySelector('.thesis-compare__base');
+      const top = root.querySelector('.thesis-compare__top');
+      const hint = document.getElementById('thesisCompareHint');
+      const chips = document.querySelectorAll('.thesis-chip');
+      const videos = [base, top];
+
+      const initial = Number(root.dataset.initial || '20');
+
+      // Swap both sources together. Reset playhead so the NeRF/3DGS pair re-syncs from frame 0.
+      const swapObject = (chip) => {
+        chips.forEach(c => {
+          const active = c === chip;
+          c.classList.toggle('is-active', active);
+          c.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        const nerfSrc = chip.dataset.nerf;
+        const gsSrc = chip.dataset['3dgs'];
+        const label = chip.dataset.label;
+        if (!nerfSrc || !gsSrc) return;
+        base.pause(); top.pause();
+        base.src = nerfSrc;
+        top.src = gsSrc;
+        base.load(); top.load();
+        base.currentTime = 0; top.currentTime = 0;
+        if (hint) hint.textContent = `Drag to compare · ${label} studio reconstruction`;
+        // Restart playback once both are buffered
+        Promise.all([
+          new Promise(r => base.addEventListener('loadeddata', r, { once: true })),
+          new Promise(r => top.addEventListener('loadeddata', r, { once: true })),
+        ]).then(() => {
+          base.play().catch(() => {});
+          top.play().catch(() => {});
+        });
+      };
+      chips.forEach(c => c.addEventListener('click', () => swapObject(c)));
+      const setSplit = (pct) => {
+        const clamped = Math.max(0, Math.min(100, pct));
+        root.style.setProperty('--split', clamped + '%');
+      };
+      setSplit(initial);
+
+      // Keep NeRF + 3DGS synced — same camera path, so matching currentTime = matching frame.
+      // We re-sync whenever the top drifts more than 0.1s from the base.
+      const syncLoop = () => {
+        if (base.readyState >= 2 && top.readyState >= 2) {
+          const drift = Math.abs(top.currentTime - base.currentTime);
+          if (drift > 0.1) top.currentTime = base.currentTime;
+        }
+        requestAnimationFrame(syncLoop);
+      };
+      base.addEventListener('loadeddata', () => requestAnimationFrame(syncLoop), { once: true });
+      videos.forEach(v => { v.play().catch(() => { /* autoplay blocked; user gesture will start it */ }); });
+
+      // Pointer-driven drag
+      let dragging = false;
+      const pctFromEvent = (e) => {
+        const rect = root.getBoundingClientRect();
+        return ((e.clientX - rect.left) / rect.width) * 100;
+      };
+      const onPointerDown = (e) => {
+        dragging = true;
+        root.setPointerCapture(e.pointerId);
+        root.classList.add('is-active');
+        root.classList.remove('is-hinting');
+        setSplit(pctFromEvent(e));
+      };
+      const onPointerMove = (e) => {
+        if (!dragging) return;
+        setSplit(pctFromEvent(e));
+      };
+      const onPointerUp = (e) => {
+        dragging = false;
+        try { root.releasePointerCapture(e.pointerId); } catch (_) {}
+      };
+      root.addEventListener('pointerdown', onPointerDown);
+      root.addEventListener('pointermove', onPointerMove);
+      root.addEventListener('pointerup', onPointerUp);
+      root.addEventListener('pointercancel', onPointerUp);
+
+      // Keyboard accessibility
+      root.tabIndex = 0;
+      root.addEventListener('keydown', (e) => {
+        const current = parseFloat(getComputedStyle(root).getPropertyValue('--split')) || initial;
+        const step = e.shiftKey ? 10 : 3;
+        if (e.key === 'ArrowLeft') { setSplit(current - step); root.classList.add('is-active'); e.preventDefault(); }
+        else if (e.key === 'ArrowRight') { setSplit(current + step); root.classList.add('is-active'); e.preventDefault(); }
+        else if (e.key === 'Home') { setSplit(0); e.preventDefault(); }
+        else if (e.key === 'End') { setSplit(100); e.preventDefault(); }
+      });
+
+      // Scroll-in hint: one gentle sweep to signal interactivity, then settle at `initial`.
+      // Skipped for users who prefer reduced motion.
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReducedMotion) {
+        const io = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            observer.disconnect();
+            if (root.classList.contains('is-active')) return;
+            root.classList.add('is-hinting');
+            setSplit(55);
+            setTimeout(() => setSplit(initial), 950);
+            setTimeout(() => root.classList.remove('is-hinting'), 2000);
+          });
+        }, { threshold: 0.4 });
+        io.observe(root);
+      }
     })();
   </script>
 </body>
