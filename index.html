@@ -325,6 +325,48 @@
       object-fit: cover;
     }
 
+    .featured-gallery-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .featured-gallery-3 > .cell {
+      position: relative;
+      background: #1a1513;
+    }
+
+    .featured-gallery-3 > .cell img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 4 / 3;
+    }
+
+    .featured-gallery-3 .cell-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.68);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
+    }
+
+    @media (max-width: 820px) {
+      .featured-gallery-3 { grid-template-columns: 1fr; }
+    }
+
     .featured-gallery-2x2 .cell-label {
       position: absolute;
       left: 10px;
@@ -647,7 +689,7 @@
       <div class="stat">
         <span class="stat-num">40 FPS</span>
         <span class="stat-label">CUDA Path Tracer</span>
-        <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720, Russian roulette termination.</span>
+        <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, consumer-GPU throughput.</span>
       </div>
     </section>
 
@@ -660,22 +702,18 @@
           <!-- Ohao Engine -->
           <article class="featured">
             <div class="featured-visual">
-              <div class="featured-gallery-2x2">
+              <div class="featured-gallery-3">
                 <div class="cell">
-                  <img src="assets/proof/ohao_mis_cornell.jpg" alt="Cornell box, multi-light scene rendered with multiple importance sampling" loading="lazy" />
-                  <span class="cell-label">Cornell · Multiple Importance Sampling</span>
+                  <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render — close-up with rich metal, glass, and cable detail" loading="lazy" />
+                  <span class="cell-label">Damaged Helmet · PBR detail · deferred</span>
                 </div>
                 <div class="cell">
-                  <img src="assets/proof/ohao_restir.jpg" alt="ReSTIR direct lighting with 12 light sources" loading="lazy" />
-                  <span class="cell-label">ReSTIR · 12 lights, low variance</span>
+                  <img src="assets/proof/ohao_lantern.jpg" alt="Lantern scene rendered in Ohao — emissive warm glow with wooden cross structure" loading="lazy" />
+                  <span class="cell-label">Lantern · emissive + PBR · path traced</span>
                 </div>
                 <div class="cell">
-                  <img src="assets/proof/ohao_oidn.jpg" alt="Cornell box rendered at 16 samples per pixel and denoised with Intel OIDN" loading="lazy" />
-                  <span class="cell-label">OIDN · 16 spp denoised</span>
-                </div>
-                <div class="cell">
-                  <video src="assets/proof/ohao_turntable.mp4" autoplay loop muted playsinline></video>
-                  <span class="cell-label">Mirror turntable · RT reflections</span>
+                  <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration scene — rough to smooth, metal to non-metal gradient" loading="lazy" />
+                  <span class="cell-label">MetalRoughSpheres · BRDF calibration</span>
                 </div>
               </div>
             </div>
@@ -689,7 +727,7 @@
                 Implements Cook-Torrance GGX BRDF, cascaded shadow maps, TAA, SSAO, and screen-space reflections on the deferred side; RT shadows and RT reflections via Vulkan KHR ray-tracing on the other. Physics layer uses GJK/EPA collision detection over a BVH.
               </p>
               <p>
-                Deliberately built without an editor or third-party engine wrappers — the goal was to understand every system end-to-end: render dispatch, scene upload, acceleration-structure build/update, offscreen image validation, the whole pipeline.
+                Renders above: Khronos glTF Sample Assets rendered end-to-end through the engine — helmet (deferred PBR, full material stack), lantern (path-traced emissive driving scene lighting), and MetalRoughSpheres (BRDF calibration — the reference test rendering engineers use to verify their roughness / metallic response). 4K output, Intel OIDN denoiser.
               </p>
               <div class="featured-links">
                 <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub Repo ↗</a>
@@ -697,48 +735,8 @@
             </div>
           </article>
 
-          <!-- Sponza — Complex Scene Showcase -->
-          <article class="featured reverse">
-            <div class="featured-visual">
-              <div class="featured-gallery-2x2">
-                <div class="cell">
-                  <img src="assets/proof/ohao_sponza_outdoor.jpg" alt="Sponza atrium rendered in Ohao with outdoor HDR environment" loading="lazy" />
-                  <span class="cell-label">Sponza · outdoor HDR · path traced</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_sponza_studio.jpg" alt="Sponza atrium rendered with a studio HDR environment" loading="lazy" />
-                  <span class="cell-label">Sponza · studio HDR · path traced</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_sponza_def.jpg" alt="Sponza rendered via the deferred real-time pipeline" loading="lazy" />
-                  <span class="cell-label">Sponza · deferred · real-time</span>
-                </div>
-                <div class="cell">
-                  <video src="assets/proof/ohao_sponza_turntable.mp4" autoplay loop muted playsinline></video>
-                  <span class="cell-label">Sponza · turntable · RT env lighting</span>
-                </div>
-              </div>
-            </div>
-            <div class="featured-copy">
-              <h3>Rendered in Ohao — Complex-Scene Path Tracing</h3>
-              <p class="featured-stack">Crytek Sponza · 35 BLAS · 4K · 256 spp · OIDN</p>
-              <p>
-                Sponza — the graphics community's de facto architectural benchmark — rendered end-to-end through Ohao Engine. 35 bottom-level acceleration structures, dozens of materials, hundreds of thousands of triangles, traced with Cook-Torrance GGX, NEE multi-light sampling, and MIS.
-              </p>
-              <p>
-                Two HDR environments (outdoor, studio) demonstrate the full IBL pipeline driving scene lighting; the deferred render of the same scene exercises the shared bindless texture and scene-upload path. A 60-frame turntable validates ray-traced reflection continuity under camera motion.
-              </p>
-              <p>
-                End-to-end render time: ~12 seconds per 4K frame on RTX 4060 with path tracing + OIDN denoise. Classic glTF Sample Model loader path; no scene-specific code.
-              </p>
-              <div class="featured-links">
-                <a href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/master/2.0/Sponza" target="_blank" rel="noopener">Scene source (Crytek / Khronos) ↗</a>
-              </div>
-            </div>
-          </article>
-
           <!-- Neural Rendering Thesis -->
-          <article class="featured">
+          <article class="featured reverse">
             <div class="featured-visual">
               <div class="featured-grid-3">
                 <img src="assets/proof/thesis_rig_setup.png" alt="12-camera capture rig setup" />
