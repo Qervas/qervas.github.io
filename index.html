@@ -393,16 +393,36 @@
       overflow: hidden;
     }
 
-    .featured-grid-3 img:first-child {
-      grid-row: 1 / 3;
-      aspect-ratio: auto;
+    .featured-grid-3 > .cell {
+      position: relative;
+      background: #1a1513;
+      overflow: hidden;
     }
 
-    .featured-grid-3 img {
+    .featured-grid-3 > .cell:first-child {
+      grid-row: 1 / 3;
+    }
+
+    .featured-grid-3 > .cell img {
       width: 100%;
       height: 100%;
       display: block;
       object-fit: cover;
+    }
+
+    .featured-grid-3 .cell-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.68);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
     }
 
     .featured-copy {
@@ -635,9 +655,10 @@
       z-index: 1000;
       display: none;
       cursor: zoom-out;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 24px 24px 60px;
       opacity: 0;
       transition: opacity 0.2s;
     }
@@ -647,19 +668,30 @@
     }
     .lightbox img {
       max-width: 100%;
-      max-height: 100%;
+      max-height: calc(100% - 48px);
       object-fit: contain;
       border-radius: 4px;
       box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
       display: block;
     }
+    .lightbox-caption {
+      margin-top: 16px;
+      max-width: 90%;
+      color: rgba(253, 249, 243, 0.9);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-align: center;
+      line-height: 1.5;
+    }
+    .lightbox-caption:empty { display: none; }
     .lightbox-close {
       position: absolute;
       top: 20px;
       right: 26px;
-      color: rgba(253, 249, 243, 0.8);
+      color: rgba(253, 249, 243, 0.6);
       font-family: var(--mono);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       pointer-events: none;
@@ -789,9 +821,18 @@
           <article class="featured reverse">
             <div class="featured-visual">
               <div class="featured-grid-3">
-                <img src="assets/proof/granso_rc_aerial.jpg" alt="Aerial photogrammetric reconstruction of Gränsö Castle" />
-                <img src="assets/proof/thesis_rig_setup.png" alt="12-camera capture rig setup" />
-                <img src="assets/proof/thesis_objects_overview.png" alt="Objects captured for the dataset" />
+                <div class="cell">
+                  <img src="assets/proof/granso_rc_aerial.jpg" alt="Aerial photogrammetric reconstruction of Gränsö Castle" />
+                  <span class="cell-label">Gränsö Castle · aerial photogrammetric reconstruction</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/thesis_rig_setup.png" alt="12-camera synchronized capture rig setup" />
+                  <span class="cell-label">12-camera synchronized capture rig</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/thesis_objects_overview.png" alt="Objects captured for the 209 GB dataset" />
+                  <span class="cell-label">Captured objects · 209 GB public dataset</span>
+                </div>
               </div>
             </div>
             <div class="featured-copy">
@@ -988,6 +1029,7 @@
   </main>
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <img id="lb-img" alt="" />
+    <p class="lightbox-caption" id="lb-caption"></p>
     <span class="lightbox-close">Click anywhere · ESC to close</span>
   </div>
 
@@ -995,11 +1037,16 @@
     (() => {
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lb-img');
-      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 img';
+      const lbCap = document.getElementById('lb-caption');
+      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 .cell img';
       document.querySelectorAll(selector).forEach(el => {
         el.addEventListener('click', () => {
           lbImg.src = el.currentSrc || el.src;
           lbImg.alt = el.alt || '';
+          // Caption priority: explicit data-caption, sibling .cell-label, alt text
+          const cell = el.closest('.cell');
+          const labelEl = cell ? cell.querySelector('.cell-label') : null;
+          lbCap.textContent = el.dataset.caption || (labelEl ? labelEl.textContent : '') || el.alt || '';
           lb.classList.add('open');
           lb.setAttribute('aria-hidden', 'false');
         });
