@@ -1292,6 +1292,47 @@
               </div>
             </article>
 
+            <article class="project-item">
+              <img class="project-thumb" src="assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render — final stage of the procedural rust progression" loading="lazy" />
+              <div class="project-body">
+                <h3>Real-time Material Aging & Weathering</h3>
+                <div class="meta">OpenGL · GLSL Compute Shaders · PBR · Procedural Noise</div>
+                <p>Compute-shader playground for procedural material decay on a PBR sphere — noise-driven rust progression (0/25/50/75/100%), paint cracking and peel, and a dynamic puddle / weather system that wets and dries the ground in real time. Built around an OpenGL compute pipeline with full BRDF response so albedo and roughness shift together as the surface ages. Coursework for Linköping's TNM084 Procedural Methods.</p>
+                <a href="https://github.com/Qervas/aging_shader" target="_blank" rel="noopener">Repo ↗</a>
+              </div>
+            </article>
+
+            <article class="project-item">
+              <img class="project-thumb" src="assets/proof/tnm114-xiangqi/board_AI.png" alt="Custom Qt-based Xiàngqí board mid-game with the trained DQN agent on move" loading="lazy" />
+              <div class="project-body">
+                <h3>Xiàngqí AI with Deep Q-Networks</h3>
+                <div class="meta">C++ · Qt · CUDA · DQN · Self-Play</div>
+                <p>Reinforcement-learning agent for Chinese Chess — full Xiàngqí rules engine in C++/Qt, a Deep Q-Network with experience replay and a target network, and CUDA-accelerated training driven by self-play in the spirit of AlphaZero. Win-rate sweeps against random and self-play opponents, plus a playable GUI to face the agent. TNM114 group project at Linköping with Oskar Tengvall.</p>
+                <a href="https://github.com/Qervas/cn_chess_ai" target="_blank" rel="noopener">Repo ↗</a>
+              </div>
+            </article>
+
+            <article class="project-item">
+              <img class="project-thumb" src="assets/proof/tncg15-path-tracing/img-005.png" alt="Cornell-box-style path-traced render with diffuse, glossy and refractive interactions converged" loading="lazy" />
+              <div class="project-body">
+                <h3>Path Tracing & Photon Mapping</h3>
+                <div class="meta">C++ · CUDA · Monte Carlo · KD-Tree</div>
+                <p>Two global-illumination renderers written from scratch for TNCG15. Monte Carlo path tracer with a CUDA backend for per-pixel parallel ray generation and progressive accumulation — real-time-feasible against the CPU baseline. Photon-mapping pass scatters photons from light sources, then estimates radiance via KD-tree nearest-neighbour lookup for sharp caustics and indirect lighting. Comparative study of where each technique wins.</p>
+                <a href="https://github.com/Qervas/path_tracer" target="_blank" rel="noopener">Repo ↗</a>
+                <a href="https://youtu.be/eOWYABBVrMc" target="_blank" rel="noopener">Demo ↗</a>
+              </div>
+            </article>
+
+            <article class="project-item">
+              <img class="project-thumb" src="assets/proof/skiing-openpose/paper_img-004.png" alt="Skiing-action classifier test panel: original video, OpenPose skeleton, ST-GCN class label, and attention map" loading="lazy" />
+              <div class="project-body">
+                <h3>Skiing Action Analysis · OpenPose + ST-GCN</h3>
+                <div class="meta">Python · OpenPose · ST-GCN · Action Recognition</div>
+                <p>Pipeline for classifying skiing techniques from video — OpenPose extracts 2D body keypoints, a Python preprocessor stitches per-frame skeletons into spatial-temporal graphs, and an ST-GCN trains on those graphs to label actions like big-bend carving. Best model (epoch 39, lr 0.1, batch 32) hits 50% Top-1 / 90.9% Top-5. Co-authored, published in <em>Intelligent Computer and Applications</em> Vol. 12 No. 4, April 2022.</p>
+                <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=0vffxKEAAAAJ&citation_for_view=0vffxKEAAAAJ:u5HHmVD_uO8C" target="_blank" rel="noopener">Paper ↗</a>
+              </div>
+            </article>
+
           </div>
         </div>
       </div>
