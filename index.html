@@ -1124,10 +1124,10 @@
     <!-- ── Summary ── -->
     <section class="summary-block">
       <p class="summary-lead">
-        I build <em>renderers, physics engines, and the pipelines that feed them</em> — from hybrid deferred-plus-ray-traced Vulkan to CUDA path tracers with ReSTIR and OIDN, down to the capture and reconstruction infrastructure that turns photons into assets.
+        I build <em>renderers, physics engines, and the pipelines that feed them</em> — from hybrid deferred-plus-ray-traced Vulkan to CUDA path tracers with MIS and OIDN denoising, down to the capture and reconstruction infrastructure that turns photons into assets.
       </p>
       <p class="summary-sub">
-        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), SOTA sampling (ReSTIR, MIS), production denoising (Intel OIDN), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Currently physics simulation &amp; rendering intern at Freedo Technology. <strong>Open to graphics / engine / GPU-systems roles — available full-time.</strong>
+        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three production denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Currently physics simulation &amp; rendering intern at Freedo Technology. <strong>Open to graphics / engine / GPU-systems / AI infrastructure roles — available full-time.</strong>
       </p>
     </section>
 
@@ -1154,8 +1154,8 @@
         <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, OIDN denoising, consumer-GPU throughput.</span>
       </div>
       <div class="stat">
-        <span class="stat-num">4.8K</span>
-        <span class="stat-label">Contributions · 2026</span>
+        <span class="stat-num" id="gh-contrib-num">…</span>
+        <span class="stat-label">Contributions · <span id="gh-contrib-year">2026</span></span>
         <span class="stat-context">Across <a href="https://github.com/Qervas">github.com/Qervas</a> — shipping, not posting.</span>
       </div>
     </section>
@@ -1191,17 +1191,9 @@
                   <span class="cell-label">MetalRoughSpheres · BRDF calibration</span>
                 </div>
               </div>
-              <!-- Path-tracing pipeline proof: ReSTIR + OIDN -->
-              <p class="featured-subcaption">Path-tracing pipeline · ReSTIR direct illumination + Intel OIDN denoising</p>
-              <div class="featured-gallery-2x2">
-                <div class="cell">
-                  <img src="assets/proof/ohao_restir_off.jpg" alt="Direct illumination at 1 spp without ReSTIR — extreme noise across 12 emissive light sources" loading="lazy" />
-                  <span class="cell-label">ReSTIR OFF · 1 spp · 12 lights · noise dominated</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_restir_on.jpg" alt="Direct illumination at 1 spp with ReSTIR — usable signal at the same sample count" loading="lazy" />
-                  <span class="cell-label">ReSTIR ON · 1 spp · 12 lights · usable signal</span>
-                </div>
+              <!-- Path-tracing pipeline proof: OIDN before/after -->
+              <p class="featured-subcaption">Path-tracing pipeline · Intel OIDN denoising on a glossy scene</p>
+              <div class="featured-gallery-3">
                 <div class="cell">
                   <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
                   <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
@@ -1214,13 +1206,13 @@
             </div>
             <div class="featured-copy">
               <h3>Ohao Engine</h3>
-              <p class="featured-stack">C++20 · Vulkan KHR RT · GLSL · ~50K C++ + 11K GLSL</p>
+              <p class="featured-stack">C++20 · Vulkan KHR RT · GLSL · ~50K C++ + 15K GLSL across 121 shaders</p>
               <p>
                 Standalone Vulkan engine written from scratch. Hybrid renderer: a deferred G-buffer path and a hardware ray-tracing path share one scene representation, bindless resources, and acceleration-structure workflow. Architecture spans <em>render</em> (22K LOC), <em>physics</em> (11K LOC), and a <em>gpu / Vulkan</em> abstraction layer (8K LOC).
               </p>
               <p>
-                <strong>Deferred path:</strong> Cook-Torrance GGX BRDF, cascaded shadow maps, TAA, SSAO, screen-space reflections.
-                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling, ReSTIR for direct illumination on many-light scenes (1 spp becomes usable instead of unrenderable), and Intel OIDN integration for production-quality output at low sample budgets. Adaptive sampling driven by per-tile variance.
+                <strong>Deferred path:</strong> Cook-Torrance GGX BRDF, cascaded shadow maps, SSAO, screen-space reflections, subsurface scattering, TAA, bloom.
+                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling (balance + power heuristic), environment-map importance sampling via precomputed marginal/conditional CDFs, Owen-scrambled Sobol QMC, variance-driven adaptive sampling, and three denoiser backends (Intel OIDN, NVIDIA OptiX, NVIDIA NRD).
               </p>
               <p>
                 <strong>Physics layer:</strong> GJK / EPA collision detection over a BVH. Top renders use Khronos glTF Sample Assets — a sanity-check that the engine reproduces the reference results graphics engineers actually verify against.
@@ -1472,7 +1464,7 @@
               <div class="entry-period">2023 — 2025</div>
             </div>
             <ul>
-              <li>Graduated December 2025.</li>
+              <li>Graduated February 2026.</li>
               <li>Top grades (5/5) in Advanced Global Illumination, Modelling &amp; Animation, Computer Games Design, Large Distributed Projects.</li>
               <li>Thesis: Neural Rendering Dataset Collection (see Featured Work above).</li>
             </ul>
@@ -1646,6 +1638,29 @@
         }, { threshold: 0.4 });
         io.observe(root);
       }
+    })();
+  </script>
+
+  <script>
+    // Live GitHub contributions count — falls back gracefully if API is down.
+    // Uses jogruber.de community proxy (no auth required, scrapes public profile).
+    (function () {
+      const year = new Date().getFullYear();
+      const yearEl = document.getElementById("gh-contrib-year");
+      const numEl = document.getElementById("gh-contrib-num");
+      if (!numEl) return;
+      if (yearEl) yearEl.textContent = String(year);
+
+      const fmt = (n) => n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "K" : String(n);
+      const fallback = "4.8K";
+
+      fetch(`https://github-contributions-api.jogruber.de/v4/Qervas?y=${year}`, { cache: "no-store" })
+        .then((r) => r.ok ? r.json() : Promise.reject())
+        .then((d) => {
+          const total = (d.total && (d.total[year] ?? d.total[String(year)])) || 0;
+          numEl.textContent = total > 0 ? fmt(total) : fallback;
+        })
+        .catch(() => { numEl.textContent = fallback; });
     })();
   </script>
 </body>
