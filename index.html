@@ -596,6 +596,38 @@
       touch-action: none;
       cursor: ew-resize;
     }
+    .thesis-video {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      aspect-ratio: 7 / 10;
+      background: #0b0908;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .thesis-video > video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0b0908;
+    }
+    .thesis-video__tag {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fffdf9;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      pointer-events: none;
+    }
     .thesis-compare__base,
     .thesis-compare__top {
       position: absolute;
@@ -1227,27 +1259,16 @@
           <article class="featured reverse">
             <div class="featured-visual">
               <div class="thesis-visual">
-                <!-- Hero: interactive NeRF vs 3DGS comparison (multi-material) -->
+                <!-- Hero: 3DGS reconstructions (multi-material) -->
                 <div class="thesis-compare-wrap">
-                  <div class="thesis-chips" role="tablist" aria-label="Material to compare">
-                    <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-object="pot" data-nerf="assets/proof/thesis_pot_nerf.mp4" data-3dgs="assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
-                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-object="banana" data-nerf="assets/proof/thesis_banana_nerf.mp4" data-3dgs="assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
-                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-object="vase" data-nerf="assets/proof/thesis_vase_nerf.mp4" data-3dgs="assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass vase</button>
+                  <div class="thesis-chips" role="tablist" aria-label="Material">
+                    <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-3dgs="assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
+                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
+                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass vase</button>
                   </div>
-                  <div class="thesis-compare" id="thesisCompare" data-initial="20" aria-label="Interactive comparison: drag to reveal NeRF vs 3DGS reconstruction">
-                    <video class="thesis-compare__base" src="assets/proof/thesis_pot_nerf.mp4" autoplay loop muted playsinline preload="auto"></video>
-                    <div class="thesis-compare__reveal">
-                      <video class="thesis-compare__top" src="assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
-                    </div>
-                    <div class="thesis-compare__divider" aria-hidden="true">
-                      <div class="thesis-compare__handle">
-                        <span class="thesis-compare__arrow">◂</span>
-                        <span class="thesis-compare__arrow">▸</span>
-                      </div>
-                    </div>
-                    <span class="thesis-compare__tag thesis-compare__tag--left">NeRF</span>
-                    <span class="thesis-compare__tag thesis-compare__tag--right">3DGS · +11 dB PSNR</span>
-                    <span class="thesis-compare__hint" id="thesisCompareHint">Drag to compare · Reflective pot studio reconstruction</span>
+                  <div class="thesis-video" aria-label="3D Gaussian Splatting reconstruction">
+                    <video id="thesisVideoEl" src="assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
+                    <span class="thesis-video__tag">3DGS · +11 dB PSNR vs NeRF on reflective surfaces</span>
                   </div>
                 </div>
                 <!-- Supporting evidence -->
@@ -1527,117 +1548,30 @@
       });
     })();
 
-    // ── Thesis NeRF ↔ 3DGS comparison slider (multi-material) ──
+    // ── Thesis 3DGS video swapper (multi-material) ──
     (() => {
-      const root = document.getElementById('thesisCompare');
-      if (!root) return;
-      const base = root.querySelector('.thesis-compare__base');
-      const top = root.querySelector('.thesis-compare__top');
-      const hint = document.getElementById('thesisCompareHint');
+      const video = document.getElementById('thesisVideoEl');
+      if (!video) return;
       const chips = document.querySelectorAll('.thesis-chip');
-      const videos = [base, top];
 
-      const initial = Number(root.dataset.initial || '20');
-
-      // Swap both sources together. Reset playhead so the NeRF/3DGS pair re-syncs from frame 0.
-      const swapObject = (chip) => {
-        chips.forEach(c => {
-          const active = c === chip;
-          c.classList.toggle('is-active', active);
-          c.setAttribute('aria-selected', active ? 'true' : 'false');
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          chips.forEach((c) => {
+            const active = c === chip;
+            c.classList.toggle('is-active', active);
+            c.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          const src = chip.dataset['3dgs'];
+          if (!src || video.src.endsWith(src)) return;
+          video.pause();
+          video.src = src;
+          video.load();
+          video.currentTime = 0;
+          video.play().catch(() => {});
         });
-        const nerfSrc = chip.dataset.nerf;
-        const gsSrc = chip.dataset['3dgs'];
-        const label = chip.dataset.label;
-        if (!nerfSrc || !gsSrc) return;
-        base.pause(); top.pause();
-        base.src = nerfSrc;
-        top.src = gsSrc;
-        base.load(); top.load();
-        base.currentTime = 0; top.currentTime = 0;
-        if (hint) hint.textContent = `Drag to compare · ${label} studio reconstruction`;
-        // Restart playback once both are buffered
-        Promise.all([
-          new Promise(r => base.addEventListener('loadeddata', r, { once: true })),
-          new Promise(r => top.addEventListener('loadeddata', r, { once: true })),
-        ]).then(() => {
-          base.play().catch(() => {});
-          top.play().catch(() => {});
-        });
-      };
-      chips.forEach(c => c.addEventListener('click', () => swapObject(c)));
-      const setSplit = (pct) => {
-        const clamped = Math.max(0, Math.min(100, pct));
-        root.style.setProperty('--split', clamped + '%');
-      };
-      setSplit(initial);
-
-      // Keep NeRF + 3DGS synced — same camera path, so matching currentTime = matching frame.
-      // We re-sync whenever the top drifts more than 0.1s from the base.
-      const syncLoop = () => {
-        if (base.readyState >= 2 && top.readyState >= 2) {
-          const drift = Math.abs(top.currentTime - base.currentTime);
-          if (drift > 0.1) top.currentTime = base.currentTime;
-        }
-        requestAnimationFrame(syncLoop);
-      };
-      base.addEventListener('loadeddata', () => requestAnimationFrame(syncLoop), { once: true });
-      videos.forEach(v => { v.play().catch(() => { /* autoplay blocked; user gesture will start it */ }); });
-
-      // Pointer-driven drag
-      let dragging = false;
-      const pctFromEvent = (e) => {
-        const rect = root.getBoundingClientRect();
-        return ((e.clientX - rect.left) / rect.width) * 100;
-      };
-      const onPointerDown = (e) => {
-        dragging = true;
-        root.setPointerCapture(e.pointerId);
-        root.classList.add('is-active');
-        root.classList.remove('is-hinting');
-        setSplit(pctFromEvent(e));
-      };
-      const onPointerMove = (e) => {
-        if (!dragging) return;
-        setSplit(pctFromEvent(e));
-      };
-      const onPointerUp = (e) => {
-        dragging = false;
-        try { root.releasePointerCapture(e.pointerId); } catch (_) {}
-      };
-      root.addEventListener('pointerdown', onPointerDown);
-      root.addEventListener('pointermove', onPointerMove);
-      root.addEventListener('pointerup', onPointerUp);
-      root.addEventListener('pointercancel', onPointerUp);
-
-      // Keyboard accessibility
-      root.tabIndex = 0;
-      root.addEventListener('keydown', (e) => {
-        const current = parseFloat(getComputedStyle(root).getPropertyValue('--split')) || initial;
-        const step = e.shiftKey ? 10 : 3;
-        if (e.key === 'ArrowLeft') { setSplit(current - step); root.classList.add('is-active'); e.preventDefault(); }
-        else if (e.key === 'ArrowRight') { setSplit(current + step); root.classList.add('is-active'); e.preventDefault(); }
-        else if (e.key === 'Home') { setSplit(0); e.preventDefault(); }
-        else if (e.key === 'End') { setSplit(100); e.preventDefault(); }
       });
 
-      // Scroll-in hint: one gentle sweep to signal interactivity, then settle at `initial`.
-      // Skipped for users who prefer reduced motion.
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReducedMotion) {
-        const io = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            observer.disconnect();
-            if (root.classList.contains('is-active')) return;
-            root.classList.add('is-hinting');
-            setSplit(55);
-            setTimeout(() => setSplit(initial), 950);
-            setTimeout(() => root.classList.remove('is-hinting'), 2000);
-          });
-        }, { threshold: 0.4 });
-        io.observe(root);
-      }
+      video.play().catch(() => { /* autoplay blocked; user gesture will start it */ });
     })();
   </script>
 
