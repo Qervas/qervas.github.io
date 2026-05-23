@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shaoxuan (Frank) Yin — Graphics &amp; Engine Engineer</title>
-  <meta name="description" content="Graphics &amp; engine engineer. Builder of a 37K-line Vulkan engine, a 209 GB neural rendering dataset, and CUDA-accelerated systems." />
-  <meta property="og:title" content="Shaoxuan (Frank) Yin — Graphics &amp; Engine Engineer" />
+  <title>Shaoxuan (Frank) Yin</title>
+  <meta name="description" content="Builder of a 50K-line Vulkan engine, a 209 GB neural rendering dataset, a multi-agent CLI framework, and CUDA-accelerated systems." />
+  <meta property="og:title" content="Shaoxuan (Frank) Yin" />
   <meta property="og:description" content="Vulkan · CUDA · neural rendering · simulation. MSc Linköping University." />
   <meta property="og:image" content="https://qervas.github.io/assets/proof/ohao_helmet.jpg" />
   <meta property="og:url" content="https://qervas.github.io" />
@@ -226,7 +226,7 @@
     /* ── Stats with context ── */
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       border-bottom: 1px solid var(--rule);
     }
 
@@ -236,6 +236,36 @@
     }
 
     .stat:last-child { border-right: none; }
+
+    .cadence {
+      padding: 24px 22px 28px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--paper);
+    }
+
+    .cadence-link {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+
+    .cadence-link:hover { opacity: 0.85; }
+
+    .cadence img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 180px;
+      object-fit: contain;
+    }
+
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat { border-right: none; border-bottom: 1px solid var(--rule); }
+      .stat:nth-child(2n) { border-right: none; }
+    }
 
     .stat-num {
       display: block;
@@ -1062,19 +1092,18 @@
       <img src="assets/proof/ohao_helmet.jpg" alt="Ohao Engine — PBR helmet render with image-based lighting" />
       <div class="hero-inner">
         <div class="hero-top">
-          <span class="hero-mark">Shaoxuan · Frank · Yin</span>
           <span class="hero-caption">Ohao Engine — PBR · IBL · ray tracing</span>
         </div>
         <div class="hero-bottom">
-          <h1>Graphics &amp;<br>Engine Engineer</h1>
-          <p class="hero-role">Vulkan · CUDA · Neural Rendering · Simulation</p>
+          <h1>Shaoxuan ·<br>Frank · Yin</h1>
+          <p class="hero-role">Vulkan · CUDA · Neural Rendering · Agents · Simulation</p>
         </div>
       </div>
     </section>
 
     <!-- ── Contact bar ── -->
     <nav class="contact-bar" aria-label="Contact">
-      <a href="mailto:shayi783@student.liu.se">shayi783@student.liu.se</a>
+      <a href="mailto:djmax96945147@gmail.com">djmax96945147@gmail.com</a>
       <span class="sep">·</span>
       <a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a>
       <span class="sep">·</span>
@@ -1124,6 +1153,18 @@
         <span class="stat-label">CUDA Path Tracer</span>
         <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, OIDN denoising, consumer-GPU throughput.</span>
       </div>
+      <div class="stat">
+        <span class="stat-num">4.8K</span>
+        <span class="stat-label">Contributions · 2026</span>
+        <span class="stat-context">Across <a href="https://github.com/Qervas">github.com/Qervas</a> — shipping, not posting.</span>
+      </div>
+    </section>
+
+    <!-- ── GitHub Activity Heatmap ── -->
+    <section class="cadence">
+      <a href="https://github.com/Qervas" class="cadence-link" aria-label="GitHub contribution activity">
+        <img src="https://ghchart.rshah.org/9b4123/Qervas" alt="GitHub contribution heatmap for @Qervas — 4,858 contributions in 2026" loading="lazy" />
+      </a>
     </section>
 
     <!-- ── Featured Work ── -->
@@ -1410,7 +1451,7 @@
         <div class="section-label">How I Work</div>
         <div class="section-body">
           <p class="ethos">
-            I care about <strong>infrastructure, not app surface area</strong>. The systems I find interesting are the ones other engineers build on top of: a renderer, a capture pipeline, a physics engine, a GPU scheduler. I profile before optimizing, I read the paper before reimplementing, and I'd rather ship one well-understood 37K-line engine than three shallow demos.
+            I care about <strong>infrastructure, not app surface area</strong>. The systems I find interesting are the ones other engineers build on top of: a renderer, a capture pipeline, a physics engine, a GPU scheduler. I profile before optimizing, I read the paper before reimplementing, and I'd rather ship one well-understood 50K-line engine than three shallow demos.
           </p>
         </div>
       </div>
@@ -1455,7 +1496,7 @@
     </section>
 
     <footer class="footer">
-      <div>Shaoxuan (Frank) Yin · <a href="mailto:shayi783@student.liu.se">shayi783@student.liu.se</a></div>
+      <div>Shaoxuan (Frank) Yin · <a href="mailto:djmax96945147@gmail.com">djmax96945147@gmail.com</a></div>
       <div><a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a></div>
     </footer>
 
