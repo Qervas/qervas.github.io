@@ -68,7 +68,8 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    .hero img {
+    .hero img,
+    .hero video {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -1123,7 +1124,7 @@
       .page { width: 100%; max-width: none; margin: 0; box-shadow: none; border: none; background: #fff; }
       a, a:hover { color: #000; text-decoration: none; }
       .hero { aspect-ratio: auto; min-height: 0; height: auto; padding: 18mm 0 0; background: #fff; border-bottom: 1px solid #999; }
-      .hero img, .hero::after { display: none; }
+      .hero img, .hero video, .hero::after { display: none; }
       .hero-inner { color: #000; padding: 0; position: static; }
       .hero-mark, .hero-caption { color: #555; }
       .hero-bottom h1 { color: #000; font-size: 26pt; line-height: 1.0; margin-bottom: 4px; }
@@ -1186,10 +1187,13 @@
 
     <!-- ── Hero ── -->
     <section class="hero">
-      <img src="assets/proof/ohao_helmet.jpg" alt="Ohao Engine — PBR helmet render with image-based lighting" />
+      <video autoplay muted loop playsinline poster="assets/proof/ohao_helmet.jpg" aria-label="Ohao Engine — real-time path-traced helmet orbiting in an outdoor HDRI scene at ~67 fps">
+        <source src="assets/proof/ohao_helmet_orbit.mp4" type="video/mp4" />
+        <img src="assets/proof/ohao_helmet.jpg" alt="Ohao Engine — PBR helmet render with image-based lighting" />
+      </video>
       <div class="hero-inner">
         <div class="hero-top">
-          <span class="hero-caption">Ohao Engine — PBR · IBL · ray tracing</span>
+          <span class="hero-caption">Ohao Engine — real-time path tracing · ~67 fps · DLSS Ray Reconstruction · ReSTIR GI</span>
         </div>
         <div class="hero-bottom">
           <h1>Shaoxuan ·<br>Frank · Yin</h1>
