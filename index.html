@@ -1237,7 +1237,7 @@
         I build <em>renderers, physics engines, and the pipelines that feed them</em> — from hybrid deferred-plus-ray-traced Vulkan to CUDA path tracers with MIS and OIDN denoising, down to the capture and reconstruction infrastructure that turns photons into assets.
       </p>
       <p class="summary-sub">
-        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three production denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Currently AI algorithm intern at Freedo Technology. <strong>Open to graphics / engine / GPU-systems / AI infrastructure roles — available full-time.</strong>
+        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing denoised with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three offline denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Recently completed an AI-algorithm internship at Freedo Technology (GPU physics on 3D Gaussian Splatting). <strong>Open to graphics / engine / GPU-systems / AI infrastructure roles — available full-time.</strong>
       </p>
     </section>
 
@@ -1322,7 +1322,10 @@
               </p>
               <p>
                 <strong>Deferred path:</strong> Cook-Torrance GGX BRDF, cascaded shadow maps, SSAO, screen-space reflections, subsurface scattering, TAA, bloom.
-                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling (balance + power heuristic), environment-map importance sampling via precomputed marginal/conditional CDFs, Owen-scrambled Sobol QMC, variance-driven adaptive sampling, and three denoiser backends (Intel OIDN, NVIDIA OptiX, NVIDIA NRD).
+                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling (balance + power heuristic), environment-map importance sampling via precomputed marginal/conditional CDFs, Owen-scrambled Sobol QMC, variance-driven adaptive sampling, and three offline denoiser backends (Intel OIDN, NVIDIA OptiX, NVIDIA NRD).
+              </p>
+              <p>
+                <strong>Real-time path tracing (new, July 2026):</strong> the same path tracer now runs interactively with a denoiser chain built for 1-spp frames — <em>NVIDIA DLSS 4 Ray Reconstruction</em> integrated through the raw NGX Vulkan API on Linux (guide buffers, motion vectors, HDR pipeline; feasibility-probed on Blackwell), full <em>SVGF</em> with temporal reprojection through camera motion and variance-guided à-trous filtering as the vendor-neutral fallback, environment importance sampling + MIS in the realtime raygen, solid-angle sphere-light sampling, and an adaptive N-spp loop that spends spare GPU headroom on quality.
               </p>
               <p>
                 <strong>Physics layer:</strong> GJK / EPA collision detection over a BVH. Top renders use Khronos glTF Sample Assets — a sanity-check that the engine reproduces the reference results graphics engineers actually verify against.
