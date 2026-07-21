@@ -466,7 +466,8 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 16px;
+      margin-top: 18px;
+      margin-bottom: 4px;
     }
     .btn {
       display: inline-flex;
@@ -508,7 +509,8 @@
     .honesty {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px 14px;
+      align-items: center;
+      gap: 6px 0;
       padding: 10px 38px 12px;
       border-bottom: 1px solid var(--rule);
       background: var(--warm-wash);
@@ -521,6 +523,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 2px 0;
+    }
+    .honesty span + span::before {
+      content: "·";
+      margin: 0 12px;
+      color: var(--rule-strong);
+      font-weight: 500;
     }
     .honesty .dot {
       width: 6px;
@@ -528,6 +537,7 @@
       border-radius: 50%;
       background: #3d9a5f;
       box-shadow: 0 0 0 3px rgba(61, 154, 95, 0.18);
+      flex-shrink: 0;
     }
 
     /* summary more toggle */
@@ -556,7 +566,9 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      margin-top: 16px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--rule);
     }
     .role-lens-label {
       font-family: var(--mono);
@@ -598,7 +610,9 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule);
     }
     .project-item[hidden] { display: none !important; }
     .project-empty {
@@ -652,18 +666,27 @@
       transform: scaleX(1);
     }
 
-    /* scroll reveal */
+    /* scroll reveal — never leave content invisible if JS lags */
     .reveal {
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+      opacity: 1;
+      transform: none;
     }
-    .reveal.is-in {
+    html.js .reveal:not(.is-in) {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    }
+    html.js .reveal.is-in {
       opacity: 1;
       transform: none;
     }
     @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1; transform: none; transition: none; }
+      html.js .reveal:not(.is-in),
+      html.js .reveal.is-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
 
     /* sticky frosted jump-nav */
@@ -767,7 +790,7 @@
     .stat:hover { background: var(--accent-soft); }
 
     .cadence {
-      padding: 26px 28px 30px;
+      padding: 22px 28px 26px;
       border-bottom: 1px solid var(--rule);
       background: linear-gradient(180deg, var(--warm-wash) 0%, var(--paper) 100%);
     }
@@ -779,6 +802,7 @@
       text-decoration: none;
       border-radius: var(--radius-sm);
       transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+      min-height: 88px;
     }
 
     .cadence-link:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -787,8 +811,21 @@
       display: block;
       width: 100%;
       height: auto;
-      max-height: 180px;
+      max-height: 140px;
       object-fit: contain;
+      image-rendering: auto;
+    }
+    [data-theme="dark"] .cadence img {
+      filter: brightness(1.15) contrast(1.05) saturate(1.1);
+      opacity: 0.95;
+    }
+    .cadence-caption {
+      margin-top: 8px;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--soft);
     }
 
     /* stats mobile rules live in the main responsive block below */
@@ -911,6 +948,46 @@
       display: block;
       aspect-ratio: 4 / 3;
       object-fit: cover;
+    }
+    /* 2-up gallery cells (OIDN before/after etc.) */
+    .featured-gallery-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.35s var(--ease), transform 0.35s var(--ease);
+    }
+    .featured-gallery-2:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .featured-gallery-2 > .cell {
+      position: relative;
+      background: #1a1513;
+    }
+    .featured-gallery-2 > .cell img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+    }
+    .featured-gallery-2 .cell-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.68);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
     }
 
     .featured-gallery-2x2 {
@@ -1677,12 +1754,14 @@
 
     /* ── Lightbox ── */
     .featured-gallery-2x2 .cell img,
+    .featured-gallery-2 .cell img,
     .featured-gallery-3 .cell img,
     .featured-grid-3 img {
       cursor: zoom-in;
       transition: opacity 0.25s var(--ease), transform 0.45s var(--ease-out);
     }
     .featured-gallery-2x2 .cell img:hover,
+    .featured-gallery-2 .cell img:hover,
     .featured-gallery-3 .cell img:hover,
     .featured-grid-3 img:hover {
       opacity: 0.92;
@@ -1760,7 +1839,7 @@
       .section-head { grid-template-columns: 110px 1fr; gap: 14px; }
       .section-label { color: #555; font-size: 7.5pt; }
       .featured { gap: 10px; margin-bottom: 16px; break-inside: avoid; }
-      .featured-visual, .featured-gallery-3, .featured-gallery-2x2, .thesis-visual__row { display: none !important; }
+      .featured-visual, .featured-gallery-3, .featured-gallery-2, .featured-gallery-2x2, .thesis-visual__row { display: none !important; }
       .thesis-compare-wrap, .thesis-chips, .thesis-compare { display: none !important; }
       .featured-subcaption { display: none; }
       .featured-copy h3 { font-size: 13pt; }
@@ -2047,6 +2126,7 @@
   </style>
 </head>
 <body>
+  <script>document.documentElement.classList.add('js');</script>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme: cycle light → dark → system">
     <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -2148,7 +2228,7 @@
     </nav>
 
     <!-- ── Summary ── -->
-    <section class="summary-block reveal">
+    <section class="summary-block">
       <p class="summary-lead">
         I build <em>renderers, physics engines, and the pipelines that feed them</em> — hybrid Vulkan RT, CUDA path tracing, neural capture, and agent tooling that ships.
       </p>
@@ -2170,7 +2250,7 @@
     </section>
 
     <!-- ── Stats with context ── -->
-    <section class="stats reveal">
+    <section class="stats">
       <div class="stat">
         <span class="stat-num">61K</span>
         <span class="stat-label">Lines · Vulkan Engine</span>
@@ -2192,7 +2272,7 @@
         <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, OIDN denoising, consumer-GPU throughput.</span>
       </div>
       <div class="stat">
-        <span class="stat-num" id="gh-contrib-num">…</span>
+        <span class="stat-num" id="gh-contrib-num">7.1K</span>
         <span class="stat-label">Contributions · <span id="gh-contrib-year">2026</span></span>
         <span class="stat-context">Across <a href="https://github.com/Qervas">github.com/Qervas</a> — shipping, not posting.</span>
       </div>
@@ -2201,8 +2281,9 @@
     <!-- ── GitHub Activity Heatmap ── -->
     <section class="cadence">
       <a href="https://github.com/Qervas" class="cadence-link" aria-label="GitHub contribution activity">
-        <img src="https://ghchart.rshah.org/9b4123/Qervas" alt="GitHub contribution heatmap for @Qervas — 4,858 contributions in 2026" loading="lazy" />
+        <img src="https://ghchart.rshah.org/9b4123/Qervas" alt="GitHub contribution heatmap for @Qervas" width="663" height="104" loading="lazy" decoding="async" />
       </a>
+      <p class="cadence-caption">Public GitHub cadence · github.com/Qervas</p>
     </section>
 
     <!-- ── Featured Work ── -->
@@ -2231,7 +2312,7 @@
               </div>
               <!-- Path-tracing pipeline proof: OIDN before/after -->
               <p class="featured-subcaption">Path-tracing pipeline · Intel OIDN denoising on a glossy scene</p>
-              <div class="featured-gallery-3">
+              <div class="featured-gallery-2">
                 <div class="cell">
                   <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
                   <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
@@ -2606,7 +2687,7 @@
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lb-img');
       const lbCap = document.getElementById('lb-caption');
-      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 .cell img, .thesis-visual__row .cell img';
+      const selector = '.featured-gallery-2x2 .cell img, .featured-gallery-2 .cell img, .featured-gallery-3 .cell img, .featured-grid-3 .cell img, .thesis-visual__row .cell img';
       document.querySelectorAll(selector).forEach(el => {
         el.addEventListener('click', () => {
           lbImg.src = el.currentSrc || el.src;
@@ -2866,21 +2947,28 @@
         o.observe(vid);
       });
 
-      // ── Scroll reveal ──
+      // ── Scroll reveal (mark already-visible immediately) ──
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduce && 'IntersectionObserver' in window) {
-        const revs = document.querySelectorAll('.reveal');
+      const revs = Array.from(document.querySelectorAll('.reveal'));
+      function revealNow(el) { el.classList.add('is-in'); }
+      if (reduce || !('IntersectionObserver' in window)) {
+        revs.forEach(revealNow);
+      } else {
         const rio = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-              entry.target.classList.add('is-in');
+              revealNow(entry.target);
               rio.unobserve(entry.target);
             }
           });
-        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-        revs.forEach(function (el) { rio.observe(el); });
-      } else {
-        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+        }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+        revs.forEach(function (el) {
+          const r = el.getBoundingClientRect();
+          if (r.top < window.innerHeight * 0.94 && r.bottom > 0) revealNow(el);
+          else rio.observe(el);
+        });
+        // Safety net: never leave content hidden after load
+        setTimeout(function () { revs.forEach(revealNow); }, 1800);
       }
     })();
   </script>
