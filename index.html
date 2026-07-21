@@ -990,6 +990,68 @@
       backdrop-filter: blur(4px);
     }
 
+    /* full-width research plates (multi-panel JPG results) */
+    .featured-plate {
+      position: relative;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #0b0908;
+      box-shadow: var(--shadow-sm);
+      margin-top: 2px;
+    }
+    .featured-plate img {
+      width: 100%;
+      display: block;
+      height: auto;
+      object-fit: contain;
+      vertical-align: middle;
+    }
+    .featured-plate .cell-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fdf9f3;
+      background: rgba(16,12,10,0.72);
+      padding: 4px 8px;
+      border-radius: 3px;
+      backdrop-filter: blur(4px);
+      max-width: calc(100% - 20px);
+    }
+    .featured-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 14px 0 4px;
+    }
+    .featured-metric {
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      background: var(--accent-soft);
+    }
+    .featured-metric .num {
+      display: block;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .featured-metric .lbl {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
     .featured-gallery-2x2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -2237,7 +2299,7 @@
       </p>
       <button type="button" class="summary-more-btn" id="summary-more-btn" aria-expanded="false" aria-controls="summary-more">More detail</button>
       <div class="summary-more summary-sub" id="summary-more" hidden>
-        Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three offline denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Recently completed an AI-algorithm internship at Freedo Technology (MLS-MPM physics on 3D Gaussian Splatting). Also builds in the open: an inverse rendering lab inside Ohao, an open-source Godot MCP for AI agents, and a multi-agent CLI framework.
+        Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with Owen-scrambled Sobol, OIDN / NRD denoisers, and a multi-pipeline inverse lab inside Ohao (Diff-IR dense maps + capture-gated PT — quality-plate ΔPSNR up to +24.5 dB). Also: nvdiffrast research sibling, synchronized multi-camera capture, Freedo internship (MLS-MPM on 3DGS), open-source Godot MCP, and a multi-agent CLI framework.
       </div>
       <div class="role-lens" role="group" aria-label="Focus portfolio by role interest">
         <span class="role-lens-label">Looking at</span>
@@ -2293,57 +2355,97 @@
         <div class="section-body">
 
           <!-- Ohao Engine -->
-          <article class="featured" data-roles="graphics">
+          <article class="featured" data-roles="graphics neural">
             <div class="featured-visual">
-              <!-- Deferred PBR proof -->
+              <!-- Diff-IR publish face -->
+              <p class="featured-subcaption">Inverse lab · Diff-IR quality plate · free dense roughness · 1080p SHOW</p>
+              <div class="featured-plate">
+                <img src="assets/proof/ohao_inverse/readme_quality_matrix.jpg" alt="Diff-IR quality plate — spheres, helmet, outdoor: wrong init, recovered materials, and ground truth at 1080p" loading="lazy" width="920" height="480" />
+                <span class="cell-label">Wrong init → recovered → GT · spheres · helmet · outdoor</span>
+              </div>
+              <div class="featured-gallery-2">
+                <div class="cell">
+                  <img src="assets/proof/ohao_inverse/readme_quality_relight.jpg" alt="Novel-light relight and recovered roughness maps from Diff-IR quality plate" loading="lazy" />
+                  <span class="cell-label">Novel-HDRI relight · free roughness maps</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_inverse/readme_pt_frontier.jpg" alt="Path-tracer inverse lab lantern frontier — wrong init, recovered, capture GT, relight" loading="lazy" />
+                  <span class="cell-label">PT capture-gated frontier · holdout 32.5 dB</span>
+                </div>
+              </div>
+              <p class="featured-subcaption">Dense map recovery · Deferred beauty SoT · analytic grads</p>
+              <div class="featured-gallery-3">
+                <div class="cell">
+                  <img src="assets/proof/ohao_inverse/readme_dense_albedo.jpg" alt="Dense albedo MAPTEST — beauty and free-grid albedo map recovery" loading="lazy" />
+                  <span class="cell-label">Dense albedo · free-grid MAPTEST</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_inverse/readme_dense_metal.jpg" alt="Dense metallic MAPTEST — beauty, relight, and metal maps" loading="lazy" />
+                  <span class="cell-label">Dense metal · ORM.b · +26.8 dB</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_inverse/readme_analytic.jpg" alt="Analytic albedo optim GRADCHECK vs finite differences — 19.7× speedup" loading="lazy" />
+                  <span class="cell-label">Analytic optim · 19.7× vs FD</span>
+                </div>
+              </div>
+              <!-- Engine raster/RT proof -->
+              <p class="featured-subcaption">Hybrid renderer · deferred PBR + real-time path tracing</p>
               <div class="featured-gallery-3">
                 <div class="cell">
                   <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render — close-up with rich metal, glass, and cable detail" loading="lazy" />
-                  <span class="cell-label">Damaged Helmet · deferred PBR · full material stack</span>
+                  <span class="cell-label">Damaged Helmet · deferred PBR</span>
                 </div>
                 <div class="cell">
                   <img src="assets/proof/ohao_lantern.jpg" alt="Lantern scene rendered in Ohao — emissive warm glow with wooden cross structure" loading="lazy" />
-                  <span class="cell-label">Lantern · emissive driving scene lighting</span>
+                  <span class="cell-label">Lantern · emissive lighting</span>
                 </div>
                 <div class="cell">
                   <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration scene — rough to smooth, metal to non-metal gradient" loading="lazy" />
-                  <span class="cell-label">MetalRoughSpheres · BRDF calibration</span>
-                </div>
-              </div>
-              <!-- Path-tracing pipeline proof: OIDN before/after -->
-              <p class="featured-subcaption">Path-tracing pipeline · Intel OIDN denoising on a glossy scene</p>
-              <div class="featured-gallery-2">
-                <div class="cell">
-                  <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
-                  <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_oidn_denoised.jpg" alt="Same helmet at 16 spp after Intel OIDN denoising — production-quality output" loading="lazy" />
-                  <span class="cell-label">Helmet · 16 spp · OIDN denoised</span>
+                  <span class="cell-label">MetalRoughSpheres · BRDF</span>
                 </div>
               </div>
             </div>
             <div class="featured-copy">
               <h3>Ohao Engine</h3>
-              <p class="featured-stack">C++20 · Vulkan KHR RT · GLSL · ~50K C++ + 15K GLSL across 121 shaders</p>
+              <p class="featured-stack">C++20 · Vulkan 1.3 KHR RT · GLSL · Diff-IR lab · DLSS-RR · ReSTIR GI</p>
               <p>
-                Standalone Vulkan engine written from scratch. Hybrid renderer: a deferred G-buffer path and a hardware ray-tracing path share one scene representation, bindless resources, and acceleration-structure workflow. Architecture spans <em>render</em> (22K LOC), <em>physics</em> (11K LOC), and a <em>gpu / Vulkan</em> abstraction layer (8K LOC).
+                Solo hybrid Vulkan renderer: deferred G-buffer and KHR path tracing share one scene, materials, bindless textures, and TLAS. Architecture spans <em>render</em>, <em>physics</em> (GJK/EPA + BVH), and a <em>gpu / Vulkan</em> layer — no engine SDK host.
+              </p>
+
+              <div class="featured-metrics" aria-label="Inverse lab measured results">
+                <div class="featured-metric">
+                  <span class="num">+24.5 dB</span>
+                  <span class="lbl">Diff-IR outdoor ΔPSNR</span>
+                </div>
+                <div class="featured-metric">
+                  <span class="num">+21.8 dB</span>
+                  <span class="lbl">Diff-IR helmet ΔPSNR</span>
+                </div>
+                <div class="featured-metric">
+                  <span class="num">32.5 / 34.4</span>
+                  <span class="lbl">PT holdout / relight dB</span>
+                </div>
+                <div class="featured-metric">
+                  <span class="num">19.7×</span>
+                  <span class="lbl">Analytic vs FD optim</span>
+                </div>
+              </div>
+
+              <p>
+                <strong>Inverse rendering lab (July 2026):</strong> multi-pipeline IR on one Vulkan host — <em>path-tracer oracle</em> (capture-gated LABTEST) + <em>Diff-IR Deferred</em> sibling where free dense maps are the beauty source of truth. Fit is train-only; published dB always name the metric domain.
               </p>
               <p>
-                <strong>Deferred path:</strong> Cook-Torrance GGX BRDF, cascaded shadow maps, SSAO, screen-space reflections, subsurface scattering, TAA, bloom.
-                <strong> Path-tracing path:</strong> Vulkan KHR ray-tracing with multiple-importance sampling (balance + power heuristic), environment-map importance sampling via precomputed marginal/conditional CDFs, Owen-scrambled Sobol QMC, variance-driven adaptive sampling, and three offline denoiser backends (Intel OIDN, NVIDIA OptiX, NVIDIA NRD).
+                <strong>Diff-IR quality plate</strong> (1080p SHOW, map ≥128², multi-view, hard presets): free dense <em>roughness</em> (ORM.g) recovery — spheres <strong>+19.8 dB</strong>, helmet <strong>+21.8 dB</strong>, outdoor <strong>+24.5 dB</strong> train ΔPSNR vs cool wrong-init. Novel-HDRI relight tracks the same gains. Dense albedo / metal MAPTEST under Deferred; metallic free-grid hits <strong>+26.8 dB</strong> with map MSE 0.405 → 0.006.
               </p>
               <p>
-                <strong>Real-time path tracing (new, July 2026):</strong> the same path tracer now runs interactively with a denoiser chain built for 1-spp frames — <em>NVIDIA DLSS 4 Ray Reconstruction</em> integrated through the raw NGX Vulkan API on Linux (guide buffers, motion vectors, HDR pipeline; feasibility-probed on Blackwell), full <em>SVGF</em> with temporal reprojection through camera motion and variance-guided à-trous filtering as the vendor-neutral fallback, environment importance sampling + MIS in the realtime raygen, solid-angle sphere-light sampling, and an adaptive N-spp loop that spends spare GPU headroom on quality.
+                <strong>PT capture-gated LABTEST</strong> (exported holdout/relight PNGs, not live-oracle theater): holdout <strong>32.5 dB</strong> / SSIM 0.983, relight <strong>34.4 dB</strong> / 0.989, <strong>+20.5 dB</strong> vs wrong init. Hybrid path: Diff-fit → PT refine. Analytic albedo optim GRADCHECK vs FD (median rel err &lt; 0.20) at <strong>19.7×</strong> wall-clock vs estimated full 3-pass coordinate FD.
               </p>
               <p>
-                <strong>Physics layer:</strong> GJK / EPA collision detection over a BVH. Top renders use Khronos glTF Sample Assets — a sanity-check that the engine reproduces the reference results graphics engineers actually verify against.
-              </p>
-              <p>
-                <strong>Inverse rendering lab (new):</strong> recovers multi-surface PBR materials and lighting from multi-view captures — train-only fit with a Diff-IR deferred sibling and a hybrid Diff-fit → path-trace refine. Capture-gated on held-out views: ~32.5 dB holdout, ~34.4 dB relight (+20.5 dB vs a wrong initialization).
+                <strong>Real-time path tracing:</strong> interactive 1-spp chain with <em>NVIDIA DLSS 4 Ray Reconstruction</em> (raw NGX Vulkan on Linux) and vendor-neutral <em>SVGF</em>; ReSTIR GI on outdoor HDRI; OIDN offline + NRD compose. Golden regression: Cornell box + MetalRoughSpheres.
               </p>
               <div class="featured-links">
                 <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub Repo ↗</a>
+                <a href="https://github.com/Qervas/ohao_engine/blob/master/docs/media/inverse/RESULTS.md" target="_blank" rel="noopener">Inverse RESULTS ↗</a>
               </div>
             </div>
           </article>
@@ -2461,13 +2563,14 @@
             </article>
 
             <article class="project-item" data-tags="graphics neural">
-              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot from the thesis capture — the kind of object this inverse-rendering pipeline is designed to preprocess" loading="lazy" width="640" height="400" />
+              <img class="project-thumb" src="assets/proof/ohao_inverse/readme_photo_proxy.jpg" alt="Photo-proxy inverse plate — separate from Ohao Diff-IR; nvdiffrast research path" loading="lazy" width="640" height="400" />
               <div class="project-body">
-                <h3>Turntable Inverse Rendering · in progress</h3>
+                <h3>nvdiffrast Turntable IR · research sibling</h3>
                 <div class="meta">Python · PyTorch · nvdiffrast · GGX/Disney BRDF</div>
-                <p>Foundation for a differentiable rendering pipeline that will learn per-point BRDF from turntable captures, then relight glossy objects uniformly so Structure-from-Motion actually converges. Full GGX stack shipped — D (GGX / Beckmann / anisotropic), G (Smith / Schlick-GGX), F (Schlick / roughness-aware) — plus nvdiffrast backend, turntable camera / mesh / lighting layers. Neural decomposition + training loop next. Built on NVIDIA nvdiffrast.</p>
+                <p><strong>Not the Ohao Vulkan Diff-IR lab</strong> (that lives inside <em>ohao_engine</em> above). This is a separate PyTorch / nvdiffrast experiment: full GGX stack (D/G/F), turntable camera / mesh / lighting layers, aimed at per-point BRDF recovery and relighting glossy captures so SfM converges. Neural decomposition + training loop still in progress.</p>
                 <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Neural</span></div>
                 <a href="https://github.com/Qervas/turntable-inverse-rendering" target="_blank" rel="noopener">Repo ↗</a>
+                <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">Ohao Diff-IR ↗</a>
               </div>
             </article>
 
