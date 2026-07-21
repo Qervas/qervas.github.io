@@ -5,23 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
   <title>Shaoxuan (Frank) Yin</title>
-  <meta name="description" content="Builder of a 50K-line Vulkan engine, a 209 GB neural rendering dataset, a multi-agent CLI framework, and CUDA-accelerated systems." />
-  <meta property="og:title" content="Shaoxuan (Frank) Yin" />
-  <meta property="og:description" content="Vulkan · CUDA · neural rendering · simulation. MSc Linköping University." />
+  <meta name="description" content="Builder of a 50K-line Vulkan engine, a 209 GB neural rendering dataset, a multi-agent CLI framework, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate." />
+  <meta name="author" content="Shaoxuan (Frank) Yin" />
+  <link rel="canonical" href="https://qervas.github.io/" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/favicon.svg" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Shaoxuan (Frank) Yin" />
+  <meta property="og:title" content="Shaoxuan (Frank) Yin — Graphics · CUDA · Agents" />
+  <meta property="og:description" content="Vulkan · CUDA · neural rendering · simulation. MSc Linköping University. Remote · open to relocate." />
   <meta property="og:image" content="https://qervas.github.io/assets/proof/ohao_helmet.jpg" />
-  <meta property="og:url" content="https://qervas.github.io" />
-  <!-- Apply theme before paint: stored choice, else system preference -->
+  <meta property="og:image:alt" content="Ohao Engine — real-time path-traced helmet" />
+  <meta property="og:url" content="https://qervas.github.io/" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Shaoxuan (Frank) Yin — Graphics · CUDA · Agents" />
+  <meta name="twitter:description" content="Vulkan engine, neural rendering dataset, multi-agent tooling. MSc Linköping." />
+  <meta name="twitter:image" content="https://qervas.github.io/assets/proof/ohao_helmet.jpg" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Shaoxuan Yin",
+    "alternateName": ["Frank Yin", "Qervas"],
+    "url": "https://qervas.github.io/",
+    "email": "mailto:frankyin17@outlook.com",
+    "jobTitle": "Graphics / GPU Systems Engineer",
+    "alumniOf": [
+      { "@type": "CollegeOrUniversity", "name": "Linköping University" },
+      { "@type": "CollegeOrUniversity", "name": "Beijing Information Science and Technology University" }
+    ],
+    "sameAs": [
+      "https://github.com/Qervas",
+      "https://www.linkedin.com/in/sxyin/",
+      "https://frankyin17.itch.io/",
+      "https://www.youtube.com/@frankyin8509"
+    ]
+  }
+  </script>
+
+  <!-- Apply theme before paint: light | dark | system -->
   <script>
     (function () {
       try {
-        var t = localStorage.getItem('theme');
-        if (t !== 'light' && t !== 'dark') {
-          t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        var mode = localStorage.getItem('theme'); // light | dark | system | null
+        var resolved;
+        if (mode === 'light' || mode === 'dark') {
+          resolved = mode;
+        } else {
+          mode = 'system';
+          resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
-        document.documentElement.setAttribute('data-theme', t);
-        document.documentElement.style.colorScheme = t;
+        document.documentElement.setAttribute('data-theme', resolved);
+        document.documentElement.setAttribute('data-theme-mode', mode);
+        document.documentElement.style.colorScheme = resolved;
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute('data-theme-mode', 'system');
       }
     })();
   </script>
@@ -391,6 +436,234 @@
       color: var(--soft);
       font-size: 0.72rem;
       letter-spacing: 0.02em;
+    }
+
+    /* skip link */
+    .skip-link {
+      position: absolute;
+      left: 12px;
+      top: -48px;
+      z-index: 300;
+      background: var(--accent);
+      color: #fffdf9;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: 4px;
+      transition: top 0.2s var(--ease);
+    }
+    .skip-link:focus {
+      top: 12px;
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
+
+    /* hero primary CTAs */
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.2s var(--ease);
+    }
+    .btn-primary {
+      background: #e8b89a;
+      color: #1a1513;
+      border-color: #e8b89a;
+      font-weight: 600;
+    }
+    .btn-primary:hover {
+      background: #f3cbb4;
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: rgba(253, 249, 243, 0.08);
+      color: #fdf9f3;
+      border-color: rgba(253, 249, 243, 0.28);
+      backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+      background: rgba(253, 249, 243, 0.16);
+      border-color: #e8b89a;
+      color: #e8b89a;
+    }
+
+    /* honesty strip under contact */
+    .honesty {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      padding: 10px 38px 12px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--warm-wash);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .honesty span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .honesty .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #3d9a5f;
+      box-shadow: 0 0 0 3px rgba(61, 154, 95, 0.18);
+    }
+
+    /* summary more toggle */
+    .summary-more-btn {
+      appearance: none;
+      border: none;
+      background: none;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 0;
+      margin-top: 10px;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s var(--ease);
+    }
+    .summary-more-btn:hover { border-bottom-color: var(--accent); }
+    .summary-more[hidden] { display: none !important; }
+    .summary-more { margin-top: 10px; }
+
+    /* role lens */
+    .role-lens {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .role-lens-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--soft);
+      margin-right: 4px;
+    }
+    .role-chip,
+    .filter-chip {
+      appearance: none;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 7px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
+    }
+    .role-chip:hover,
+    .filter-chip:hover {
+      border-color: var(--accent);
+      color: var(--ink);
+    }
+    .role-chip.is-active,
+    .filter-chip.is-active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fdf9f3;
+      box-shadow: 0 4px 14px rgba(155, 65, 35, 0.25);
+    }
+
+    .project-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .project-item[hidden] { display: none !important; }
+    .project-empty {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--soft);
+      padding: 12px 0;
+    }
+    .project-empty[hidden] { display: none !important; }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    /* skills chips */
+    .skill-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .skill-chip {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--rule));
+      padding: 6px 11px;
+      border-radius: 999px;
+    }
+
+    /* section nav active */
+    .section-nav a.is-active {
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .section-nav a.is-active::after {
+      transform: scaleX(1);
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+    .reveal.is-in {
+      opacity: 1;
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
     }
 
     /* sticky frosted jump-nav */
@@ -1367,8 +1640,13 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
+    /* moon = switch to dark (shown in light); sun = switch to light (shown in dark) */
     [data-theme="light"] .theme-toggle .icon-moon { display: block; }
     [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    .theme-toggle .icon-system { display: none; }
+    html[data-theme-mode="system"] .theme-toggle .icon-moon,
+    html[data-theme-mode="system"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme-mode="system"] .theme-toggle .icon-system { display: block; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
     /* ── Footer ── */
     .footer {
@@ -1548,10 +1826,11 @@
       .hero-social { margin-top: 14px; gap: 10px; }
       .hero-social a { width: 40px; height: 40px; }
 
-      .inner, .summary-block, .section, .contact-bar, .footer {
+      .inner, .summary-block, .section, .contact-bar, .footer, .honesty {
         padding-left: 16px;
         padding-right: 16px;
       }
+      .honesty { padding-top: 10px; padding-bottom: 10px; }
       .summary-block { padding-top: 28px; padding-bottom: 28px; }
       .summary-lead {
         font-size: 1.12rem;
@@ -1768,7 +2047,8 @@
   </style>
 </head>
 <body>
-  <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark theme" title="Toggle light / dark theme">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme: cycle light → dark → system">
     <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7 7 0 1 0 21 14.3z" />
     </svg>
@@ -1776,13 +2056,17 @@
       <circle cx="12" cy="12" r="4" />
       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
     </svg>
+    <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3" y="4" width="18" height="12" rx="2" />
+      <path d="M8 20h8M12 16v4" />
+    </svg>
   </button>
 
-  <main class="page">
+  <main class="page" id="main-content">
 
     <!-- ── Hero ── -->
     <section class="hero">
-      <video autoplay muted loop playsinline poster="assets/proof/ohao_helmet.jpg" aria-label="Ohao Engine — real-time path-traced helmet orbiting in an outdoor HDRI scene at ~67 fps">
+      <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/proof/ohao_helmet.jpg" aria-label="Ohao Engine — real-time path-traced helmet orbiting in an outdoor HDRI scene at ~67 fps">
         <source src="assets/proof/ohao_helmet_orbit.mp4" type="video/mp4" />
         <img src="assets/proof/ohao_helmet.jpg" alt="Ohao Engine — PBR helmet render with image-based lighting" />
       </video>
@@ -1793,6 +2077,10 @@
         <div class="hero-bottom">
           <h1>Shaoxuan ·<br>Frank · Yin</h1>
           <p class="hero-role">Vulkan · CUDA · Neural Rendering · Agents · Simulation</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="mailto:frankyin17@outlook.com">Email me</a>
+            <a class="btn btn-ghost" href="assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener">Download CV</a>
+          </div>
           <div class="hero-social">
             <a class="gh-pulse" href="https://github.com/Qervas" target="_blank" rel="noopener" aria-label="GitHub — github.com/Qervas">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.51 11.51 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
@@ -1842,31 +2130,47 @@
         <span class="contact-key">itch.io</span>
         <span class="contact-val">frankyin17.itch.io</span>
       </a>
-      <span class="sep">·</span>
-      <span class="contact-meta">Remote · relocation · visa sponsorship · EN fluent · 中文 native · FR basic</span>
     </nav>
 
+    <div class="honesty" aria-label="Availability">
+      <span><i class="dot" aria-hidden="true"></i> Available full-time</span>
+      <span>Remote · open to relocate</span>
+      <span>EN fluent · 中文 native · FR basic</span>
+    </div>
+
     <!-- ── Section jump-nav ── -->
-    <nav class="section-nav" aria-label="Jump to section">
-      <a href="#featured-work">Featured Work</a>
-      <a href="#projects">Projects</a>
-      <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
-      <a href="#education">Education</a>
+    <nav class="section-nav" id="section-nav" aria-label="Jump to section">
+      <a href="#featured-work" data-nav="featured-work">Featured Work</a>
+      <a href="#projects" data-nav="projects">Projects</a>
+      <a href="#experience" data-nav="experience">Experience</a>
+      <a href="#skills" data-nav="skills">Skills</a>
+      <a href="#education" data-nav="education">Education</a>
     </nav>
 
     <!-- ── Summary ── -->
-    <section class="summary-block">
+    <section class="summary-block reveal">
       <p class="summary-lead">
-        I build <em>renderers, physics engines, and the pipelines that feed them</em> — from hybrid deferred-plus-ray-traced Vulkan to CUDA path tracers with MIS and OIDN denoising, down to the capture and reconstruction infrastructure that turns photons into assets.
+        I build <em>renderers, physics engines, and the pipelines that feed them</em> — hybrid Vulkan RT, CUDA path tracing, neural capture, and agent tooling that ships.
       </p>
       <p class="summary-sub">
-        MSc Computer Science, Linköping University — Graphics &amp; Visualization. Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing denoised with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three offline denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Recently completed an AI-algorithm internship at Freedo Technology (MLS-MPM physics on 3D Gaussian Splatting). Also builds in the open: an inverse rendering lab inside Ohao that recovers PBR materials and lighting from multi-view captures, plus agent tooling — an open-source Godot MCP that lets AI agents build and playtest scenes, and a multi-agent CLI framework. <strong>Open to graphics / engine / GPU-systems / AI-infrastructure / agent roles — available full-time.</strong>
+        MSc Computer Science, Linköping University — Graphics &amp; Visualization. <strong>Open to graphics / engine / GPU-systems / AI-infrastructure / agent roles.</strong>
       </p>
+      <button type="button" class="summary-more-btn" id="summary-more-btn" aria-expanded="false" aria-controls="summary-more">More detail</button>
+      <div class="summary-more summary-sub" id="summary-more" hidden>
+        Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with environment-map importance sampling and Owen-scrambled Sobol, three offline denoiser backends (Intel OIDN / NVIDIA OptiX / NRD), differentiable rendering (nvdiffrast + Disney BRDF), and synchronized multi-camera capture systems. Recently completed an AI-algorithm internship at Freedo Technology (MLS-MPM physics on 3D Gaussian Splatting). Also builds in the open: an inverse rendering lab inside Ohao, an open-source Godot MCP for AI agents, and a multi-agent CLI framework.
+      </div>
+      <div class="role-lens" role="group" aria-label="Focus portfolio by role interest">
+        <span class="role-lens-label">Looking at</span>
+        <button type="button" class="role-chip is-active" data-role="all">Everything</button>
+        <button type="button" class="role-chip" data-role="graphics">Graphics engines</button>
+        <button type="button" class="role-chip" data-role="agents">Agents</button>
+        <button type="button" class="role-chip" data-role="physics">GPU physics</button>
+        <button type="button" class="role-chip" data-role="neural">Neural rendering</button>
+      </div>
     </section>
 
     <!-- ── Stats with context ── -->
-    <section class="stats">
+    <section class="stats reveal">
       <div class="stat">
         <span class="stat-num">61K</span>
         <span class="stat-label">Lines · Vulkan Engine</span>
@@ -1902,13 +2206,13 @@
     </section>
 
     <!-- ── Featured Work ── -->
-    <section class="section" id="featured-work">
+    <section class="section reveal" id="featured-work">
       <div class="section-head">
         <div class="section-label">Featured Work</div>
         <div class="section-body">
 
           <!-- Ohao Engine -->
-          <article class="featured">
+          <article class="featured" data-roles="graphics">
             <div class="featured-visual">
               <!-- Deferred PBR proof -->
               <div class="featured-gallery-3">
@@ -1964,7 +2268,7 @@
           </article>
 
           <!-- Neural Rendering Thesis -->
-          <article class="featured reverse">
+          <article class="featured reverse" data-roles="neural graphics">
             <div class="featured-visual">
               <div class="thesis-visual">
                 <!-- Hero: 3DGS reconstructions (multi-material) -->
@@ -2015,111 +2319,130 @@
     </section>
 
     <!-- ── Selected Projects ── -->
-    <section class="section" id="projects">
+    <section class="section reveal" id="projects">
       <div class="section-head">
         <div class="section-label">Selected Projects</div>
         <div class="section-body">
+          <div class="project-filters" id="project-filters" role="group" aria-label="Filter projects">
+            <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+            <button type="button" class="filter-chip" data-filter="graphics">Graphics</button>
+            <button type="button" class="filter-chip" data-filter="agents">Agents</button>
+            <button type="button" class="filter-chip" data-filter="physics">Physics</button>
+            <button type="button" class="filter-chip" data-filter="neural">Neural</button>
+            <button type="button" class="filter-chip" data-filter="course">Coursework</button>
+          </div>
+          <p class="project-empty" id="project-empty" hidden>No projects in this filter.</p>
           <div class="project-grid">
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/niua_godot_mcp.png" alt="NIUA Godot MCP architecture — AI agent to MCP server to Godot editor to playtest evidence" loading="lazy" />
+            <article class="project-item" data-tags="agents">
+              <img class="project-thumb" src="assets/proof/niua_godot_mcp.png" alt="NIUA Godot MCP architecture — AI agent to MCP server to Godot editor to playtest evidence" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>NIUA Godot MCP · open source</h3>
                 <div class="meta">Node / TypeScript · MCP · Godot 4.6 GDExtension</div>
                 <p>From-scratch MCP server plus a bundled Godot editor addon that lets AI agents create, inspect, run, debug, and export Godot 4.6 games through tools — ~26 tool domains (scene, nodes, scripts, run, resources, UI, workflows…), an editor bridge over local HTTP with token auth, and a <em>run_playtest_evidence</em> contract (input → assert → screenshot) so the agent checks its own work. Installers for Claude / Cursor / Codex.</p>
+                <div class="project-tags"><span class="project-tag">Agents</span></div>
                 <a href="https://github.com/Qervas/niua-godot-mcp" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/nocturneai.png" alt="NocturneAI architecture — coordinator, ReAct agents, tools, workflow engine" loading="lazy" />
+            <article class="project-item" data-tags="agents">
+              <img class="project-thumb" src="assets/proof/nocturneai.png" alt="NocturneAI architecture — coordinator, ReAct agents, tools, workflow engine" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>NocturneAI · multi-agent CLI</h3>
                 <div class="meta">TypeScript · React Ink · ReAct · Workflow Engine · in dev</div>
                 <p>Autonomous multi-agent framework for the terminal. Clean layered architecture (core / application / infrastructure / presentation), an AgentCoordinator for multi-agent orchestration, a workflow engine with plan validation, plus plugin manager, metrics, and background-task manager. ReAct loops with tool registration / execution; GitHub Copilot's OpenAI-compatible API as the LLM backend. ~30K LOC.</p>
+                <div class="project-tags"><span class="project-tag">Agents</span></div>
                 <a href="https://github.com/Qervas/NocturneAI" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <video class="project-thumb" src="assets/proof/taichi_mlsmpm.mp4" poster="assets/proof/taichi_mlsmpm.jpg" autoplay loop muted playsinline preload="metadata" aria-label="Real-time MLS-MPM simulation: a block of water tearing through breakable bridge pillars"></video>
+            <article class="project-item" data-tags="physics">
+              <video class="project-thumb lazy-video" data-src="assets/proof/taichi_mlsmpm.mp4" poster="assets/proof/taichi_mlsmpm.jpg" loop muted playsinline preload="none" aria-label="Real-time MLS-MPM simulation: a block of water tearing through breakable bridge pillars"></video>
               <div class="project-body">
                 <h3>MLS-MPM Physics Simulation</h3>
                 <div class="meta">Taichi · MLS-MPM · APIC · Fluid + Solid Mechanics</div>
                 <p>Real-time MLS-MPM physics (Hu et al. 2018) in Taichi — fluid dynamics coupled with solid mechanics and fracture on one particle-grid solver. Scenes: 2D dam break, 3D water tearing through breakable bridge pillars, and building / flood destruction. APIC particle↔grid transfer with weakly-compressible equation-of-state pressure.</p>
+                <div class="project-tags"><span class="project-tag">Physics</span></div>
                 <a href="https://qervas.github.io/taichi" target="_blank" rel="noopener">Live demos ↗</a>
                 <a href="https://github.com/Qervas/taichi" target="_blank" rel="noopener">Code ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/sx_hero_glass.jpg" alt="sx-engine hero render: ray-traced glass sphere over desert with cloud-reflecting environment" loading="lazy" />
+            <article class="project-item" data-tags="graphics physics">
+              <img class="project-thumb" src="assets/proof/sx_hero_glass.jpg" alt="sx-engine hero render: ray-traced glass sphere over desert with cloud-reflecting environment" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>sx-engine — CUDA Path Tracer + Physics</h3>
                 <div class="meta">CUDA · Taichi · C++ · OIDN · ~3K LOC</div>
                 <p>CUDA path tracer with BVH, Schlick-Fresnel refraction, and optional Intel OIDN denoising. 16 parameterized liquid presets (ocean · honey · lava · milk · blood · crystal …) each with their own IOR and depth-absorption. Paired with a Taichi-GPU Position-Based Dynamics cloth solver — stretch + bend constraints, material-specific stiffness — exporting per-frame OBJ meshes back to the CUDA renderer. 58 production stills shipped.</p>
+                <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Physics</span></div>
                 <a href="https://github.com/Qervas/sx-engine" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot from the thesis capture — the kind of object this inverse-rendering pipeline is designed to preprocess" loading="lazy" />
+            <article class="project-item" data-tags="graphics neural">
+              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot from the thesis capture — the kind of object this inverse-rendering pipeline is designed to preprocess" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Turntable Inverse Rendering · in progress</h3>
                 <div class="meta">Python · PyTorch · nvdiffrast · GGX/Disney BRDF</div>
                 <p>Foundation for a differentiable rendering pipeline that will learn per-point BRDF from turntable captures, then relight glossy objects uniformly so Structure-from-Motion actually converges. Full GGX stack shipped — D (GGX / Beckmann / anisotropic), G (Smith / Schlick-GGX), F (Schlick / roughness-aware) — plus nvdiffrast backend, turntable camera / mesh / lighting layers. Neural decomposition + training loop next. Built on NVIDIA nvdiffrast.</p>
+                <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Neural</span></div>
                 <a href="https://github.com/Qervas/turntable-inverse-rendering" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/sph_water.jpg" alt="SPH particle fluid simulation with velocity-coded color visualization, confined in a tiled pool" loading="lazy" />
+            <article class="project-item" data-tags="physics">
+              <img class="project-thumb" src="assets/proof/sph_water.jpg" alt="SPH particle fluid simulation with velocity-coded color visualization, confined in a tiled pool" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>SPH Water Simulation</h3>
                 <div class="meta">C++ · CUDA · OpenGL · BSc thesis</div>
                 <p>GPU-accelerated Smoothed Particle Hydrodynamics solver with Marching Cubes surface extraction and CUDA ↔ OpenGL interop for real-time visualization. Uniform-grid spatial hashing for neighbor search, cubic-spline density kernel with gradient / Laplacian variants for pressure and viscosity forces, plus surface-tension kernel. Bachelor thesis — the foundation my current fluid work builds on.</p>
+                <div class="project-tags"><span class="project-tag">Physics</span></div>
                 <a href="https://github.com/Qervas/water_simulation" target="_blank" rel="noopener">Repo ↗</a>
                 <a href="https://youtu.be/V2EF1tZfBZM" target="_blank" rel="noopener">Demo video ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render — final stage of the procedural rust progression" loading="lazy" />
+            <article class="project-item" data-tags="graphics course">
+              <img class="project-thumb" src="assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render — final stage of the procedural rust progression" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Real-time Material Aging & Weathering</h3>
                 <div class="meta">OpenGL · GLSL Compute Shaders · PBR · Procedural Noise</div>
                 <p>Compute-shader playground for procedural material decay on a PBR sphere — noise-driven rust progression (0/25/50/75/100%), paint cracking and peel, and a dynamic puddle / weather system that wets and dries the ground in real time. Built around an OpenGL compute pipeline with full BRDF response so albedo and roughness shift together as the surface ages. Coursework for Linköping's TNM084 Procedural Methods.</p>
+                <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/aging_shader" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/tnm114-xiangqi/board_AI.png" alt="Custom Qt-based Xiàngqí board mid-game with the trained DQN agent on move" loading="lazy" />
+            <article class="project-item" data-tags="agents course">
+              <img class="project-thumb" src="assets/proof/tnm114-xiangqi/board_AI.png" alt="Custom Qt-based Xiàngqí board mid-game with the trained DQN agent on move" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Xiàngqí AI with Deep Q-Networks</h3>
                 <div class="meta">C++ · Qt · CUDA · DQN · Self-Play</div>
                 <p>Reinforcement-learning agent for Chinese Chess — full Xiàngqí rules engine in C++/Qt, a Deep Q-Network with experience replay and a target network, and CUDA-accelerated training driven by self-play in the spirit of AlphaZero. Win-rate sweeps against random and self-play opponents, plus a playable GUI to face the agent. TNM114 group project at Linköping with Oskar Tengvall.</p>
+                <div class="project-tags"><span class="project-tag">Agents</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/cn_chess_ai" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/tncg15-path-tracing/img-005.png" alt="Cornell-box-style path-traced render with diffuse, glossy and refractive interactions converged" loading="lazy" />
+            <article class="project-item" data-tags="graphics course">
+              <img class="project-thumb" src="assets/proof/tncg15-path-tracing/img-005.png" alt="Cornell-box-style path-traced render with diffuse, glossy and refractive interactions converged" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Path Tracing & Photon Mapping</h3>
                 <div class="meta">C++ · CUDA · Monte Carlo · KD-Tree</div>
                 <p>Two global-illumination renderers written from scratch for TNCG15. Monte Carlo path tracer with a CUDA backend for per-pixel parallel ray generation and progressive accumulation — real-time-feasible against the CPU baseline. Photon-mapping pass scatters photons from light sources, then estimates radiance via KD-tree nearest-neighbour lookup for sharp caustics and indirect lighting. Comparative study of where each technique wins.</p>
+                <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/path_tracer" target="_blank" rel="noopener">Repo ↗</a>
                 <a href="https://youtu.be/eOWYABBVrMc" target="_blank" rel="noopener">Demo ↗</a>
               </div>
             </article>
 
-            <article class="project-item">
-              <img class="project-thumb" src="assets/proof/skiing-openpose/paper_img-004.png" alt="Skiing-action classifier test panel: original video, OpenPose skeleton, ST-GCN class label, and attention map" loading="lazy" />
+            <article class="project-item" data-tags="neural course">
+              <img class="project-thumb" src="assets/proof/skiing-openpose/paper_img-004.png" alt="Skiing-action classifier test panel: original video, OpenPose skeleton, ST-GCN class label, and attention map" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Skiing Action Analysis · OpenPose + ST-GCN</h3>
                 <div class="meta">Python · OpenPose · ST-GCN · Action Recognition</div>
                 <p>Pipeline for classifying skiing techniques from video — OpenPose extracts 2D body keypoints, a Python preprocessor stitches per-frame skeletons into spatial-temporal graphs, and an ST-GCN trains on those graphs to label actions like big-bend carving. Best model (epoch 39, lr 0.1, batch 32) hits 50% Top-1 / 90.9% Top-5. Co-authored, published in <em>Intelligent Computer and Applications</em> Vol. 12 No. 4, April 2022.</p>
+                <div class="project-tags"><span class="project-tag">Neural</span><span class="project-tag">Coursework</span></div>
                 <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=0vffxKEAAAAJ&citation_for_view=0vffxKEAAAAJ:u5HHmVD_uO8C" target="_blank" rel="noopener">Paper ↗</a>
               </div>
             </article>
@@ -2130,7 +2453,7 @@
     </section>
 
     <!-- ── Experience ── -->
-    <section class="section" id="experience">
+    <section class="section reveal" id="experience">
       <div class="section-head">
         <div class="section-label">Experience</div>
         <div class="section-body entry-list">
@@ -2182,24 +2505,42 @@
     </section>
 
     <!-- ── Skills ── -->
-    <section class="section" id="skills">
+    <section class="section reveal" id="skills">
       <div class="section-head">
         <div class="section-label">Skills</div>
-        <div class="section-body skills-grid">
-          <div class="skill-row"><strong>Languages</strong>C++20, CUDA, Python, C#, TypeScript, Rust, GLSL, HLSL</div>
-          <div class="skill-row"><strong>Graphics APIs</strong>Vulkan (incl. KHR ray tracing), OpenGL 4.3, DirectX 12</div>
-          <div class="skill-row"><strong>Rendering</strong>Deferred rendering, hardware RT, path tracing, PBR (Cook-Torrance GGX), global illumination, TAA, SSAO, SSR, CSM</div>
-          <div class="skill-row"><strong>GPU Compute</strong>CUDA kernels, compute shaders, CUDA-OpenGL interop, Nsight / RenderDoc / PIX profiling</div>
-          <div class="skill-row"><strong>Simulation &amp; Math</strong>SPH fluids, Marching Cubes, GJK/EPA collision, BVH, differentiable rendering</div>
-          <div class="skill-row"><strong>Neural Rendering</strong>NeRF, 3D Gaussian Splatting, synchronized multi-camera capture pipelines</div>
-          <div class="skill-row"><strong>Engines &amp; Tools</strong>Custom C++/Vulkan, Godot (GDExtension), Unreal Engine, Blender</div>
-          <div class="skill-row"><strong>Systems</strong>CMake, Git, Linux, Docker, PostgreSQL, low-level performance profiling</div>
+        <div class="section-body">
+          <div class="skill-chips" aria-label="Skill highlights">
+            <span class="skill-chip">C++20</span>
+            <span class="skill-chip">CUDA</span>
+            <span class="skill-chip">Vulkan RT</span>
+            <span class="skill-chip">GLSL</span>
+            <span class="skill-chip">Path tracing</span>
+            <span class="skill-chip">3DGS / NeRF</span>
+            <span class="skill-chip">Taichi</span>
+            <span class="skill-chip">MLS-MPM</span>
+            <span class="skill-chip">TypeScript</span>
+            <span class="skill-chip">MCP / Agents</span>
+            <span class="skill-chip">Python</span>
+            <span class="skill-chip">Godot</span>
+            <span class="skill-chip">CMake</span>
+            <span class="skill-chip">Linux</span>
+          </div>
+          <div class="skills-grid">
+            <div class="skill-row"><strong>Languages</strong>C++20, CUDA, Python, C#, TypeScript, Rust, GLSL, HLSL</div>
+            <div class="skill-row"><strong>Graphics APIs</strong>Vulkan (incl. KHR ray tracing), OpenGL 4.3, DirectX 12</div>
+            <div class="skill-row"><strong>Rendering</strong>Deferred rendering, hardware RT, path tracing, PBR (Cook-Torrance GGX), global illumination, TAA, SSAO, SSR, CSM</div>
+            <div class="skill-row"><strong>GPU Compute</strong>CUDA kernels, compute shaders, CUDA-OpenGL interop, Nsight / RenderDoc / PIX profiling</div>
+            <div class="skill-row"><strong>Simulation &amp; Math</strong>SPH fluids, Marching Cubes, GJK/EPA collision, BVH, differentiable rendering</div>
+            <div class="skill-row"><strong>Neural Rendering</strong>NeRF, 3D Gaussian Splatting, synchronized multi-camera capture pipelines</div>
+            <div class="skill-row"><strong>Engines &amp; Tools</strong>Custom C++/Vulkan, Godot (GDExtension), Unreal Engine, Blender</div>
+            <div class="skill-row"><strong>Systems</strong>CMake, Git, Linux, Docker, PostgreSQL, low-level performance profiling</div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ── How I work ── -->
-    <section class="section">
+    <section class="section reveal">
       <div class="section-head">
         <div class="section-label">How I Work</div>
         <div class="section-body">
@@ -2211,7 +2552,7 @@
     </section>
 
     <!-- ── Education ── -->
-    <section class="section" id="education">
+    <section class="section reveal" id="education">
       <div class="section-head">
         <div class="section-label">Education</div>
         <div class="section-body entry-list">
@@ -2339,70 +2680,207 @@
   </script>
 
   <script>
-    // Theme: system preference by default; toggle persists light/dark override.
+    // Theme: cycle light → dark → system (system follows OS).
     (function () {
       const KEY = 'theme';
       const root = document.documentElement;
       const btn = document.getElementById('theme-toggle');
       const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      const ORDER = ['light', 'dark', 'system'];
 
       function systemTheme() {
         return mq.matches ? 'dark' : 'light';
       }
 
-      function getStored() {
+      function getMode() {
         try {
           const t = localStorage.getItem(KEY);
-          return t === 'light' || t === 'dark' ? t : null;
-        } catch (e) {
-          return null;
-        }
+          if (t === 'light' || t === 'dark' || t === 'system') return t;
+        } catch (e) { /* private mode */ }
+        return 'system';
       }
 
-      function resolve() {
-        return getStored() || systemTheme();
+      function resolve(mode) {
+        return mode === 'system' ? systemTheme() : mode;
       }
 
-      function apply(theme) {
+      function apply(mode) {
+        const theme = resolve(mode);
         root.setAttribute('data-theme', theme);
+        root.setAttribute('data-theme-mode', mode);
         root.style.colorScheme = theme;
         if (!btn) return;
-        const next = theme === 'dark' ? 'light' : 'dark';
-        const source = getStored() ? 'saved' : 'system';
-        btn.setAttribute('aria-label', 'Switch to ' + next + ' theme');
-        btn.title = 'Theme: ' + theme + ' (' + source + ') · click for ' + next;
+        const next = ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length];
+        btn.setAttribute('aria-label', 'Theme mode: ' + mode + '. Click for ' + next);
+        btn.title = 'Theme: ' + mode + (mode === 'system' ? ' → ' + theme : '') + ' · click → ' + next;
       }
 
-      function setTheme(theme, persist) {
-        if (persist) {
-          try { localStorage.setItem(KEY, theme); } catch (e) { /* private mode */ }
-        }
-        apply(theme);
+      function setMode(mode) {
+        try { localStorage.setItem(KEY, mode); } catch (e) { /* ignore */ }
+        apply(mode);
       }
 
-      // Sync (early head script already set data-theme; re-apply labels)
-      apply(resolve());
+      apply(getMode());
 
       if (btn) {
         btn.addEventListener('click', function () {
-          setTheme(resolve() === 'dark' ? 'light' : 'dark', true);
-        });
-        // Shift+click or long-press alternative: reset to system
-        btn.addEventListener('contextmenu', function (e) {
-          e.preventDefault();
-          try { localStorage.removeItem(KEY); } catch (err) { /* ignore */ }
-          apply(systemTheme());
+          const mode = getMode();
+          setMode(ORDER[(ORDER.indexOf(mode) + 1) % ORDER.length]);
         });
       }
 
-      // Follow OS when user has not chosen an override
       const onSystemChange = function () {
-        if (!getStored()) apply(systemTheme());
+        if (getMode() === 'system') apply('system');
       };
-      if (typeof mq.addEventListener === 'function') {
-        mq.addEventListener('change', onSystemChange);
-      } else if (typeof mq.addListener === 'function') {
-        mq.addListener(onSystemChange);
+      if (typeof mq.addEventListener === 'function') mq.addEventListener('change', onSystemChange);
+      else if (typeof mq.addListener === 'function') mq.addListener(onSystemChange);
+    })();
+  </script>
+
+  <script>
+    // Summary expand, active nav, project filters, role lens, video perf, scroll reveal
+    (function () {
+      // ── Summary more ──
+      const moreBtn = document.getElementById('summary-more-btn');
+      const moreEl = document.getElementById('summary-more');
+      if (moreBtn && moreEl) {
+        moreBtn.addEventListener('click', function () {
+          const open = moreEl.hasAttribute('hidden');
+          if (open) {
+            moreEl.removeAttribute('hidden');
+            moreBtn.setAttribute('aria-expanded', 'true');
+            moreBtn.textContent = 'Less detail';
+          } else {
+            moreEl.setAttribute('hidden', '');
+            moreBtn.setAttribute('aria-expanded', 'false');
+            moreBtn.textContent = 'More detail';
+          }
+        });
+      }
+
+      // ── Active section nav ──
+      const navLinks = Array.from(document.querySelectorAll('#section-nav a[data-nav]'));
+      const sections = navLinks
+        .map(function (a) { return document.getElementById(a.getAttribute('data-nav')); })
+        .filter(Boolean);
+      if (navLinks.length && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.id;
+            navLinks.forEach(function (a) {
+              a.classList.toggle('is-active', a.getAttribute('data-nav') === id);
+            });
+          });
+        }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+        sections.forEach(function (s) { io.observe(s); });
+      }
+
+      // ── Project filters ──
+      const filterBar = document.getElementById('project-filters');
+      const items = Array.from(document.querySelectorAll('.project-item[data-tags]'));
+      const empty = document.getElementById('project-empty');
+      let activeFilter = 'all';
+
+      function applyFilter(filter) {
+        activeFilter = filter;
+        let shown = 0;
+        items.forEach(function (item) {
+          const tags = (item.getAttribute('data-tags') || '').split(/\s+/);
+          const ok = filter === 'all' || tags.indexOf(filter) !== -1;
+          item.hidden = !ok;
+          if (ok) shown++;
+        });
+        if (empty) empty.hidden = shown > 0;
+        if (filterBar) {
+          filterBar.querySelectorAll('.filter-chip').forEach(function (chip) {
+            chip.classList.toggle('is-active', chip.getAttribute('data-filter') === filter);
+          });
+        }
+      }
+
+      if (filterBar) {
+        filterBar.addEventListener('click', function (e) {
+          const chip = e.target.closest('.filter-chip');
+          if (!chip) return;
+          applyFilter(chip.getAttribute('data-filter') || 'all');
+        });
+      }
+
+      // ── Role lens → filter projects + scroll ──
+      document.querySelectorAll('.role-chip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          document.querySelectorAll('.role-chip').forEach(function (c) {
+            c.classList.toggle('is-active', c === chip);
+          });
+          const role = chip.getAttribute('data-role') || 'all';
+          const map = { all: 'all', graphics: 'graphics', agents: 'agents', physics: 'physics', neural: 'neural' };
+          applyFilter(map[role] || 'all');
+          const target = document.getElementById(role === 'all' ? 'featured-work' : 'projects');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      // ── Videos: pause when off-screen; lazy-load project videos ──
+      const heroVideo = document.getElementById('hero-video');
+      if (heroVideo && 'IntersectionObserver' in window) {
+        const vio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) heroVideo.play().catch(function () {});
+            else heroVideo.pause();
+          });
+        }, { threshold: 0.15 });
+        vio.observe(heroVideo);
+      }
+
+      document.querySelectorAll('video.lazy-video').forEach(function (vid) {
+        if (!('IntersectionObserver' in window)) {
+          if (vid.dataset.src) { vid.src = vid.dataset.src; vid.play().catch(function () {}); }
+          return;
+        }
+        const lio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) {
+              vid.pause();
+              return;
+            }
+            if (vid.dataset.src && !vid.src) {
+              vid.src = vid.dataset.src;
+              vid.load();
+            }
+            vid.play().catch(function () {});
+          });
+        }, { rootMargin: '120px 0px', threshold: 0.1 });
+        lio.observe(vid);
+      });
+
+      // Also pause any other autoplaying videos when off-screen
+      document.querySelectorAll('video[autoplay]:not(#hero-video)').forEach(function (vid) {
+        if (!('IntersectionObserver' in window)) return;
+        const o = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) vid.play().catch(function () {});
+            else vid.pause();
+          });
+        }, { threshold: 0.15 });
+        o.observe(vid);
+      });
+
+      // ── Scroll reveal ──
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && 'IntersectionObserver' in window) {
+        const revs = document.querySelectorAll('.reveal');
+        const rio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-in');
+              rio.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        revs.forEach(function (el) { rio.observe(el); });
+      } else {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-in'); });
       }
     })();
   </script>
