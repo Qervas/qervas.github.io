@@ -2357,39 +2357,8 @@
           <!-- Ohao Engine -->
           <article class="featured" data-roles="graphics neural">
             <div class="featured-visual">
-              <!-- Diff-IR publish face -->
-              <p class="featured-subcaption">Inverse lab · Diff-IR quality plate · free dense roughness · 1080p SHOW</p>
-              <div class="featured-plate">
-                <img src="assets/proof/ohao_inverse/readme_quality_matrix.jpg" alt="Diff-IR quality plate — spheres, helmet, outdoor: wrong init, recovered materials, and ground truth at 1080p" loading="lazy" width="920" height="480" />
-                <span class="cell-label">Wrong init → recovered → GT · spheres · helmet · outdoor</span>
-              </div>
-              <div class="featured-gallery-2">
-                <div class="cell">
-                  <img src="assets/proof/ohao_inverse/readme_quality_relight.jpg" alt="Novel-light relight and recovered roughness maps from Diff-IR quality plate" loading="lazy" />
-                  <span class="cell-label">Novel-HDRI relight · free roughness maps</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_inverse/readme_pt_frontier.jpg" alt="Path-tracer inverse lab lantern frontier — wrong init, recovered, capture GT, relight" loading="lazy" />
-                  <span class="cell-label">PT capture-gated frontier · holdout 32.5 dB</span>
-                </div>
-              </div>
-              <p class="featured-subcaption">Dense map recovery · Deferred beauty SoT · analytic grads</p>
-              <div class="featured-gallery-3">
-                <div class="cell">
-                  <img src="assets/proof/ohao_inverse/readme_dense_albedo.jpg" alt="Dense albedo MAPTEST — beauty and free-grid albedo map recovery" loading="lazy" />
-                  <span class="cell-label">Dense albedo · free-grid MAPTEST</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_inverse/readme_dense_metal.jpg" alt="Dense metallic MAPTEST — beauty, relight, and metal maps" loading="lazy" />
-                  <span class="cell-label">Dense metal · ORM.b · +26.8 dB</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_inverse/readme_analytic.jpg" alt="Analytic albedo optim GRADCHECK vs finite differences — 19.7× speedup" loading="lazy" />
-                  <span class="cell-label">Analytic optim · 19.7× vs FD</span>
-                </div>
-              </div>
+              <!-- Inverse-lab plates hidden for now (kept in assets/proof/ohao_inverse/) -->
               <!-- Engine raster/RT proof -->
-              <p class="featured-subcaption">Hybrid renderer · deferred PBR + real-time path tracing</p>
               <div class="featured-gallery-3">
                 <div class="cell">
                   <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render — close-up with rich metal, glass, and cable detail" loading="lazy" />
@@ -2402,6 +2371,17 @@
                 <div class="cell">
                   <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration scene — rough to smooth, metal to non-metal gradient" loading="lazy" />
                   <span class="cell-label">MetalRoughSpheres · BRDF</span>
+                </div>
+              </div>
+              <p class="featured-subcaption">Path-tracing pipeline · Intel OIDN denoising on a glossy scene</p>
+              <div class="featured-gallery-2">
+                <div class="cell">
+                  <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
+                  <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/ohao_oidn_denoised.jpg" alt="Same helmet at 16 spp after Intel OIDN denoising — production-quality output" loading="lazy" />
+                  <span class="cell-label">Helmet · 16 spp · OIDN denoised</span>
                 </div>
               </div>
             </div>
@@ -2563,7 +2543,7 @@
             </article>
 
             <article class="project-item" data-tags="graphics neural">
-              <img class="project-thumb" src="assets/proof/ohao_inverse/readme_photo_proxy.jpg" alt="Photo-proxy inverse plate — separate from Ohao Diff-IR; nvdiffrast research path" loading="lazy" width="640" height="400" />
+              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot capture — nvdiffrast turntable inverse rendering research" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>nvdiffrast Turntable IR · research sibling</h3>
                 <div class="meta">Python · PyTorch · nvdiffrast · GGX/Disney BRDF</div>
