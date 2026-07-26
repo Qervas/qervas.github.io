@@ -1,0 +1,44 @@
+/* print.css — Print / PDF styles */
+
+/* ── Print (Cmd+P → PDF) ── */
+@media print {
+  @page { size: A4; margin: 14mm 12mm; }
+  body { background: #fff; color: #000; line-height: 1.45; font-size: 10.5pt; }
+  .page { width: 100%; max-width: none; margin: 0; box-shadow: none; border: none; background: #fff; }
+  a, a:hover { color: #000; text-decoration: none; }
+  .hero { aspect-ratio: auto; min-height: 0; height: auto; padding: 18mm 0 0; background: #fff; border-bottom: 1px solid #999; }
+  .hero img, .hero video, .hero::after { display: none; }
+  .hero-inner { color: #000; padding: 0; position: static; }
+  .hero-mark, .hero-caption { color: #555; }
+  .hero-bottom h1 { color: #000; font-size: 26pt; line-height: 1.0; margin-bottom: 4px; }
+  .hero-role { color: #444; font-size: 9pt; }
+  .hero-top { margin-bottom: 12px; }
+  .summary-lead em, .featured-stack, .stat-label, .summary-sub strong, .featured-copy em, .featured-copy strong { color: #000; }
+  .stats { display: flex; flex-wrap: wrap; border: 1px solid #ccc; }
+  .stat { flex: 1 1 25%; border-right: 1px solid #ccc; padding: 8px 10px; break-inside: avoid; }
+  .stat-num { font-size: 11pt; }
+  .stat-context { font-size: 8pt; color: #555; }
+  .section { padding: 14px 0; break-inside: auto; border-bottom: 1px solid #ccc; }
+  .section-head { grid-template-columns: 110px 1fr; gap: 14px; }
+  .section-label { color: #555; font-size: 7.5pt; }
+  .featured { gap: 10px; margin-bottom: 16px; break-inside: avoid; }
+  .featured-visual, .featured-gallery-3, .featured-gallery-2, .featured-gallery-2x2, .thesis-visual__row { display: none !important; }
+  .thesis-compare-wrap, .thesis-chips, .thesis-compare { display: none !important; }
+  .featured-subcaption { display: none; }
+  .featured-copy h3 { font-size: 13pt; }
+  .featured-copy p { font-size: 9.5pt; line-height: 1.45; }
+  .project-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .project-thumb { display: none; }
+  .project-body { padding: 10px 12px; }
+  .project-item { break-inside: avoid; background: #fff; border: 1px solid #ccc; }
+  .project-item p { font-size: 9pt; }
+  .entry { break-inside: avoid; }
+  .entry li { font-size: 9pt; }
+  .skill-row { font-size: 9pt; }
+  .skill-row strong { font-size: 7.5pt; min-width: 100px; }
+  .lightbox, .footer, .section-nav, .hero-social { display: none !important; }
+  .ethos { font-size: 10pt; }
+  .contact-bar { padding: 8px 0; font-size: 9pt; border-bottom: 1px solid #ccc; }
+  .contact-bar .sep { color: #999; }
+}
+

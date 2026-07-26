@@ -1,0 +1,66 @@
+/* base.css — Body, page shell, skip-link, links */
+
+body {
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, var(--body-glow), transparent 55%),
+    linear-gradient(180deg, var(--body-bg-top) 0%, var(--body-bg-mid) 55%, var(--body-bg-bot) 100%);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background 0.35s var(--ease), color 0.25s var(--ease);
+}
+
+a { color: inherit; }
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.page {
+  width: min(1280px, calc(100vw - 28px));
+  margin: 28px auto 56px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  box-shadow: var(--shadow-lg);
+  /* overflow must stay visible so sticky section-nav works */
+  position: relative;
+  transition: background 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+
+/* warm top hairline */
+.page::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 20%, #c46a3e 50%, var(--accent) 80%, transparent 100%);
+  z-index: 60;
+  pointer-events: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 300;
+  background: var(--accent);
+  color: #fffdf9;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 4px;
+  transition: top 0.2s var(--ease);
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+

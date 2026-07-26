@@ -1,0 +1,78 @@
+/* contact.css — Contact bar + brand icons */
+
+/* ── Contact bar ── */
+.contact-bar {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 15px 38px;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: linear-gradient(180deg, var(--contact-bg-top) 0%, var(--warm-wash) 100%);
+  transition: background 0.35s var(--ease), border-color 0.35s var(--ease), color 0.25s var(--ease);
+}
+
+.contact-bar a {
+  text-decoration: none;
+  transition: color 0.18s var(--ease), opacity 0.18s var(--ease);
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: nowrap;
+}
+
+.contact-bar a:hover { color: var(--accent); }
+.contact-bar a:hover .contact-key { color: var(--accent); }
+
+.contact-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-right: 0.4em;
+  display: block;
+}
+.contact-icon path,
+.contact-icon rect,
+.contact-icon circle { fill: currentColor; }
+
+/* brand colors */
+.contact-email .contact-icon { color: #0078d4; }
+.contact-github .contact-icon { color: #24292f; }
+[data-theme="dark"] .contact-github .contact-icon { color: #e6edf3; }
+.contact-linkedin .contact-icon { color: #0a66c2; }
+.contact-cv .contact-icon { color: #d32f2f; }
+.contact-itch .contact-icon { color: #fa5c5c; }
+
+.contact-key {
+  color: var(--soft);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  margin-right: 0.45em;
+}
+.contact-key::after {
+  content: "·";
+  margin-left: 0.45em;
+  color: var(--rule-strong);
+  font-weight: 400;
+}
+.contact-val {
+  color: var(--muted);
+}
+.contact-bar a:hover .contact-val { color: var(--accent); }
+
+.contact-bar .sep {
+  color: var(--rule-strong);
+  user-select: none;
+}
+
+.contact-meta {
+  color: var(--soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+}
+

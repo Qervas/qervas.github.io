@@ -1,0 +1,94 @@
+/* footer.css — Site footer */
+
+/* ── Footer ── */
+.footer {
+  padding: 24px 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  border-top: 1px solid var(--rule);
+  background: linear-gradient(180deg, var(--paper) 0%, var(--warm-wash) 100%);
+  transition: background 0.35s var(--ease), border-color 0.35s var(--ease), color 0.25s var(--ease);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.18s var(--ease);
+}
+.footer a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Lightbox ── */
+.featured-gallery-2x2 .cell img,
+.featured-gallery-2 .cell img,
+.featured-gallery-3 .cell img,
+.featured-grid-3 img {
+  cursor: zoom-in;
+  transition: opacity 0.25s var(--ease), transform 0.45s var(--ease-out);
+}
+.featured-gallery-2x2 .cell img:hover,
+.featured-gallery-2 .cell img:hover,
+.featured-gallery-3 .cell img:hover,
+.featured-grid-3 img:hover {
+  opacity: 0.92;
+  transform: scale(1.03);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 10, 8, 0.94);
+  z-index: 1000;
+  display: none;
+  cursor: zoom-out;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px 60px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.lightbox.open {
+  display: flex;
+  opacity: 1;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: calc(100% - 48px);
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+  display: block;
+}
+.lightbox-caption {
+  margin-top: 16px;
+  max-width: 90%;
+  color: rgba(253, 249, 243, 0.9);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.5;
+}
+.lightbox-caption:empty { display: none; }
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 26px;
+  color: rgba(253, 249, 243, 0.6);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+

@@ -1,0 +1,187 @@
+/* spine.css — Three-spine pro deck (focus filters) */
+
+/* ── Three-spine pro deck ── */
+.spine-deck {
+  padding: 28px 38px 8px;
+  border-bottom: 1px solid var(--rule);
+  background:
+    radial-gradient(ellipse 80% 80% at 10% 0%, var(--spine-g-soft), transparent 55%),
+    radial-gradient(ellipse 80% 80% at 50% 0%, var(--spine-n-soft), transparent 55%),
+    radial-gradient(ellipse 80% 80% at 90% 0%, var(--spine-a-soft), transparent 55%),
+    linear-gradient(180deg, var(--summary-bg-top), var(--paper));
+}
+.spine-deck-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px 18px;
+  margin-bottom: 16px;
+}
+.spine-deck-kicker {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.spine-deck-title {
+  font: 600 1.35rem/1.25 var(--serif);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.spine-deck-hint {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--soft);
+  letter-spacing: 0.04em;
+}
+.spine-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.spine-card {
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--card-bg);
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  color: inherit;
+  font: inherit;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color 0.25s var(--ease),
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease),
+    opacity 0.25s var(--ease);
+}
+.spine-card::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--spine-color, var(--accent));
+}
+.spine-card[data-spine="graphics"] { --spine-color: var(--spine-g); }
+.spine-card[data-spine="neural"] { --spine-color: var(--spine-n); }
+.spine-card[data-spine="agents"] { --spine-color: var(--spine-a); }
+.spine-card-inner { padding: 16px 16px 18px; }
+.spine-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: color-mix(in srgb, var(--spine-color) 45%, var(--rule));
+}
+.spine-card.is-active {
+  border-color: var(--spine-color);
+  box-shadow: var(--shadow-card), 0 0 0 1px color-mix(in srgb, var(--spine-color) 35%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--spine-color) 10%, var(--card-bg)), var(--card-bg-end));
+}
+.spine-card.is-dim {
+  opacity: 0.42;
+  transform: none;
+  box-shadow: none;
+}
+.spine-card-tag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--spine-color);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.spine-card h2 {
+  font: 600 1.12rem/1.2 var(--serif);
+  letter-spacing: -0.015em;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+.spine-card p {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-bottom: 12px;
+  min-height: 3.8em;
+}
+.spine-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.spine-proof span {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spine-color) 12%, transparent);
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--spine-color) 28%, var(--rule));
+}
+.spine-all-btn {
+  margin-top: 14px;
+  margin-bottom: 8px;
+  appearance: none;
+  border: 1px dashed var(--rule-strong);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.spine-all-btn:hover,
+.spine-all-btn.is-active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* spine focus dims non-matching work */
+body[data-spine-focus="graphics"] .spine-target:not([data-spines~="graphics"]),
+body[data-spine-focus="neural"] .spine-target:not([data-spines~="neural"]),
+body[data-spine-focus="agents"] .spine-target:not([data-spines~="agents"]) {
+  opacity: 0.28;
+  filter: grayscale(0.35);
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+}
+body[data-spine-focus="graphics"] .spine-target[data-spines~="graphics"],
+body[data-spine-focus="neural"] .spine-target[data-spines~="neural"],
+body[data-spine-focus="agents"] .spine-target[data-spines~="agents"] {
+  opacity: 1;
+  filter: none;
+}
+.spine-target {
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+}
+.featured.spine-target {
+  border-left: 3px solid transparent;
+  padding-left: 8px;
+  margin-left: -8px;
+}
+body[data-spine-focus="graphics"] .featured.spine-target[data-spines~="graphics"] { border-left-color: var(--spine-g); }
+body[data-spine-focus="neural"] .featured.spine-target[data-spines~="neural"] { border-left-color: var(--spine-n); }
+body[data-spine-focus="agents"] .featured.spine-target[data-spines~="agents"] { border-left-color: var(--spine-a); }
+
+.page {
+  border-radius: 4px;
+}
+.page::before {
+  height: 3px;
+  background: linear-gradient(90deg,
+    var(--spine-g) 0%,
+    var(--spine-g) 33%,
+    var(--spine-n) 33%,
+    var(--spine-n) 66%,
+    var(--spine-a) 66%,
+    var(--spine-a) 100%);
+}
+
