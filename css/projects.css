@@ -1,0 +1,97 @@
+/* projects.css — Selected projects grid */
+
+/* ── Selected projects grid ── */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.project-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color 0.28s var(--ease),
+    transform 0.28s var(--ease),
+    box-shadow 0.28s var(--ease),
+    background 0.35s var(--ease);
+}
+
+.project-item:hover {
+  border-color: rgba(155, 65, 35, 0.45);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.project-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-bottom: 1px solid var(--rule);
+  background: #1a1513;
+  transition: transform 0.5s var(--ease-out), opacity 0.28s var(--ease);
+}
+.project-item:hover .project-thumb {
+  opacity: 0.96;
+  transform: scale(1.04);
+}
+
+.project-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: linear-gradient(180deg, var(--card-bg) 0%, var(--card-bg-end) 100%);
+}
+
+.project-item h3 {
+  font: 600 1rem var(--serif);
+  letter-spacing: -0.015em;
+}
+
+.project-item .meta {
+  margin-top: 6px;
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.project-item p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.project-item a {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 12px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  padding-bottom: 1px;
+  transition: color 0.2s var(--ease), background-size 0.28s var(--ease);
+  width: fit-content;
+}
+.project-item a:hover {
+  color: var(--accent-hover);
+  background-size: 40% 1px;
+}
+

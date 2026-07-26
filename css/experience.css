@@ -1,0 +1,62 @@
+/* experience.css — Experience list */
+
+/* ── Experience ── */
+.entry-list { display: grid; gap: 26px; }
+
+.entry {
+  padding: 4px 0 4px 14px;
+  border-left: 2px solid transparent;
+  transition: border-color 0.22s var(--ease), background 0.22s var(--ease);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.entry:hover {
+  border-left-color: var(--accent);
+  background: linear-gradient(90deg, var(--accent-soft), transparent 70%);
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.entry-title {
+  font: 600 1.05rem var(--serif);
+  letter-spacing: -0.01em;
+}
+
+.entry-subtitle {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.entry-period {
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.entry ul {
+  margin: 2px 0 0 18px;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.entry li {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.entry li strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+

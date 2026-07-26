@@ -1,0 +1,40 @@
+/* skills.css — Skills rows */
+
+/* ── Skills ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px 20px;
+}
+
+.skill-row {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.skill-row strong {
+  display: inline-block;
+  min-width: 140px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ── Ethos ── */
+.ethos {
+  font: 400 1.08rem / 1.65 var(--serif);
+  color: var(--ink);
+  max-width: 60ch;
+  font-style: italic;
+}
+
+.ethos strong {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+}
+

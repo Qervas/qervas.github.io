@@ -1,0 +1,108 @@
+/* tokens.css — Color tokens, type scale, light/dark theme variables */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f0e9;
+  --paper: #fffdf9;
+  --ink: #171412;
+  --muted: #645d55;
+  --soft: #9a9083;
+  --rule: #ddd4c8;
+  --rule-strong: #c9bfb0;
+  --accent: #9b4123;
+  --accent-hover: #7d341c;
+  --accent-soft: rgba(155, 65, 35, 0.08);
+  --accent-mid: rgba(155, 65, 35, 0.14);
+  --warm-wash: #fbf7ef;
+  --card-bg: #fffaf4;
+  --card-bg-end: #fffdf9;
+  --nav-bg: rgba(251, 247, 239, 0.88);
+  --body-glow: rgba(155, 65, 35, 0.06);
+  --body-bg-top: #f8f4ed;
+  --body-bg-mid: #f0e8dc;
+  --body-bg-bot: #ebe3d6;
+  --contact-bg-top: #fffefb;
+  --summary-bg-top: #fffefb;
+  --shadow-sm: 0 1px 2px rgba(47, 35, 25, 0.05);
+  --shadow-md: 0 8px 28px rgba(47, 35, 25, 0.08), 0 2px 8px rgba(47, 35, 25, 0.04);
+  --shadow-lg: 0 28px 70px rgba(47, 35, 25, 0.12), 0 8px 20px rgba(47, 35, 25, 0.05);
+  --shadow-card: 0 12px 36px rgba(47, 35, 25, 0.10), 0 2px 8px rgba(47, 35, 25, 0.04);
+  --toggle-bg: rgba(255, 253, 249, 0.92);
+  --toggle-border: var(--rule-strong);
+  --toggle-shadow: 0 8px 28px rgba(47, 35, 25, 0.14);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --nav-h: 42px;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Newsreader', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  /* three pro spines */
+  --spine-g: #c45c2a;
+  --spine-g-soft: rgba(196, 92, 42, 0.12);
+  --spine-n: #3d6f9e;
+  --spine-n-soft: rgba(61, 111, 158, 0.12);
+  --spine-a: #2a8f6f;
+  --spine-a-soft: rgba(42, 143, 111, 0.12);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1014;
+  --paper: #151820;
+  --ink: #eef1f6;
+  --muted: #9aa3b2;
+  --soft: #6f7888;
+  --rule: #2a3140;
+  --rule-strong: #3d4658;
+  --accent: #e07a45;
+  --accent-hover: #f0925e;
+  --accent-soft: rgba(224, 122, 69, 0.14);
+  --accent-mid: rgba(224, 122, 69, 0.22);
+  --warm-wash: #1a1e28;
+  --card-bg: #1b2030;
+  --card-bg-end: #161a24;
+  --nav-bg: rgba(21, 24, 32, 0.9);
+  --body-glow: rgba(224, 122, 69, 0.1);
+  --body-bg-top: #0c0e14;
+  --body-bg-mid: #0a0c11;
+  --body-bg-bot: #08090d;
+  --contact-bg-top: #1a1e28;
+  --summary-bg-top: #171b24;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 28px 70px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --toggle-bg: rgba(21, 24, 32, 0.92);
+  --toggle-border: var(--rule-strong);
+  --toggle-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --spine-g: #e07a45;
+  --spine-g-soft: rgba(224, 122, 69, 0.16);
+  --spine-n: #6b9fd4;
+  --spine-n-soft: rgba(107, 159, 212, 0.16);
+  --spine-a: #3dcb9a;
+  --spine-a-soft: rgba(61, 203, 154, 0.16);
+}
+
+html { scroll-behavior: smooth; }
+
+.section[id] { scroll-margin-top: calc(var(--nav-h) + 16px); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+::selection {
+  background: var(--accent-mid);
+  color: var(--ink);
+}
+

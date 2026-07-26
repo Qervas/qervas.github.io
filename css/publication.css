@@ -1,0 +1,21 @@
+/* publication.css — Publication block */
+
+/* ── Publication ── */
+.pub {
+  border-left: 3px solid var(--accent);
+  padding: 14px 20px;
+  background: linear-gradient(90deg, var(--accent-soft), rgba(155, 65, 35, 0.03));
+  border-radius: 0 var(--radius) var(--radius) 0;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.pub:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateX(2px);
+}
+
+.pub-title { font-family: var(--serif); font-style: italic; font-size: 0.96rem; }
+.pub-authors { font-size: 0.86rem; color: var(--muted); margin-top: 5px; }
+.pub-authors em { color: var(--accent); font-style: normal; font-weight: 600; }
+.pub-venue { font-family: var(--mono); font-size: 0.72rem; color: var(--soft); margin-top: 4px; }
+

@@ -1,0 +1,28 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Shaoxuan Yin",
+  "alternateName": [
+    "Frank Yin",
+    "Qervas"
+  ],
+  "url": "https://qervas.github.io/",
+  "email": "mailto:frankyin17@outlook.com",
+  "jobTitle": "Graphics / GPU Systems Engineer",
+  "alumniOf": [
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Link\u00f6ping University"
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      "name": "Beijing Information Science and Technology University"
+    }
+  ],
+  "sameAs": [
+    "https://github.com/Qervas",
+    "https://www.linkedin.com/in/sxyin/",
+    "https://frankyin17.itch.io/",
+    "https://www.youtube.com/@frankyin8509"
+  ]
+}

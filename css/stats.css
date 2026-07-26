@@ -1,0 +1,116 @@
+/* stats.css — Stats grid + cadence heatmap */
+
+/* ── Stats with context ── */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-bottom: 1px solid var(--rule);
+}
+
+.stat {
+  padding: 24px 22px;
+  border-right: 1px solid var(--rule);
+  transition: background 0.22s var(--ease);
+}
+
+.stat:last-child { border-right: none; }
+.stat:hover { background: var(--accent-soft); }
+
+.cadence {
+  padding: 22px 28px 26px;
+  border-bottom: 1px solid var(--rule);
+  background: linear-gradient(180deg, var(--warm-wash) 0%, var(--paper) 100%);
+}
+
+.cadence-link {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  min-height: 88px;
+}
+
+.cadence-link:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.cadence img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 140px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+[data-theme="dark"] .cadence img {
+  filter: brightness(1.15) contrast(1.05) saturate(1.1);
+  opacity: 0.95;
+}
+.cadence-caption {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+/* stats mobile rules live in the main responsive block below */
+
+.stat-num {
+  display: block;
+  font-family: var(--mono);
+  font-size: 1.48rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-label {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.stat-context {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+/* ── Sections ── */
+.section {
+  padding: 44px 42px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section:last-of-type { border-bottom: none; }
+
+.section-head {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.section-label {
+  color: var(--soft);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding-top: 6px;
+  position: sticky;
+  top: calc(var(--nav-h) + 12px);
+}
+
+.section-body { min-width: 0; }
+
