@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Glossary — Neural Capture</title>
+  <meta name="description" content="Jargon dictionary for the monograph" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-page="glossary" data-root="..">
+  <div class="progress" aria-hidden="true"></div>
+      <nav class="toc" aria-label="Chapters">
+    <div class="toc-brand">Neural Capture · Monograph</div>
+    <p class="toc-title">Thesis<span>Show first · deep dive later</span></p>
+    <div class="group">Show (demo)</div>
+    <a href="show.html" data-page="show"><span class="num">▶</span>Demo tour · 5 stops</a>
+    <a href="evaluation.html" data-page="evaluation"><span class="num">R</span>Results gallery</a>
+    <a href="../index.html" data-page="home"><span class="num">00</span>Cover</a>
+    <div class="group">Capture system</div>
+    <a href="architecture.html" data-page="architecture"><span class="num">01</span>Architecture</a>
+    <a href="hardware.html" data-page="hardware"><span class="num">02</span>Hardware</a>
+    <a href="capture.html" data-page="capture"><span class="num">03</span>Capture loop</a>
+    <a href="gui.html" data-page="gui"><span class="num">04</span>GUI wizard</a>
+    <div class="group">Thesis science</div>
+    <a href="protocol.html" data-page="protocol"><span class="num">05</span>Studio protocol</a>
+    <a href="outdoor.html" data-page="outdoor"><span class="num">06</span>Outdoor · Gränsö</a>
+    <div class="group">Reference</div>
+    <a href="status.html" data-page="status"><span class="num">S</span>Status</a>
+    <a href="build.html" data-page="build"><span class="num">B</span>Build</a>
+    <a href="glossary.html" data-page="glossary" class="active"><span class="num">G</span>Glossary</a>
+    <a href="bluetooth.html" data-page="bluetooth"><span class="num">·</span>Bluetooth (detail)</a>
+    <a href="session.html" data-page="session"><span class="num">·</span>Sessions (detail)</a>
+    <div class="toc-foot">Keys on Demo tour: <kbd>1</kbd>–<kbd>5</kbd><br />
+      <a href="https://github.com/Qervas/CamMatrixCapture">Code</a> ·
+      <a href="https://archive.org/details/captured_objects_dataset">Dataset</a>
+    </div>
+  </nav>
+  <div class="mobile-toc">Neural Capture · Demo: open Demo tour</div>
+
+  <main class="book">
+    <article class="page">
+      <p class="crumb"><a href="../index.html">Monograph</a> · Glossary</p>
+      <header class="chapter-head reveal">
+        <div class="chapter-num">G</div>
+        <div>
+          <p class="chapter-kicker">Reference</p>
+          <h1>Glossary</h1>
+        </div>
+      </header>
+      <div class="prose reveal">
+        <p class="lead">Hover dotted terms in chapter text for the same definitions. Grouped below for scanning.</p>
+      </div>
+      <div id="glossary-root" class="reveal"></div>
+
+      <nav class="pager">
+        <a href="build.html"><div class="label">← Previous</div><div class="title">11 · Build</div></a>
+        <a class="next" href="../index.html"><div class="label">Next →</div><div class="title">00 · Cover</div></a>
+      </nav>
+    </article>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const G = window.OHAO_GLOSSARY || {};
+      const groups = {};
+      for (const [k, v] of Object.entries(G)) {
+        const g = v.group || "Other";
+        (groups[g] = groups[g] || []).push([k, v]);
+      }
+      const root = document.getElementById("glossary-root");
+      for (const g of Object.keys(groups).sort()) {
+        const h = document.createElement("h2");
+        h.textContent = g;
+        h.style.cssText = "font-family:var(--font-display);margin:2rem 0 0.75rem";
+        root.appendChild(h);
+        const table = document.createElement("table");
+        table.className = "data-table";
+        table.innerHTML = "<thead><tr><th>Term</th><th>Expansion</th><th>Definition</th></tr></thead>";
+        const tb = document.createElement("tbody");
+        for (const [k, v] of groups[g].sort((a,b)=>a[0].localeCompare(b[0]))) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `<td><code>${k}</code></td><td>${v.expand||""}</td><td>${v.def||""}</td>`;
+          tb.appendChild(tr);
+        }
+        table.appendChild(tb);
+        root.appendChild(table);
+      }
+    });
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="../js/glossary-data.js"></script>
+  <script src="../js/glossary.js"></script>
+  <script src="../js/chrome.js"></script>
+</body>
+</html>

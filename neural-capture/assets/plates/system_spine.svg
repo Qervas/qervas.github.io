@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" font-family="DM Sans, system-ui, sans-serif">
+  <rect width="980" height="420" fill="#0d1016"/>
+  <text x="40" y="36" fill="#c9a27a" font-size="12" letter-spacing="3">SYSTEM SPINE · CAMMATRIXCAPTURE + THESIS PIPELINE</text>
+  <!-- UI -->
+  <rect x="40" y="70" width="200" height="70" rx="4" fill="#171b24" stroke="#c9a27a" stroke-width="1.5"/>
+  <text x="140" y="100" text-anchor="middle" fill="#c9a27a" font-size="11" letter-spacing="2">WINUI 3 WIZARD</text>
+  <text x="140" y="122" text-anchor="middle" fill="#ebe4d6" font-size="13">Connect · Setup · Capture · Done</text>
+  <!-- arrow -->
+  <line x1="240" y1="105" x2="290" y2="105" stroke="#6e685c" stroke-width="1.5" marker-end="url(#a)"/>
+  <!-- API -->
+  <rect x="290" y="70" width="170" height="70" rx="4" fill="#171b24" stroke="#6eb8d4" stroke-width="1.75"/>
+  <text x="375" y="100" text-anchor="middle" fill="#6eb8d4" font-size="11" letter-spacing="2">CAPTURECORE.DLL</text>
+  <text x="375" y="122" text-anchor="middle" fill="#ebe4d6" font-size="13">CamMatrix_* C API</text>
+  <!-- three modules -->
+  <line x1="375" y1="140" x2="375" y2="180" stroke="#6e685c" stroke-width="1.5"/>
+  <line x1="140" y1="180" x2="700" y2="180" stroke="#6e685c" stroke-width="1.5"/>
+  <line x1="140" y1="180" x2="140" y2="200" stroke="#6e685c"/>
+  <line x1="375" y1="180" x2="375" y2="200" stroke="#6e685c"/>
+  <line x1="700" y1="180" x2="700" y2="200" stroke="#6e685c"/>
+  <rect x="50" y="200" width="180" height="90" rx="4" fill="#11141a" stroke="#6eb8d4" stroke-width="1.5"/>
+  <text x="140" y="235" text-anchor="middle" fill="#6eb8d4" font-size="11" letter-spacing="1">CAMERAMANAGER</text>
+  <text x="140" y="258" text-anchor="middle" fill="#a39c8e" font-size="12">Sapera · Snap/Wait</text>
+  <text x="140" y="276" text-anchor="middle" fill="#a39c8e" font-size="12">parallel groups · stagger</text>
+  <rect x="285" y="200" width="180" height="90" rx="4" fill="#11141a" stroke="#c9a27a" stroke-width="1.5"/>
+  <text x="375" y="235" text-anchor="middle" fill="#c9a27a" font-size="11" letter-spacing="1">BLUETOOTH / TT</text>
+  <text x="375" y="258" text-anchor="middle" fill="#a39c8e" font-size="12">BLE scan · connect</text>
+  <text x="375" y="276" text-anchor="middle" fill="#a39c8e" font-size="12">rotate · tilt · zero</text>
+  <rect x="520" y="200" width="180" height="90" rx="4" fill="#11141a" stroke="#7dba8a" stroke-width="1.5"/>
+  <text x="610" y="235" text-anchor="middle" fill="#7dba8a" font-size="11" letter-spacing="1">SESSIONMANAGER</text>
+  <text x="610" y="258" text-anchor="middle" fill="#a39c8e" font-size="12">pos_XXX / cam_YY.tiff</text>
+  <text x="610" y="276" text-anchor="middle" fill="#a39c8e" font-size="12">session metadata</text>
+  <!-- state machine -->
+  <rect x="740" y="70" width="200" height="220" rx="4" fill="#171b24" stroke="#6eb8d4" stroke-width="1.5"/>
+  <text x="840" y="100" text-anchor="middle" fill="#6eb8d4" font-size="11" letter-spacing="2">STATE MACHINE</text>
+  <text x="840" y="130" text-anchor="middle" fill="#ebe4d6" font-size="12">Idle</text>
+  <text x="840" y="155" text-anchor="middle" fill="#a39c8e" font-size="11">↓ StartCapture</text>
+  <text x="840" y="180" text-anchor="middle" fill="#ebe4d6" font-size="12">Capturing</text>
+  <text x="840" y="205" text-anchor="middle" fill="#a39c8e" font-size="11">↓ StartRotation</text>
+  <text x="840" y="230" text-anchor="middle" fill="#ebe4d6" font-size="12">Rotating → Settling</text>
+  <text x="840" y="260" text-anchor="middle" fill="#a39c8e" font-size="11">↓ SettlingComplete</text>
+  <text x="840" y="285" text-anchor="middle" fill="#ebe4d6" font-size="12">Idle (next pos)</text>
+  <!-- offline pipeline -->
+  <rect x="40" y="320" width="900" height="70" rx="4" fill="#11141a" stroke="#2a3140" stroke-width="1.5"/>
+  <text x="60" y="350" fill="#c9a27a" font-size="11" letter-spacing="2">OFFLINE THESIS PIPELINE</text>
+  <text x="60" y="372" fill="#a39c8e" font-size="13">TIFF session → RealityCapture + ArUco (pose gate) → Nerfstudio Nerfacto / Splatfacto → PSNR / plates</text>
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#6e685c"/>
+    </marker>
+  </defs>
+</svg>

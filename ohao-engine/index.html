@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OHAO Engine — Demo Booth | Shaoxuan Yin</title>
+  <meta name="description" content="Interview demo for OHAO: solo Vulkan 1.3 hybrid renderer — KHR path tracing, deferred, ReSTIR, DLSS RR, Diff-IR inverse lab. Visual pitch, not a textbook." />
+  <meta name="author" content="Shaoxuan (Frank) Yin" />
+  <link rel="canonical" href="https://qervas.github.io/ohao-engine/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="OHAO Engine — Demo Booth" />
+  <meta property="og:description" content="Vulkan hybrid RT · real-time path tracing · inverse lab. Drag compares. Interview-ready." />
+  <meta property="og:image" content="https://qervas.github.io/ohao-engine/assets/images/ohao_helmet.jpg" />
+  <meta property="og:url" content="https://qervas.github.io/ohao-engine/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav__brand" href="#hero">
+      <span class="nav__dot" aria-hidden="true"></span>
+      <span><strong>OHAO Engine</strong> · Demo</span>
+    </a>
+    <ul class="nav__links">
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#realtime">Realtime</a></li>
+      <li><a href="#inverse">Inverse</a></li>
+      <li><a href="#interview">Interview</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="nav__keys">Keys 1–5</span>
+      <a class="nav__cta" href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- 1 HERO -->
+  <section class="section hero" id="hero">
+    <div class="wrap--wide hero__grid">
+      <div class="reveal is-in">
+        <p class="kicker">Solo C++20 · Vulkan 1.3 · no editor host</p>
+        <h1>
+          Hybrid renderer I own
+          <span class="hero__title-em">end to end</span> —
+          path tracer + deferred on one scene graph.
+        </h1>
+        <p class="lead" style="margin-top:18px">
+          Not a Unity plugin. Not a toy Cornell box.
+          <strong>~52K lines C++</strong>, <strong>~14K GLSL</strong>, 121 shaders —
+          KHR RT, ReSTIR GI, DLSS Ray Reconstruction, and a multi-pipeline
+          <strong>inverse lab</strong> with published ΔPSNR plates.
+        </p>
+        <div class="hero__meta">
+          <span>Shaoxuan (Frank) Yin</span>
+          <span>github.com/Qervas/ohao_engine</span>
+          <span>Graphics / GPU systems</span>
+        </div>
+
+        <div class="stats" aria-label="Key metrics">
+          <div class="stat">
+            <div class="stat__n">~67 fps</div>
+            <div class="stat__l">RT path-traced helmet orbit<br />DLSS-RR · outdoor HDRI</div>
+          </div>
+          <div class="stat">
+            <div class="stat__n">+24.5 dB</div>
+            <div class="stat__l">Diff-IR quality plate ΔPSNR<br />outdoor dense roughness</div>
+          </div>
+          <div class="stat">
+            <div class="stat__n">2 pipes</div>
+            <div class="stat__l">Deferred + KHR PT share<br />scene · materials · TLAS</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#stack" data-story>Watch the story</a>
+          <a class="btn" href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">Source</a>
+          <a class="btn btn--ghost" href="https://github.com/Qervas/ohao_engine/blob/master/docs/media/inverse/RESULTS.md" target="_blank" rel="noopener">Inverse RESULTS</a>
+          <a class="btn btn--ghost" href="https://qervas.github.io/" target="_blank" rel="noopener">Portfolio</a>
+        </div>
+      </div>
+
+      <div class="hero-stage reveal is-in" style="transition-delay:0.1s">
+        <div class="hero-stage__glow" aria-hidden="true"></div>
+        <div class="hero-badge"><i></i> Live · path-traced orbit</div>
+        <video
+          class="hero-video"
+          src="assets/videos/ohao_helmet_orbit.mp4"
+          poster="assets/images/ohao_helmet.jpg"
+          muted loop playsinline autoplay
+          style="width:100%;height:100%;object-fit:cover;position:relative;z-index:1"
+        ></video>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 STACK -->
+  <section class="section" id="stack">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="kicker">01 — Architecture</p>
+        <h2>One scene. Two rendering contracts.</h2>
+        <p class="lead">
+          Built to learn how a modern hybrid renderer is wired — not wrapped in an engine SDK.
+          Path tracer is ground truth and indirect light. Deferred is interactive iteration.
+          Hybrid adds RT shadows + 1-bounce RT GI on the deferred G-buffer.
+        </p>
+      </div>
+
+      <div class="pipeline-grid reveal">
+        <div class="pipe-card">
+          <div class="tag">Path tracer</div>
+          <h3>Vulkan KHR RT</h3>
+          <p>Raygen / closest-hit / miss / any-hit. MIS with Owen-scrambled Sobol. Offline + realtime rgen variants. NEE, env CDF, progressive accumulation.</p>
+        </div>
+        <div class="pipe-card">
+          <div class="tag">Deferred</div>
+          <h3>Real-time product path</h3>
+          <p>G-buffer, bindless materials, PBR (Cook-Torrance GGX). Shared TLAS with the RT stack. Fast iteration without reloading the world.</p>
+        </div>
+        <div class="pipe-card">
+          <div class="tag">Systems</div>
+          <h3>Not only pixels</h3>
+          <p>Physics (GJK/EPA + BVH), audio, animation, scene ECS. Same C++20 modular layout — render / gpu / physics / scene crates.</p>
+        </div>
+      </div>
+
+      <div class="gallery-2 reveal">
+        <div class="media-frame">
+          <img src="assets/images/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR close-up" loading="lazy" />
+          <div class="media-caption">DamagedHelmet · PBR metal / glass / cables</div>
+        </div>
+        <div class="media-frame">
+          <img src="assets/images/ohao_lantern.jpg" alt="Lantern scene with emissive glow" loading="lazy" />
+          <div class="media-caption">Lantern · emissive + wood structure</div>
+        </div>
+      </div>
+
+      <div class="reveal" style="margin-top:24px">
+        <div class="media-frame">
+          <img src="assets/images/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration" loading="lazy" />
+          <div class="media-caption">MetalRoughSpheres · rough↔smooth · metal↔dielectric calibration grid</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 REALTIME -->
+  <section class="section" id="realtime">
+    <div class="wrap--wide">
+      <div class="reveal">
+        <p class="kicker">02 — Real-time path tracing</p>
+        <h2>Interactive 1-spp that still looks intentional.</h2>
+        <p class="lead">
+          NVIDIA <strong>DLSS 4 Ray Reconstruction</strong> (raw NGX Vulkan on Linux) + vendor-neutral
+          <strong>SVGF</strong>. <strong>ReSTIR GI</strong> on outdoor HDRI. Offline path: Intel <strong>OIDN</strong> + NRD compose.
+        </p>
+      </div>
+
+      <div class="problem-grid" style="margin-top:32px">
+        <div class="reveal">
+          <p class="kicker" style="margin-bottom:10px">ReSTIR GI · outdoor</p>
+          <div class="compare" style="aspect-ratio:16/11;min-height:300px" aria-label="ReSTIR off vs on">
+            <div class="compare__layer compare__layer--base">
+              <img src="assets/images/ohao_restir_off.jpg" alt="ReSTIR off" />
+            </div>
+            <div class="compare__reveal">
+              <div class="compare__layer">
+                <img src="assets/images/ohao_restir_on.jpg" alt="ReSTIR on" />
+              </div>
+            </div>
+            <div class="compare__divider" aria-hidden="true">
+              <div class="compare__handle">⟷</div>
+            </div>
+            <span class="compare__tag compare__tag--l">ReSTIR off</span>
+            <span class="compare__tag compare__tag--r">ReSTIR on</span>
+            <span class="compare__hint">Drag</span>
+          </div>
+        </div>
+        <div class="reveal">
+          <p class="kicker" style="margin-bottom:10px">OIDN · 16 spp helmet</p>
+          <div class="compare" style="aspect-ratio:16/11;min-height:300px" aria-label="OIDN noisy vs denoised">
+            <div class="compare__layer compare__layer--base">
+              <img src="assets/images/ohao_oidn_noisy.jpg" alt="16 spp raw" />
+            </div>
+            <div class="compare__reveal">
+              <div class="compare__layer">
+                <img src="assets/images/ohao_oidn_denoised.jpg" alt="OIDN denoised" />
+              </div>
+            </div>
+            <div class="compare__divider" aria-hidden="true">
+              <div class="compare__handle">⟷</div>
+            </div>
+            <span class="compare__tag compare__tag--l">16 spp raw</span>
+            <span class="compare__tag compare__tag--r">OIDN</span>
+            <span class="compare__hint">Drag</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-row reveal" style="margin-top:28px;grid-template-columns:repeat(4,1fr)">
+        <div class="metric"><strong>DLSS-RR</strong><span>NGX Vulkan · Linux</span></div>
+        <div class="metric"><strong>SVGF</strong><span>vendor-neutral denoise</span></div>
+        <div class="metric"><strong>ReSTIR</strong><span>GI reservoirs · outdoor</span></div>
+        <div class="metric"><strong>OIDN / NRD</strong><span>offline + compose</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 INVERSE -->
+  <section class="section" id="inverse">
+    <div class="wrap--wide">
+      <div class="reveal">
+        <p class="kicker">03 — Inverse lab</p>
+        <h2>Recover materials from pixels — on the same Vulkan host.</h2>
+        <p class="lead">
+          Multi-pipeline IR: <strong>path-tracer oracle</strong> (capture-gated LABTEST) +
+          <strong>Diff-IR Deferred</strong> sibling where free dense maps are the beauty source of truth.
+          Fit is train-only. Published dB always name the <strong>metric domain</strong>.
+        </p>
+      </div>
+
+      <div class="reveal" style="margin-top:28px">
+        <div class="media-frame">
+          <img src="assets/inverse/readme_quality_matrix.jpg" alt="Diff-IR quality plate matrix" loading="lazy" />
+          <div class="media-caption">Diff-IR quality plate · 1080p SHOW · spheres · helmet · outdoor — wrong init → recovered → GT</div>
+        </div>
+      </div>
+
+      <div class="reveal" style="overflow-x:auto">
+        <table class="table-clean">
+          <thead>
+            <tr>
+              <th>Preset</th>
+              <th>Init → train PSNR</th>
+              <th>ΔPSNR</th>
+              <th>Rough map MSE</th>
+              <th>Domain</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>spheres</td>
+              <td>38.3 → 58.1</td>
+              <td class="hi">+19.8 dB</td>
+              <td>0.362 → 0.179</td>
+              <td>Deferred dense ORM · 1080p</td>
+            </tr>
+            <tr>
+              <td>helmet</td>
+              <td>35.8 → 57.6</td>
+              <td class="hi">+21.8 dB</td>
+              <td>0.362 → 0.081</td>
+              <td>same</td>
+            </tr>
+            <tr>
+              <td>outdoor</td>
+              <td>32.4 → 56.9</td>
+              <td class="hi">+24.5 dB</td>
+              <td>0.362 → 0.194</td>
+              <td>same</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="gallery-2 reveal" style="margin-top:28px">
+        <div class="media-frame">
+          <img src="assets/inverse/readme_quality_relight.jpg" alt="Novel light relight and roughness maps" loading="lazy" />
+          <div class="media-caption">Novel-HDRI relight + recovered roughness maps</div>
+        </div>
+        <div class="media-frame">
+          <img src="assets/inverse/readme_pt_frontier.jpg" alt="PT capture-gated LABTEST lantern" loading="lazy" />
+          <div class="media-caption">PT capture-gated oracle · lantern frontier · holdout 32.5 dB</div>
+        </div>
+      </div>
+
+      <div class="gallery-2 reveal">
+        <div class="media-frame">
+          <img src="assets/inverse/readme_dense_metal.jpg" alt="Dense metallic MAPTEST" loading="lazy" />
+          <div class="media-caption">Dense metallic ORM.b · ΔPSNR +26.8 dB · map MSE 0.405 → 0.006</div>
+        </div>
+        <div class="media-frame">
+          <img src="assets/inverse/readme_museum.jpg" alt="Museum amphora dense albedo" loading="lazy" />
+          <div class="media-caption">Museum amphora · MAPTEST +21.5 dB · domain ohao_museum_studio_protocol</div>
+        </div>
+      </div>
+
+      <div class="callout reveal" style="margin-top:28px;padding:18px 20px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0;font-family:var(--serif);font-size:1.1rem;line-height:1.45">
+        Analytic albedo path: GRADCHECK vs finite differences, ~19.7× wall-clock vs full 3-pass coord FD.
+        <span style="display:block;margin-top:8px;font-family:var(--mono);font-size:0.7rem;color:var(--soft);letter-spacing:0.04em">Not reverse-mode autodiff theater — linear solve + residual + sparse polish</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 INTERVIEW -->
+  <section class="section cheat" id="interview">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="kicker">04 — Interview mode</p>
+        <h2>They ask X. You point here.</h2>
+        <p class="lead">
+          Keyboard <strong>1–5</strong> jumps beats. Send this URL before the call.
+          No textbook chapters — proof first.
+        </p>
+      </div>
+
+      <table class="cheat-table reveal">
+        <thead>
+          <tr>
+            <th>They ask</th>
+            <th>You show</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>“What is OHAO?”</td>
+            <td><a href="#hero">Hero</a> — hybrid Vulkan RT, orbit video, ~67 fps claim</td>
+          </tr>
+          <tr>
+            <td>“Path tracer or raster?”</td>
+            <td><a href="#stack">Stack</a> — both, shared scene / materials / TLAS</td>
+          </tr>
+          <tr>
+            <td>“How do you make 1-spp usable?”</td>
+            <td><a href="#realtime">Realtime</a> — drag ReSTIR + OIDN compares</td>
+          </tr>
+          <tr>
+            <td>“Any research-y results?”</td>
+            <td><a href="#inverse">Inverse</a> — Diff-IR plates, +19.8…+24.5 dB, capture-gated PT</td>
+          </tr>
+          <tr>
+            <td>“Is inverse just a slide demo?”</td>
+            <td>No — live <code style="font-family:var(--mono);font-size:0.85em">inverse_fit</code> + RESULTS.md tables; museum / dense maps ship in docs/media</td>
+          </tr>
+          <tr>
+            <td>“Code?”</td>
+            <td><a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">github.com/Qervas/ohao_engine</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="copy-box reveal">
+        <p>
+          OHAO Engine — solo Vulkan 1.3 hybrid renderer (path tracer + deferred + inverse lab).
+          Demo: https://qervas.github.io/ohao-engine/
+        </p>
+        <button type="button" class="btn btn--primary" data-copy>Copy one-liner</button>
+      </div>
+
+      <div class="links-row reveal">
+        <a class="btn" href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://github.com/Qervas/ohao_engine/blob/master/docs/media/inverse/RESULTS.md" target="_blank" rel="noopener">Inverse RESULTS</a>
+        <a class="btn" href="https://qervas.github.io/" target="_blank" rel="noopener">Portfolio</a>
+        <a class="btn" href="https://qervas.github.io/neural-capture/" target="_blank" rel="noopener">Thesis demo</a>
+        <a class="btn btn--primary" href="mailto:frankyin17@outlook.com">Email Frank</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <div>© <span id="year">2026</span> Shaoxuan Yin · OHAO Engine · Demo Booth</div>
+      <div>
+        <a href="https://github.com/Qervas/ohao_engine">Source</a>
+        · Interview visual pitch — not a textbook
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/main.js"></script>
+</body>
+</html>

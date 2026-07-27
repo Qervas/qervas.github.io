@@ -1,0 +1,34 @@
+/* lightbox */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+}
+.lightbox.is-open { display: flex; }
+.lightbox img {
+  max-width: min(1100px, 96vw);
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.lightbox-caption {
+  color: #e7e9ea;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+  max-width: 40rem;
+}
+.lightbox-close {
+  color: #71767b;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  font-family: var(--mono);
+}

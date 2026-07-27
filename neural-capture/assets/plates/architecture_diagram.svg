@@ -1,0 +1,141 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#00a3e0"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">CamMatrixCapture System Architecture</text>
+
+  <!-- C# Frontend Section -->
+  <rect x="20" y="50" width="370" height="200" rx="8" fill="#e8f7fa" stroke="#0cc7d3" stroke-width="2"/>
+  <text x="205" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#0cc7d3">C# WinUI 3 Frontend</text>
+
+  <!-- Pages -->
+  <rect x="35" y="85" width="160" height="70" rx="5" fill="#fff" stroke="#0cc7d3" stroke-width="1.5"/>
+  <text x="115" y="105" text-anchor="middle" font-size="11" font-weight="600" fill="#333">UI Pages (4-Step Wizard)</text>
+  <text x="115" y="122" text-anchor="middle" font-size="9" fill="#666">ConnectPage</text>
+  <text x="115" y="135" text-anchor="middle" font-size="9" fill="#666">SetupPage / CapturePage</text>
+  <text x="115" y="148" text-anchor="middle" font-size="9" fill="#666">DonePage</text>
+
+  <!-- Dialogs -->
+  <rect x="210" y="85" width="165" height="70" rx="5" fill="#fff" stroke="#0cc7d3" stroke-width="1.5"/>
+  <text x="292" y="105" text-anchor="middle" font-size="11" font-weight="600" fill="#333">Dialogs</text>
+  <text x="292" y="125" text-anchor="middle" font-size="9" fill="#666">SettingsDialog</text>
+  <text x="292" y="140" text-anchor="middle" font-size="9" fill="#666">DebugConsoleDialog</text>
+
+  <!-- CaptureService -->
+  <rect x="35" y="170" width="340" height="65" rx="5" fill="#0cc7d3" stroke="#0cc7d3" stroke-width="1.5"/>
+  <text x="205" y="195" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">CaptureService.cs</text>
+  <text x="205" y="212" text-anchor="middle" font-size="9" fill="#fff">P/Invoke Bridge (100+ DLL imports)</text>
+  <text x="205" y="226" text-anchor="middle" font-size="9" fill="#fff">Events: OnProgress, OnLog, OnCaptureComplete</text>
+
+  <!-- C++ Backend Section -->
+  <rect x="410" y="50" width="370" height="385" rx="8" fill="#e6f4fa" stroke="#00a3e0" stroke-width="2"/>
+  <text x="595" y="72" text-anchor="middle" font-size="13" font-weight="bold" fill="#00a3e0">C++ Backend (CaptureCore.dll)</text>
+
+  <!-- API Layer -->
+  <rect x="425" y="85" width="340" height="50" rx="5" fill="#00a3e0" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="595" y="108" text-anchor="middle" font-size="11" font-weight="bold" fill="#fff">CaptureAPI.cpp + CaptureStateMachine</text>
+  <text x="595" y="124" text-anchor="middle" font-size="9" fill="#fff">C-Style Exports · State: Idle→Capturing→Rotating→Settling</text>
+
+  <!-- Hardware Layer -->
+  <rect x="425" y="150" width="165" height="85" rx="5" fill="#fff" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="507" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#333">CameraManager</text>
+  <text x="507" y="187" text-anchor="middle" font-size="9" fill="#666">Discovery &amp; Connection</text>
+  <text x="507" y="200" text-anchor="middle" font-size="9" fill="#666">Parallel Capture Groups</text>
+  <text x="507" y="213" text-anchor="middle" font-size="9" fill="#666">Bayer→RGB Processing</text>
+  <text x="507" y="226" text-anchor="middle" font-size="9" fill="#666">TIFF Output (35MB)</text>
+
+  <!-- Bluetooth Layer -->
+  <rect x="600" y="150" width="165" height="85" rx="5" fill="#fff" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="682" y="170" text-anchor="middle" font-size="11" font-weight="600" fill="#333">BluetoothManager</text>
+  <text x="682" y="187" text-anchor="middle" font-size="9" fill="#666">BLE Device Scanning</text>
+  <text x="682" y="200" text-anchor="middle" font-size="9" fill="#666">TurntableController</text>
+  <text x="682" y="213" text-anchor="middle" font-size="9" fill="#666">GATT Commands</text>
+  <text x="682" y="226" text-anchor="middle" font-size="9" fill="#666">Angle Monitoring</text>
+
+  <!-- Capture Controller -->
+  <rect x="425" y="250" width="340" height="45" rx="5" fill="#fff" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="595" y="270" text-anchor="middle" font-size="11" font-weight="600" fill="#333">AutomatedCaptureController</text>
+  <text x="595" y="286" text-anchor="middle" font-size="9" fill="#666">Orchestrates: Capture → Rotate → Settle → Repeat</text>
+
+  <!-- Utilities -->
+  <rect x="425" y="310" width="165" height="55" rx="5" fill="#fff" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="507" y="330" text-anchor="middle" font-size="11" font-weight="600" fill="#333">SettingsManager</text>
+  <text x="507" y="346" text-anchor="middle" font-size="9" fill="#666">settings.ini persistence</text>
+  <text x="507" y="358" text-anchor="middle" font-size="9" fill="#666">Camera &amp; App config</text>
+
+  <rect x="600" y="310" width="165" height="55" rx="5" fill="#fff" stroke="#00a3e0" stroke-width="1.5"/>
+  <text x="682" y="330" text-anchor="middle" font-size="11" font-weight="600" fill="#333">SessionManager</text>
+  <text x="682" y="346" text-anchor="middle" font-size="9" fill="#666">Folder structure</text>
+  <text x="682" y="358" text-anchor="middle" font-size="9" fill="#666">pos_XXX/cam_YY.tiff</text>
+
+  <!-- External SDKs -->
+  <rect x="20" y="385" width="175" height="100" rx="8" fill="#fff" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="107" y="408" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Sapera SDK</text>
+  <text x="107" y="425" text-anchor="middle" font-size="9" fill="#666">Teledyne DALSA</text>
+  <text x="107" y="442" text-anchor="middle" font-size="9" fill="#666">SapAcqDevice</text>
+  <text x="107" y="455" text-anchor="middle" font-size="9" fill="#666">SapBuffer</text>
+  <text x="107" y="468" text-anchor="middle" font-size="9" fill="#666">SapColorConversion</text>
+
+  <rect x="215" y="385" width="175" height="100" rx="8" fill="#fff" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+  <text x="302" y="408" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">WinRT BLE</text>
+  <text x="302" y="425" text-anchor="middle" font-size="9" fill="#666">Windows 10+ Runtime</text>
+  <text x="302" y="442" text-anchor="middle" font-size="9" fill="#666">BluetoothLEDevice</text>
+  <text x="302" y="455" text-anchor="middle" font-size="9" fill="#666">GattCharacteristic</text>
+  <text x="302" y="468" text-anchor="middle" font-size="9" fill="#666">DeviceWatcher</text>
+
+  <!-- Hardware -->
+  <rect x="425" y="385" width="165" height="100" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="507" y="408" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">GigE Cameras</text>
+  <text x="507" y="428" text-anchor="middle" font-size="9" fill="#666">12× Industrial Cameras</text>
+  <text x="507" y="445" text-anchor="middle" font-size="9" fill="#666">4112×3008 @ Bayer RG8</text>
+  <text x="507" y="462" text-anchor="middle" font-size="9" fill="#666">Teledyne DALSA Genie</text>
+  <text x="507" y="479" text-anchor="middle" font-size="9" fill="#666">Parallel Groups (4×3)</text>
+
+  <rect x="600" y="385" width="165" height="100" rx="8" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  <text x="682" y="408" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">BLE Turntable</text>
+  <text x="682" y="428" text-anchor="middle" font-size="9" fill="#666">360° Rotation</text>
+  <text x="682" y="445" text-anchor="middle" font-size="9" fill="#666">Speed: 40-100s/rev</text>
+  <text x="682" y="462" text-anchor="middle" font-size="9" fill="#666">Angle Steps: 5-10°</text>
+  <text x="682" y="479" text-anchor="middle" font-size="9" fill="#666">GATT Protocol</text>
+
+  <!-- Connection Lines -->
+  <!-- P/Invoke Bridge -->
+  <line x1="375" y1="202" x2="425" y2="110" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="390" y="145" font-size="8" fill="#333" transform="rotate(-35 390,145)">P/Invoke</text>
+
+  <!-- API to Managers -->
+  <line x1="507" y1="135" x2="507" y2="150" stroke="#00a3e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <line x1="682" y1="135" x2="682" y2="150" stroke="#00a3e0" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+  <!-- Controller connections -->
+  <line x1="507" y1="235" x2="535" y2="250" stroke="#00a3e0" stroke-width="1.5"/>
+  <line x1="682" y1="235" x2="655" y2="250" stroke="#00a3e0" stroke-width="1.5"/>
+
+  <!-- SDK connections -->
+  <line x1="425" y1="192" x2="195" y2="385" stroke="#333" stroke-width="1.5" stroke-dasharray="4,2"/>
+  <line x1="600" y1="192" x2="390" y2="385" stroke="#333" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+  <!-- Hardware connections -->
+  <line x1="507" y1="235" x2="507" y2="385" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="682" y1="235" x2="682" y2="385" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Data Flow Legend -->
+  <rect x="20" y="265" width="370" height="105" rx="5" fill="#fff" stroke="#333" stroke-width="1"/>
+  <text x="35" y="285" font-size="11" font-weight="bold" fill="#333">Data Flow: Capture Sequence</text>
+  <text x="35" y="305" font-size="9" fill="#666">1. UI triggers StartCapture() via CaptureService</text>
+  <text x="35" y="320" font-size="9" fill="#666">2. CaptureAPI creates session, spawns capture thread</text>
+  <text x="35" y="335" font-size="9" fill="#666">3. CameraManager captures parallel groups → TIFF</text>
+  <text x="35" y="350" font-size="9" fill="#666">4. BluetoothManager rotates turntable → settle</text>
+  <text x="35" y="365" font-size="9" fill="#666">5. Callbacks update UI: OnProgress, OnCaptureComplete</text>
+
+  <!-- C#/C++ Boundary indicator -->
+  <line x1="400" y1="50" x2="400" y2="375" stroke="#333" stroke-width="2" stroke-dasharray="8,4"/>
+  <text x="400" y="382" text-anchor="middle" font-size="9" font-weight="bold" fill="#333">C#/C++ Boundary</text>
+</svg>

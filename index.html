@@ -3,27 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light dark" />
-  <title>Shaoxuan (Frank) Yin</title>
-  <meta name="description" content="Builder of a 50K-line Vulkan engine, a 209 GB neural rendering dataset, a multi-agent CLI framework, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate." />
+  <meta name="color-scheme" content="dark light" />
+  <title>Shaoxuan (Frank) Yin · @qervas</title>
+  <meta name="description" content="Builder of a 75K-line Vulkan engine, a 209 GB neural rendering dataset, an open-source Godot MCP server, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate." />
   <meta name="author" content="Shaoxuan (Frank) Yin" />
   <link rel="canonical" href="https://qervas.github.io/" />
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/favicon.svg" />
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Shaoxuan (Frank) Yin" />
-  <meta property="og:title" content="Shaoxuan (Frank) Yin — Graphics · CUDA · Agents" />
-  <meta property="og:description" content="Vulkan · CUDA · neural rendering · simulation. MSc Linköping University. Remote · open to relocate." />
+  <meta property="og:title" content="Shaoxuan (Frank) Yin — @qervas" />
+  <meta property="og:description" content="Vulkan · CUDA · neural rendering · agents. MSc Linköping. Remote · open to relocate." />
   <meta property="og:image" content="https://qervas.github.io/assets/proof/ohao_helmet.jpg" />
   <meta property="og:image:alt" content="Ohao Engine — real-time path-traced helmet" />
   <meta property="og:url" content="https://qervas.github.io/" />
   <meta property="og:locale" content="en_US" />
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Shaoxuan (Frank) Yin — Graphics · CUDA · Agents" />
+  <meta name="twitter:title" content="Shaoxuan (Frank) Yin — @qervas" />
   <meta name="twitter:description" content="Vulkan engine, neural rendering dataset, multi-agent tooling. MSc Linköping." />
   <meta name="twitter:image" content="https://qervas.github.io/assets/proof/ohao_helmet.jpg" />
 
@@ -49,396 +47,514 @@
   }
   </script>
 
-  <!-- Apply theme before paint (blocking, no defer) -->
   <script src="js/theme-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <!-- Modular CSS (order matters). css/main.css re-exports the same set via @import. -->
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/hero.css" />
-  <link rel="stylesheet" href="css/contact.css" />
-  <link rel="stylesheet" href="css/chrome.css" />
-  <link rel="stylesheet" href="css/spine.css" />
-  <link rel="stylesheet" href="css/summary.css" />
-  <link rel="stylesheet" href="css/stats.css" />
+  <link rel="stylesheet" href="css/shell.css" />
   <link rel="stylesheet" href="css/featured.css" />
-  <link rel="stylesheet" href="css/thesis.css" />
-  <link rel="stylesheet" href="css/experience.css" />
-  <link rel="stylesheet" href="css/projects.css" />
-  <link rel="stylesheet" href="css/skills.css" />
-  <link rel="stylesheet" href="css/publication.css" />
   <link rel="stylesheet" href="css/theme-toggle.css" />
-  <link rel="stylesheet" href="css/footer.css" />
-  <link rel="stylesheet" href="css/print.css" />
+  <link rel="stylesheet" href="css/lightbox.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body>
   <script src="js/js-flag.js"></script>
   <a class="skip-link" href="#main-content">Skip to content</a>
-  <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme: cycle light → dark → system">
-    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7 7 0 1 0 21 14.3z" />
-    </svg>
-    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-    </svg>
-    <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <rect x="3" y="4" width="18" height="12" rx="2" />
-      <path d="M8 20h8M12 16v4" />
-    </svg>
-  </button>
 
-  <main class="page" id="main-content">
+  <div class="app">
+    <!-- ═══ LEFT RAIL ═══ -->
+    <nav class="rail-left" aria-label="Primary">
+      <a class="rail-brand" href="#main-content" title="home" aria-label="Home">
+        <span class="rail-brand-mark" aria-hidden="true">
+          <svg class="rail-brand-svg" viewBox="0 0 48 48" width="48" height="48" focusable="false">
+            <defs>
+              <linearGradient id="rb-neon" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#39ff14"/>
+                <stop offset="40%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#bf5af2"/>
+              </linearGradient>
+              <linearGradient id="rb-hot" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00ff9d"/>
+                <stop offset="100%" stop-color="#1d9bf0"/>
+              </linearGradient>
+              <radialGradient id="rb-core" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#eaffff" stop-opacity="0.95"/>
+                <stop offset="35%" stop-color="#00f0ff" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#0a0c10" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="rb-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="1.1" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <clipPath id="rb-clip">
+                <rect x="2" y="2" width="44" height="44" rx="8"/>
+              </clipPath>
+            </defs>
 
-    <!-- ── Hero ── -->
-    <section class="hero">
-      <video id="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/proof/ohao_helmet.jpg" aria-label="Ohao Engine — real-time path-traced helmet orbiting in an outdoor HDRI scene at ~67 fps">
-        <source src="assets/proof/ohao_helmet_orbit.mp4" type="video/mp4" />
-        <img src="assets/proof/ohao_helmet.jpg" alt="Ohao Engine — PBR helmet render with image-based lighting" />
-      </video>
-      <div class="hero-inner">
-        <div class="hero-top">
-          <span class="hero-caption">Ohao Engine — real-time path tracing · ~67 fps · DLSS Ray Reconstruction · ReSTIR GI</span>
-        </div>
-        <div class="hero-bottom">
-          <h1>Shaoxuan ·<br>Frank · Yin</h1>
-          <p class="hero-role">Three tracks · Graphics engines · Neural capture · Agent systems</p>
-          <div class="hero-ctas">
-            <a class="btn btn-primary" href="mailto:frankyin17@outlook.com">Email me</a>
-            <a class="btn btn-ghost" href="assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener">Download CV</a>
-          </div>
-          <div class="hero-social">
-            <a class="gh-pulse" href="https://github.com/Qervas" target="_blank" rel="noopener" aria-label="GitHub — github.com/Qervas">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.51 11.51 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-            </a>
-            <a href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener" aria-label="LinkedIn — linkedin.com/in/sxyin">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-            </a>
-            <a href="https://www.youtube.com/@frankyin8509" target="_blank" rel="noopener" aria-label="YouTube — @frankyin8509">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-            <a href="https://frankyin17.itch.io/" target="_blank" rel="noopener" aria-label="itch.io — frankyin17.itch.io">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41 1.104 0 2.325-1.147 2.325-2.45V4.95c-.02-.622-2.08-2.99-3.13-3.612C16.68 1.216 14.43 1.1 12 1.1c-2.43 0-5.784.124-8.87.238zM8.5 8.74c.62 0 1.028.55 1.328 1.098.3-.548.7-1.098 1.32-1.098h.006c.62 0 1.02.55 1.32 1.098.3-.548.708-1.098 1.328-1.098.62 0 1.014.55 1.314 1.098.148-.27.332-.53.558-.71-.09.71-.164 1.474-.164 1.802 0 1.014-.66 1.837-1.474 1.837-.79 0-1.44-.775-1.49-1.755-.026.42-.09.79-.184 1.11-.19.65-.55 1.05-.99 1.05h-.006c-.44 0-.8-.4-.99-1.05a5.06 5.06 0 0 1-.184-1.11c-.05.98-.7 1.755-1.49 1.755-.814 0-1.474-.823-1.474-1.837 0-.328-.074-1.092-.164-1.802.226.18.41.44.558.71.3-.548.694-1.098 1.314-1.098zm-1.31 4.267c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586h.084c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586 1.5 0 2.716 1.216 2.716 2.716 0 1.5-1.216 2.716-2.716 2.716-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586h-.084c-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586-1.5 0-2.716-1.216-2.716-2.716 0-1.5 1.216-2.716 2.716-2.716z"/></svg>
-            </a>
-          </div>
-        </div>
+            <!-- bezel -->
+            <rect x="1.5" y="1.5" width="45" height="45" rx="9" fill="#05070a" stroke="url(#rb-neon)" stroke-width="1.4"/>
+            <rect x="3.5" y="3.5" width="41" height="41" rx="7" fill="#070a0f" stroke="#1a2330" stroke-width="0.6"/>
+
+            <g clip-path="url(#rb-clip)">
+              <!-- phosphor wash -->
+              <rect x="2" y="2" width="44" height="44" fill="#02140c" opacity="0.55"/>
+              <circle class="rb-core" cx="24" cy="24" r="16" fill="url(#rb-core)"/>
+
+              <!-- dense hex / matrix rain -->
+              <g class="rb-rain" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.2" font-weight="700" opacity="0.55">
+                <text class="rb-col rb-c1" x="5" y="8">7F</text>
+                <text class="rb-col rb-c1" x="5" y="14">A3</text>
+                <text class="rb-col rb-c1" x="5" y="20">0E</text>
+                <text class="rb-col rb-c1" x="5" y="26">C1</text>
+                <text class="rb-col rb-c1" x="5" y="32">9B</text>
+                <text class="rb-col rb-c1" x="5" y="38">4D</text>
+                <text class="rb-col rb-c2" x="12" y="6">01</text>
+                <text class="rb-col rb-c2" x="12" y="12">FF</text>
+                <text class="rb-col rb-c2" x="12" y="18">2A</text>
+                <text class="rb-col rb-c2" x="12" y="24">B7</text>
+                <text class="rb-col rb-c2" x="12" y="30">E0</text>
+                <text class="rb-col rb-c2" x="12" y="36">18</text>
+                <text class="rb-col rb-c3" x="38" y="10">RT</text>
+                <text class="rb-col rb-c3" x="38" y="16">GI</text>
+                <text class="rb-col rb-c3" x="38" y="22">PT</text>
+                <text class="rb-col rb-c3" x="38" y="28">BV</text>
+                <text class="rb-col rb-c3" x="38" y="34">H</text>
+              </g>
+
+              <!-- wireframe sphere -->
+              <g class="rb-sphere" transform="translate(24 23)" filter="url(#rb-glow)" fill="none" stroke="url(#rb-neon)" stroke-width="0.85">
+                <ellipse cx="0" cy="0" rx="11" ry="11" opacity="0.9"/>
+                <ellipse class="rb-lat" cx="0" cy="0" rx="11" ry="4.2" opacity="0.75"/>
+                <ellipse class="rb-lat rb-lat2" cx="0" cy="0" rx="11" ry="7.5" opacity="0.45"/>
+                <ellipse class="rb-lon" cx="0" cy="0" rx="4.2" ry="11" opacity="0.7"/>
+                <ellipse class="rb-lon rb-lon2" cx="0" cy="0" rx="7.5" ry="11" opacity="0.4"/>
+                <path d="M-11 0 A11 11 0 0 0 11 0" opacity="0.35"/>
+              </g>
+
+              <!-- path-trace rays piercing the sphere -->
+              <g class="rb-rays" stroke="url(#rb-hot)" stroke-width="1.05" stroke-linecap="round" fill="none" filter="url(#rb-glow)">
+                <path d="M6 40 L20 18"/>
+                <path d="M6 40 L28 12"/>
+                <path d="M6 40 L36 22"/>
+                <path d="M6 40 L32 32"/>
+              </g>
+              <g fill="#00f0ff">
+                <circle class="rb-hit" cx="20" cy="18" r="1.5"/>
+                <circle class="rb-hit rb-h2" cx="28" cy="12" r="1.5"/>
+                <circle class="rb-hit rb-h3" cx="36" cy="22" r="1.5"/>
+                <circle class="rb-hit rb-h4" cx="32" cy="32" r="1.3"/>
+              </g>
+              <!-- camera / origin -->
+              <g transform="translate(6 40)">
+                <circle r="2.6" fill="#39ff14" filter="url(#rb-glow)"/>
+                <circle r="1.1" fill="#041208"/>
+              </g>
+
+              <!-- status bar -->
+              <rect x="2" y="2" width="44" height="8" fill="#000" opacity="0.55"/>
+              <text x="5" y="7.6" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.4" font-weight="700">root@gpu</text>
+              <text class="rb-fps" x="28" y="7.6" fill="#00f0ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.4" font-weight="700">67fps</text>
+
+              <!-- CRT scanlines -->
+              <g class="rb-scanlines" stroke="#39ff14" stroke-opacity="0.06" stroke-width="0.5">
+                <path d="M2 10h44M2 13h44M2 16h44M2 19h44M2 22h44M2 25h44M2 28h44M2 31h44M2 34h44M2 37h44M2 40h44"/>
+              </g>
+              <rect class="rb-beam" x="2" y="8" width="44" height="5" fill="#39ff14" opacity="0.12"/>
+
+              <!-- glitch bars -->
+              <rect class="rb-glitch rb-g1" x="2" y="18" width="44" height="2" fill="#00f0ff" opacity="0"/>
+              <rect class="rb-glitch rb-g2" x="2" y="29" width="44" height="1.5" fill="#bf5af2" opacity="0"/>
+
+              <!-- blinking block cursor bottom -->
+              <text x="5" y="44.5" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.6" font-weight="700">~/rt$</text>
+              <rect class="rb-cursor" x="18" y="40.2" width="3.4" height="5" fill="#39ff14" rx="0.3"/>
+            </g>
+          </svg>
+        </span>
+      </a>
+      <div class="rail-nav">
+        <a class="rail-link is-active" href="#main-content"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3 11h2v9h5v-6h4v6h5v-9h2L12 3.5z"/></svg><span class="rail-link-label">Home</span></a>
+        <a class="rail-link" href="#featured-work" data-nav="featured-work"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4V6zm2 2v8h12V8H6zm3-4h6v2H9V4z"/></svg><span class="rail-link-label">Featured</span></a>
+        <a class="rail-link" href="#projects" data-nav="projects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg><span class="rail-link-label">Projects</span></a>
+        <a class="rail-link" href="#experience" data-nav="experience" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg><span class="rail-link-label">Experience</span></a>
+        <a class="rail-link" href="#skills" data-nav="skills" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 9.5 8.5 3 9l5 4.5L6.5 20 12 16.5 17.5 20 16 13.5 21 9l-6.5-.5L12 2z"/></svg><span class="rail-link-label">Skills</span></a>
+        <a class="rail-link" href="#education" data-nav="education" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 9l11 6 9-4.91V17h2V9L12 3zm0 13L5.5 12.5 3 14l9 5 9-5-2.5-1.5L12 16z"/></svg><span class="rail-link-label">Education</span></a>
       </div>
-    </section>
-
-    <!-- ── Contact bar ── -->
-    <nav class="contact-bar" aria-label="Contact">
-      <a class="contact-email" href="mailto:frankyin17@outlook.com" title="frankyin17@outlook.com">
-        <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        <span class="contact-key">Email</span>
-        <span class="contact-val">frankyin17@outlook.com</span>
-      </a>
-      <span class="sep">·</span>
-      <a class="contact-github" href="https://github.com/Qervas" target="_blank" rel="noopener" title="github.com/Qervas">
-        <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.51 11.51 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
-        <span class="contact-key">GitHub</span>
-        <span class="contact-val">github.com/Qervas</span>
-      </a>
-      <span class="sep">·</span>
-      <a class="contact-linkedin" href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener" title="linkedin.com/in/sxyin">
-        <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
-        <span class="contact-key">LinkedIn</span>
-        <span class="contact-val">linkedin.com/in/sxyin</span>
-      </a>
-      <span class="sep">·</span>
-      <a class="contact-cv" href="assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener" title="Download CV (PDF)">
-        <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2.5L18.5 10H13V4.5zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
-        <span class="contact-key">CV</span>
-        <span class="contact-val">PDF</span>
-      </a>
-      <span class="sep">·</span>
-      <a class="contact-itch" href="https://frankyin17.itch.io/" target="_blank" rel="noopener" title="frankyin17.itch.io">
-        <svg class="contact-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41 1.104 0 2.325-1.147 2.325-2.45V4.95c-.02-.622-2.08-2.99-3.13-3.612C16.68 1.216 14.43 1.1 12 1.1c-2.43 0-5.784.124-8.87.238zM8.5 8.74c.62 0 1.028.55 1.328 1.098.3-.548.7-1.098 1.32-1.098h.006c.62 0 1.02.55 1.32 1.098.3-.548.708-1.098 1.328-1.098.62 0 1.014.55 1.314 1.098.148-.27.332-.53.558-.71-.09.71-.164 1.474-.164 1.802 0 1.014-.66 1.837-1.474 1.837-.79 0-1.44-.775-1.49-1.755-.026.42-.09.79-.184 1.11-.19.65-.55 1.05-.99 1.05h-.006c-.44 0-.8-.4-.99-1.05a5.06 5.06 0 0 1-.184-1.11c-.05.98-.7 1.755-1.49 1.755-.814 0-1.474-.823-1.474-1.837 0-.328-.074-1.092-.164-1.802.226.18.41.44.558.71.3-.548.694-1.098 1.314-1.098zm-1.31 4.267c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586h.084c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586 1.5 0 2.716 1.216 2.716 2.716 0 1.5-1.216 2.716-2.716 2.716-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586h-.084c-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586-1.5 0-2.716-1.216-2.716-2.716 0-1.5 1.216-2.716 2.716-2.716z"/></svg>
-        <span class="contact-key">itch.io</span>
-        <span class="contact-val">frankyin17.itch.io</span>
+      <a class="rail-cta" href="mailto:frankyin17@outlook.com">Email me</a>
+      <a class="rail-user" href="https://github.com/Qervas" target="_blank" rel="noopener">
+        <img class="rail-user-avatar" src="assets/profile/avatar.jpg" alt="" width="40" height="40" />
+        <span class="rail-user-meta">
+          <span class="rail-user-name">Shaoxuan Yin</span>
+          <span class="rail-user-handle">aka Frank · @qervas</span>
+        </span>
       </a>
     </nav>
 
-    <div class="honesty" aria-label="Availability">
-      <span><i class="dot" aria-hidden="true"></i> Available full-time</span>
-      <span>Remote · open to relocate</span>
-      <span>EN fluent · 中文 native · FR basic</span>
-    </div>
-
-    <!-- ── Three spines (always visible) ── -->
-    <section class="spine-deck" id="spines" aria-label="Professional tracks">
-      <div class="spine-deck-head">
-        <div>
-          <p class="spine-deck-kicker">Pro tracks · pick one or keep all three</p>
-          <p class="spine-deck-title">Three spines. Same builder.</p>
-        </div>
-        <p class="spine-deck-hint">Click a track to focus the page · click again or “Show all” to reset</p>
-      </div>
-      <div class="spine-grid" role="group" aria-label="Select track focus">
-        <button type="button" class="spine-card is-active" data-spine="graphics" aria-pressed="true">
-          <div class="spine-card-inner">
-            <div class="spine-card-tag">Spine A · Graphics engines</div>
-            <h2>Vulkan · CUDA · real-time RT</h2>
-            <p>Hybrid deferred + KHR path tracing, DLSS Ray Reconstruction, ReSTIR GI, GPU physics. Ship the systems other engineers render on.</p>
-            <div class="spine-proof">
-              <span>~61K LOC Ohao</span>
-              <span>~67 fps PT</span>
-              <span>DLSS-RR · OIDN</span>
-            </div>
-          </div>
-        </button>
-        <button type="button" class="spine-card is-active" data-spine="neural" aria-pressed="true">
-          <div class="spine-card-inner">
-            <div class="spine-card-tag">Spine B · Neural + capture</div>
-            <h2>Dataset · 3DGS · multi-view IR</h2>
-            <p>12-cam capture pipeline, 209&nbsp;GB public dataset, +11&nbsp;dB 3DGS vs NeRF on reflective surfaces, inverse / differentiable rendering labs.</p>
-            <div class="spine-proof">
-              <span>+11 dB PSNR</span>
-              <span>12 cams · 209 GB</span>
-              <span>Diff-IR lab</span>
-            </div>
-          </div>
-        </button>
-        <button type="button" class="spine-card is-active" data-spine="agents" aria-pressed="true">
-          <div class="spine-card-inner">
-            <div class="spine-card-tag">Spine C · Agent systems</div>
-            <h2>MCP · multi-agent CLI · tools</h2>
-            <p>Open-source Godot MCP for AI agents (playtest evidence loop) and NocturneAI multi-agent terminal framework — tooling that lets models ship, not just chat.</p>
-            <div class="spine-proof">
-              <span>Godot MCP</span>
-              <span>~26 tool domains</span>
-              <span>NocturneAI</span>
-            </div>
-          </div>
-        </button>
-      </div>
-      <button type="button" class="spine-all-btn is-active" id="spine-all" aria-pressed="true">Show all tracks</button>
-    </section>
-
-    <!-- ── Section jump-nav ── -->
-    <nav class="section-nav" id="section-nav" aria-label="Jump to section">
-      <a href="#spines" data-nav="spines">Tracks</a>
-      <a href="#featured-work" data-nav="featured-work">Featured Work</a>
-      <a href="#projects" data-nav="projects">Projects</a>
-      <a href="#experience" data-nav="experience">Experience</a>
-      <a href="#skills" data-nav="skills">Skills</a>
-      <a href="#education" data-nav="education">Education</a>
-    </nav>
-
-    <!-- ── Summary ── -->
-    <section class="summary-block">
-      <p class="summary-lead">
-        I ship <em>renderers, capture pipelines, and agent tooling</em> — three spines on one stack: hybrid Vulkan engines, neural reconstruction, and open agent infrastructure.
-      </p>
-      <p class="summary-sub">
-        MSc Computer Science, Linköping University — Graphics &amp; Visualization. <strong>Open to graphics / engine / GPU / AI-infrastructure / agent roles · full-time.</strong>
-      </p>
-      <button type="button" class="summary-more-btn" id="summary-more-btn" aria-expanded="false" aria-controls="summary-more">More detail</button>
-      <div class="summary-more summary-sub" id="summary-more" hidden>
-        Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with Owen-scrambled Sobol, OIDN / NRD denoisers, and a multi-pipeline inverse lab inside Ohao (Diff-IR dense maps + capture-gated PT). Also: synchronized multi-camera capture, Freedo internship (MLS-MPM on 3DGS), open-source Godot MCP (OhaoTech), and a multi-agent CLI framework.
-      </div>
-    </section>
-
-    <!-- ── Stats with context ── -->
-    <section class="stats">
-      <div class="stat">
-        <span class="stat-num">61K</span>
-        <span class="stat-label">Lines · Vulkan Engine</span>
-        <span class="stat-context">Standalone C++ (50K+) + GLSL (11K) renderer — deferred PBR path and hardware ray-tracing path sharing one scene representation.</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">11 dB</span>
-        <span class="stat-label">PSNR · Thesis Result</span>
-        <span class="stat-context">3D Gaussian Splatting gain over NeRF on reflective surfaces — measured on a 209&nbsp;GB dataset I captured and released.</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">12 cams</span>
-        <span class="stat-label">Capture Pipeline</span>
-        <span class="stat-context">Synchronized multi-camera rig with staggered triggers + Bluetooth turntable — built end-to-end in C++ / C# (~8K lines).</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">40 FPS</span>
-        <span class="stat-label">CUDA Path Tracer</span>
-        <span class="stat-context">Monte Carlo with BVH on RTX 4060 at 1280×720 — Russian roulette termination, OIDN denoising, consumer-GPU throughput.</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num" id="gh-contrib-num">7.1K</span>
-        <span class="stat-label">Contributions · <span id="gh-contrib-year">2026</span></span>
-        <span class="stat-context">Across <a href="https://github.com/Qervas">github.com/Qervas</a> — shipping, not posting.</span>
-      </div>
-    </section>
-
-    <!-- ── GitHub Activity Heatmap ── -->
-    <section class="cadence">
-      <a href="https://github.com/Qervas" class="cadence-link" aria-label="GitHub contribution activity">
-        <img src="https://ghchart.rshah.org/9b4123/Qervas" alt="GitHub contribution heatmap for @Qervas" width="663" height="104" loading="lazy" decoding="async" />
-      </a>
-      <p class="cadence-caption">Public GitHub cadence · github.com/Qervas</p>
-    </section>
-
-    <!-- ── Featured Work ── -->
-    <section class="section reveal" id="featured-work">
-      <div class="section-head">
-        <div class="section-label">Featured Work</div>
-        <div class="section-body">
-
-          <!-- Ohao Engine -->
-          <article class="featured spine-target" data-spines="graphics neural" data-roles="graphics neural">
-            <div class="featured-visual">
-              <!-- Inverse-lab plates hidden for now (kept in assets/proof/ohao_inverse/) -->
-              <!-- Engine raster/RT proof -->
-              <div class="featured-gallery-3">
-                <div class="cell">
-                  <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render — close-up with rich metal, glass, and cable detail" loading="lazy" />
-                  <span class="cell-label">Damaged Helmet · deferred PBR</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_lantern.jpg" alt="Lantern scene rendered in Ohao — emissive warm glow with wooden cross structure" loading="lazy" />
-                  <span class="cell-label">Lantern · emissive lighting</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF calibration scene — rough to smooth, metal to non-metal gradient" loading="lazy" />
-                  <span class="cell-label">MetalRoughSpheres · BRDF</span>
-                </div>
-              </div>
-              <p class="featured-subcaption">Path-tracing pipeline · Intel OIDN denoising on a glossy scene</p>
-              <div class="featured-gallery-2">
-                <div class="cell">
-                  <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Path-traced helmet at 16 spp before denoising — visible noise across glossy materials" loading="lazy" />
-                  <span class="cell-label">Helmet · 16 spp · raw path-traced</span>
-                </div>
-                <div class="cell">
-                  <img src="assets/proof/ohao_oidn_denoised.jpg" alt="Same helmet at 16 spp after Intel OIDN denoising — production-quality output" loading="lazy" />
-                  <span class="cell-label">Helmet · 16 spp · OIDN denoised</span>
-                </div>
-              </div>
-            </div>
-            <div class="featured-copy">
-              <h3>Ohao Engine</h3>
-              <p class="featured-stack">C++20 · Vulkan 1.3 KHR RT · GLSL · Diff-IR lab · DLSS-RR · ReSTIR GI</p>
-              <p>
-                Solo hybrid Vulkan renderer: deferred G-buffer and KHR path tracing share one scene, materials, bindless textures, and TLAS. Architecture spans <em>render</em>, <em>physics</em> (GJK/EPA + BVH), and a <em>gpu / Vulkan</em> layer — no engine SDK host.
-              </p>
-
-              <div class="featured-metrics" aria-label="Inverse lab measured results">
-                <div class="featured-metric">
-                  <span class="num">+24.5 dB</span>
-                  <span class="lbl">Diff-IR outdoor ΔPSNR</span>
-                </div>
-                <div class="featured-metric">
-                  <span class="num">+21.8 dB</span>
-                  <span class="lbl">Diff-IR helmet ΔPSNR</span>
-                </div>
-                <div class="featured-metric">
-                  <span class="num">32.5 / 34.4</span>
-                  <span class="lbl">PT holdout / relight dB</span>
-                </div>
-                <div class="featured-metric">
-                  <span class="num">19.7×</span>
-                  <span class="lbl">Analytic vs FD optim</span>
-                </div>
-              </div>
-
-              <p>
-                <strong>Inverse rendering lab (July 2026):</strong> multi-pipeline IR on one Vulkan host — <em>path-tracer oracle</em> (capture-gated LABTEST) + <em>Diff-IR Deferred</em> sibling where free dense maps are the beauty source of truth. Fit is train-only; published dB always name the metric domain.
-              </p>
-              <p>
-                <strong>Diff-IR quality plate</strong> (1080p SHOW, map ≥128², multi-view, hard presets): free dense <em>roughness</em> (ORM.g) recovery — spheres <strong>+19.8 dB</strong>, helmet <strong>+21.8 dB</strong>, outdoor <strong>+24.5 dB</strong> train ΔPSNR vs cool wrong-init. Novel-HDRI relight tracks the same gains. Dense albedo / metal MAPTEST under Deferred; metallic free-grid hits <strong>+26.8 dB</strong> with map MSE 0.405 → 0.006.
-              </p>
-              <p>
-                <strong>PT capture-gated LABTEST</strong> (exported holdout/relight PNGs, not live-oracle theater): holdout <strong>32.5 dB</strong> / SSIM 0.983, relight <strong>34.4 dB</strong> / 0.989, <strong>+20.5 dB</strong> vs wrong init. Hybrid path: Diff-fit → PT refine. Analytic albedo optim GRADCHECK vs FD (median rel err &lt; 0.20) at <strong>19.7×</strong> wall-clock vs estimated full 3-pass coordinate FD.
-              </p>
-              <p>
-                <strong>Real-time path tracing:</strong> interactive 1-spp chain with <em>NVIDIA DLSS 4 Ray Reconstruction</em> (raw NGX Vulkan on Linux) and vendor-neutral <em>SVGF</em>; ReSTIR GI on outdoor HDRI; OIDN offline + NRD compose. Golden regression: Cornell box + MetalRoughSpheres.
-              </p>
-              <div class="featured-links">
-                <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub Repo ↗</a>
-                <a href="https://github.com/Qervas/ohao_engine/blob/master/docs/media/inverse/RESULTS.md" target="_blank" rel="noopener">Inverse RESULTS ↗</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Neural Rendering Thesis -->
-          <article class="featured reverse spine-target" data-spines="neural graphics" data-roles="neural graphics">
-            <div class="featured-visual">
-              <div class="thesis-visual">
-                <!-- Hero: 3DGS reconstructions (multi-material) -->
-                <div class="thesis-compare-wrap">
-                  <div class="thesis-chips" role="tablist" aria-label="Material">
-                    <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-3dgs="assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
-                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
-                    <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass vase</button>
-                  </div>
-                  <div class="thesis-video" aria-label="3D Gaussian Splatting reconstruction">
-                    <video id="thesisVideoEl" src="assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
-                    <span class="thesis-video__tag">3DGS · +11 dB PSNR vs NeRF on reflective surfaces</span>
-                  </div>
-                </div>
-                <!-- Supporting evidence -->
-                <div class="thesis-visual__row">
-                  <div class="cell">
-                    <img src="assets/proof/granso_rc_aerial.jpg" alt="Aerial photogrammetric reconstruction of Gränsö Castle" />
-                    <span class="cell-label">Gränsö Castle · aerial photogrammetric reconstruction</span>
-                  </div>
-                  <div class="cell">
-                    <img src="assets/proof/thesis_method_matrix.jpg" alt="Method comparison matrix: Input / RealityCapture / NeRF / 3DGS across studio objects including vase glass, stone, skull" />
-                    <span class="cell-label">Method matrix · RC / NeRF / 3DGS · glass, stone, skull</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="featured-copy">
-              <h3>Neural Rendering Dataset — MSc Thesis</h3>
-              <p class="featured-stack">C++ · C# · WinUI · Hardware Control · ~8K lines</p>
-              <p>
-                Built CamMatrixCapture: a 12-camera synchronized capture system with staggered trigger firmware, Bluetooth-controlled turntable automation, and a state-machine driven capture workflow. Indoor object captures feed NeRF / 3DGS training; outdoor work includes drone reconstruction of Gränsö Castle.
-              </p>
-              <p>
-                Released a 209 GB public dataset focused on challenging materials — reflective, transparent, translucent surfaces that traditionally break neural rendering methods.
-              </p>
-              <p>
-                The benchmarking contribution: <strong>3D Gaussian Splatting reaches ~11 dB PSNR above NeRF on reflective surfaces</strong> — a surprisingly large gap, with clear implications for production capture pipelines.
-              </p>
-              <div class="featured-links">
-                <a href="assets/proof/granso_RC.mp4" target="_blank" rel="noopener">Gränsö Reconstruction (video) ↗</a>
-              </div>
-            </div>
-          </article>
-
+    <!-- ═══ CENTER FEED ═══ -->
+    <main class="feed page" id="main-content">
+      <div class="feed-top">
+        <h1 class="feed-top-title">Profile</h1>
+        <div class="feed-top-actions">
+          <label class="feed-search feed-search-compact" for="site-search-feed">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
+            <input id="site-search-feed" class="site-search-input" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search posts and projects" />
+          </label>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme">
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7 7 0 1 0 21 14.3z" />
+            </svg>
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3" y="4" width="18" height="12" rx="2" />
+              <path d="M8 20h8M12 16v4" />
+            </svg>
+          </button>
         </div>
       </div>
-    </section>
 
-    <!-- ── Selected Projects ── -->
-    <section class="section reveal" id="projects">
-      <div class="section-head">
-        <div class="section-label">Selected Projects</div>
-        <div class="section-body">
-          <div class="project-filters" id="project-filters" role="group" aria-label="Filter projects">
-            <button type="button" class="filter-chip is-active" data-filter="all">All</button>
-            <button type="button" class="filter-chip" data-filter="graphics">Graphics</button>
-            <button type="button" class="filter-chip" data-filter="agents">Agents</button>
-            <button type="button" class="filter-chip" data-filter="physics">Physics</button>
-            <button type="button" class="filter-chip" data-filter="neural">Neural</button>
-            <button type="button" class="filter-chip" data-filter="course">Coursework</button>
+      <!-- Profile -->
+      <header class="profile">
+        <div class="profile-banner" aria-hidden="true">
+          <div class="pb-stars"></div>
+          <div class="pb-grid"></div>
+          <svg class="pb-svg" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <defs>
+              <linearGradient id="pb-neon" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#39ff14"/>
+                <stop offset="45%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#bf5af2"/>
+              </linearGradient>
+              <linearGradient id="pb-ray" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#39ff14" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#1d9bf0" stop-opacity="0.2"/>
+              </linearGradient>
+              <radialGradient id="pb-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.55"/>
+                <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="pb-soft">
+                <feGaussianBlur stdDeviation="1.2" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+
+            <!-- ambient blobs -->
+            <circle class="pb-blob pb-blob-a" cx="220" cy="120" r="90" fill="url(#pb-glow)"/>
+            <circle class="pb-blob pb-blob-b" cx="980" cy="80" r="110" fill="url(#pb-glow)" opacity="0.7"/>
+
+            <!-- big wireframe sphere -->
+            <g class="pb-sphere" transform="translate(920 130)" fill="none" stroke="url(#pb-neon)" stroke-width="1.1" filter="url(#pb-soft)">
+              <circle r="78" opacity="0.85"/>
+              <ellipse class="pb-lat" rx="78" ry="28" opacity="0.7"/>
+              <ellipse class="pb-lat pb-lat2" rx="78" ry="52" opacity="0.4"/>
+              <ellipse class="pb-lon" rx="28" ry="78" opacity="0.65"/>
+              <ellipse class="pb-lon pb-lon2" rx="52" ry="78" opacity="0.35"/>
+              <path d="M-78 0 A78 78 0 0 0 78 0" opacity="0.3"/>
+            </g>
+
+            <!-- path-trace fan -->
+            <g class="pb-rays" stroke="url(#pb-ray)" stroke-width="1.35" stroke-linecap="round" fill="none" filter="url(#pb-soft)">
+              <path d="M80 210 L280 40"/>
+              <path d="M80 210 L360 70"/>
+              <path d="M80 210 L420 110"/>
+              <path d="M80 210 L480 160"/>
+              <path d="M80 210 L520 200"/>
+              <path d="M80 210 L340 30"/>
+              <path d="M80 210 L600 90"/>
+              <path d="M80 210 L700 50"/>
+            </g>
+            <g fill="#00f0ff">
+              <circle class="pb-hit" cx="280" cy="40" r="3"/>
+              <circle class="pb-hit pb-h2" cx="360" cy="70" r="3"/>
+              <circle class="pb-hit pb-h3" cx="420" cy="110" r="2.6"/>
+              <circle class="pb-hit pb-h4" cx="480" cy="160" r="2.6"/>
+              <circle class="pb-hit pb-h5" cx="600" cy="90" r="3"/>
+              <circle class="pb-hit pb-h6" cx="700" cy="50" r="2.8"/>
+            </g>
+            <circle cx="80" cy="210" r="5" fill="#39ff14" filter="url(#pb-soft)"/>
+            <circle cx="80" cy="210" r="2" fill="#041208"/>
+
+            <!-- floating hex nodes -->
+            <g class="pb-nodes" fill="none" stroke="#39ff14" stroke-width="0.9" opacity="0.55">
+              <path d="M180 60 l12 7 v14 l-12 7 l-12-7 v-14 z"/>
+              <path d="M540 40 l10 6 v12 l-10 6 l-10-6 v-12 z"/>
+              <path d="M760 180 l14 8 v16 l-14 8 l-14-8 v-16 z"/>
+            </g>
+          </svg>
+
+          <div class="pb-rain" id="pb-rain"></div>
+          <div class="pb-scanlines"></div>
+          <div class="pb-vignette"></div>
+          <div class="pb-hud">
+            <span class="pb-hud-l">root@gpu ~ rt-pipeline</span>
+            <span class="pb-hud-r"><i class="pb-live"></i> LIVE · 67 fps · ReSTIR · DLSS-RR</span>
           </div>
-          <p class="project-empty" id="project-empty" hidden>No projects in this filter.</p>
-          <div class="project-grid">
+        </div>
+        <div class="profile-body">
+          <div class="profile-avatar-row">
+            <img class="profile-avatar" src="assets/profile/avatar.jpg" alt="Shaoxuan Yin, aka Frank" width="400" height="400" decoding="async" />
+            <div class="profile-actions" aria-label="Contact">
+              <a class="btn-x btn-x-cv btn-pulse" href="assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener" aria-label="Download CV (PDF)" title="Download CV">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 2.5L18.5 10H13V4.5zM8 13h8v1.5H8V13zm0 3h8v1.5H8V16zm0-6h5v1.5H8V10z"/></svg>
+                <span>CV</span>
+              </a>
+              <a class="btn-x btn-x-primary" href="mailto:frankyin17@outlook.com" aria-label="Email frankyin17@outlook.com" title="Email">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <span>Email</span>
+              </a>
+            </div>
+          </div>
+          <h2 class="profile-name">Shaoxuan Yin</h2>
+          <p class="profile-handle">aka Frank · @qervas</p>
+          <p class="profile-bio">
+            I write graphics and GPU systems: a solo Vulkan engine (path tracing, DLSS, ReSTIR), CUDA / Taichi physics, and a Godot MCP so agents can drive the editor. Thesis was neural rendering data and metrics — I didn’t build the camera rigs.
+          </p>
+          <div class="profile-meta">
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg> Remote · open to relocate</span>
+            <span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 8H5v10h14V10z"/></svg> Available full-time</span>
+            <span>EN fluent · 中文 native · FR basic</span>
+          </div>
+          <div class="profile-socials" aria-label="Profiles">
+            <a class="profile-social" href="https://github.com/Qervas" target="_blank" rel="noopener" title="github.com/Qervas">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.51 11.51 0 0 1 3.003-.404c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              <span>GitHub</span>
+            </a>
+            <a class="profile-social" href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener" title="linkedin.com/in/sxyin">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg>
+              <span>LinkedIn</span>
+            </a>
+            <a class="profile-social" href="https://www.youtube.com/@frankyin8509" target="_blank" rel="noopener" title="YouTube @frankyin8509">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              <span>YouTube</span>
+            </a>
+            <a class="profile-social" href="https://frankyin17.itch.io/" target="_blank" rel="noopener" title="frankyin17.itch.io">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41 1.104 0 2.325-1.147 2.325-2.45V4.95c-.02-.622-2.08-2.99-3.13-3.612C16.68 1.216 14.43 1.1 12 1.1c-2.43 0-5.784.124-8.87.238zM8.5 8.74c.62 0 1.028.55 1.328 1.098.3-.548.7-1.098 1.32-1.098h.006c.62 0 1.02.55 1.32 1.098.3-.548.708-1.098 1.328-1.098.62 0 1.014.55 1.314 1.098.148-.27.332-.53.558-.71-.09.71-.164 1.474-.164 1.802 0 1.014-.66 1.837-1.474 1.837-.79 0-1.44-.775-1.49-1.755-.026.42-.09.79-.184 1.11-.19.65-.55 1.05-.99 1.05h-.006c-.44 0-.8-.4-.99-1.05a5.06 5.06 0 0 1-.184-1.11c-.05.98-.7 1.755-1.49 1.755-.814 0-1.474-.823-1.474-1.837 0-.328-.074-1.092-.164-1.802.226.18.41.44.558.71.3-.548.694-1.098 1.314-1.098zm-1.31 4.267c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586h.084c.966 0 1.78.718 2.386 1.586.606-.868 1.42-1.586 2.386-1.586 1.5 0 2.716 1.216 2.716 2.716 0 1.5-1.216 2.716-2.716 2.716-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586h-.084c-.966 0-1.78-.718-2.386-1.586-.606.868-1.42 1.586-2.386 1.586-1.5 0-2.716-1.216-2.716-2.716 0-1.5 1.216-2.716 2.716-2.716z"/></svg>
+              <span>itch.io</span>
+            </a>
+          </div>
+          <div class="profile-counts">
+            <span><strong>75K</strong> <span>LOC engine</span></span>
+            <span><strong>+11 dB</strong> <span>3DGS vs NeRF</span></span>
+            <span><strong>182</strong> <span>MCP tools</span></span>
+            <span><strong id="gh-contrib-num">7.1K</strong> <span>contribs · <span id="gh-contrib-year">2026</span></span></span>
+          </div>
+        </div>
+      </header>
 
-            <article class="project-item spine-target" data-spines="agents" data-tags="agents">
-              <img class="project-thumb" src="assets/proof/niua_godot_mcp.png" alt="NIUA Godot MCP architecture — AI agent to MCP server to Godot editor to playtest evidence" loading="lazy" width="640" height="400" />
+      <nav class="profile-tabs" id="section-nav" aria-label="Profile sections">
+        <a class="profile-tab is-active" href="#featured-work" data-nav="featured-work">Posts</a>
+        <a class="profile-tab" href="#projects" data-nav="projects">Projects</a>
+        <a class="profile-tab" href="#experience" data-nav="experience">Experience</a>
+        <a class="profile-tab" href="#skills" data-nav="skills">Skills</a>
+      </nav>
+
+      <div class="feed-filters" id="track-filter" role="group" aria-label="Filter work by track">
+        <button type="button" data-track="all" aria-pressed="true">All</button>
+        <button type="button" data-track="graphics" aria-pressed="false">Graphics</button>
+        <button type="button" data-track="neural" aria-pressed="false">Neural</button>
+        <button type="button" data-track="agents" aria-pressed="false">Agents</button>
+      </div>
+
+      <!-- ── Featured posts ── -->
+      <div class="feed-section-label" id="featured-work">Pinned · Featured work</div>
+
+      <!-- Ohao -->
+      <article class="post track-target" data-tracks="graphics" data-roles="graphics">
+        <img class="post-avatar" src="assets/profile/avatar.jpg" alt="" width="80" height="80" loading="lazy" />
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-author">Frank Yin</span>
+            <span class="post-handle">@qervas</span>
+            <span class="post-dot">·</span>
+            <span class="post-time">pinned</span>
+            <span class="post-badge">graphics</span>
+          </div>
+          <h3 class="post-title">Ohao Engine</h3>
+          <p class="post-stack">C++20 · Vulkan 1.3 KHR RT · GLSL · DLSS-RR · ReSTIR GI · OIDN</p>
+          <p>
+            Solo hybrid Vulkan renderer: deferred G-buffer and KHR path tracing share one scene, materials, bindless textures, and TLAS. Architecture spans <em>render</em>, <em>physics</em> (GJK/EPA + BVH), and a <em>gpu / Vulkan</em> layer — no engine SDK host.
+          </p>
+          <p>
+            <strong>Real-time path tracing:</strong> interactive 1-spp chain with NVIDIA DLSS 4 Ray Reconstruction (raw NGX Vulkan on Linux) and vendor-neutral SVGF; ReSTIR GI on outdoor HDRI; OIDN offline + NRD compose. Golden regression: Cornell box + MetalRoughSpheres.
+          </p>
+          <div class="post-media">
+            <div class="post-hero-video">
+              <video id="ohao-orbit-video" class="lazy-video" data-src="assets/proof/ohao_helmet_orbit.mp4" poster="assets/proof/ohao_helmet.jpg" loop muted playsinline preload="none" aria-label="Ohao Engine — real-time path-traced helmet orbiting at ~67 fps"></video>
+              <span class="post-hero-video__tag">Real-time path tracing · ~67 fps · DLSS-RR · ReSTIR GI</span>
+            </div>
+            <div class="featured-gallery-3">
+              <div class="cell">
+                <img src="assets/proof/ohao_helmet_pbr.jpg" alt="Damaged Helmet PBR render" loading="lazy" />
+                <span class="cell-label">Helmet · deferred PBR</span>
+              </div>
+              <div class="cell">
+                <img src="assets/proof/ohao_lantern.jpg" alt="Lantern scene" loading="lazy" />
+                <span class="cell-label">Lantern · emissive</span>
+              </div>
+              <div class="cell">
+                <img src="assets/proof/ohao_spheres.jpg" alt="MetalRoughSpheres BRDF" loading="lazy" />
+                <span class="cell-label">Spheres · BRDF</span>
+              </div>
+            </div>
+            <p class="featured-subcaption">Path-tracing · Intel OIDN on glossy scene</p>
+            <div class="featured-gallery-2">
+              <div class="cell">
+                <img src="assets/proof/ohao_oidn_noisy.jpg" alt="Helmet 16 spp raw" loading="lazy" />
+                <span class="cell-label">16 spp · raw</span>
+              </div>
+              <div class="cell">
+                <img src="assets/proof/ohao_oidn_denoised.jpg" alt="Helmet 16 spp OIDN" loading="lazy" />
+                <span class="cell-label">16 spp · OIDN</span>
+              </div>
+            </div>
+            <p class="featured-subcaption">ReSTIR GI · outdoor HDRI</p>
+            <div class="featured-gallery-2">
+              <div class="cell">
+                <img src="assets/proof/ohao_restir_off.jpg" alt="Path-traced outdoor scene without ReSTIR GI" loading="lazy" />
+                <span class="cell-label">ReSTIR GI · off</span>
+              </div>
+              <div class="cell">
+                <img src="assets/proof/ohao_restir_on.jpg" alt="Same outdoor scene with ReSTIR GI enabled" loading="lazy" />
+                <span class="cell-label">ReSTIR GI · on</span>
+              </div>
+            </div>
+          </div>
+          <div class="post-links">
+            <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">GitHub Repo ↗</a>
+            <a href="ohao-engine/" target="_blank" rel="noopener">Demo booth ↗</a>
+          </div>
+              <div class="post-actions" aria-hidden="true">
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg> <span>thread</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg> <span>ship</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg> <span>star</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg> <span>share</span></span>
+              </div>
+        </div>
+      </article>
+
+      <!-- Thesis -->
+      <article class="post track-target" data-tracks="neural graphics" data-roles="neural graphics">
+        <img class="post-avatar" src="assets/profile/avatar.jpg" alt="" width="80" height="80" loading="lazy" />
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-author">Frank Yin</span>
+            <span class="post-handle">@qervas</span>
+            <span class="post-dot">·</span>
+            <span class="post-time">pinned</span>
+            <span class="post-badge">neural</span>
+          </div>
+          <h3 class="post-title">Neural Rendering Dataset — MSc Thesis</h3>
+          <p class="post-stack">C++ · C# · WinUI · Hardware Control · ~8K lines</p>
+          <p>
+            Built CamMatrixCapture: a 12-camera synchronized capture system with staggered trigger firmware, Bluetooth-controlled turntable automation, and a state-machine driven capture workflow. Indoor object captures feed NeRF / 3DGS training; outdoor work includes drone reconstruction of Gränsö Castle.
+          </p>
+          <p>
+            Released a <strong>209 GB</strong> public dataset (31 GB compressed) focused on challenging materials — reflective, transparent, translucent. 14 objects, 432 images each (12 cams × 36 poses). MIT licensed.
+          </p>
+          <p>
+            Benchmark: <strong>3D Gaussian Splatting ~11 dB PSNR above NeRF on reflective surfaces</strong>.
+          </p>
+          <div class="post-media">
+            <div class="thesis-visual">
+              <div class="thesis-compare-wrap">
+                <div class="thesis-chips" role="tablist" aria-label="Material">
+                  <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-3dgs="assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
+                  <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
+                  <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass</button>
+                </div>
+                <div class="thesis-video" aria-label="3D Gaussian Splatting reconstruction">
+                  <video id="thesisVideoEl" src="assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
+                  <span class="thesis-video__tag">3DGS · +11 dB PSNR vs NeRF</span>
+                </div>
+              </div>
+              <div class="thesis-visual__row">
+                <div class="cell">
+                  <img src="assets/proof/granso_rc_aerial.jpg" alt="Gränsö Castle aerial reconstruction" loading="lazy" />
+                  <span class="cell-label">Gränsö Castle · aerial RC</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/thesis_method_matrix.jpg" alt="Method comparison matrix" loading="lazy" />
+                  <span class="cell-label">RC / NeRF / 3DGS matrix</span>
+                </div>
+              </div>
+              <div class="thesis-visual__row">
+                <div class="cell">
+                  <img src="assets/proof/thesis_objects_overview.png" alt="Studio capture objects overview" loading="lazy" />
+                  <span class="cell-label">14 objects · capture set</span>
+                </div>
+                <div class="cell">
+                  <img src="assets/proof/thesis_rig_setup.png" alt="12-camera capture rig setup" loading="lazy" />
+                  <span class="cell-label">12-cam rig · studio setup</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="post-links">
+            <a href="https://archive.org/details/captured_objects_dataset" target="_blank" rel="noopener">Download dataset ↗</a>
+            <a href="assets/proof/granso_RC.mp4" target="_blank" rel="noopener">Gränsö video ↗</a>
+            <a href="neural-capture/" target="_blank" rel="noopener">Monograph ↗</a>
+          </div>
+              <div class="post-actions" aria-hidden="true">
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg> <span>thread</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg> <span>ship</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg> <span>star</span></span>
+                <span class="post-action"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg> <span>share</span></span>
+              </div>
+        </div>
+      </article>
+
+      <!-- Bio expand -->
+      <article class="post">
+        <img class="post-avatar" src="assets/profile/avatar.jpg" alt="" width="80" height="80" loading="lazy" />
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-author">Frank Yin</span>
+            <span class="post-handle">@qervas</span>
+            <span class="post-dot">·</span>
+            <span class="post-time">bio</span>
+          </div>
+          <p>
+            MSc Computer Science, Linköping University — Graphics &amp; Visualization.
+            <strong>Open to graphics / engine / GPU / AI-infrastructure / agent roles · full-time.</strong>
+          </p>
+          <button type="button" class="summary-more-btn" id="summary-more-btn" aria-expanded="false" aria-controls="summary-more">Show more</button>
+          <div class="summary-more" id="summary-more" hidden>
+            Ships hardware RT pipelines (Vulkan KHR, CUDA), real-time path tracing with NVIDIA DLSS 4 Ray Reconstruction and SVGF, MIS path tracing with Owen-scrambled Sobol, OIDN / NRD denoisers. Also: synchronized multi-camera capture, Freedo internship (MLS-MPM on 3DGS), and open-source Godot MCP (OhaoTech) — 182 tools across 12 domains with a playtest evidence contract.
+          </div>
+        </div>
+      </article>
+
+      <!-- Projects -->
+      <div class="feed-section-label" id="projects">Projects</div>
+      <div class="feed-filters project-filters" id="project-filters" role="group" aria-label="Filter projects">
+        <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+        <button type="button" class="filter-chip" data-filter="graphics">Graphics</button>
+        <button type="button" class="filter-chip" data-filter="agents">Agents</button>
+        <button type="button" class="filter-chip" data-filter="physics">Physics</button>
+        <button type="button" class="filter-chip" data-filter="neural">Neural</button>
+        <button type="button" class="filter-chip" data-filter="course">Coursework</button>
+      </div>
+      <p class="project-empty" id="project-empty" hidden>No projects in this filter.</p>
+      <div class="project-grid">
+
+
+            <article class="project-item track-target" data-tracks="agents" data-tags="agents">
+              <img class="project-thumb" src="assets/proof/niua_godot_mcp_product.jpg" alt="NIUA Godot MCP — AI agent connected to a Godot game viewport through a neural tool bridge" loading="lazy" width="1280" height="720" />
               <div class="project-body">
                 <h3>NIUA Godot MCP · open source</h3>
                 <div class="meta">Node / TypeScript · MCP · Godot 4.6 GDExtension</div>
-                <p>From-scratch MCP server plus a bundled Godot editor addon that lets AI agents create, inspect, run, debug, and export Godot 4.6 games through tools — ~26 tool domains (scene, nodes, scripts, run, resources, UI, workflows…), an editor bridge over local HTTP with token auth, and a <em>run_playtest_evidence</em> contract (input → assert → screenshot) so the agent checks its own work. Installers for Claude / Cursor / Codex.</p>
+                <p>From-scratch MCP server plus a bundled Godot editor addon that lets AI agents create, inspect, run, debug, and export Godot 4.6 games through tools — 182 tools across 12 domains (scene, nodes, scripts, run, resources, debug, systems, workflows…), an editor bridge over local HTTP with token auth, and a <em>run_playtest_evidence</em> contract (input → assert → screenshot) so the agent checks its own work. Installers for Claude / Cursor / Codex.</p>
                 <div class="project-tags"><span class="project-tag">Agents</span></div>
                 <a href="https://github.com/OhaoTech/niua-godot-mcp" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="agents" data-tags="agents">
+            <article class="project-item track-target" data-tracks="agents" data-tags="agents">
               <img class="project-thumb" src="assets/proof/nocturneai.png" alt="NocturneAI architecture — coordinator, ReAct agents, tools, workflow engine" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>NocturneAI · multi-agent CLI</h3>
@@ -449,7 +565,7 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="graphics" data-tags="physics">
+            <article class="project-item track-target" data-tracks="graphics" data-tags="physics">
               <video class="project-thumb lazy-video" data-src="assets/proof/taichi_mlsmpm.mp4" poster="assets/proof/taichi_mlsmpm.jpg" loop muted playsinline preload="none" aria-label="3D Rising Flood — MLS-MPM water around a house mesh, SplashSurf surface + Blender Cycles (Phase 9)"></video>
               <div class="project-body">
                 <h3>MLS-MPM Physics Simulation</h3>
@@ -461,8 +577,14 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="graphics" data-tags="graphics physics">
-              <img class="project-thumb" src="assets/proof/sx_hero_glass.jpg" alt="sx-engine hero render: ray-traced glass sphere over desert with cloud-reflecting environment" loading="lazy" width="640" height="400" />
+            <article class="project-item track-target" data-tracks="graphics" data-tags="graphics physics">
+              <div class="project-media-stack">
+                <img class="project-thumb" src="assets/proof/sx_hero_glass.jpg" alt="sx-engine hero render: ray-traced glass sphere over desert with cloud-reflecting environment" loading="lazy" width="640" height="400" />
+                <div class="project-media-row">
+                  <img src="assets/proof/sx_aquarium_crystal.jpg" alt="sx-engine crystal aquarium liquid preset" loading="lazy" />
+                  <img src="assets/proof/sx_cloth_silk.jpg" alt="sx-engine silk cloth PBD simulation" loading="lazy" />
+                </div>
+              </div>
               <div class="project-body">
                 <h3>sx-engine — CUDA Path Tracer + Physics</h3>
                 <div class="meta">CUDA · Taichi · C++ · OIDN · ~3K LOC</div>
@@ -471,20 +593,7 @@
                 <a href="https://github.com/Qervas/sx-engine" target="_blank" rel="noopener">Repo ↗</a>
               </div>
             </article>
-
-            <article class="project-item spine-target" data-spines="neural graphics" data-tags="graphics neural">
-              <img class="project-thumb" src="assets/proof/inverse_pot_still.jpg" alt="Glossy reflective pot capture — nvdiffrast turntable inverse rendering research" loading="lazy" width="640" height="400" />
-              <div class="project-body">
-                <h3>nvdiffrast Turntable IR · research sibling</h3>
-                <div class="meta">Python · PyTorch · nvdiffrast · GGX/Disney BRDF</div>
-                <p><strong>Not the Ohao Vulkan Diff-IR lab</strong> (that lives inside <em>ohao_engine</em> above). This is a separate PyTorch / nvdiffrast experiment: full GGX stack (D/G/F), turntable camera / mesh / lighting layers, aimed at per-point BRDF recovery and relighting glossy captures so SfM converges. Neural decomposition + training loop still in progress.</p>
-                <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Neural</span></div>
-                <a href="https://github.com/Qervas/turntable-inverse-rendering" target="_blank" rel="noopener">Repo ↗</a>
-                <a href="https://github.com/Qervas/ohao_engine" target="_blank" rel="noopener">Ohao Diff-IR ↗</a>
-              </div>
-            </article>
-
-            <article class="project-item spine-target" data-spines="graphics" data-tags="physics">
+            <article class="project-item track-target" data-tracks="graphics" data-tags="physics">
               <img class="project-thumb" src="assets/proof/sph_water.jpg" alt="SPH particle fluid simulation with velocity-coded color visualization, confined in a tiled pool" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>SPH Water Simulation</h3>
@@ -496,7 +605,7 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="graphics" data-tags="graphics course">
+            <article class="project-item track-target" data-tracks="graphics" data-tags="graphics course">
               <img class="project-thumb" src="assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render — final stage of the procedural rust progression" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Real-time Material Aging & Weathering</h3>
@@ -507,7 +616,7 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="agents" data-tags="agents course">
+            <article class="project-item track-target" data-tracks="agents" data-tags="agents course">
               <img class="project-thumb" src="assets/proof/tnm114-xiangqi/board_AI.png" alt="Custom Qt-based Xiàngqí board mid-game with the trained DQN agent on move" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Xiàngqí AI with Deep Q-Networks</h3>
@@ -518,7 +627,7 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="graphics" data-tags="graphics course">
+            <article class="project-item track-target" data-tracks="graphics" data-tags="graphics course">
               <img class="project-thumb" src="assets/proof/tncg15-path-tracing/img-005.png" alt="Cornell-box-style path-traced render with diffuse, glossy and refractive interactions converged" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Path Tracing & Photon Mapping</h3>
@@ -530,7 +639,7 @@
               </div>
             </article>
 
-            <article class="project-item spine-target" data-spines="neural" data-tags="neural course">
+            <article class="project-item track-target" data-tracks="neural" data-tags="neural course">
               <img class="project-thumb" src="assets/proof/skiing-openpose/paper_img-004.png" alt="Skiing-action classifier test panel: original video, OpenPose skeleton, ST-GCN class label, and attention map" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Skiing Action Analysis · OpenPose + ST-GCN</h3>
@@ -541,16 +650,11 @@
               </div>
             </article>
 
-          </div>
-        </div>
+          
       </div>
-    </section>
 
-    <!-- ── Experience ── -->
-    <section class="section reveal" id="experience">
-      <div class="section-head">
-        <div class="section-label">Experience</div>
-        <div class="section-body entry-list">
+      <div class="feed-section-label" id="experience">Experience</div>
+
 
           <article class="entry">
             <div class="entry-head">
@@ -594,62 +698,43 @@
             </ul>
           </article>
 
-        </div>
-      </div>
-    </section>
+        
 
-    <!-- ── Skills ── -->
-    <section class="section reveal" id="skills">
-      <div class="section-head">
-        <div class="section-label">Skills</div>
-        <div class="section-body">
-          <div class="skill-chips" aria-label="Skill highlights">
-            <span class="skill-chip">C++20</span>
-            <span class="skill-chip">CUDA</span>
-            <span class="skill-chip">Vulkan RT</span>
-            <span class="skill-chip">GLSL</span>
-            <span class="skill-chip">Path tracing</span>
-            <span class="skill-chip">3DGS / NeRF</span>
-            <span class="skill-chip">Taichi</span>
-            <span class="skill-chip">MLS-MPM</span>
-            <span class="skill-chip">TypeScript</span>
-            <span class="skill-chip">MCP / Agents</span>
-            <span class="skill-chip">Python</span>
-            <span class="skill-chip">Godot</span>
-            <span class="skill-chip">CMake</span>
-            <span class="skill-chip">Linux</span>
-          </div>
-          <div class="skills-grid">
-            <div class="skill-row"><strong>Languages</strong>C++20, CUDA, Python, C#, TypeScript, Rust, GLSL, HLSL</div>
-            <div class="skill-row"><strong>Graphics APIs</strong>Vulkan (incl. KHR ray tracing), OpenGL 4.3, DirectX 12</div>
-            <div class="skill-row"><strong>Rendering</strong>Deferred rendering, hardware RT, path tracing, PBR (Cook-Torrance GGX), global illumination, TAA, SSAO, SSR, CSM</div>
-            <div class="skill-row"><strong>GPU Compute</strong>CUDA kernels, compute shaders, CUDA-OpenGL interop, Nsight / RenderDoc / PIX profiling</div>
-            <div class="skill-row"><strong>Simulation &amp; Math</strong>SPH fluids, Marching Cubes, GJK/EPA collision, BVH, differentiable rendering</div>
-            <div class="skill-row"><strong>Neural Rendering</strong>NeRF, 3D Gaussian Splatting, synchronized multi-camera capture pipelines</div>
-            <div class="skill-row"><strong>Engines &amp; Tools</strong>Custom C++/Vulkan, Godot (GDExtension), Unreal Engine, Blender</div>
-            <div class="skill-row"><strong>Systems</strong>CMake, Git, Linux, Docker, PostgreSQL, low-level performance profiling</div>
-          </div>
-        </div>
+      <div class="feed-section-label" id="skills">Skills</div>
+      <div class="skill-chips" aria-label="Skill highlights">
+        <span class="skill-chip">C++20</span>
+        <span class="skill-chip">CUDA</span>
+        <span class="skill-chip">Vulkan RT</span>
+        <span class="skill-chip">GLSL</span>
+        <span class="skill-chip">Path tracing</span>
+        <span class="skill-chip">3DGS / NeRF</span>
+        <span class="skill-chip">Taichi</span>
+        <span class="skill-chip">MLS-MPM</span>
+        <span class="skill-chip">TypeScript</span>
+        <span class="skill-chip">MCP / Agents</span>
+        <span class="skill-chip">Python</span>
+        <span class="skill-chip">Godot</span>
+        <span class="skill-chip">CMake</span>
+        <span class="skill-chip">Linux</span>
       </div>
-    </section>
-
-    <!-- ── How I work ── -->
-    <section class="section reveal">
-      <div class="section-head">
-        <div class="section-label">How I Work</div>
-        <div class="section-body">
-          <p class="ethos">
-            I care about <strong>infrastructure, not app surface area</strong>. The systems I find interesting are the ones other engineers build on top of: a renderer, a capture pipeline, a physics engine, a GPU scheduler. I profile before optimizing, I read the paper before reimplementing, and I'd rather ship one well-understood 50K-line engine than three shallow demos.
-          </p>
-        </div>
+      <div class="skills-grid">
+        <div class="skill-row"><strong>Languages</strong><span>C++20, CUDA, Python, C#, TypeScript, Rust, GLSL, HLSL</span></div>
+        <div class="skill-row"><strong>Graphics APIs</strong><span>Vulkan (incl. KHR ray tracing), OpenGL 4.3, DirectX 12</span></div>
+        <div class="skill-row"><strong>Rendering</strong><span>Deferred rendering, hardware RT, path tracing, PBR (Cook-Torrance GGX), GI, TAA, SSAO, SSR, CSM</span></div>
+        <div class="skill-row"><strong>GPU Compute</strong><span>CUDA kernels, compute shaders, CUDA-OpenGL interop, Nsight / RenderDoc / PIX</span></div>
+        <div class="skill-row"><strong>Simulation</strong><span>SPH fluids, Marching Cubes, GJK/EPA, BVH, differentiable rendering</span></div>
+        <div class="skill-row"><strong>Neural</strong><span>NeRF, 3D Gaussian Splatting, multi-camera capture pipelines</span></div>
+        <div class="skill-row"><strong>Engines</strong><span>Custom C++/Vulkan, Godot (GDExtension), Unreal, Blender</span></div>
+        <div class="skill-row"><strong>Systems</strong><span>CMake, Git, Linux, Docker, PostgreSQL, low-level profiling</span></div>
       </div>
-    </section>
 
-    <!-- ── Education ── -->
-    <section class="section reveal" id="education">
-      <div class="section-head">
-        <div class="section-label">Education</div>
-        <div class="section-body entry-list">
+      <div class="feed-section-label">How I work</div>
+      <p class="ethos">
+        I care about <strong>infrastructure, not app surface area</strong>. The systems I find interesting are the ones other engineers build on top of: a renderer, a capture pipeline, a physics engine, a GPU scheduler. I profile before optimizing, I read the paper before reimplementing, and I'd rather ship one well-understood 75K-line engine than three shallow demos.
+      </p>
+
+      <div class="feed-section-label" id="education">Education</div>
+
 
           <article class="entry">
             <div class="entry-head">
@@ -679,24 +764,168 @@
             </ul>
           </article>
 
+        
+
+      <footer class="footer">
+        <div>Shaoxuan Yin (aka Frank) · <a href="mailto:frankyin17@outlook.com">frankyin17@outlook.com</a></div>
+        <div><a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a> · <span class="mono">@qervas</span></div>
+      </footer>
+    </main>
+
+    <!-- ═══ RIGHT RAIL ═══ -->
+    <aside class="rail-right" aria-label="Sidebar">
+      <label class="aside-search" for="site-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
+        <input id="site-search" class="site-search-input" type="search" placeholder="Search posts &amp; projects" autocomplete="off" spellcheck="false" />
+      </label>
+      <p class="aside-search-hint" id="site-search-hint" hidden></p>
+
+      <div class="aside-card">
+        <div class="aside-card-title">Status</div>
+        <div class="aside-status">
+          <i class="dot" aria-hidden="true"></i>
+          Available full-time · Remote / relocate
+        </div>
+        <div class="aside-row">
+          <div class="aside-kicker">Languages</div>
+          <div class="aside-label">EN fluent · 中文 native · FR basic</div>
+        </div>
+        <div class="aside-row">
+          <div class="aside-kicker">Target roles</div>
+          <div class="aside-label">Graphics · Engine · GPU · Agents</div>
+          <div class="aside-sub">AI-infrastructure welcome</div>
         </div>
       </div>
-    </section>
 
-    <footer class="footer">
-      <div>Shaoxuan (Frank) Yin · <a href="mailto:frankyin17@outlook.com">frankyin17@outlook.com</a></div>
-      <div><a href="https://github.com/Qervas" target="_blank" rel="noopener">github.com/Qervas</a></div>
-    </footer>
+      <div class="aside-card aside-heatmap" id="aside-heatmap">
+        <div class="aside-card-head">
+          <div class="aside-card-title">Cadence</div>
+          <a class="aside-heatmap-handle" href="https://github.com/Qervas" target="_blank" rel="noopener">@Qervas</a>
+        </div>
+        <div class="gh-stats" aria-label="Contribution stats">
+          <div class="gh-stat">
+            <span class="gh-stat-n" id="gh-heatmap-num">—</span>
+            <span class="gh-stat-l">contribs</span>
+          </div>
+          <div class="gh-stat">
+            <span class="gh-stat-n" id="gh-streak">—</span>
+            <span class="gh-stat-l">streak</span>
+          </div>
+          <div class="gh-stat">
+            <span class="gh-stat-n" id="gh-peak">—</span>
+            <span class="gh-stat-l">peak</span>
+          </div>
+        </div>
+        <p class="gh-year-line"><span id="gh-heatmap-year">2026</span> · public activity</p>
+        <div class="gh-heat-wrap">
+          <div class="gh-heat-scroll" id="gh-heat-scroll">
+            <div class="gh-heat-track" id="gh-heat-track">
+              <div class="gh-heat-months" id="gh-heat-months" aria-hidden="true"></div>
+              <div class="gh-heat-body">
+                <div class="gh-heat-days" aria-hidden="true">
+                  <span>Mon</span><span>Wed</span><span>Fri</span>
+                </div>
+                <div
+                  class="gh-heat is-loading"
+                  id="gh-heat"
+                  role="img"
+                  aria-label="GitHub contribution heatmap for @Qervas"
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="gh-heat-legend">
+            <span class="gh-heat-legend-label">Less</span>
+            <span class="gh-cell l0" title="0"></span>
+            <span class="gh-cell l1" title="low"></span>
+            <span class="gh-cell l2" title="mid"></span>
+            <span class="gh-cell l3" title="high"></span>
+            <span class="gh-cell l4" title="peak"></span>
+            <span class="gh-heat-legend-label">More</span>
+          </div>
+        </div>
+        <a class="aside-heatmap-caption" href="https://github.com/Qervas" target="_blank" rel="noopener">
+          View profile on GitHub ↗
+        </a>
+        <div class="gh-tooltip" id="gh-tooltip" hidden></div>
+      </div>
 
-  </main>
+      <div class="aside-card">
+        <div class="aside-card-title">What’s hot</div>
+        <a class="aside-row" href="#featured-work">
+          <div class="aside-kicker">Graphics · trending</div>
+          <div class="aside-label">Ohao Engine path tracing</div>
+          <div class="aside-sub"><span class="aside-num">~67 fps</span> · DLSS-RR + ReSTIR</div>
+        </a>
+        <a class="aside-row" href="#featured-work">
+          <div class="aside-kicker">Neural · trending</div>
+          <div class="aside-label">3DGS vs NeRF benchmark</div>
+          <div class="aside-sub"><span class="aside-num">+11 dB</span> · 209 GB dataset</div>
+        </a>
+        <a class="aside-row" href="#projects">
+          <div class="aside-kicker">Agents · open source</div>
+          <div class="aside-label">NIUA Godot MCP</div>
+          <div class="aside-sub"><span class="aside-num">182</span> tools · playtest evidence</div>
+        </a>
+        <a class="aside-row" href="#projects">
+          <div class="aside-kicker">Physics</div>
+          <div class="aside-label">MLS-MPM flood sims</div>
+          <div class="aside-sub">Taichi · up to 4M particles</div>
+        </a>
+      </div>
+
+      <div class="aside-card">
+        <div class="aside-card-title">Stack</div>
+        <div class="aside-chips">
+          <span class="aside-chip">Vulkan RT</span>
+          <span class="aside-chip">CUDA</span>
+          <span class="aside-chip">C++20</span>
+          <span class="aside-chip">3DGS</span>
+          <span class="aside-chip">MCP</span>
+          <span class="aside-chip">Taichi</span>
+          <span class="aside-chip">TypeScript</span>
+          <span class="aside-chip">Godot</span>
+        </div>
+      </div>
+
+      <div class="aside-card">
+        <div class="aside-card-title">Links</div>
+        <a class="aside-row" href="https://github.com/Qervas" target="_blank" rel="noopener">
+          <div class="aside-label">GitHub</div>
+          <div class="aside-sub">github.com/Qervas</div>
+        </a>
+        <a class="aside-row" href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener">
+          <div class="aside-label">LinkedIn</div>
+          <div class="aside-sub">linkedin.com/in/sxyin</div>
+        </a>
+        <a class="aside-row" href="https://frankyin17.itch.io/" target="_blank" rel="noopener">
+          <div class="aside-label">itch.io</div>
+          <div class="aside-sub">frankyin17.itch.io</div>
+        </a>
+        <a class="aside-row" href="https://www.youtube.com/@frankyin8509" target="_blank" rel="noopener">
+          <div class="aside-label">YouTube</div>
+          <div class="aside-sub">@frankyin8509</div>
+        </a>
+        <a class="aside-row" href="assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener">
+          <div class="aside-label">Download CV</div>
+          <div class="aside-sub">PDF</div>
+        </a>
+      </div>
+
+      <div class="aside-footer">
+        <a href="mailto:frankyin17@outlook.com">Email</a> ·
+        <a href="ohao-engine/">Ohao booth</a> ·
+        <a href="neural-capture/">Capture monograph</a><br />
+        © Frank Yin · built like a feed, not a brochure
+      </div>
+    </aside>
+  </div>
+
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <img id="lb-img" alt="" />
     <p class="lightbox-caption" id="lb-caption"></p>
     <span class="lightbox-close">Click anywhere · ESC to close</span>
   </div>
-
-
-
 
   <script src="js/lightbox.js" defer></script>
   <script src="js/thesis.js" defer></script>
@@ -705,8 +934,10 @@
   <script src="js/summary-more.js" defer></script>
   <script src="js/nav-active.js" defer></script>
   <script src="js/project-filters.js" defer></script>
-  <script src="js/spine.js" defer></script>
+  <script src="js/tracks.js" defer></script>
   <script src="js/media.js" defer></script>
   <script src="js/reveal.js" defer></script>
+  <script src="js/search.js" defer></script>
+  <script src="js/banner-rain.js" defer></script>
 </body>
 </html>
