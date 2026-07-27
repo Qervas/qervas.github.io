@@ -36,6 +36,12 @@
     height: 40px;
   }
   .rail-link { border-radius: 50%; }
+  .rail-contact {
+    margin: 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .rail-cta {
     display: grid;
     place-items: center;
@@ -48,6 +54,17 @@
   .rail-cta::after {
     content: "✉";
     font-size: 1.1rem;
+  }
+  .rail-cta[aria-expanded="true"] {
+    border-radius: 50%;
+  }
+  .rail-contact-menu {
+    position: absolute;
+    left: calc(100% + 8px);
+    bottom: 0;
+    min-width: 180px;
+    border-radius: 14px;
+    border-top: 1px solid var(--rule-strong);
   }
   .rail-right {
     padding-left: 12px;
