@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-label="Godot MCP">
+  <!--
+    Ohao product mark: agentic game studio workflow.
+    Play path + agent nodes. Simple, cool, not the official Godot logo.
+  -->
+  <defs>
+    <linearGradient id="a" x1="20" y1="16" x2="108" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#16161f"/>
+      <stop offset="1" stop-color="#0b0b10"/>
+    </linearGradient>
+    <linearGradient id="b" x1="36" y1="40" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a79bff"/>
+      <stop offset="0.55" stop-color="#6e56f8"/>
+      <stop offset="1" stop-color="#1ad4a0"/>
+    </linearGradient>
+    <linearGradient id="c" x1="48" y1="36" x2="92" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7ef0c8"/>
+      <stop offset="1" stop-color="#1ad4a0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Tile -->
+  <rect x="10" y="10" width="108" height="108" rx="30" fill="url(#a)" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+
+  <!-- Workflow ring: three agent nodes in orbit -->
+  <circle cx="64" cy="64" r="34" stroke="rgba(110,86,248,0.28)" stroke-width="2" stroke-dasharray="3 7" fill="none"/>
+
+  <!-- Nodes -->
+  <circle cx="64" cy="30" r="7" fill="url(#b)"/>
+  <circle cx="34" cy="82" r="7" fill="url(#b)"/>
+  <circle cx="94" cy="82" r="7" fill="url(#c)"/>
+
+  <!-- Links between nodes (studio loop) -->
+  <path d="M64 37V50M39.5 76.5 52 68M88.5 76.5 76 68" stroke="url(#b)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Core play mark: agentic output -->
+  <path d="M56 50.5v27l24-13.5-24-13.5Z" fill="url(#c)"/>
+</svg>

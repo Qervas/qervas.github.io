@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>07 · Studio protocol — Neural Capture</title>
+  <meta name="description" content="Studio protocol — implementation monograph" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-page="protocol" data-root="..">
+  <div class="progress" aria-hidden="true"></div>
+      <nav class="toc" aria-label="Chapters">
+    <div class="toc-brand">Neural Capture · Monograph</div>
+    <p class="toc-title">Thesis<span>Show first · deep dive later</span></p>
+    <div class="group">Show (demo)</div>
+    <a href="show.html" data-page="show"><span class="num">▶</span>Demo tour · 5 stops</a>
+    <a href="evaluation.html" data-page="evaluation"><span class="num">R</span>Results gallery</a>
+    <a href="../index.html" data-page="home"><span class="num">00</span>Cover</a>
+    <div class="group">Capture system</div>
+    <a href="architecture.html" data-page="architecture"><span class="num">01</span>Architecture</a>
+    <a href="hardware.html" data-page="hardware"><span class="num">02</span>Hardware</a>
+    <a href="capture.html" data-page="capture"><span class="num">03</span>Capture loop</a>
+    <a href="gui.html" data-page="gui"><span class="num">04</span>GUI wizard</a>
+    <div class="group">Thesis science</div>
+    <a href="protocol.html" data-page="protocol" class="active"><span class="num">05</span>Studio protocol</a>
+    <a href="outdoor.html" data-page="outdoor"><span class="num">06</span>Outdoor · Gränsö</a>
+    <div class="group">Reference</div>
+    <a href="status.html" data-page="status"><span class="num">S</span>Status</a>
+    <a href="build.html" data-page="build"><span class="num">B</span>Build</a>
+    <a href="glossary.html" data-page="glossary"><span class="num">G</span>Glossary</a>
+    <a href="bluetooth.html" data-page="bluetooth"><span class="num">·</span>Bluetooth (detail)</a>
+    <a href="session.html" data-page="session"><span class="num">·</span>Sessions (detail)</a>
+    <div class="toc-foot">Keys on Demo tour: <kbd>1</kbd>–<kbd>5</kbd><br />
+      <a href="https://github.com/Qervas/CamMatrixCapture">Code</a> ·
+      <a href="https://archive.org/details/captured_objects_dataset">Dataset</a>
+    </div>
+  </nav>
+  <div class="mobile-toc">Neural Capture · Demo: open Demo tour</div>
+
+  
+  <main class="book">
+    <article class="page">
+      <p class="crumb"><a href="../index.html">Monograph</a> · 07 · Studio protocol</p>
+      <header class="chapter-head reveal">
+        <div class="chapter-num">07</div>
+        <div>
+          <p class="chapter-kicker">Thesis pipeline · studio · setup evidence</p>
+          <h1>Studio protocol</h1>
+        </div>
+      </header>
+      <div class="thesis-box chapter-contract reveal">
+        <div class="label">Chapter contract</div>
+        <p>Owns physical studio geometry, lighting, V1–V3 evolution, ArUco pose gate — with <strong>setup photos and protocol plates</strong>.</p>
+      </div>
+      <div class="prose reveal">
+        <p class="lead">12 cameras on a ~90° arc at ~1.4 m, 36×10° turntable steps → <strong>432 views/object</strong>, four softboxes ~5600 K, windowless room.</p>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/thesis_rig_setup.png" alt="Rig" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">PRO-1</span><p><span class="badge ok">Real setup</span> Physical multi-camera rig.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/real_scene_setup.jpg" alt="Scene" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">PRO-2</span><p>Overhead / lab capture volume.</p></figcaption>
+        </figure>
+      </div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/measure_scene_setup.png" alt="Geometry" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">PRO-3</span><p>Measurement geometry schematic (arc, lights, origin).</p></figcaption>
+      </figure>
+      <table class="data-table reveal">
+        <thead><tr><th>Version</th><th>Support</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>V1</td><td>Manual stand / hand rotate</td><td>~85% diffuse / ~30% specular</td></tr>
+          <tr><td>V2</td><td>Fiducial disc + ArUco</td><td>~95% RC alignment</td></tr>
+          <tr><td>V3</td><td>Motorized BLE turntable</td><td>~98% batch success</td></tr>
+        </tbody>
+      </table>
+      <div class="decision reveal">
+        <div class="decision-head"><span class="decision-tag">Decision</span><h4>ArUco when SfM dies</h4></div>
+        <div class="decision-body">
+          <p>COLMAP aligned 2/432 on a hard sequence. ArUco → RealityCapture mean reprojection <strong>0.53–0.76 px</strong>.</p>
+        </div>
+      </div>
+      <div class="section-rule"><h2>What the protocol produced</h2></div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/thesis_objects_overview.png" alt="Objects" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">PRO-4</span><p><span class="badge ok">Output</span> Studio dataset objects from the V3 protocol.</p></figcaption>
+      </figure>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/setup.png" alt="Software setup" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">PRO-5</span><p>Capture software setup UI during studio runs.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/capture.png" alt="Capture UI" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">PRO-6</span><p>Live capture sequence UI.</p></figcaption>
+        </figure>
+      </div>
+      <nav class="pager">
+        <a href="gui.html"><div class="label">← Previous</div><div class="title">06 · GUI</div></a>
+        <a class="next" href="outdoor.html"><div class="label">Next →</div><div class="title">08 · Outdoor</div></a>
+      </nav>
+    </article>
+  </main>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="../js/glossary-data.js"></script>
+  <script src="../js/glossary.js"></script>
+  <script src="../js/chrome.js"></script>
+</body>
+</html>

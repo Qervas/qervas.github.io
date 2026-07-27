@@ -1,0 +1,166 @@
+<svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+    <linearGradient id="timeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0cc7d3;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#00a3e0;stop-opacity:0.3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="300" y="25" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">Parallel Image Save Pipeline</text>
+  <text x="300" y="42" text-anchor="middle" font-size="11" fill="#666">Sequential Capture (GigE) + Parallel Save (Disk I/O)</text>
+
+  <!-- Performance Badge -->
+  <rect x="455" y="55" width="130" height="45" rx="6" fill="#0cc7d3"/>
+  <text x="520" y="75" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">1.85× Speedup</text>
+  <text x="520" y="92" text-anchor="middle" font-size="10" fill="#fff">19.3s → 10.4s</text>
+
+  <!-- Phase Labels -->
+  <text x="15" y="75" font-size="12" font-weight="bold" fill="#333">Phase 1: Capture</text>
+  <text x="15" y="90" font-size="9" fill="#666">Network-bound (GigE)</text>
+
+  <!-- Camera icons in vertical list -->
+  <g transform="translate(25, 105)">
+    <!-- Sequential capture arrows -->
+    <rect x="0" y="0" width="180" height="145" rx="4" fill="#e8f7fa" stroke="#0cc7d3" stroke-width="1.5"/>
+    <text x="90" y="18" text-anchor="middle" font-size="10" font-weight="600" fill="#0cc7d3">Sequential Snap+Wait</text>
+
+    <!-- Camera rows showing sequential execution -->
+    <g transform="translate(10, 28)">
+      <rect x="0" y="0" width="160" height="16" rx="2" fill="#0cc7d3"/>
+      <text x="8" y="12" font-size="9" fill="#fff">cam_01: Snap() → Wait()</text>
+    </g>
+    <g transform="translate(10, 48)">
+      <rect x="0" y="0" width="160" height="16" rx="2" fill="#0cc7d3" opacity="0.85"/>
+      <text x="8" y="12" font-size="9" fill="#fff">cam_02: Snap() → Wait()</text>
+    </g>
+    <g transform="translate(10, 68)">
+      <rect x="0" y="0" width="160" height="16" rx="2" fill="#0cc7d3" opacity="0.7"/>
+      <text x="8" y="12" font-size="9" fill="#fff">cam_03: Snap() → Wait()</text>
+    </g>
+    <text x="90" y="100" text-anchor="middle" font-size="9" fill="#666">...</text>
+    <g transform="translate(10, 108)">
+      <rect x="0" y="0" width="160" height="16" rx="2" fill="#0cc7d3" opacity="0.5"/>
+      <text x="8" y="12" font-size="9" fill="#fff">cam_12: Snap() → Wait()</text>
+    </g>
+  </g>
+
+  <!-- Arrow from capture to save -->
+  <line x1="215" y1="175" x2="245" y2="175" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Bottleneck indicator -->
+  <g transform="translate(25, 260)">
+    <rect x="0" y="0" width="180" height="35" rx="4" fill="#fff" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="90" y="15" text-anchor="middle" font-size="9" font-weight="600" fill="#333">GigE Bandwidth Limit</text>
+    <text x="90" y="28" text-anchor="middle" font-size="8" fill="#666">~50MB/camera over 1Gbps</text>
+  </g>
+
+  <!-- Phase 2: Parallel Save -->
+  <text x="260" y="75" font-size="12" font-weight="bold" fill="#333">Phase 2: Save</text>
+  <text x="260" y="90" font-size="9" fill="#666">Parallel I/O (std::async)</text>
+
+  <!-- Parallel save workers -->
+  <g transform="translate(260, 105)">
+    <rect x="0" y="0" width="320" height="145" rx="4" fill="#e6f4fa" stroke="#00a3e0" stroke-width="1.5"/>
+    <text x="160" y="18" text-anchor="middle" font-size="10" font-weight="600" fill="#00a3e0">Concurrent std::async Workers</text>
+
+    <!-- Worker threads running in parallel (same Y position = parallel) -->
+    <g transform="translate(10, 28)">
+      <!-- Row 1: 4 parallel workers -->
+      <rect x="0" y="0" width="72" height="32" rx="2" fill="#00a3e0"/>
+      <text x="36" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_01</text>
+      <text x="36" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="78" y="0" width="72" height="32" rx="2" fill="#00a3e0"/>
+      <text x="114" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_02</text>
+      <text x="114" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="156" y="0" width="72" height="32" rx="2" fill="#00a3e0"/>
+      <text x="192" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_03</text>
+      <text x="192" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="234" y="0" width="72" height="32" rx="2" fill="#00a3e0"/>
+      <text x="270" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_04</text>
+      <text x="270" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+    </g>
+
+    <g transform="translate(10, 65)">
+      <!-- Row 2: 4 parallel workers -->
+      <rect x="0" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.85"/>
+      <text x="36" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_05</text>
+      <text x="36" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="78" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.85"/>
+      <text x="114" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_06</text>
+      <text x="114" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="156" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.85"/>
+      <text x="192" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_07</text>
+      <text x="192" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="234" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.85"/>
+      <text x="270" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_08</text>
+      <text x="270" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+    </g>
+
+    <g transform="translate(10, 102)">
+      <!-- Row 3: 4 parallel workers -->
+      <rect x="0" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.7"/>
+      <text x="36" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_09</text>
+      <text x="36" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="78" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.7"/>
+      <text x="114" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_10</text>
+      <text x="114" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="156" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.7"/>
+      <text x="192" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_11</text>
+      <text x="192" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+
+      <rect x="234" y="0" width="72" height="32" rx="2" fill="#00a3e0" opacity="0.7"/>
+      <text x="270" y="13" text-anchor="middle" font-size="8" fill="#fff">cam_12</text>
+      <text x="270" y="25" text-anchor="middle" font-size="7" fill="#fff">Bayer→TIFF</text>
+    </g>
+  </g>
+
+  <!-- Disk I/O indicator -->
+  <g transform="translate(260, 260)">
+    <rect x="0" y="0" width="320" height="35" rx="4" fill="#fff" stroke="#333" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="160" y="15" text-anchor="middle" font-size="9" font-weight="600" fill="#333">SSD Parallel Write</text>
+    <text x="160" y="28" text-anchor="middle" font-size="8" fill="#666">12× 35MB TIFF files concurrent</text>
+  </g>
+
+  <!-- Timeline comparison -->
+  <g transform="translate(25, 310)">
+    <text x="0" y="12" font-size="10" font-weight="bold" fill="#333">Before (Sequential):</text>
+    <rect x="130" y="0" width="300" height="18" rx="3" fill="#ddd" stroke="#999"/>
+    <rect x="130" y="0" width="145" height="18" rx="3" fill="#0cc7d3"/>
+    <text x="200" y="13" text-anchor="middle" font-size="8" fill="#fff">Capture</text>
+    <rect x="275" y="0" width="155" height="18" rx="3" fill="#999"/>
+    <text x="350" y="13" text-anchor="middle" font-size="8" fill="#fff">Save (sequential)</text>
+    <text x="450" y="13" font-size="9" fill="#333">19.3s</text>
+  </g>
+
+  <g transform="translate(25, 340)">
+    <text x="0" y="12" font-size="10" font-weight="bold" fill="#333">After (Parallel Save):</text>
+    <rect x="130" y="0" width="165" height="18" rx="3" fill="#ddd" stroke="#999"/>
+    <rect x="130" y="0" width="145" height="18" rx="3" fill="#0cc7d3"/>
+    <text x="200" y="13" text-anchor="middle" font-size="8" fill="#fff">Capture</text>
+    <rect x="275" y="0" width="20" height="18" rx="3" fill="#00a3e0"/>
+    <text x="315" y="13" font-size="7" fill="#00a3e0">Parallel</text>
+    <text x="360" y="13" font-size="9" fill="#333">10.4s</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(25, 375)">
+    <rect x="0" y="0" width="12" height="12" rx="2" fill="#0cc7d3"/>
+    <text x="18" y="10" font-size="8" fill="#333">Network-bound (sequential)</text>
+    <rect x="150" y="0" width="12" height="12" rx="2" fill="#00a3e0"/>
+    <text x="168" y="10" font-size="8" fill="#333">Disk I/O (parallel)</text>
+    <rect x="280" y="0" width="12" height="12" rx="2" fill="#999"/>
+    <text x="298" y="10" font-size="8" fill="#333">Old sequential save</text>
+  </g>
+</svg>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demo tour · Neural Capture</title>
+  <meta name="description" content="5-stop demo tour: pitch, system, results, hard materials, outdoor. Keyboard 1–5." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-page="show" data-root="..">
+  <div class="progress" aria-hidden="true"></div>
+  <nav class="toc" aria-label="Chapters">
+    <div class="toc-brand">Neural Capture · Monograph</div>
+    <p class="toc-title">Thesis<span>Show first · deep dive later</span></p>
+    <div class="group">Show (demo)</div>
+    <a href="show.html" data-page="show" class="active"><span class="num">▶</span>Demo tour · 5 stops</a>
+    <a href="evaluation.html" data-page="evaluation"><span class="num">R</span>Results gallery</a>
+    <a href="../index.html" data-page="home"><span class="num">00</span>Cover</a>
+    <div class="group">Capture system</div>
+    <a href="architecture.html" data-page="architecture"><span class="num">01</span>Architecture</a>
+    <a href="hardware.html" data-page="hardware"><span class="num">02</span>Hardware</a>
+    <a href="capture.html" data-page="capture"><span class="num">03</span>Capture loop</a>
+    <a href="gui.html" data-page="gui"><span class="num">04</span>GUI wizard</a>
+    <div class="group">Thesis science</div>
+    <a href="protocol.html" data-page="protocol"><span class="num">05</span>Studio protocol</a>
+    <a href="outdoor.html" data-page="outdoor"><span class="num">06</span>Outdoor · Gränsö</a>
+    <div class="group">Reference</div>
+    <a href="status.html" data-page="status"><span class="num">S</span>Status</a>
+    <a href="build.html" data-page="build"><span class="num">B</span>Build</a>
+    <a href="glossary.html" data-page="glossary"><span class="num">G</span>Glossary</a>
+    <a href="bluetooth.html" data-page="bluetooth"><span class="num">·</span>Bluetooth (detail)</a>
+    <a href="session.html" data-page="session"><span class="num">·</span>Sessions (detail)</a>
+    <div class="toc-foot">Demo keys: <kbd>1</kbd>–<kbd>5</kbd> · <kbd>←</kbd><kbd>→</kbd><br />
+      <a href="https://github.com/Qervas/CamMatrixCapture">Code</a> ·
+      <a href="https://archive.org/details/captured_objects_dataset">Dataset</a>
+    </div>
+  </nav>
+  <div class="mobile-toc">Neural Capture · Demo tour</div>
+
+  <div class="demo-bar" id="demo-bar" role="navigation" aria-label="Demo stops">
+    <span class="demo-bar-label">Demo</span>
+    <button type="button" id="demo-prev" aria-label="Previous stop">←</button>
+    <button type="button" data-stop="1" class="is-on">1 Pitch</button>
+    <button type="button" data-stop="2">2 System</button>
+    <button type="button" data-stop="3">3 Results</button>
+    <button type="button" data-stop="4">4 Hard</button>
+    <button type="button" data-stop="5">5 Outdoor</button>
+    <button type="button" id="demo-next" aria-label="Next stop">→</button>
+    <span class="demo-bar-hint" id="demo-progress">1 / 5</span>
+    <span class="demo-bar-hint"><kbd>1</kbd>–<kbd>5</kbd></span>
+  </div>
+
+  <main class="book demo-main">
+    <article class="page demo-page">
+      <!-- STOP 1 -->
+      <section class="demo-stop is-active" id="stop-1" data-stop="1" aria-labelledby="stop-1-title">
+        <div class="demo-stop-head">
+          <span class="demo-n">1</span>
+          <div>
+            <h2 id="stop-1-title">Pitch · one sentence + numbers</h2>
+            <p class="say"><span class="say-label">You say</span>
+              “I built the multi-camera capture system and the datasets, then compared photogrammetry vs NeRF vs 3DGS on the same inputs — including glass and white plastic where classical pipelines fail.”
+            </p>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <div class="m"><strong>12 × 36</strong><span>cams × steps · 432 views / object</span></div>
+          <div class="m"><strong>33.3 dB</strong><span>Splatfacto studio avg PSNR</span></div>
+          <div class="m"><strong>22.1 dB</strong><span>Nerfacto studio avg</span></div>
+          <div class="m"><strong>0.53–0.76 px</strong><span>pose gate (RC + ArUco)</span></div>
+        </div>
+        <figure class="plate">
+          <div class="plate-frame contain">
+            <img src="../assets/images/thesis_objects_overview.png" alt="Studio objects overview — 15 captured objects" />
+          </div>
+          <figcaption class="plate-cap">
+            <span class="plate-id">Stop 1</span>
+            <p><span class="badge ok">Dataset</span> 15 objects · deliberate hard materials included.</p>
+          </figcaption>
+        </figure>
+        <p class="deep-link">Dig deeper → <a href="protocol.html">Studio protocol</a> · <a href="status.html">Status matrix</a></p>
+      </section>
+
+      <!-- STOP 2 -->
+      <section class="demo-stop" id="stop-2" data-stop="2" hidden aria-labelledby="stop-2-title">
+        <div class="demo-stop-head">
+          <span class="demo-n">2</span>
+          <div>
+            <h2 id="stop-2-title">System · acquisition stack</h2>
+            <p class="say"><span class="say-label">You say</span>
+              “Not only training configs — twelve industrial cameras, BLE turntable, C++/C# capture software, session layout for offline pipelines.”
+            </p>
+          </div>
+        </div>
+        <div class="result-grid">
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/thesis_rig_setup.png" alt="12-camera studio rig" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 2a</span><p>Physical 12-cam rig.</p></figcaption>
+          </figure>
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/capture.png" alt="CamMatrixCapture UI" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 2b</span><p>CamMatrixCapture UI · ~8k LOC.</p></figcaption>
+          </figure>
+        </div>
+        <figure class="plate">
+          <div class="plate-frame svg-frame">
+            <img src="../assets/plates/system_spine.svg" alt="System spine diagram" />
+          </div>
+          <figcaption class="plate-cap"><span class="plate-id">Stop 2c</span><p>WinUI → CaptureCore → Camera / BLE / Session.</p></figcaption>
+        </figure>
+        <p class="deep-link">Dig deeper → <a href="architecture.html">Architecture</a> · <a href="capture.html">Capture loop</a> · <a href="hardware.html">Hardware bandwidth</a></p>
+      </section>
+
+      <!-- STOP 3 -->
+      <section class="demo-stop" id="stop-3" data-stop="3" hidden aria-labelledby="stop-3-title">
+        <div class="demo-stop-head">
+          <span class="demo-n">3</span>
+          <div>
+            <h2 id="stop-3-title">Results · same capture, two methods</h2>
+            <p class="say"><span class="say-label">You say</span>
+              “Identical multi-view input. Splatfacto averages ~33 dB, Nerfacto ~22 dB on studio. Watch the metal pot — specular moves with the camera.”
+            </p>
+          </div>
+        </div>
+        <div class="object-tabs" id="object-tabs" role="tablist" aria-label="Object compare">
+          <button type="button" class="is-on" data-obj="pot" role="tab">Metal pot</button>
+          <button type="button" data-obj="banana" role="tab">Banana</button>
+          <button type="button" data-obj="vase" role="tab">Glass vase</button>
+        </div>
+        <div class="result-grid" id="obj-pair">
+          <figure class="plate">
+            <div class="plate-frame">
+              <video id="vid-a" src="../assets/videos/thesis_pot_nerf.mp4" muted loop playsinline controls preload="metadata"></video>
+            </div>
+            <figcaption class="plate-cap"><span class="plate-id">Nerfacto</span><p id="lab-a">Metal pot</p></figcaption>
+          </figure>
+          <figure class="plate">
+            <div class="plate-frame">
+              <video id="vid-b" src="../assets/videos/thesis_pot_3dgs.mp4" muted loop playsinline controls preload="metadata"></video>
+            </div>
+            <figcaption class="plate-cap"><span class="plate-id">Splatfacto</span><p id="lab-b">Metal pot</p></figcaption>
+          </figure>
+        </div>
+        <figure class="plate">
+          <div class="plate-frame contain"><img src="../assets/images/thesis_method_matrix.jpg" alt="Method comparison matrix" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">Stop 3c</span><p>Method matrix from the thesis.</p></figcaption>
+        </figure>
+        <p class="deep-link">Full gallery → <a href="evaluation.html">Results gallery</a></p>
+      </section>
+
+      <!-- STOP 4 -->
+      <section class="demo-stop" id="stop-4" data-stop="4" hidden aria-labelledby="stop-4-title">
+        <div class="demo-stop-head">
+          <span class="demo-n">4</span>
+          <div>
+            <h2 id="stop-4-title">Hard materials · why the dataset matters</h2>
+            <p class="say"><span class="say-label">You say</span>
+              “We put failure cases in the set on purpose. Glass and white plastic break feature matching. Neural methods still synthesize views. Cross-pol can rescue classical pipelines on glossy surfaces.”
+            </p>
+          </div>
+        </div>
+        <div class="result-grid">
+          <figure class="plate">
+            <div class="plate-frame">
+              <video src="../assets/videos/thesis_vase_3dgs.mp4" muted loop playsinline controls preload="metadata"></video>
+            </div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 4a</span><p>Glass · Splatfacto (photo fails geometry).</p></figcaption>
+          </figure>
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/vase_without_polarzation.png" alt="Without polarization" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 4b</span><p>Without cross-pol — specular mess.</p></figcaption>
+          </figure>
+        </div>
+        <div class="result-grid">
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/vase_polarized.png" alt="With polarization" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 4c</span><p>With cross-pol — matching can recover.</p></figcaption>
+          </figure>
+          <figure class="plate">
+            <div class="plate-frame contain"><img src="../assets/images/dog_mesh.png" alt="Photogrammetry mesh" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 4d</span><p>Example photogrammetry mesh plate.</p></figcaption>
+          </figure>
+        </div>
+        <p class="deep-link">Dig deeper → <a href="evaluation.html#hard">Evaluation · hard materials</a></p>
+      </section>
+
+      <!-- STOP 5 -->
+      <section class="demo-stop" id="stop-5" data-stop="5" hidden aria-labelledby="stop-5-title">
+        <div class="demo-stop-head">
+          <span class="demo-n">5</span>
+          <div>
+            <h2 id="stop-5-title">Outdoor · scale + takeaway</h2>
+            <p class="say"><span class="say-label">You say</span>
+              “Gränsö Castle: ~5.2k images, 77% aligned at 0.61 px. Photogrammetry still wins for full geometry; neural wins for bounded high-quality viz. Hybrid workflow.”
+            </p>
+          </div>
+        </div>
+        <div class="metric-strip">
+          <div class="m"><strong>~5.2k</strong><span>images</span></div>
+          <div class="m"><strong>77.4%</strong><span>aligned</span></div>
+          <div class="m"><strong>0.61 px</strong><span>reprojection</span></div>
+          <div class="m"><strong>23 / 15 dB</strong><span>Splat / Nerf region</span></div>
+        </div>
+        <div class="result-grid">
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/granso_rc_aerial.jpg" alt="Gränsö RealityCapture aerial" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 5a</span><p>RealityCapture aerial / site context.</p></figcaption>
+          </figure>
+          <figure class="plate">
+            <div class="plate-frame"><img src="../assets/images/granso_splatfacto_single.jpg" alt="Splatfacto outdoor" /></div>
+            <figcaption class="plate-cap"><span class="plate-id">Stop 5b</span><p>Splatfacto outdoor still.</p></figcaption>
+          </figure>
+        </div>
+        <figure class="plate">
+          <div class="plate-frame">
+            <video src="../assets/videos/granso_RC.mp4" controls muted loop playsinline poster="../assets/images/granso_rc_aerial.jpg" preload="metadata"></video>
+          </div>
+          <figcaption class="plate-cap"><span class="plate-id">Stop 5c</span><p>RC flythrough.</p></figcaption>
+        </figure>
+        <div class="demo-close">
+          <h3>Close the loop</h3>
+          <p>Dataset · software · PDF — hand them links and stop re-explaining.</p>
+          <div class="demo-links">
+            <a class="btn-demo" href="https://archive.org/details/captured_objects_dataset" target="_blank" rel="noopener">Dataset</a>
+            <a class="btn-demo" href="https://github.com/Qervas/CamMatrixCapture" target="_blank" rel="noopener">Capture code</a>
+            <a class="btn-demo" href="https://github.com/Qervas/neural-rendering-thesis" target="_blank" rel="noopener">Thesis PDF</a>
+            <a class="btn-demo primary" href="evaluation.html">All result plates</a>
+          </div>
+        </div>
+        <p class="deep-link">Dig deeper → <a href="outdoor.html">Outdoor chapter</a> · <a href="status.html">What to claim / not claim</a></p>
+      </section>
+    </article>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="../js/glossary-data.js"></script>
+  <script src="../js/glossary.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/demo-tour.js"></script>
+</body>
+</html>

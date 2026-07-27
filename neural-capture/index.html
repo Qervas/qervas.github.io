@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neural Capture — Thesis Monograph</title>
+  <meta name="description" content="Demo-first monograph: multi-camera neural rendering datasets + CamMatrixCapture." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home" data-root=".">
+  <div class="progress" aria-hidden="true"></div>
+  <nav class="toc" aria-label="Chapters">
+    <div class="toc-brand">Neural Capture · Monograph</div>
+    <p class="toc-title">Thesis<span>Show first · deep dive later</span></p>
+    <div class="group">Show (demo)</div>
+    <a href="m/show.html" data-page="show"><span class="num">▶</span>Demo tour · 5 stops</a>
+    <a href="m/evaluation.html" data-page="evaluation"><span class="num">R</span>Results gallery</a>
+    <a href="index.html" data-page="home" class="active"><span class="num">00</span>Cover</a>
+    <div class="group">Capture system</div>
+    <a href="m/architecture.html" data-page="architecture"><span class="num">01</span>Architecture</a>
+    <a href="m/hardware.html" data-page="hardware"><span class="num">02</span>Hardware</a>
+    <a href="m/capture.html" data-page="capture"><span class="num">03</span>Capture loop</a>
+    <a href="m/gui.html" data-page="gui"><span class="num">04</span>GUI wizard</a>
+    <div class="group">Thesis science</div>
+    <a href="m/protocol.html" data-page="protocol"><span class="num">05</span>Studio protocol</a>
+    <a href="m/outdoor.html" data-page="outdoor"><span class="num">06</span>Outdoor · Gränsö</a>
+    <div class="group">Reference</div>
+    <a href="m/status.html" data-page="status"><span class="num">S</span>Status</a>
+    <a href="m/build.html" data-page="build"><span class="num">B</span>Build</a>
+    <a href="m/glossary.html" data-page="glossary"><span class="num">G</span>Glossary</a>
+    <a href="m/bluetooth.html" data-page="bluetooth"><span class="num">·</span>Bluetooth (detail)</a>
+    <a href="m/session.html" data-page="session"><span class="num">·</span>Sessions (detail)</a>
+    <div class="toc-foot">Keys on Demo tour: <kbd>1</kbd>–<kbd>5</kbd><br />
+      <a href="https://github.com/Qervas/CamMatrixCapture">Code</a> ·
+      <a href="https://archive.org/details/captured_objects_dataset">Dataset</a>
+    </div>
+  </nav>
+  <div class="mobile-toc">Neural Capture · Demo: open Demo tour</div>
+
+  <main class="book">
+    <header class="cover" id="cover">
+      <div class="cover-media" aria-hidden="true">
+        <video autoplay muted loop playsinline poster="assets/images/thesis_rig_setup.png">
+          <source src="assets/videos/thesis_pot_3dgs.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <div class="cover-inner">
+        <div class="cover-eyebrow">LiU TQDV30 · Shaoxuan Yin · 2025</div>
+        <h1>Neural<br /><em>Capture</em></h1>
+        <p class="cover-lede">
+          Multi-camera datasets + capture software + photogrammetry vs NeRF / 3DGS —
+          organized so you can <strong>demonstrate</strong> in five stops, then open deep chapters only if they dig.
+        </p>
+        <div class="cover-cta">
+          <a class="btn-demo primary" href="m/show.html">▶ Start demo tour (5 stops)</a>
+          <a class="btn-demo" href="m/evaluation.html">Results gallery</a>
+        </div>
+        <div class="cover-meta" style="margin-top:1.25rem">
+          <span>C++ · WinUI · Sapera</span>
+          <span>33.3 vs 22.1 dB</span>
+          <span>5.2k outdoor images</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="thesis-box reveal">
+        <div class="label">How to use this site in an interview</div>
+        <p><strong>Default:</strong> open <a href="m/show.html">Demo tour</a>, press <kbd>1</kbd>–<kbd>5</kbd>, talk over the plates.
+        <strong>If they dig systems:</strong> jump to Capture loop / Hardware from the “Dig deeper” links.
+        <strong>If they want everything:</strong> Results gallery dumps all plates.</p>
+      </div>
+
+      <div class="section-rule"><h2>Demo path (recommended)</h2></div>
+      <ol class="demo-path-list reveal">
+        <li><a href="m/show.html#stop-1"><strong>1 · Pitch</strong></a> — one sentence + metrics + object grid</li>
+        <li><a href="m/show.html#stop-2"><strong>2 · System</strong></a> — rig photo + software + spine</li>
+        <li><a href="m/show.html#stop-3"><strong>3 · Results</strong></a> — Nerfacto vs Splatfacto videos (tab objects)</li>
+        <li><a href="m/show.html#stop-4"><strong>4 · Hard materials</strong></a> — glass + polarization</li>
+        <li><a href="m/show.html#stop-5"><strong>5 · Outdoor</strong></a> — Gränsö + hybrid takeaway + links</li>
+      </ol>
+
+      <div class="section-rule"><h2>Deep dive (only if asked)</h2></div>
+      <div class="catalog reveal">
+        <a href="m/architecture.html"><div class="num">01</div><h3>Architecture</h3><p>Module spine</p></a>
+        <a href="m/capture.html"><div class="num">03</div><h3>Capture loop</h3><p>State machine</p></a>
+        <a href="m/hardware.html"><div class="num">02</div><h3>Hardware</h3><p>GigE bandwidth</p></a>
+        <a href="m/protocol.html"><div class="num">05</div><h3>Studio protocol</h3><p>V1–V3 · ArUco</p></a>
+        <a href="m/outdoor.html"><div class="num">06</div><h3>Outdoor</h3><p>Gränsö detail</p></a>
+        <a href="m/status.html"><div class="num">S</div><h3>Status</h3><p>What to claim</p></a>
+      </div>
+
+      <div class="aside reveal">
+        <div class="aside-label">One-liner to paste</div>
+        <p>Master’s thesis (LiU): multi-camera neural rendering datasets + capture software. Live demo tour: this site → Demo tour.</p>
+      </div>
+    </div>
+  </main>
+  <script src="js/glossary-data.js"></script>
+  <script src="js/glossary.js"></script>
+  <script src="js/chrome.js"></script>
+</body>
+</html>

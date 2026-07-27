@@ -1,62 +1,36 @@
-/* theme-toggle.css — Floating theme toggle button */
+/* theme-toggle — compact X-style control */
 
-/* ── Theme toggle ── */
 .theme-toggle {
-  position: fixed;
-  bottom: max(18px, env(safe-area-inset-bottom));
-  right: max(18px, env(safe-area-inset-right));
-  z-index: 200;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 1px solid var(--toggle-border);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
   background: var(--toggle-bg);
   color: var(--ink);
-  box-shadow: var(--toggle-shadow);
-  backdrop-filter: blur(12px) saturate(1.1);
-  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.25s var(--ease),
-    border-color 0.25s var(--ease),
-    color 0.25s var(--ease),
-    transform 0.22s var(--ease),
-    box-shadow 0.25s var(--ease);
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+  flex-shrink: 0;
 }
 .theme-toggle:hover {
-  transform: translateY(-2px);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.theme-toggle:active { transform: translateY(0) scale(0.96); }
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  background: var(--surface-hover);
 }
 .theme-toggle svg {
-  width: 20px;
-  height: 20px;
-  display: none;
-}
-.theme-toggle .icon-moon {
-  fill: currentColor;
-  stroke: none;
-}
-.theme-toggle .icon-sun {
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.75;
   stroke-linecap: round;
   stroke-linejoin: round;
+  display: none;
 }
-/* moon = switch to dark (shown in light); sun = switch to light (shown in dark) */
+
+/* show icon for next mode / current */
 [data-theme="light"] .theme-toggle .icon-moon { display: block; }
 [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-.theme-toggle .icon-system { display: none; }
-html[data-theme-mode="system"] .theme-toggle .icon-moon,
-html[data-theme-mode="system"] .theme-toggle .icon-sun { display: none; }
-html[data-theme-mode="system"] .theme-toggle .icon-system { display: block; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
-
+/* system mode: show system icon when mode is system */
+[data-theme-mode="system"] .theme-toggle .icon-moon,
+[data-theme-mode="system"] .theme-toggle .icon-sun { display: none; }
+[data-theme-mode="system"] .theme-toggle .icon-system { display: block; }

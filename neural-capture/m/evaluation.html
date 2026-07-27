@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>09 · Evaluation — Neural Capture</title>
+  <meta name="description" content="Evaluation — implementation monograph" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body data-page="evaluation" data-root="..">
+  <div class="progress" aria-hidden="true"></div>
+      <nav class="toc" aria-label="Chapters">
+    <div class="toc-brand">Neural Capture · Monograph</div>
+    <p class="toc-title">Thesis<span>Show first · deep dive later</span></p>
+    <div class="group">Show (demo)</div>
+    <a href="show.html" data-page="show"><span class="num">▶</span>Demo tour · 5 stops</a>
+    <a href="evaluation.html" data-page="evaluation" class="active"><span class="num">R</span>Results gallery</a>
+    <a href="../index.html" data-page="home"><span class="num">00</span>Cover</a>
+    <div class="group">Capture system</div>
+    <a href="architecture.html" data-page="architecture"><span class="num">01</span>Architecture</a>
+    <a href="hardware.html" data-page="hardware"><span class="num">02</span>Hardware</a>
+    <a href="capture.html" data-page="capture"><span class="num">03</span>Capture loop</a>
+    <a href="gui.html" data-page="gui"><span class="num">04</span>GUI wizard</a>
+    <div class="group">Thesis science</div>
+    <a href="protocol.html" data-page="protocol"><span class="num">05</span>Studio protocol</a>
+    <a href="outdoor.html" data-page="outdoor"><span class="num">06</span>Outdoor · Gränsö</a>
+    <div class="group">Reference</div>
+    <a href="status.html" data-page="status"><span class="num">S</span>Status</a>
+    <a href="build.html" data-page="build"><span class="num">B</span>Build</a>
+    <a href="glossary.html" data-page="glossary"><span class="num">G</span>Glossary</a>
+    <a href="bluetooth.html" data-page="bluetooth"><span class="num">·</span>Bluetooth (detail)</a>
+    <a href="session.html" data-page="session"><span class="num">·</span>Sessions (detail)</a>
+    <div class="toc-foot">Keys on Demo tour: <kbd>1</kbd>–<kbd>5</kbd><br />
+      <a href="https://github.com/Qervas/CamMatrixCapture">Code</a> ·
+      <a href="https://archive.org/details/captured_objects_dataset">Dataset</a>
+    </div>
+  </nav>
+  <div class="mobile-toc">Neural Capture · Demo: open Demo tour</div>
+
+  
+  <main class="book">
+    <article class="page">
+      <p class="crumb"><a href="../index.html">Monograph</a> · 09 · Evaluation</p>
+      <header class="chapter-head reveal">
+        <div class="chapter-num">09</div>
+        <div>
+          <p class="chapter-kicker">Thesis pipeline · measure · <strong style="color:var(--ray-hot)">results</strong></p>
+          <h1>Evaluation</h1>
+        </div>
+      </header>
+      
+      
+      <div class="demo-banner reveal">
+        <strong>Presenting?</strong> Prefer the linear
+        <a href="show.html">Demo tour (5 stops)</a>
+        — press 1–5. This page is the full plate archive, ordered like the tour.
+      </div>
+      <nav class="on-this-page gallery-map reveal" id="gallery-map">
+        <div class="otp-label">Gallery map · mirrors demo order</div>
+        <ol>
+          <li><a href="#g-pitch">A · Pitch / dataset</a> · tour stop 1</li>
+          <li><a href="#g-system">B · System plates</a> · tour stop 2</li>
+          <li><a href="#g-methods">C · Method compares</a> · tour stop 3</li>
+          <li><a href="#hard">D · Hard materials</a> · tour stop 4</li>
+          <li><a href="#outdoor">E · Outdoor Gränsö</a> · tour stop 5</li>
+        </ol>
+      </nav>
+<div class="thesis-box chapter-contract reveal">
+        <div class="label">Chapter contract</div>
+        <p>Owns <strong>visual + quantitative results</strong> on identical captures: RealityCapture vs Nerfacto vs Splatfacto, hard materials, polarization, outdoor comparisons.
+Must not present unfinished inverse sphere experiments as results.
+<strong>Done when</strong> a hiring manager can <em>see</em> the outcomes without opening the PDF.</p>
+      </div>
+
+      <nav class="on-this-page reveal"><div class="otp-label">On this page</div>
+        <ol>
+          <li><a href="#headline">Headline metrics</a></li>
+          <li><a href="#dataset">Studio dataset</a></li>
+          <li><a href="#pipeline">Pipeline plates</a></li>
+          <li><a href="#methods">Method compares (video)</a></li>
+          <li><a href="#hard">Hard materials</a></li>
+          <li><a href="#polar">Polarization</a></li>
+          <li><a href="#outdoor">Outdoor stills</a></li>
+        </ol>
+      </nav>
+
+      <div class="section-rule"><h2 id="g-pitch">Headline metrics</h2></div>
+      <div class="metric-strip reveal">
+        <div class="m"><strong>33.27 dB</strong><span>Splatfacto avg PSNR · studio</span></div>
+        <div class="m"><strong>22.07 dB</strong><span>Nerfacto avg PSNR · studio</span></div>
+        <div class="m"><strong>0.53–0.76 px</strong><span>studio mean reprojection (RC+ArUco)</span></div>
+        <div class="m"><strong>77.4%</strong><span>Gränsö images aligned · 0.61 px</span></div>
+      </div>
+      <div class="prose reveal">
+        <p class="lead">Same multi-view inputs. Photogrammetry for geometry gates; neural methods for novel views — especially where feature matching dies.</p>
+      </div>
+
+      <div class="section-rule"><h2 id="dataset">Studio dataset · what we captured</h2></div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain">
+          <img src="../assets/images/thesis_objects_overview.png" alt="All studio objects overview" loading="lazy" />
+        </div>
+        <figcaption class="plate-cap">
+          <span class="plate-id">Plate EV-1</span>
+          <p><span class="badge ok">Dataset</span> <strong>15 objects</strong> · 12 cams × 36 steps · diffuse → glossy → glass. Deliberate failure cases included.</p>
+        </figcaption>
+      </figure>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame contain"><img src="../assets/images/objects_overview.png" alt="Objects grid" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-1b</span><p>Alternate overview plate from thesis figures.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame contain"><img src="../assets/images/dataset_thumbnail.jpg" alt="Dataset release thumbnail" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-1c</span><p><span class="badge ok">Public release</span> Internet Archive studio dataset card.</p></figcaption>
+        </figure>
+      </div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/overview_histograms.png" alt="Intensity histograms" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-2</span><p><strong>Intensity histograms.</strong> Material-driven dynamic range — not one easy texture class.</p></figcaption>
+      </figure>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/brdf_materials.png" alt="Material BRDF variety" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-3</span><p><strong>Material spread</strong> used in evaluation storytelling (thesis figure).</p></figcaption>
+      </figure>
+
+      <div class="section-rule"><h2 id="g-system">System plates</h2></div>
+      <div class="section-rule"><h2 id="pipeline">Reconstruction pipeline plates</h2></div>
+      <div class="prose reveal"><p>End-to-end evidence: capture → alignment → neural / photo outputs.</p></div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/pipeline_overview_part1.png" alt="Pipeline part 1" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-4a</span><p><span class="badge ok">Thesis figure</span> Pipeline overview · part 1.</p></figcaption>
+      </figure>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/pipeline_overview_part2.png" alt="Pipeline part 2" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-4b</span><p>Pipeline overview · part 2.</p></figcaption>
+      </figure>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/pipeline_overview_part3.png" alt="Pipeline part 3" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-4c</span><p>Pipeline overview · part 3.</p></figcaption>
+      </figure>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/thesis_method_matrix.jpg" alt="Method comparison matrix" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">Plate EV-5</span><p><strong>Method matrix.</strong> Photogrammetry vs neural outcomes on shared inputs.</p></figcaption>
+      </figure>
+
+      <div class="section-rule"><h2 id="g-methods">Method compares · play the loops</h2></div>
+      <div class="prose reveal">
+        <p>Each pair is the <strong>same object / same capture</strong>. Left column Nerfacto, right Splatfacto (where both exist).</p>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_pot_nerf.mp4" autoplay muted loop playsinline controls preload="metadata"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V1a</span><p><span class="badge ok">Nerfacto</span> Metal pot</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_pot_3dgs.mp4" autoplay muted loop playsinline controls preload="metadata"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V1b</span><p><span class="badge ok">Splatfacto</span> Metal pot — specular highlights track the view</p></figcaption>
+        </figure>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_banana_nerf.mp4" autoplay muted loop playsinline controls preload="metadata"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V2a</span><p><span class="badge ok">Nerfacto</span> Banana (easy diffuse baseline)</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_banana_3dgs.mp4" autoplay muted loop playsinline controls preload="metadata"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V2b</span><p><span class="badge ok">Splatfacto</span> Banana — sharper high-frequency surface</p></figcaption>
+        </figure>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_vase_nerf.mp4" autoplay muted loop playsinline controls preload="metadata" poster="../assets/images/sx_hero_glass.jpg"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V3a</span><p><span class="badge ok">Nerfacto</span> Glass vase (refractive stress case)</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><video src="../assets/videos/thesis_vase_3dgs.mp4" autoplay muted loop playsinline controls preload="metadata"></video></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-V3b</span><p><span class="badge ok">Splatfacto</span> Glass vase — still synthesizes views where mesh fails</p></figcaption>
+        </figure>
+      </div>
+
+      <div class="section-rule"><h2 id="hard">Hard materials · photo vs neural story</h2></div>
+      <div class="prose reveal">
+        <p><strong>Spray</strong> (textureless white) and <strong>Vase Glass</strong> (refractive): RealityCapture cannot lock trustworthy dense geometry. Neural methods still produce usable novel views. Specular metal dropped RC alignment into ~88–92%.</p>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame contain"><img src="../assets/images/dog.png" alt="Dog capture" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-H1</span><p>Capture / render example (dog).</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame contain"><img src="../assets/images/dog_mesh.png" alt="Dog mesh" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-H2</span><p>Photogrammetry mesh plate for comparison.</p></figcaption>
+        </figure>
+      </div>
+
+      <div class="section-rule"><h2 id="polar">Polarization validation</h2></div>
+      <div class="prose reveal">
+        <p>Cross-pol strips specular peaks so classical matching can recover glossy surfaces. Capture physics still matters.</p>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/vase_without_polarzation.png" alt="Without polarization" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-P1</span><p><strong>Without</strong> cross-pol — specular-heavy failure mode.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/vase_polarized.png" alt="With polarization" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-P2</span><p><strong>With</strong> cross-pol — specular suppressed.</p></figcaption>
+        </figure>
+      </div>
+
+      <div class="section-rule"><h2 id="outdoor">Outdoor results · Gränsö</h2></div>
+      <div class="metric-strip reveal">
+        <div class="m"><strong>~5.2k</strong><span>images · drone + SLR</span></div>
+        <div class="m"><strong>77.4%</strong><span>RC aligned</span></div>
+        <div class="m"><strong>0.61 px</strong><span>mean reprojection</span></div>
+        <div class="m"><strong>23.2 / 14.7</strong><span>Splat / Nerf dB region</span></div>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/granso_rc_aerial.jpg" alt="RC aerial" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-O1</span><p>RC aerial context.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/granso_rc_entrance.jpg" alt="RC entrance facade" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-O2</span><p>RealityCapture entrance / facade detail.</p></figcaption>
+        </figure>
+      </div>
+      <div class="result-grid reveal">
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/granso_nerf_single.jpg" alt="Nerf outdoor" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-O3</span><p>Nerfacto outdoor still.</p></figcaption>
+        </figure>
+        <figure class="plate">
+          <div class="plate-frame"><img src="../assets/images/granso_splatfacto_single.jpg" alt="Splat outdoor" loading="lazy" /></div>
+          <figcaption class="plate-cap"><span class="plate-id">EV-O4</span><p>Splatfacto outdoor still.</p></figcaption>
+        </figure>
+      </div>
+      <figure class="plate reveal">
+        <div class="plate-frame contain"><img src="../assets/images/granso_nerf_sections.jpg" alt="Nerf sections" loading="lazy" /></div>
+        <figcaption class="plate-cap"><span class="plate-id">EV-O5</span><p>Neural outdoor multi-view sections plate.</p></figcaption>
+      </figure>
+      <figure class="plate reveal">
+        <div class="plate-frame">
+          <video src="../assets/videos/granso_RC.mp4" controls muted loop playsinline poster="../assets/images/granso_rc_aerial.jpg" preload="metadata"></video>
+        </div>
+        <figcaption class="plate-cap"><span class="plate-id">EV-O6</span><p><span class="badge ok">Flythrough</span> RealityCapture Gränsö reconstruction.</p></figcaption>
+      </figure>
+
+      <div class="aside warn reveal">
+        <div class="aside-label">Out of scope</div>
+        <p>Inverse-rendering gold/matte/chrome sphere grids from slides were exploratory and <strong>did not complete</strong> as thesis contributions. They are not result plates above.</p>
+      </div>
+
+      <nav class="pager">
+        <a href="outdoor.html"><div class="label">← Previous</div><div class="title">08 · Outdoor</div></a>
+        <a class="next" href="status.html"><div class="label">Next →</div><div class="title">10 · Status</div></a>
+      </nav>
+    </article>
+  </main>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="../js/glossary-data.js"></script>
+  <script src="../js/glossary.js"></script>
+  <script src="../js/chrome.js"></script>
+</body>
+</html>
