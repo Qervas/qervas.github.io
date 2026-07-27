@@ -196,23 +196,71 @@
 }
 .rail-link-label { white-space: nowrap; }
 
+.rail-contact {
+  position: relative;
+  margin: 12px 0;
+}
 .rail-cta {
   display: block;
+  width: 100%;
   text-align: center;
-  margin: 12px 0;
   padding: 14px 16px;
   background: var(--accent);
   color: #fff !important;
   font-weight: 700;
   font-size: 1.05rem;
   border-radius: 999px;
+  border: none;
+  cursor: pointer;
   text-decoration: none !important;
   transition: background 0.15s var(--ease);
+  font-family: inherit;
 }
 .rail-cta:hover {
   background: var(--accent-hover);
   text-decoration: none !important;
 }
+.rail-cta[aria-expanded="true"] {
+  background: var(--accent-hover);
+  border-radius: 18px 18px 0 0;
+}
+.rail-contact-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+.rail-contact-menu[hidden] { display: none !important; }
+.rail-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+  transition: background 0.12s;
+}
+.rail-contact-item:hover {
+  background: var(--surface-hover);
+  text-decoration: none !important;
+}
+.rail-contact-item svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+.rail-contact-item[href*="mailto"] { color: var(--accent); }
+.rail-contact-item[href*="x.com"] { color: var(--ink); }
 
 .rail-user {
   display: flex;
@@ -760,6 +808,18 @@
   color: #c00;
   background: rgba(255, 0, 0, 0.08);
   border-color: rgba(204, 0, 0, 0.28);
+}
+
+/* X */
+.profile-social[href*="x.com"] {
+  color: #e7e9ea;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+[data-theme="light"] .profile-social[href*="x.com"] {
+  color: #0f1419;
+  background: rgba(15, 20, 25, 0.06);
+  border-color: rgba(15, 20, 25, 0.16);
 }
 
 /* itch.io */
