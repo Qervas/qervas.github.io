@@ -137,7 +137,8 @@
     width: 100%;
   }
 
-  .profile-banner { height: 140px; }
+  .profile-banner { height: 170px; }
+  .profile-avatar-row { margin-top: -44px; }
   .profile-avatar {
     width: 88px;
     height: 88px;

@@ -1,23 +1,32 @@
-/* Hex/matrix rain columns for the profile banner */
+/* Differential geometry / topology symbol rain */
 (function () {
   const host = document.getElementById("pb-rain");
   if (!host) return;
 
-  const glyphs = "0123456789ABCDEFabcdefRTGI_BVH#*$%/\\|";
+  const glyphs =
+    "∑∫∂∇πλθφψ∞√±≈≠∈∀∃⊂∪∩→⇒ℝℂℕΔαβγωμσΩε" +
+    "∂∧⋆⊗⊕⊖" +
+    "χπρ" +
+    "MⁿTₚ" +
+    "g_{ij}" +
+    "Γ" +
+    "R" +
+    "Ω" +
+    "0123456789";
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const cols = reduced ? 8 : Math.min(22, Math.max(12, Math.floor(window.innerWidth / 70)));
+  const cols = reduced ? 8 : Math.min(20, Math.max(12, Math.floor(window.innerWidth / 75)));
 
   function makeCol(i) {
     const col = document.createElement("div");
     col.className = "pb-rain-col";
-    const len = 10 + ((i * 7) % 9);
+    const len = 9 + ((i * 5) % 8);
     let s = "";
     for (let r = 0; r < len; r++) {
-      s += glyphs[(i * 13 + r * 5) % glyphs.length] + "\n";
+      s += glyphs[(i * 17 + r * 11) % glyphs.length] + "\n";
     }
     col.textContent = s;
-    col.style.animationDuration = 6 + (i % 7) * 0.85 + "s";
-    col.style.animationDelay = -(i * 0.37) + "s";
+    col.style.animationDuration = 7 + (i % 6) * 0.9 + "s";
+    col.style.animationDelay = -(i * 0.41) + "s";
     return col;
   }
 
