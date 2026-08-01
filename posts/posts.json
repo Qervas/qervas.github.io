@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "portfolio-x-shell",
+    "title": "Portfolio is a feed now, not a brochure",
+    "date": "2026-07-26",
+    "tags": ["site", "design", "log"],
+    "excerpt": "Threw out the warm paper CV look. Rebuilt qervas.github.io as an X-style shell — rails, posts, cadence heatmap, contact menu. Still static Pages, still ship-by-push."
+  },
+  {
+    "slug": "diffgeo-banner-and-frank-3d",
+    "title": "DiffGeo banner, 3D Frank, stars that actually click",
+    "date": "2026-07-27",
+    "tags": ["site", "frontend", "log"],
+    "excerpt": "Profile banner went manifold/topology, aka Frank got Orbitron + mouse tilt, post actions wire share/copy and localStorage star counts. Avatar no longer eats the math."
+  }
+]
