@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Horizon — Realistic Ocean</title>
+  <style>
+    :root {
+      --bg: #07090c;
+      --fg: #eef1f4;
+      --muted: #8b939e;
+      --surface: #12151acc;
+      --border: rgba(238, 241, 244, 0.12);
+      --accent: #c8d0da;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg);
+      font-family: "Segoe UI", system-ui, sans-serif; user-select: none; touch-action: none; }
+    #c { display: block; width: 100%; height: 100%; }
+    .hud {
+      position: fixed; inset: 0; pointer-events: none; z-index: 10;
+      padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+               max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    }
+    .top { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 36px; padding: 0 12px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      backdrop-filter: blur(8px); font-size: 13px; font-variant-numeric: tabular-nums;
+    }
+    .chip span.u { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .actions { position: absolute; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
+      display: flex; gap: 8px; pointer-events: auto; }
+    .btn {
+      height: 40px; min-width: 40px; padding: 0 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--fg);
+      backdrop-filter: blur(8px); cursor: pointer; font-size: 13px; font-weight: 600;
+    }
+    .btn:hover { background: #1a1e25; }
+    .btn.primary { background: var(--accent); color: #0a0c0f; border-color: transparent; }
+    .title {
+      position: absolute; left: max(16px, env(safe-area-inset-left)); bottom: max(24px, env(safe-area-inset-bottom));
+      max-width: 28rem; pointer-events: auto;
+    }
+    .title h1 { font-size: clamp(2.4rem, 8vw, 4rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; }
+    .title p.k { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .title p.s { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 10px 0 16px; }
+    .hints { color: var(--muted); font-size: 12px; display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+    kbd {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 22px; height: 22px; padding: 0 5px; margin-right: 3px;
+      border-radius: 4px; border: 1px solid rgba(238,241,244,0.22);
+      background: #1a1e25; font-family: ui-monospace, monospace; font-size: 11px;
+    }
+    .settings {
+      position: absolute; top: 56px; right: max(12px, env(safe-area-inset-right));
+      width: min(280px, calc(100vw - 24px)); padding: 14px;
+      border-radius: 12px; background: var(--surface); border: 1px solid var(--border);
+      backdrop-filter: blur(10px); pointer-events: auto; display: none; flex-direction: column; gap: 12px;
+    }
+    .settings.open { display: flex; }
+    .settings h3 { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+    .field input[type=range] { width: 100%; accent-color: var(--accent); }
+    .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px;
+      background: #07090c; border-radius: 8px; border: 1px solid var(--border); }
+    .seg button {
+      height: 30px; border: none; border-radius: 6px; background: transparent;
+      color: var(--muted); font-size: 12px; cursor: pointer; text-transform: capitalize;
+    }
+    .seg button.on { background: #1a1e25; color: var(--fg); font-weight: 600; }
+    .foot {
+      position: absolute; bottom: max(12px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%);
+      display: flex; gap: 16px; padding: 8px 12px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border); font-size: 12px; color: var(--muted);
+      white-space: nowrap;
+    }
+    .touch { position: absolute; inset: 0; pointer-events: none; }
+    .stick {
+      pointer-events: auto; position: absolute; bottom: max(20px, env(safe-area-inset-bottom));
+      width: 110px; height: 110px; border-radius: 999px;
+      border: 1px solid rgba(238,241,244,0.22); background: rgba(18,21,26,0.45);
+      display: grid; place-items: center; color: var(--muted); font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .stick.l { left: max(16px, env(safe-area-inset-left)); }
+    .stick.r { right: max(16px, env(safe-area-inset-right)); }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="hud">
+    <div class="top" id="hudTop">
+      <div class="chip"><span id="spd">0</span> <span class="u">kn</span></div>
+      <div class="chip"><span id="hdg">0</span>°</div>
+      <div class="chip"><span class="u" id="wxLabel">moderate</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="btnSettings" type="button" title="Settings">⚙</button>
+      <button class="btn primary hidden" id="btnResume" type="button">Resume</button>
+    </div>
+    <div class="settings" id="settings">
+      <h3>Atmosphere</h3>
+      <label class="field">Time of day
+        <input type="range" id="tod" min="0" max="1" step="0.001" value="0.42" />
+        <span id="todLabel" style="font-family:monospace;font-size:12px;color:var(--muted)">10:04</span>
+      </label>
+      <div class="field">Sea state
+        <div class="seg" id="wxSeg">
+          <button type="button" data-w="calm">calm</button>
+          <button type="button" data-w="moderate" class="on">moderate</button>
+          <button type="button" data-w="storm">storm</button>
+        </div>
+      </div>
+    </div>
+    <div class="title" id="title">
+      <p class="k">FFT + Gerstner hybrid · multi-point buoyancy</p>
+      <h1>Horizon</h1>
+      <p class="s">Physically driven open ocean — swell spectrum, persistent foam, hull torque, and wave drift.</p>
+      <button class="btn primary" id="btnLaunch" type="button">Launch</button>
+      <div class="hints">
+        <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> throttle &amp; steer</div>
+        <div><kbd>A</kbd> left · <kbd>D</kbd> right</div>
+      </div>
+    </div>
+    <div class="foot hidden" id="foot">
+      <span><kbd>W</kbd><kbd>S</kbd> throttle</span>
+      <span><kbd>A</kbd><kbd>D</kbd> steer</span>
+    </div>
+    <div class="touch hidden" id="touch">
+      <div class="stick l" id="stickSteer">Steer</div>
+      <div class="stick r" id="stickThrottle">Throttle</div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
