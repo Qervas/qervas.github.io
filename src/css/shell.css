@@ -354,17 +354,18 @@
   color: var(--ink);
   font: inherit;
   font-size: 0.88rem;
-  width: 110px;
+  width: 12.5rem;
   min-width: 0;
 }
 .feed-search input::placeholder { color: var(--muted); }
-.feed-search-compact {
-  /* visible on tablet/phone when right rail may be tight or gone */
+.feed-search-hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin: 0;
+  white-space: nowrap;
 }
-@media (min-width: 1001px) {
-  /* desktop: prefer aside search, keep compact feed search short */
-  .feed-search input { width: 90px; }
-}
+.feed-search-hint[hidden] { display: none; }
 
 /* ═══════════ PROFILE HEADER ═══════════ */
 .profile {
@@ -1569,49 +1570,6 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
-
-.aside-search {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border: 1px solid transparent;
-  border-radius: 999px;
-  padding: 10px 14px;
-  margin-bottom: 8px;
-  color: var(--muted);
-  cursor: text;
-}
-.aside-search:focus-within {
-  border-color: var(--accent);
-  background: var(--bg);
-  color: var(--ink);
-}
-.aside-search svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-.aside-search input {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--ink);
-  font: inherit;
-  font-size: 0.95rem;
-}
-.aside-search input::placeholder { color: var(--muted); }
-.aside-search-hint {
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-family: var(--mono);
-  margin: 0 4px 14px;
-  min-height: 1.2em;
-}
-.aside-search-hint[hidden] { display: none; }
 
 /* Search match highlight */
 .is-search-hit {
