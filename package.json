@@ -1,0 +1,17 @@
+{
+  "name": "qervas.github.io",
+  "private": true,
+  "type": "module",
+  "description": "Shaoxuan (Frank) Yin — portfolio, built with Eleventy",
+  "scripts": {
+    "build": "eleventy",
+    "start": "eleventy --serve",
+    "serve": "eleventy --serve"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2"
+  }
+}

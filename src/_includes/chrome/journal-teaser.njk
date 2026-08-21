@@ -1,0 +1,6 @@
+{% if collections.journal and collections.journal.length %}
+      {% set latest = collections.journal[0] %}
+      <p class="home-journal-teaser" id="home-journal-teaser"><a href="{{ latest.url }}">Latest journal: {{ latest.data.title }} · {{ latest.date | dateDisplay }}</a></p>
+{% else %}
+      <p class="home-journal-teaser" id="home-journal-teaser"><a href="/posts/">Journal →</a></p>
+{% endif %}

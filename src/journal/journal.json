@@ -1,0 +1,5 @@
+{
+  "layout": "layouts/post.njk",
+  "pageType": "post",
+  "permalink": "/posts/p/{{ page.fileSlug }}/"
+}

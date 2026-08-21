@@ -1,0 +1,41 @@
+{% set pageTitle = title or site.title %}
+{% set pageDescription = description or site.description %}
+{% set canonical = site.url ~ (page.url if page.url != "/" else "/") %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
+  <title>{{ pageTitle }}</title>
+  <meta name="description" content="{{ pageDescription }}" />
+  <meta name="author" content="{{ site.author }}" />
+  <link rel="canonical" href="{{ canonical }}" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/favicon.svg" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Shaoxuan (Frank) Yin" />
+  <meta property="og:title" content="{{ pageTitle }}" />
+  <meta property="og:description" content="{{ description or site.ogDescription }}" />
+  <meta property="og:image" content="{{ site.ogImage }}" />
+  <meta property="og:image:alt" content="{{ site.ogImageAlt }}" />
+  <meta property="og:url" content="{{ canonical }}" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ pageTitle }}" />
+  <meta name="twitter:description" content="{{ description or site.ogDescription }}" />
+  <meta name="twitter:image" content="{{ site.ogImage }}" />
+
+  <script type="application/ld+json">{% include "chrome/person-jsonld.njk" %}</script>
+
+  <script src="/js/theme-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/tokens.css" />
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/shell.css" />
+  <link rel="stylesheet" href="/css/featured.css" />
+  <link rel="stylesheet" href="/css/theme-toggle.css" />
+  <link rel="stylesheet" href="/css/lightbox.css" />
+  <link rel="stylesheet" href="/css/posts.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
