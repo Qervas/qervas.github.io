@@ -44,6 +44,10 @@
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --nav-h: 53px;
+  --tabs-h: 53px;
+  --filters-h: 44px;
+  /* feed-top + tabs + track filters — hash jumps & running head sit below this */
+  --feed-chrome: calc(var(--nav-h) + var(--tabs-h) + var(--filters-h));
   --rail-w: 260px;
   --rail-w-sm: 72px;
   --dock-inset: 148px;

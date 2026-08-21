@@ -7,7 +7,7 @@
   --accent-soft: color-mix(in srgb, var(--section-accent) 14%, transparent);
   --accent-mid: color-mix(in srgb, var(--section-accent) 22%, transparent);
   position: relative;
-  scroll-margin-top: calc(var(--nav-h) + 56px);
+  scroll-margin-top: var(--feed-chrome);
   background:
     linear-gradient(
       180deg,
@@ -78,7 +78,7 @@
 /* Magazine running head — floats while the in-flow stamp is off-screen */
 .feed-running-head {
   position: sticky;
-  top: calc(var(--nav-h) + 56px);
+  top: var(--feed-chrome);
   z-index: 21;
   display: flex;
   justify-content: flex-end;
@@ -134,11 +134,11 @@ html[data-current-section="education"] { --running-accent: var(--sec-education);
 
 @media (max-width: 688px) {
   .feed-section {
-    scroll-margin-top: calc(var(--nav-h) + 8px);
+    scroll-margin-top: var(--feed-chrome);
     box-shadow: inset 2px 0 0 var(--section-accent);
   }
   .feed-running-head {
-    top: calc(var(--nav-h) + 8px);
+    top: var(--feed-chrome);
   }
 }
 
