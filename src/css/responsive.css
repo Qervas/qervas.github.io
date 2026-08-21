@@ -1,70 +1,17 @@
 /* responsive — collapse X rails on smaller viewports */
 
-/* Wide desktop: full left labels, sidebars hug edges of shell */
+/* Wide desktop: left index + feed + right rail */
 @media (min-width: 1280px) {
   .app {
     grid-template-columns: var(--rail-w) minmax(0, 1fr) var(--aside-w);
   }
 }
 
-/* Mid: icon-only left rail, keep right sidebar */
+/* Mid: keep a readable Work index; dock stays icon-only */
 @media (max-width: 1279px) {
   .app {
-    grid-template-columns: var(--rail-w-sm) minmax(0, 1fr) minmax(260px, 300px);
-    padding: 0 8px;
-  }
-  .rail-link-label,
-  .rail-user-meta,
-  .rail-cta {
-    display: none;
-  }
-  .rail-left {
-    padding: 4px 4px 12px;
-    align-items: center;
-  }
-  .rail-brand,
-  .rail-link,
-  .rail-user {
-    justify-content: center;
-    padding: 10px;
-    width: 50px;
-    height: 50px;
-  }
-  .rail-brand-mark,
-  .rail-brand-svg {
-    width: 40px;
-    height: 40px;
-  }
-  .rail-link { border-radius: 50%; }
-  .rail-contact {
-    margin: 8px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .rail-cta {
-    display: grid;
-    place-items: center;
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    border-radius: 50%;
-    font-size: 0;
-  }
-  .rail-cta::after {
-    content: "✉";
-    font-size: 1.1rem;
-  }
-  .rail-cta[aria-expanded="true"] {
-    border-radius: 50%;
-  }
-  .rail-contact-menu {
-    position: absolute;
-    left: calc(100% + 8px);
-    bottom: 0;
-    min-width: 180px;
-    border-radius: 14px;
-    border-top: 1px solid var(--rule-strong);
+    grid-template-columns: minmax(168px, 220px) minmax(0, 1fr) minmax(240px, 300px);
+    padding: 0 8px 0 var(--dock-inset);
   }
   .rail-right {
     padding-left: 12px;
@@ -74,7 +21,7 @@
 /* Hide right rail — feed takes remaining width */
 @media (max-width: 1000px) {
   .app {
-    grid-template-columns: var(--rail-w-sm) minmax(0, 1fr);
+    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
   }
   .rail-right { display: none; }
   .page, .feed {
@@ -82,36 +29,31 @@
   }
 }
 
-/* Phone: bottom nav, full-width feed */
+/* Phone: hide the Work index; glass dock becomes a bottom bar */
 @media (max-width: 688px) {
   .app {
     display: block;
-    padding-bottom: 72px;
+    padding: 0 0 72px;
   }
   .rail-left {
-    position: fixed;
+    display: none;
+  }
+  .nav-dock {
+    left: 8px;
+    right: 8px;
     top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: auto;
-    width: 100%;
+    bottom: calc(6px + env(safe-area-inset-bottom));
+    transform: none;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
-    background: var(--nav-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid var(--rule);
-    z-index: 50;
+    width: auto;
+    padding: 4px 8px;
+    border-radius: 16px;
   }
   .rail-brand,
-  .rail-cta,
-  .rail-user,
   .rail-link[data-mobile-hide],
-  .rail-link-label,
-  .rail-user-meta {
+  .rail-link-label {
     display: none !important;
   }
   .rail-nav {
@@ -188,6 +130,7 @@
 
 /* print */
 @media print {
+  .nav-dock,
   .rail-left,
   .rail-right,
   .theme-toggle,

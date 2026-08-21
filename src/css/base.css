@@ -41,7 +41,7 @@ a:focus-visible {
   max-width: var(--app-max);
   margin: 0 auto;
   width: 100%;
-  padding: 0 12px;
+  padding: 0 12px 0 var(--dock-inset);
   box-sizing: border-box;
 }
 
