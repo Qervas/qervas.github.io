@@ -1,9 +1,8 @@
-/* nav-active.js — Highlight rail + profile tabs on scroll */
+/* nav-active.js — Highlight dock + profile tabs on scroll */
 (function () {
   const tabLinks = Array.from(document.querySelectorAll('#section-nav a[data-nav]'));
   const dockLinks = Array.from(document.querySelectorAll('.nav-dock a[data-nav]'));
-  const tocLinks = Array.from(document.querySelectorAll('.rail-toc a[data-nav]'));
-  const all = tabLinks.concat(dockLinks, tocLinks);
+  const all = tabLinks.concat(dockLinks);
   const ids = Array.from(new Set(all.map(function (a) { return a.getAttribute('data-nav'); })));
   const sections = ids.map(function (id) { return document.getElementById(id); }).filter(Boolean);
   if (!all.length || !sections.length || !('IntersectionObserver' in window)) return;
@@ -16,9 +15,6 @@
         a.classList.toggle('is-active', a.getAttribute('data-nav') === id);
       });
       dockLinks.forEach(function (a) {
-        a.classList.toggle('is-active', a.getAttribute('data-nav') === id);
-      });
-      tocLinks.forEach(function (a) {
         a.classList.toggle('is-active', a.getAttribute('data-nav') === id);
       });
       const home = document.querySelector('.nav-dock a[href="#main-content"]');
