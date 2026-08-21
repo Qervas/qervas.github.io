@@ -120,7 +120,6 @@
   }
   .feed-filters button { flex-shrink: 0; }
   .profile-tabs { top: var(--nav-h); }
-  .feed-section-label { top: var(--nav-h); }
   .post-metrics { grid-template-columns: 1fr 1fr; }
   .thesis-visual__row { grid-template-columns: 1fr; }
 }
@@ -133,7 +132,8 @@
   .feed-top-actions,
   .profile-tabs,
   .feed-filters,
-  .post-actions { display: none !important; }
+  .post-actions,
+  .feed-running-head { display: none !important; }
   .app { display: block; }
   .page, .feed { border: none; }
   body { background: #fff; color: #000; }

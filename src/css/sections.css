@@ -1,0 +1,152 @@
+/* sections.css — homepage Work feed: one accent per section + running head */
+
+.feed-section {
+  --section-accent: var(--accent);
+  --accent: var(--section-accent);
+  --accent-hover: color-mix(in srgb, var(--section-accent) 78%, var(--ink));
+  --accent-soft: color-mix(in srgb, var(--section-accent) 14%, transparent);
+  --accent-mid: color-mix(in srgb, var(--section-accent) 22%, transparent);
+  position: relative;
+  scroll-margin-top: calc(var(--nav-h) + 56px);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--section-accent) 9%, var(--paper)) 0%,
+      color-mix(in srgb, var(--section-accent) 4%, var(--paper)) 32%,
+      color-mix(in srgb, var(--section-accent) 2%, var(--paper)) 100%
+    );
+  box-shadow: inset 3px 0 0 var(--section-accent);
+  border-top: 1px solid color-mix(in srgb, var(--section-accent) 28%, var(--rule));
+}
+
+.feed-section[data-section="featured-work"] { --section-accent: var(--sec-featured); }
+.feed-section[data-section="projects"] { --section-accent: var(--sec-projects); }
+.feed-section[data-section="experience"] { --section-accent: var(--sec-experience); }
+.feed-section[data-section="skills"] { --section-accent: var(--sec-skills); }
+.feed-section[data-section="education"] { --section-accent: var(--sec-education); }
+
+/* In-flow stamp at the start of each block */
+.feed-section-label {
+  margin: 0;
+  padding: 10px 16px 8px 13px;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1;
+  border-bottom: 1px solid color-mix(in srgb, var(--section-accent, var(--muted)) 22%, var(--rule));
+}
+
+.feed-section-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--section-accent, var(--muted));
+  background: color-mix(in srgb, var(--section-accent, var(--muted)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--section-accent, var(--muted)) 42%, var(--rule));
+  padding: 4px 9px;
+}
+
+.feed-section-stamp::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--section-accent, var(--muted));
+  flex-shrink: 0;
+}
+
+.feed-section-label--sub {
+  margin-top: 4px;
+  border-bottom-color: var(--rule);
+}
+
+.feed-section-label--sub .feed-section-stamp {
+  color: var(--muted);
+  background: transparent;
+  border-color: var(--rule-strong);
+  font-weight: 600;
+}
+
+.feed-section-label--sub .feed-section-stamp::before {
+  background: var(--muted);
+}
+
+/* Magazine running head — floats while the in-flow stamp is off-screen */
+.feed-running-head {
+  position: sticky;
+  top: calc(var(--nav-h) + 56px);
+  z-index: 21;
+  display: flex;
+  justify-content: flex-end;
+  height: 0;
+  margin: 0;
+  padding: 0 12px;
+  pointer-events: none;
+}
+
+.feed-running-head[hidden] {
+  display: none;
+}
+
+.feed-running-head-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transform: translateY(8px);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--running-accent, var(--accent));
+  background: color-mix(in srgb, var(--running-accent, var(--accent)) 14%, var(--nav-bg));
+  border: 1px solid color-mix(in srgb, var(--running-accent, var(--accent)) 45%, var(--rule));
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  padding: 4px 9px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.feed-running-head-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--running-accent, var(--accent));
+  flex-shrink: 0;
+}
+
+html[data-current-section="featured-work"] { --running-accent: var(--sec-featured); }
+html[data-current-section="projects"] { --running-accent: var(--sec-projects); }
+html[data-current-section="experience"] { --running-accent: var(--sec-experience); }
+html[data-current-section="skills"] { --running-accent: var(--sec-skills); }
+html[data-current-section="education"] { --running-accent: var(--sec-education); }
+
+/* Light section tint on chips that otherwise sit on paper */
+.feed-section[data-section="skills"] .skill-chip {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--section-accent) 28%, var(--rule-strong));
+}
+
+@media (max-width: 688px) {
+  .feed-section {
+    scroll-margin-top: calc(var(--nav-h) + 8px);
+    box-shadow: inset 2px 0 0 var(--section-accent);
+  }
+  .feed-running-head {
+    top: calc(var(--nav-h) + 8px);
+  }
+}
+
+@media print {
+  .feed-running-head { display: none !important; }
+  .feed-section {
+    background: transparent;
+    box-shadow: none;
+    border-top: 1px solid #ccc;
+  }
+}
