@@ -1,0 +1,9 @@
+{% set isWork = pageType == "work" %}
+{% set isJournal = pageType == "journal" or pageType == "post" %}
+      <nav class="profile-tabs" id="section-nav" aria-label="Profile sections">
+        <a class="profile-tab{% if isJournal %} is-active{% endif %}" href="/posts/">Journal</a>
+        <a class="profile-tab{% if isWork %} is-active{% endif %}" href="/#featured-work" data-nav="featured-work">Work</a>
+        <a class="profile-tab" href="/#projects" data-nav="projects">Projects</a>
+        <a class="profile-tab" href="/#experience" data-nav="experience">Experience</a>
+        <a class="profile-tab" href="/#skills" data-nav="skills">Skills</a>
+      </nav>

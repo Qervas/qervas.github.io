@@ -1,0 +1,106 @@
+<span class="rail-brand-mark" aria-hidden="true">
+          <svg class="rail-brand-svg" viewBox="0 0 48 48" width="48" height="48" focusable="false">
+            <defs>
+              <linearGradient id="rb-neon" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#39ff14"/>
+                <stop offset="40%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#bf5af2"/>
+              </linearGradient>
+              <linearGradient id="rb-hot" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#00ff9d"/>
+                <stop offset="100%" stop-color="#1d9bf0"/>
+              </linearGradient>
+              <radialGradient id="rb-core" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#eaffff" stop-opacity="0.95"/>
+                <stop offset="35%" stop-color="#00f0ff" stop-opacity="0.7"/>
+                <stop offset="100%" stop-color="#0a0c10" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="rb-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="1.1" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <clipPath id="rb-clip">
+                <rect x="2" y="2" width="44" height="44" rx="8"/>
+              </clipPath>
+            </defs>
+
+            <!-- bezel -->
+            <rect x="1.5" y="1.5" width="45" height="45" rx="9" fill="#05070a" stroke="url(#rb-neon)" stroke-width="1.4"/>
+            <rect x="3.5" y="3.5" width="41" height="41" rx="7" fill="#070a0f" stroke="#1a2330" stroke-width="0.6"/>
+
+            <g clip-path="url(#rb-clip)">
+              <!-- phosphor wash -->
+              <rect x="2" y="2" width="44" height="44" fill="#02140c" opacity="0.55"/>
+              <circle class="rb-core" cx="24" cy="24" r="16" fill="url(#rb-core)"/>
+
+              <!-- dense hex / matrix rain -->
+              <g class="rb-rain" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.2" font-weight="700" opacity="0.55">
+                <text class="rb-col rb-c1" x="5" y="8">7F</text>
+                <text class="rb-col rb-c1" x="5" y="14">A3</text>
+                <text class="rb-col rb-c1" x="5" y="20">0E</text>
+                <text class="rb-col rb-c1" x="5" y="26">C1</text>
+                <text class="rb-col rb-c1" x="5" y="32">9B</text>
+                <text class="rb-col rb-c1" x="5" y="38">4D</text>
+                <text class="rb-col rb-c2" x="12" y="6">01</text>
+                <text class="rb-col rb-c2" x="12" y="12">FF</text>
+                <text class="rb-col rb-c2" x="12" y="18">2A</text>
+                <text class="rb-col rb-c2" x="12" y="24">B7</text>
+                <text class="rb-col rb-c2" x="12" y="30">E0</text>
+                <text class="rb-col rb-c2" x="12" y="36">18</text>
+                <text class="rb-col rb-c3" x="38" y="10">RT</text>
+                <text class="rb-col rb-c3" x="38" y="16">GI</text>
+                <text class="rb-col rb-c3" x="38" y="22">PT</text>
+                <text class="rb-col rb-c3" x="38" y="28">BV</text>
+                <text class="rb-col rb-c3" x="38" y="34">H</text>
+              </g>
+
+              <!-- wireframe sphere -->
+              <g class="rb-sphere" transform="translate(24 23)" filter="url(#rb-glow)" fill="none" stroke="url(#rb-neon)" stroke-width="0.85">
+                <ellipse cx="0" cy="0" rx="11" ry="11" opacity="0.9"/>
+                <ellipse class="rb-lat" cx="0" cy="0" rx="11" ry="4.2" opacity="0.75"/>
+                <ellipse class="rb-lat rb-lat2" cx="0" cy="0" rx="11" ry="7.5" opacity="0.45"/>
+                <ellipse class="rb-lon" cx="0" cy="0" rx="4.2" ry="11" opacity="0.7"/>
+                <ellipse class="rb-lon rb-lon2" cx="0" cy="0" rx="7.5" ry="11" opacity="0.4"/>
+                <path d="M-11 0 A11 11 0 0 0 11 0" opacity="0.35"/>
+              </g>
+
+              <!-- path-trace rays piercing the sphere -->
+              <g class="rb-rays" stroke="url(#rb-hot)" stroke-width="1.05" stroke-linecap="round" fill="none" filter="url(#rb-glow)">
+                <path d="M6 40 L20 18"/>
+                <path d="M6 40 L28 12"/>
+                <path d="M6 40 L36 22"/>
+                <path d="M6 40 L32 32"/>
+              </g>
+              <g fill="#00f0ff">
+                <circle class="rb-hit" cx="20" cy="18" r="1.5"/>
+                <circle class="rb-hit rb-h2" cx="28" cy="12" r="1.5"/>
+                <circle class="rb-hit rb-h3" cx="36" cy="22" r="1.5"/>
+                <circle class="rb-hit rb-h4" cx="32" cy="32" r="1.3"/>
+              </g>
+              <!-- camera / origin -->
+              <g transform="translate(6 40)">
+                <circle r="2.6" fill="#39ff14" filter="url(#rb-glow)"/>
+                <circle r="1.1" fill="#041208"/>
+              </g>
+
+              <!-- status bar -->
+              <rect x="2" y="2" width="44" height="8" fill="#000" opacity="0.55"/>
+              <text x="5" y="7.6" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.4" font-weight="700">root@gpu</text>
+              <text class="rb-fps" x="28" y="7.6" fill="#00f0ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.4" font-weight="700">67fps</text>
+
+              <!-- CRT scanlines -->
+              <g class="rb-scanlines" stroke="#39ff14" stroke-opacity="0.06" stroke-width="0.5">
+                <path d="M2 10h44M2 13h44M2 16h44M2 19h44M2 22h44M2 25h44M2 28h44M2 31h44M2 34h44M2 37h44M2 40h44"/>
+              </g>
+              <rect class="rb-beam" x="2" y="8" width="44" height="5" fill="#39ff14" opacity="0.12"/>
+
+              <!-- glitch bars -->
+              <rect class="rb-glitch rb-g1" x="2" y="18" width="44" height="2" fill="#00f0ff" opacity="0"/>
+              <rect class="rb-glitch rb-g2" x="2" y="29" width="44" height="1.5" fill="#bf5af2" opacity="0"/>
+
+              <!-- blinking block cursor bottom -->
+              <text x="5" y="44.5" fill="#39ff14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="4.6" font-weight="700">~/rt$</text>
+              <rect class="rb-cursor" x="18" y="40.2" width="3.4" height="5" fill="#39ff14" rx="0.3"/>
+            </g>
+          </svg>
+        </span>

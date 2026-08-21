@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "chrome/head.njk" %}
+</head>
+<body>
+  <script src="/js/js-flag.js"></script>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+{% include "chrome/nav-dock.njk" %}
+  <div class="app">
+    <main class="feed page" id="main-content">
+{% include "chrome/feed-top.njk" %}
+{% include "chrome/profile-header.njk" %}
+{% include "chrome/tabs.njk" %}
+{% if pageType == "work" %}
+      <div class="feed-filters" id="track-filter" role="group" aria-label="Filter work by track">
+        <button type="button" data-track="all" aria-pressed="true">All</button>
+        <button type="button" data-track="graphics" aria-pressed="false">Graphics</button>
+        <button type="button" data-track="neural" aria-pressed="false">Neural</button>
+        <button type="button" data-track="agents" aria-pressed="false">Agents</button>
+      </div>
+{% include "chrome/journal-teaser.njk" %}
+{% endif %}
+{{ content | safe }}
+{% include "chrome/footer.njk" %}
+    </main>
+
+{% include "chrome/right-rail.njk" %}
+  </div>
+
+{% include "chrome/lightbox.njk" %}
+
+  <script src="/js/lightbox.js" defer></script>
+  <script src="/js/thesis.js" defer></script>
+  <script src="/js/github-contrib.js" defer></script>
+  <script src="/js/theme.js" defer></script>
+  <script src="/js/summary-more.js" defer></script>
+  <script src="/js/nav-active.js" defer></script>
+  <script src="/js/project-filters.js" defer></script>
+  <script src="/js/tracks.js" defer></script>
+  <script src="/js/media.js" defer></script>
+  <script src="/js/reveal.js" defer></script>
+  <script src="/js/search.js" defer></script>
+  <script src="/js/frank-3d.js" defer></script>
+  <script src="/js/post-actions.js" defer></script>
+</body>
+</html>

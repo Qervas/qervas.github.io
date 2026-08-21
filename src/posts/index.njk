@@ -1,0 +1,45 @@
+---
+layout: layouts/base.njk
+pageType: journal
+permalink: /posts/
+title: Journal · Frank Yin
+description: Dev-log, WIP notes, and ship logs — not the CV.
+---
+      <div class="posts-compose">
+        <img class="posts-compose-avatar" src="/assets/profile/avatar.jpg" alt="" width="40" height="40" />
+        <div class="posts-compose-body">
+          <p class="posts-compose-kicker">Public journal</p>
+          <p class="posts-compose-text">What I’m building, shipping, or stuck on — longer than a commit, shorter than a paper.</p>
+        </div>
+      </div>
+{% if collections.journal and collections.journal.length %}
+      <div class="posts-list" id="posts-list">
+        {% for post in collections.journal %}
+        <a class="posts-card" href="{{ post.url }}">
+          <img class="posts-card-avatar" src="/assets/profile/avatar.jpg" alt="" width="40" height="40" />
+          <div class="posts-card-body">
+            <div class="posts-card-head">
+              <span class="posts-card-author">Frank Yin</span>
+              <span class="posts-card-handle">@qervas</span>
+              <span class="posts-card-date">· {{ post.date | dateDisplay }}</span>
+            </div>
+            <h2 class="posts-card-title">{{ post.data.title }}</h2>
+            {% if post.data.excerpt %}
+            <p class="posts-card-excerpt">{{ post.data.excerpt }}</p>
+            {% endif %}
+            {% if post.data.tags and post.data.tags.length %}
+            <div class="posts-card-tags">
+              {% for tag in post.data.tags %}
+                {% if tag != "journal" %}
+                <span class="posts-tag">{{ tag }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+{% else %}
+      <p class="posts-empty" id="posts-empty">The log is empty.</p>
+{% endif %}

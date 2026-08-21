@@ -1,0 +1,15 @@
+---
+permalink: /posts/posts.json
+eleventyExcludeFromCollections: true
+---
+[{% for post in collections.journal %}
+  {
+    "slug": {{ post.fileSlug | json | safe }},
+    "title": {{ post.data.title | json | safe }},
+    "date": {{ post.date | dateISO | json | safe }},
+    "tags": {{ post.data.tags | json | safe }},
+    "excerpt": {{ (post.data.excerpt or "") | json | safe }},
+    "url": {{ post.url | json | safe }}
+  }{% if not loop.last %},{% endif %}
+{% endfor %}
+]
