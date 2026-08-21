@@ -80,7 +80,7 @@
     .catch(function () {
       if (empty) {
         empty.hidden = false;
-        empty.textContent = "Could not load posts.json";
+        empty.textContent = "Could not load the journal index.";
       }
     });
 })();
