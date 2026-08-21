@@ -1,9 +1,7 @@
-/* Home page: latest log teasers from posts/posts.json */
+/* Home page: single-line latest journal teaser from posts/posts.json */
 (function () {
-  const root = document.getElementById("home-posts-list");
+  const root = document.getElementById("home-journal-teaser");
   if (!root) return;
-
-  const limit = parseInt(root.getAttribute("data-limit") || "3", 10);
 
   function fmtDate(iso) {
     const d = new Date(iso + "T12:00:00");
@@ -23,6 +21,10 @@
       .replace(/"/g, "&quot;");
   }
 
+  function quietLink() {
+    root.innerHTML = '<a href="posts/">Journal →</a>';
+  }
+
   fetch("posts/posts.json", { cache: "no-store" })
     .then(function (r) {
       if (!r.ok) throw new Error("fail");
@@ -30,51 +32,28 @@
     })
     .then(function (posts) {
       if (!Array.isArray(posts) || !posts.length) {
-        root.innerHTML =
-          '<p class="posts-empty" style="border:0">No posts yet.</p>';
+        quietLink();
         return;
       }
-      posts = posts
+      const post = posts
         .slice()
         .sort(function (a, b) {
           return (b.date || "").localeCompare(a.date || "");
-        })
-        .slice(0, limit);
-
-      const frag = document.createDocumentFragment();
-      posts.forEach(function (post) {
-        const a = document.createElement("a");
-        a.className = "posts-card";
-        a.href = "posts/p/" + post.slug + ".html";
-        const tags = (post.tags || [])
-          .slice(0, 3)
-          .map(function (t) {
-            return '<span class="posts-tag">' + escapeHtml(t) + "</span>";
-          })
-          .join("");
-        a.innerHTML =
-          '<img class="posts-card-avatar" src="assets/profile/avatar.jpg" alt="" width="40" height="40" loading="lazy" />' +
-          '<div class="posts-card-body">' +
-          '<div class="posts-card-head">' +
-          '<span class="posts-card-author">Frank Yin</span>' +
-          '<span class="posts-card-handle">@qervas</span>' +
-          '<span class="posts-card-date">· ' +
-          escapeHtml(fmtDate(post.date)) +
-          "</span></div>" +
-          '<h3 class="posts-card-title">' +
-          escapeHtml(post.title) +
-          "</h3>" +
-          '<p class="posts-card-excerpt">' +
-          escapeHtml(post.excerpt || "") +
-          "</p>" +
-          (tags ? '<div class="posts-card-tags">' + tags + "</div>" : "") +
-          "</div>";
-        frag.appendChild(a);
-      });
-      root.appendChild(frag);
+        })[0];
+      if (!post || !post.slug) {
+        quietLink();
+        return;
+      }
+      root.innerHTML =
+        '<a href="posts/p/' +
+        encodeURIComponent(post.slug) +
+        '.html">Latest journal: ' +
+        escapeHtml(post.title) +
+        " · " +
+        escapeHtml(fmtDate(post.date)) +
+        "</a>";
     })
     .catch(function () {
-      root.innerHTML =
-        '<p class="posts-empty" style="border:0">Posts feed offline.</p>';
+      quietLink();
     });
 })();
