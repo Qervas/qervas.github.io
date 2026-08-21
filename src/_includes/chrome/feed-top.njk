@@ -8,10 +8,11 @@
         <h1 class="feed-top-title">Profile</h1>
         {% endif %}
         <div class="feed-top-actions">
-          <label class="feed-search feed-search-compact" for="site-search-feed">
+          <label class="feed-search" for="site-search-feed">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
-            <input id="site-search-feed" class="site-search-input" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search posts and projects" />
+            <input id="site-search-feed" class="site-search-input" type="search" placeholder="Search posts &amp; projects" autocomplete="off" spellcheck="false" aria-label="Search posts and projects" />
           </label>
+          <p class="feed-search-hint" id="site-search-hint" hidden></p>
           <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme">
             <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7 7 0 1 0 21 14.3z" />
