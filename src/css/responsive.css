@@ -137,17 +137,27 @@
     width: 100%;
   }
 
+  .profile-masthead {
+    grid-template-columns: 1fr;
+  }
   .profile-avatar {
-    width: 88px;
-    height: 88px;
+    width: 72px;
+    height: 72px;
     font-size: 1.6rem;
     border-width: 3px;
   }
+  .profile-copy-top {
+    flex-wrap: wrap;
+  }
   .profile-actions {
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     max-width: 100%;
     gap: 6px;
+  }
+  .profile-band {
+    flex-direction: column;
+    align-items: flex-start;
   }
   .btn-x { height: 34px; font-size: 0.85rem; padding: 0 10px; }
   .btn-x-icon { width: 34px; }
