@@ -22,11 +22,9 @@
   function chromeBottom() {
     const top = document.querySelector(".feed-top");
     const tabs = document.querySelector(".profile-tabs");
-    const filters = document.querySelector(".feed-filters");
     let y = 0;
     if (top) y = Math.max(y, top.getBoundingClientRect().bottom);
     if (tabs) y = Math.max(y, tabs.getBoundingClientRect().bottom);
-    if (filters) y = Math.max(y, filters.getBoundingClientRect().bottom);
     return y || 72;
   }
 
