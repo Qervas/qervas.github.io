@@ -232,7 +232,7 @@
 /* Work/home: single-line latest journal, not a card feed */
 .home-journal-teaser {
   margin: 0;
-  padding: 10px 16px;
+  padding: 5px 16px;
   font-family: var(--mono);
   font-size: 0.82rem;
   font-weight: 500;

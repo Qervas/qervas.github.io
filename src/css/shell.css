@@ -1136,7 +1136,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 6px 16px;
   border-bottom: 1px solid var(--rule);
   position: sticky;
   top: calc(var(--nav-h) + 53px);
@@ -1168,7 +1168,7 @@
 
 /* Section markers inside feed */
 .feed-section-label {
-  padding: 12px 16px 4px;
+  padding: 6px 16px 2px;
   font-family: var(--mono);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
