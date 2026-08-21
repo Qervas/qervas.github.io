@@ -197,7 +197,13 @@
   color: var(--ink);
 }
 .rail-link:hover { background: var(--surface-hover); }
-.rail-link.is-active { font-weight: 700; }
+.rail-link.is-active {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.07);
+}
+[data-theme="light"] .rail-link.is-active {
+  background: rgba(15, 20, 25, 0.06);
+}
 .rail-link.is-active svg { opacity: 1; }
 .rail-link:focus-visible {
   outline: 2px solid var(--ink);
@@ -1029,55 +1035,7 @@
   .post-action-star.is-pop { animation: none; }
 }
 
-/* Track filter as compose/bar under tabs */
-.feed-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px 16px;
-  border-bottom: 1px solid var(--rule);
-  position: sticky;
-  top: calc(var(--nav-h) + 53px);
-  z-index: 20;
-  background: var(--bg);
-}
-.feed-filters button,
-.filter-chip {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--rule-strong);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--muted);
-  background: transparent;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-.feed-filters button:hover,
-.filter-chip:hover {
-  background: var(--surface-hover);
-  color: var(--ink);
-}
-.feed-filters button[aria-pressed="true"],
-.filter-chip.is-active {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: transparent;
-}
-
-/* Section markers inside feed */
-.feed-section-label {
-  padding: 6px 16px 2px;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--rule);
-  background: var(--surface);
-  position: sticky;
-  top: calc(var(--nav-h) + 53px);
-  z-index: 15;
-}
+/* Section markers — themed stamps live in sections.css */
 
 /* ═══════════ RIGHT RAIL ═══════════ */
 .rail-right {
@@ -1474,8 +1432,8 @@
   background: var(--accent-soft) !important;
 }
 .is-search-miss { opacity: 0.28; }
+body.is-searching .feed-running-head,
 body.is-searching .feed-section-label,
-body.is-searching .feed-filters,
 body.is-searching .entry,
 body.is-searching .skill-chips,
 body.is-searching .skills-grid,
@@ -1527,32 +1485,4 @@ body.is-searching .is-search-hit { opacity: 1; }
 .aside-footer a:hover {
   text-decoration: underline !important;
   color: var(--accent);
-}
-
-/* Track focus filtering still works */
-body[data-track-focus] .track-target {
-  display: none;
-}
-body[data-track-focus="graphics"] .track-target[data-tracks~="graphics"],
-body[data-track-focus="neural"] .track-target[data-tracks~="neural"],
-body[data-track-focus="agents"] .track-target[data-tracks~="agents"] {
-  display: grid;
-}
-/* project-items become posts */
-body[data-track-focus] .project-item.track-target:not([hidden]) {
-  display: none;
-}
-body[data-track-focus="graphics"] .project-item.track-target[data-tracks~="graphics"]:not([hidden]),
-body[data-track-focus="neural"] .project-item.track-target[data-tracks~="neural"]:not([hidden]),
-body[data-track-focus="agents"] .project-item.track-target[data-tracks~="agents"]:not([hidden]) {
-  display: grid;
-}
-
-body[data-track-focus] .post.track-target {
-  display: none;
-}
-body[data-track-focus="graphics"] .post.track-target[data-tracks~="graphics"],
-body[data-track-focus="neural"] .post.track-target[data-tracks~="neural"],
-body[data-track-focus="agents"] .post.track-target[data-tracks~="agents"] {
-  display: grid;
 }

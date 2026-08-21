@@ -4,11 +4,21 @@ pageType: work
 permalink: /
 title: Shaoxuan (Frank) Yin · @qervas
 ---
-      <div class="feed-section-label" id="featured-work">Pinned · Featured work</div>
+<section class="feed-section" id="featured-work" data-section="featured-work" aria-labelledby="section-label-featured-work">
+      <h2 class="feed-section-label" id="section-label-featured-work"><span class="feed-section-stamp">Featured</span></h2>
 {% include "work/featured-ohao.njk" %}
 {% include "work/featured-thesis.njk" %}
 {% include "work/bio.njk" %}
+</section>
+<section class="feed-section" id="projects" data-section="projects" aria-labelledby="section-label-projects">
 {% include "work/projects.njk" %}
+</section>
+<section class="feed-section" id="experience" data-section="experience" aria-labelledby="section-label-experience">
 {% include "work/experience.njk" %}
+</section>
+<section class="feed-section" id="skills" data-section="skills" aria-labelledby="section-label-skills">
 {% include "work/skills.njk" %}
+</section>
+<section class="feed-section" id="education" data-section="education" aria-labelledby="section-label-education">
 {% include "work/education.njk" %}
+</section>
