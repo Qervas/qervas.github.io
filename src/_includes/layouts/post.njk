@@ -1,0 +1,31 @@
+---
+layout: layouts/base.njk
+pageType: post
+---
+      <article class="posts-article">
+        <a class="posts-back" href="/posts/">← Journal</a>
+        <div class="posts-article-inner">
+          <div class="posts-article-meta">
+            <span>Frank Yin</span>
+            <span>@qervas</span>
+            <time datetime="{{ date | dateISO }}">{{ date | dateDisplay }}</time>
+            {% if tags %}
+            <span class="posts-card-tags">
+              {% for tag in tags %}
+                {% if tag != "journal" %}
+                <span class="posts-tag">{{ tag }}</span>
+                {% endif %}
+              {% endfor %}
+            </span>
+            {% endif %}
+          </div>
+          <h2 class="posts-article-title">{{ title }}</h2>
+          <div class="posts-article-body">
+{{ content | safe }}
+          </div>
+          <div class="posts-article-foot">
+            <a href="/posts/">All journal entries</a>
+            <a href="/">← Work</a>
+          </div>
+        </div>
+      </article>

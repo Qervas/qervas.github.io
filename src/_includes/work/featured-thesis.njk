@@ -1,0 +1,91 @@
+      <!-- Thesis -->
+      <article class="post track-target" id="post-thesis" data-post-id="thesis" data-tracks="neural graphics" data-roles="neural graphics" data-ship="https://archive.org/details/captured_objects_dataset" data-share-title="Neural Rendering Dataset — Frank Yin">
+        <img class="post-avatar" src="/assets/profile/avatar.jpg" alt="" width="80" height="80" loading="lazy" />
+        <div class="post-body">
+          <div class="post-header">
+            <span class="post-author">Frank Yin</span>
+            <span class="post-handle">@qervas</span>
+            <span class="post-dot">·</span>
+            <span class="post-time">pinned</span>
+            <span class="post-badge">neural</span>
+          </div>
+          <h3 class="post-title">Neural Rendering Dataset — MSc Thesis</h3>
+          <p class="post-stack">C++ · C# · WinUI · Hardware Control · ~8K lines</p>
+          <p>
+            Built CamMatrixCapture: a 12-camera synchronized capture system with staggered trigger firmware, Bluetooth-controlled turntable automation, and a state-machine driven capture workflow. Indoor object captures feed NeRF / 3DGS training; outdoor work includes drone reconstruction of Gränsö Castle.
+          </p>
+          <p>
+            Released a <strong>209 GB</strong> public dataset (31 GB compressed) focused on challenging materials — reflective, transparent, translucent. 14 objects, 432 images each (12 cams × 36 poses). MIT licensed.
+          </p>
+          <p>
+            Benchmark: <strong>3D Gaussian Splatting ~11 dB PSNR above NeRF on reflective surfaces</strong>.
+          </p>
+          <div class="post-media">
+            <div class="thesis-visual">
+              <div class="thesis-compare-wrap">
+                <div class="thesis-chips" role="tablist" aria-label="Material">
+                  <button type="button" class="thesis-chip is-active" role="tab" aria-selected="true" data-3dgs="/assets/proof/thesis_pot_3dgs.mp4" data-label="Reflective pot">Metallic · pot</button>
+                  <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="/assets/proof/thesis_banana_3dgs.mp4" data-label="Banana">Organic · banana</button>
+                  <button type="button" class="thesis-chip" role="tab" aria-selected="false" data-3dgs="/assets/proof/thesis_vase_3dgs.mp4" data-label="Glass vase">Transparent · glass</button>
+                </div>
+                <div class="thesis-video" aria-label="3D Gaussian Splatting reconstruction">
+                  <video id="thesisVideoEl" src="/assets/proof/thesis_pot_3dgs.mp4" autoplay loop muted playsinline preload="auto"></video>
+                  <span class="thesis-video__tag">3DGS · +11 dB PSNR vs NeRF</span>
+                </div>
+              </div>
+              <div class="thesis-visual__row">
+                <div class="cell">
+                  <img src="/assets/proof/granso_rc_aerial.jpg" alt="Gränsö Castle aerial reconstruction" loading="lazy" />
+                  <span class="cell-label">Gränsö Castle · aerial RC</span>
+                </div>
+                <div class="cell">
+                  <img src="/assets/proof/thesis_method_matrix.jpg" alt="Method comparison matrix" loading="lazy" />
+                  <span class="cell-label">RC / NeRF / 3DGS matrix</span>
+                </div>
+              </div>
+              <div class="thesis-visual__row">
+                <div class="cell">
+                  <img src="/assets/proof/thesis_objects_overview.png" alt="Studio capture objects overview" loading="lazy" />
+                  <span class="cell-label">14 objects · capture set</span>
+                </div>
+                <div class="cell">
+                  <img src="/assets/proof/thesis_rig_setup.png" alt="12-camera capture rig setup" loading="lazy" />
+                  <span class="cell-label">12-cam rig · studio setup</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="post-links">
+            <a href="https://archive.org/details/captured_objects_dataset" target="_blank" rel="noopener">Download dataset ↗</a>
+            <a href="/assets/proof/granso_RC.mp4" target="_blank" rel="noopener">Gränsö video ↗</a>
+            <a href="/neural-capture/" target="_blank" rel="noopener">Monograph ↗</a>
+          </div>
+          <div class="post-actions" role="group" aria-label="Post actions">
+            <button type="button" class="post-action" data-action="thread" aria-expanded="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+              <span class="post-action-label">thread</span>
+            </button>
+            <button type="button" class="post-action" data-action="ship">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 3.88l4.432 4.14-1.364 1.46L5.5 7.55V16c0 1.1.896 2 2 2H13v2H7.5c-2.209 0-4-1.79-4-4V7.55L1.432 9.48.068 8.02 4.5 3.88zM16.5 6H11V4h5.5c2.209 0 4 1.79 4 4v8.45l2.068-1.93 1.364 1.46-4.432 4.14-4.432-4.14 1.364-1.46 2.068 1.93V8c0-1.1-.896-2-2-2z"/></svg>
+              <span class="post-action-label">ship</span>
+            </button>
+            <button type="button" class="post-action post-action-star" data-action="star" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.697 5.5c-1.222-.06-2.679.51-3.89 2.16l-.805 1.09-.806-1.09C9.984 6.01 8.526 5.44 7.304 5.5c-1.243.07-2.349.78-2.91 1.91-.552 1.12-.633 2.78.479 4.82 1.074 1.97 3.257 4.27 7.129 6.61 3.87-2.34 6.052-4.64 7.126-6.61 1.111-2.04 1.03-3.7.477-4.82-.561-1.13-1.666-1.84-2.908-1.91zm4.187 7.69c-1.351 2.48-4.001 5.12-8.379 7.67l-.503.3-.504-.3c-4.379-2.55-7.029-5.19-8.382-7.67-1.36-2.5-1.41-4.86-.514-6.67.887-1.79 2.647-2.91 4.601-3.01 1.651-.09 3.368.56 4.798 2.01 1.429-1.45 3.146-2.1 4.796-2.01 1.954.1 3.714 1.22 4.601 3.01.896 1.81.846 4.17-.514 6.67z"/></svg>
+              <span class="post-action-label">star</span>
+              <span class="post-action-count" data-star-count>0</span>
+            </button>
+            <button type="button" class="post-action" data-action="share">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.59l5.7 5.7-1.41 1.42L13 6.41V16h-2V6.41l-3.3 3.3-1.41-1.42L12 2.59zM21 15l-.02 3.51c0 1.38-1.12 2.49-2.5 2.49H5.5C4.11 21 3 19.88 3 18.5V15h2v3.5c0 .28.22.5.5.5h12.98c.28 0 .5-.22.5-.5L19 15h2z"/></svg>
+              <span class="post-action-label">share</span>
+            </button>
+          </div>
+          <div class="post-thread" hidden>
+            <p class="post-thread-note">MSc thesis dataset + evaluation — 3DGS vs NeRF on hard materials. Grab the public dataset or read the capture monograph.</p>
+            <div class="post-thread-links">
+              <a href="https://archive.org/details/captured_objects_dataset" target="_blank" rel="noopener">Dataset ↗</a>
+              <a href="/neural-capture/">Monograph ↗</a>
+              <a href="mailto:frankyin17@outlook.com?subject=Neural%20Rendering%20Dataset">Email about this</a>
+            </div>
+          </div>
+        </div>
+      </article>

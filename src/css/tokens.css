@@ -46,6 +46,7 @@
   --nav-h: 53px;
   --rail-w: 260px;
   --rail-w-sm: 72px;
+  --dock-inset: 148px;
   --aside-w: 340px;
   --app-max: 1560px; /* room for wide middle + side rails */
   --mono: 'IBM Plex Mono', ui-monospace, monospace;

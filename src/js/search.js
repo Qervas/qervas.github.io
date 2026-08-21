@@ -4,7 +4,7 @@
   const hint = document.getElementById('site-search-hint');
   if (!inputs.length) return;
 
-  const items = Array.from(document.querySelectorAll('.post, .project-item'));
+  const items = Array.from(document.querySelectorAll('.post, .project-item, .posts-card, .posts-article'));
   if (!items.length) return;
 
   let lastScroll = 0;

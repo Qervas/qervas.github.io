@@ -1,0 +1,13 @@
+{
+  "title": "Shaoxuan (Frank) Yin · @qervas",
+  "name": "Shaoxuan Yin",
+  "aka": "Frank",
+  "handle": "@qervas",
+  "url": "https://qervas.github.io",
+  "email": "frankyin17@outlook.com",
+  "description": "Builder of a 75K-line Vulkan engine, a 209 GB neural rendering dataset, an open-source Godot MCP server, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate.",
+  "ogDescription": "Vulkan · CUDA · neural rendering · agents. MSc Linköping. Remote · open to relocate.",
+  "ogImage": "https://qervas.github.io/assets/proof/ohao_helmet.jpg",
+  "ogImageAlt": "Ohao Engine — real-time path-traced helmet",
+  "author": "Shaoxuan (Frank) Yin"
+}
