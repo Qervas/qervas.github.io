@@ -373,8 +373,8 @@
 /* ── Animated geek profile banner ── */
 .profile-banner {
   position: relative;
-  /* taller so art sits above the avatar overlap band */
-  height: 250px;
+  /* short strip so name + Work sit higher on the fold */
+  height: 140px;
   background:
     radial-gradient(ellipse 80% 90% at 15% 100%, rgba(57, 255, 20, 0.12), transparent 55%),
     radial-gradient(ellipse 70% 80% at 85% 20%, rgba(0, 240, 255, 0.12), transparent 50%),
@@ -385,9 +385,9 @@
 }
 /* keep important art out of the avatar disc (bottom-left) */
 .profile-banner .pb-svg {
-  /* push composition slightly up/right in the slice */
+  /* right + slightly high: geodesic stays in the short strip, not under the disc */
   object-fit: cover;
-  object-position: 58% 30%;
+  object-position: 58% 42%;
 }
 .pb-stars,
 .pb-grid,
@@ -642,8 +642,8 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  /* less intrusion into the banner so math stays readable */
-  margin-top: -56px;
+  /* sit on the short strip without covering most of the math */
+  margin-top: -40px;
   margin-bottom: 12px;
 }
 .profile-avatar {
