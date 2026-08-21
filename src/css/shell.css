@@ -1234,7 +1234,11 @@
   border: 1px solid var(--rule);
 }
 .aside-heatmap .aside-card-head {
-  padding-right: 14px;
+  align-items: center;
+  padding: 8px 14px 2px 0;
+}
+.aside-heatmap .aside-card-title {
+  padding: 0 0 0 14px;
 }
 .aside-heatmap-handle {
   font-family: var(--mono);
@@ -1251,7 +1255,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
-  padding: 0 12px 6px;
+  padding: 2px 12px 4px;
 }
 .gh-stat {
   min-width: 0;
@@ -1282,7 +1286,7 @@
   letter-spacing: 0.02em;
 }
 .gh-year-line {
-  padding: 0 14px 8px;
+  padding: 0 14px 4px;
   font-family: var(--mono);
   font-size: 0.68rem;
   color: var(--muted);
