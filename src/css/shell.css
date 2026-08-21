@@ -1043,7 +1043,7 @@
   padding: 6px 16px;
   border-bottom: 1px solid var(--rule);
   position: sticky;
-  top: calc(var(--nav-h) + 53px);
+  top: calc(var(--nav-h) + var(--tabs-h));
   z-index: 20;
   background: var(--bg);
 }

@@ -113,7 +113,7 @@
   .skill-row { grid-template-columns: 1fr; gap: 4px; }
   .entry-head { flex-direction: column; gap: 4px; }
   .feed-filters {
-    top: var(--nav-h);
+    top: calc(var(--nav-h) + var(--tabs-h));
     overflow-x: auto;
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
