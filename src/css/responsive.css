@@ -1,16 +1,16 @@
 /* responsive — collapse X rails on smaller viewports */
 
-/* Wide desktop: left index + feed + right rail */
+/* Wide desktop: feed + right rail */
 @media (min-width: 1280px) {
   .app {
-    grid-template-columns: var(--rail-w) minmax(0, 1fr) var(--aside-w);
+    grid-template-columns: minmax(0, 1fr) var(--aside-w);
   }
 }
 
-/* Mid: keep a readable Work index; dock stays icon-only */
+/* Mid: slightly narrower right rail; dock stays overlay */
 @media (max-width: 1279px) {
   .app {
-    grid-template-columns: minmax(168px, 220px) minmax(0, 1fr) minmax(240px, 300px);
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
     padding: 0 8px 0 var(--dock-inset);
   }
   .rail-right {
@@ -21,7 +21,7 @@
 /* Hide right rail — feed takes remaining width */
 @media (max-width: 1000px) {
   .app {
-    grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
   .rail-right { display: none; }
   .page, .feed {
@@ -29,14 +29,11 @@
   }
 }
 
-/* Phone: hide the Work index; glass dock becomes a bottom bar */
+/* Phone: glass dock becomes a bottom bar */
 @media (max-width: 688px) {
   .app {
     display: block;
     padding: 0 0 72px;
-  }
-  .rail-left {
-    display: none;
   }
   .nav-dock {
     left: 8px;
@@ -131,7 +128,6 @@
 /* print */
 @media print {
   .nav-dock,
-  .rail-left,
   .rail-right,
   .theme-toggle,
   .feed-top-actions,
