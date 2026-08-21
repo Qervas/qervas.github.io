@@ -197,7 +197,13 @@
   color: var(--ink);
 }
 .rail-link:hover { background: var(--surface-hover); }
-.rail-link.is-active { font-weight: 700; }
+.rail-link.is-active {
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.07);
+}
+[data-theme="light"] .rail-link.is-active {
+  background: rgba(15, 20, 25, 0.06);
+}
 .rail-link.is-active svg { opacity: 1; }
 .rail-link:focus-visible {
   outline: 2px solid var(--ink);
@@ -1064,20 +1070,7 @@
   border-color: transparent;
 }
 
-/* Section markers inside feed */
-.feed-section-label {
-  padding: 6px 16px 2px;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--rule);
-  background: var(--surface);
-  position: sticky;
-  top: calc(var(--nav-h) + 53px);
-  z-index: 15;
-}
+/* Section markers — themed stamps live in sections.css */
 
 /* ═══════════ RIGHT RAIL ═══════════ */
 .rail-right {
@@ -1474,6 +1467,7 @@
   background: var(--accent-soft) !important;
 }
 .is-search-miss { opacity: 0.28; }
+body.is-searching .feed-running-head,
 body.is-searching .feed-section-label,
 body.is-searching .feed-filters,
 body.is-searching .entry,

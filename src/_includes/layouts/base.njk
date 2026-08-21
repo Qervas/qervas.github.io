@@ -21,6 +21,9 @@
         <button type="button" data-track="agents" aria-pressed="false">Agents</button>
       </div>
 {% include "chrome/journal-teaser.njk" %}
+      <div class="feed-running-head" id="feed-running-head" hidden role="status" aria-live="polite">
+        <span class="feed-running-head-tag" id="feed-running-head-tag"></span>
+      </div>
 {% endif %}
 {{ content | safe }}
 {% include "chrome/footer.njk" %}

@@ -55,6 +55,12 @@
   --track-g: #1d9bf0;
   --track-n: #7856ff;
   --track-a: #00ba7c;
+  /* homepage section accents — newspaper inks, not neon */
+  --sec-featured: #1d9bf0;
+  --sec-projects: #7a6fd0;
+  --sec-experience: #4a9a78;
+  --sec-skills: #c4784a;
+  --sec-education: #b08d3e;
   --seg-bg: #202327;
   --seg-active: #eff3f4;
   --seg-active-ink: #0f1419;
@@ -101,4 +107,9 @@
   --seg-bg: #eff3f4;
   --seg-active: #0f1419;
   --seg-active-ink: #ffffff;
+  --sec-featured: #1877b8;
+  --sec-projects: #5348a8;
+  --sec-experience: #2d7356;
+  --sec-skills: #a85d32;
+  --sec-education: #8a6c20;
 }
