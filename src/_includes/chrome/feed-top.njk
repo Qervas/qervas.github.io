@@ -1,0 +1,29 @@
+      <div class="feed-top">
+        {% if pageType == "journal" or pageType == "post" %}
+        <div>
+          <h1 class="feed-top-title">Journal</h1>
+          <p class="posts-top-sub">dev-log · WIP · ship notes — not the CV</p>
+        </div>
+        {% else %}
+        <h1 class="feed-top-title">Profile</h1>
+        {% endif %}
+        <div class="feed-top-actions">
+          <label class="feed-search feed-search-compact" for="site-search-feed">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4.2 4.2 1.4-1.4-4.2-4.2A7.5 7.5 0 0 0 10.5 3zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11z"/></svg>
+            <input id="site-search-feed" class="site-search-input" type="search" placeholder="Search" autocomplete="off" spellcheck="false" aria-label="Search posts and projects" />
+          </label>
+          <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cycle theme: light, dark, system" title="Theme">
+            <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M21 14.3A8.5 8.5 0 0 1 9.7 3 7 7 0 1 0 21 14.3z" />
+            </svg>
+            <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="icon-system" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3" y="4" width="18" height="12" rx="2" />
+              <path d="M8 20h8M12 16v4" />
+            </svg>
+          </button>
+        </div>
+      </div>

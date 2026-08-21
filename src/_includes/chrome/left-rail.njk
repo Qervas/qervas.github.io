@@ -1,0 +1,38 @@
+{% set isWork = pageType == "work" %}
+{% set isJournal = pageType == "journal" or pageType == "post" %}
+    <nav class="rail-left" aria-label="Primary">
+      <a class="rail-brand" href="/" title="home" aria-label="Home">
+        {% include "chrome/brand-mark.njk" %}
+      </a>
+      <div class="rail-nav">
+        <a class="rail-link{% if isWork %} is-active{% endif %}" href="{% if isWork %}#main-content{% else %}/{% endif %}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 3 11h2v9h5v-6h4v6h5v-9h2L12 3.5z"/></svg><span class="rail-link-label">Home</span></a>
+        <a class="rail-link{% if isJournal %} is-active{% endif %}" href="/posts/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5V4zm2 2v12h10V6H7zm2 2h6v2H9V8zm0 4h6v2H9v-2z"/></svg><span class="rail-link-label">Journal</span></a>
+        <a class="rail-link" href="/#featured-work" data-nav="featured-work"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v12H4V6zm2 2v8h12V8H6zm3-4h6v2H9V4z"/></svg><span class="rail-link-label">Featured</span></a>
+        <a class="rail-link" href="/#projects" data-nav="projects"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z"/></svg><span class="rail-link-label">Projects</span></a>
+        <a class="rail-link" href="/#experience" data-nav="experience" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg><span class="rail-link-label">Experience</span></a>
+        <a class="rail-link" href="/#skills" data-nav="skills" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 9.5 8.5 3 9l5 4.5L6.5 20 12 16.5 17.5 20 16 13.5 21 9l-6.5-.5L12 2z"/></svg><span class="rail-link-label">Skills</span></a>
+        <a class="rail-link" href="/#education" data-nav="education" data-mobile-hide><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 1 9l11 6 9-4.91V17h2V9L12 3zm0 13L5.5 12.5 3 14l9 5 9-5-2.5-1.5L12 16z"/></svg><span class="rail-link-label">Education</span></a>
+      </div>
+      <div class="rail-contact">
+        <button type="button" class="rail-cta" id="rail-contact-btn" aria-expanded="false" aria-controls="rail-contact-menu">
+          Contact me
+        </button>
+        <div class="rail-contact-menu" id="rail-contact-menu" hidden>
+          <a class="rail-contact-item" href="mailto:frankyin17@outlook.com">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span>Email</span>
+          </a>
+          <a class="rail-contact-item" href="https://x.com/FrankYin17" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+            <span>X · @FrankYin17</span>
+          </a>
+        </div>
+      </div>
+      <a class="rail-user" href="https://github.com/Qervas" target="_blank" rel="noopener">
+        <img class="rail-user-avatar" src="/assets/profile/avatar.jpg" alt="" width="40" height="40" />
+        <span class="rail-user-meta">
+          <span class="rail-user-name">Shaoxuan Yin</span>
+          <span class="rail-user-handle">aka Frank · @qervas</span>
+        </span>
+      </a>
+    </nav>

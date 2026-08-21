@@ -1,0 +1,111 @@
+<div class="profile-banner" aria-hidden="true">
+          <div class="pb-stars"></div>
+          <div class="pb-grid"></div>
+          <svg class="pb-svg" viewBox="0 0 1200 240" preserveAspectRatio="xMidYMid slice" focusable="false">
+            <defs>
+              <linearGradient id="pb-neon" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#39ff14"/>
+                <stop offset="50%" stop-color="#00f0ff"/>
+                <stop offset="100%" stop-color="#7aa2ff"/>
+              </linearGradient>
+              <linearGradient id="pb-geo" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ff7ad9"/>
+                <stop offset="100%" stop-color="#00f0ff"/>
+              </linearGradient>
+              <radialGradient id="pb-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#00f0ff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="pb-soft">
+                <feGaussianBlur stdDeviation="1.1" result="b"/>
+                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <marker id="pb-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0 0 L6 3 L0 6 Z" fill="#7aa2ff"/>
+              </marker>
+              <marker id="pb-arrow-g" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0 0 L6 3 L0 6 Z" fill="#39ff14"/>
+              </marker>
+            </defs>
+
+            <!-- soft ambient (avoid dense art under avatar: x≲200, y≳150) -->
+            <circle class="pb-blob pb-blob-a" cx="520" cy="90" r="100" fill="url(#pb-glow)"/>
+            <circle class="pb-blob pb-blob-b" cx="980" cy="70" r="110" fill="url(#pb-glow)" opacity="0.6"/>
+
+            <!-- chart (U, φ) — mid/upper, clear of avatar -->
+            <g class="pb-chart" transform="translate(280 18)" fill="none" filter="url(#pb-soft)">
+              <path class="pb-surface" d="M20 110 C 60 30, 160 20, 220 60 S 300 140, 250 160 S 80 170, 20 110 Z"
+                stroke="url(#pb-neon)" stroke-width="1.4" fill="rgba(0,240,255,0.04)"/>
+              <g class="pb-chart-grid" stroke="#00f0ff" stroke-width="0.7" opacity="0.55">
+                <path d="M50 105 C 90 60, 140 55, 190 80"/>
+                <path d="M45 125 C 95 85, 150 80, 200 105"/>
+                <path d="M55 140 C 100 110, 155 108, 205 128"/>
+                <path d="M70 70 C 95 90, 120 120, 140 150"/>
+                <path d="M110 55 C 130 85, 150 115, 165 145"/>
+                <path d="M155 50 C 170 85, 185 115, 195 140"/>
+              </g>
+              <g class="pb-tangent" transform="translate(145 95)">
+                <ellipse rx="48" ry="18" transform="rotate(-18)" fill="rgba(57,255,20,0.06)" stroke="#39ff14" stroke-width="1"/>
+                <line x1="-40" y1="8" x2="42" y2="-14" stroke="#39ff14" stroke-width="1.1" marker-end="url(#pb-arrow-g)"/>
+                <line x1="-10" y1="16" x2="18" y2="-22" stroke="#9dffb0" stroke-width="1" opacity="0.85"/>
+                <circle r="3.2" fill="#39ff14"/>
+                <text x="8" y="-18" fill="#9dffb0" font-family="ui-monospace,monospace" font-size="11">TₚM</text>
+                <text x="6" y="14" fill="#39ff14" font-family="ui-monospace,monospace" font-size="11">p</text>
+              </g>
+              <text x="8" y="20" fill="#7ad7ff" font-family="ui-monospace,monospace" font-size="12">(U, φ)</text>
+              <text x="200" y="32" fill="#8fd3ff" font-family="ui-monospace,monospace" font-size="11">φ: U → ℝⁿ</text>
+            </g>
+
+            <!-- geodesic — mid band, not under avatar -->
+            <path class="pb-geodesic" fill="none" stroke="url(#pb-geo)" stroke-width="2.1" stroke-linecap="round"
+              d="M380 155 C 440 100, 500 75, 560 80 S 650 130, 720 110 S 800 55, 880 65"
+              filter="url(#pb-soft)"/>
+            <circle class="pb-geo-dot" cx="380" cy="155" r="3" fill="#ff7ad9"/>
+            <text x="360" y="172" fill="#ff7ad9" font-family="ui-monospace,monospace" font-size="10">γ(t)</text>
+            <text x="780" y="52" fill="#c4a8ff" font-family="ui-monospace,monospace" font-size="11">∇_γ̇ γ̇ = 0</text>
+
+            <!-- torus right side -->
+            <g class="pb-torus" transform="translate(1020 105)" fill="none" stroke="url(#pb-neon)" stroke-width="1.05" filter="url(#pb-soft)">
+              <ellipse class="pb-torus-a" cx="0" cy="0" rx="88" ry="36" opacity="0.9"/>
+              <ellipse class="pb-torus-b" cx="0" cy="0" rx="48" ry="18" opacity="0.75"/>
+              <ellipse class="pb-torus-c" cx="-52" cy="0" rx="18" ry="30" opacity="0.55"/>
+              <ellipse class="pb-torus-d" cx="52" cy="0" rx="18" ry="30" opacity="0.55"/>
+              <ellipse class="pb-torus-e" cx="0" cy="-8" rx="70" ry="22" opacity="0.4"/>
+              <ellipse class="pb-torus-f" cx="0" cy="10" rx="70" ry="22" opacity="0.35"/>
+              <text x="-18" y="58" fill="#7ad7ff" font-family="ui-monospace,monospace" font-size="11">T²</text>
+              <text x="28" y="58" fill="#9dffb0" font-family="ui-monospace,monospace" font-size="10">g=1</text>
+            </g>
+
+            <!-- open covers upper-mid -->
+            <g class="pb-covers" fill="none" opacity="0.7">
+              <ellipse class="pb-cover pb-c1" cx="700" cy="42" rx="70" ry="26" stroke="#00f0ff" stroke-width="1" stroke-dasharray="4 3"/>
+              <ellipse class="pb-cover pb-c2" cx="760" cy="55" rx="60" ry="24" stroke="#bf5af2" stroke-width="1" stroke-dasharray="4 3"/>
+              <ellipse class="pb-cover pb-c3" cx="730" cy="38" rx="40" ry="16" stroke="#39ff14" stroke-width="1" stroke-dasharray="3 3"/>
+              <text x="640" y="28" fill="#7ad7ff" font-family="ui-monospace,monospace" font-size="10">{Uᵢ}</text>
+            </g>
+
+            <!-- formulas — keep out of bottom-left avatar disc -->
+            <g class="pb-formulas" fill="#8fd3ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" opacity="0.88">
+              <text class="pb-f pb-f1" x="300" y="28">dω = 0  ⇒  [ω] ∈ H¹_dR</text>
+              <text class="pb-f pb-f2" x="780" y="26" fill="#c4a8ff">χ(M) = ∑ (-1)^k b_k</text>
+              <text class="pb-f pb-f3" x="300" y="200" fill="#9dffb0">∇_X Y − ∇_Y X = [X,Y]</text>
+              <text class="pb-f pb-f4" x="620" y="200" fill="#7ad7ff">R(X,Y)Z = ∇_X∇_Y Z − …</text>
+              <text class="pb-f pb-f5" x="560" y="42" fill="#ffd18a" font-size="11">exp_p : TₚM → M</text>
+              <text class="pb-f pb-f6" x="300" y="218" fill="#9dffb0" font-size="11">g = g_{ij} dx^i ⊗ dx^j</text>
+              <text class="pb-f pb-f7" x="520" y="28" fill="#c4a8ff" font-size="11">∂/∂x^i</text>
+            </g>
+
+            <g class="pb-atlas" transform="translate(860 168)" fill="#7ad7ff" font-family="ui-monospace,monospace" font-size="10" opacity="0.8">
+              <text x="0" y="0">atlas  𝒜 = {(U_α, φ_α)}</text>
+              <text x="0" y="14" fill="#9dffb0">φ_β ∘ φ_α⁻¹ ∈ C^∞</text>
+            </g>
+          </svg>
+
+          <div class="pb-rain" id="pb-rain"></div>
+          <div class="pb-scanlines"></div>
+          <div class="pb-vignette"></div>
+          <div class="pb-hud">
+            <span class="pb-hud-l">Mⁿ · TₚM · Ω^k · DiffGeo</span>
+            <span class="pb-hud-r"><i class="pb-live"></i> charts · geodesics · de Rham · curvature</span>
+          </div>
+        </div>
