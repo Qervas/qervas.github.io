@@ -224,13 +224,6 @@
   align-self: start;
 }
 
-.project-empty {
-  padding: 24px 16px;
-  text-align: center;
-  color: var(--muted);
-  border-bottom: 1px solid var(--rule);
-}
-
 /* entry / experience as posts */
 .entry {
   padding: var(--post-pad);

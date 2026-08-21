@@ -117,8 +117,7 @@
   color: var(--soft);
   margin-right: 4px;
 }
-.role-chip,
-.filter-chip {
+.role-chip {
   appearance: none;
   border: 1px solid var(--rule);
   background: var(--paper);
@@ -132,35 +131,18 @@
   cursor: pointer;
   transition: color 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
-.role-chip:hover,
-.filter-chip:hover {
+.role-chip:hover {
   border-color: var(--accent);
   color: var(--ink);
 }
-.role-chip.is-active,
-.filter-chip.is-active {
+.role-chip.is-active {
   background: var(--accent);
   border-color: var(--accent);
   color: #fdf9f3;
   box-shadow: 0 4px 14px rgba(155, 65, 35, 0.25);
 }
 
-.project-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 18px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--rule);
-}
 .project-item[hidden] { display: none !important; }
-.project-empty {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--soft);
-  padding: 12px 0;
-}
-.project-empty[hidden] { display: none !important; }
 .project-tags {
   display: flex;
   flex-wrap: wrap;
