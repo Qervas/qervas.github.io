@@ -137,14 +137,12 @@
     width: 100%;
   }
 
-  .profile-banner { height: 104px; }
   .profile-avatar {
     width: 88px;
     height: 88px;
     font-size: 1.6rem;
     border-width: 3px;
   }
-  .profile-avatar-row { margin-top: -32px; }
   .profile-actions {
     flex-wrap: wrap;
     justify-content: flex-end;
