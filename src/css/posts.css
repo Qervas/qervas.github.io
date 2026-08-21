@@ -38,17 +38,6 @@
   color: var(--ink);
   line-height: 1.4;
 }
-.posts-compose-hint {
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: var(--soft);
-  font-family: var(--mono);
-}
-.posts-compose-hint code {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  color: var(--accent);
-}
 
 /* listing cards */
 .posts-list {
