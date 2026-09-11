@@ -75,7 +75,7 @@ Left: the legal disk. Right: a smaller picture of the same aliases. **A mip chai
 
 **Minification** (\(\rho>1\), \(\lambda>0\)) is band-limit or fold. This is the article.
 
-On this run, \(\rho=1\): `LINEAR` vs `LINEAR_MIPMAP_LINEAR`, MAE \(=\mathbf{0}\). Both samplers are reading L0 with linear magnification. That column is the control, not the hero. Same control as `out/19` NEAR.
+On this run, \(\rho=1\): `LINEAR` vs `LINEAR_MIPMAP_LINEAR`, MAE \(=\mathbf{0}\). Both samplers are reading L0 with linear magnification. That column is the control, not the hero. Same control as the distance-strip NEAR column.
 
 ![Alias ladder ρ=1,2,4,8,16. Top LINEAR no-mip, bottom box-mip. ρ=1 rows match (MAE=0). Fold takes over from ρ=4.](/assets/journal/mipmaps/10_alias_ladder.jpg)
 
@@ -174,7 +174,7 @@ E_{\mathrm{hi}}=\frac{\sum_{k>k_{\mathrm{Nyq}}}P(k)}{\sum_{k\ge 1}P(k)}
 
 with \(k_{\mathrm{Nyq}}=M/2=128\). Annuli are weighted equally, so Hann / box-sinc lobes in the outer rings keep the ratio from collapsing even when the fold is gone.
 
-\(\rho=8\), \(W=128\), crop 256, `padded=1`, from `out/theory_vs_measured.csv`:
+\(\rho=8\), \(W=128\), crop 256, `padded=1`, measured on this run:
 
 | filter | \(E_{\mathrm{hi}}\) | \(P_{\mathrm{ac}}\) | \(\log_{10}\|F\|\) vmax |
 |---|---|---|---|
@@ -245,7 +245,7 @@ One photograph, no \(\rho\) on the HUD, no AF table. This is the leftover softne
 
 Cook-Torrance GGX, metalness-roughness, GLSL 330. \(D\) is GGX / Trowbridge-Reitz, \(G\) is Smith with Schlick-GGX, \(F\) is Schlick. Direct lighting form, not a path tracer. No Toksvig. Albedo and ORM both get the CPU \(2\times 2\) box. Display is ACES (Narkowicz) then \(\gamma=2.2\) from a linear FBO.
 
-Hi-res only on `16`–`20`: `photoFb=1280`, gallery \(2560\times 1440\), CPU \(2\times\) box SSAA (not GL MSAA). SSAA is for geometry — box edges, lamp quad, door frames, hallway vanishing lines. It slightly averages the no-mip sparkle; the fold vs band-limit pair still reads. Science frames stay \(1280\times 720\), FBO \(512^2\).
+The room photographs are hi-res: gallery \(2560\times 1440\), CPU \(2\times\) box SSAA (not GL MSAA). SSAA is for geometry — box edges, lamp quad, door frames, hallway vanishing lines. It slightly averages the no-mip sparkle; the fold vs band-limit pair still reads. The zone-plate / FFT frames stay at \(1280\times 720\), FBO \(512^2\).
 
 Cornell is the *layout*, not a GI benchmark. Area light + bounce points + gradient IBL is a look. PBR does not change the theorem.
 
@@ -260,16 +260,3 @@ Can claim: on this rasterizer, minifying an authored chirp without a mip chain f
 Cannot claim: hardware LOD, anisotropy quality, texel cache, bandwidth, occupancy, or “this is how GPUs work.” Cannot claim the zone-plate is a perfect LPF source. Cannot FFT the PNG and call it science. Cannot hang \(P_{\mathrm{ac}}\) on a wood floor.
 
 Box \(\neq\) ideal LPF. Point-subsample \(\neq\) mipmap. \(E_{\mathrm{hi}}\) \(\neq\) the \(10\times\) drop. Pad with the mean, or the window owns you. Magnification MAE has to be zero or the note is broken. A mipmap presents in the scene as a legal band-limit, not as distance-fog.
-
-Rebuild:
-
-```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j
-./build/mipmaps --out out/
-```
-
-Lab note: `NOTE.md`. CSV: `out/theory_vs_measured.csv`, `out/pk_rho8.csv`. Plan: `grok-runs/PLAN.md`.
-
-Album order, so the pick is not a vibe: `perspective-correct` is *what* you interpolate; `z-fighting` is *how* depth is encoded; this note is *which frequencies survive* a minifying sample — and how that looks in a room.
-
-Pin `16` or `18` as the presentation. Pin the `05`/`09` pair as the theorem. The formula is the caption. The spectrum is why the wood went soft.
