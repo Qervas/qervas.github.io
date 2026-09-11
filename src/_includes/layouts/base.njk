@@ -3,7 +3,7 @@
 <head>
 {% include "chrome/head.njk" %}
 </head>
-<body>
+<body class="page-{{ pageType or 'work' }}">
   <script src="/js/js-flag.js"></script>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -11,7 +11,9 @@
   <div class="app">
     <main class="feed page" id="main-content">
 {% include "chrome/feed-top.njk" %}
+{% if pageType != "post" %}
 {% include "chrome/profile-header.njk" %}
+{% endif %}
 {% include "chrome/tabs.njk" %}
 {% if pageType == "work" %}
 {% include "chrome/journal-teaser.njk" %}

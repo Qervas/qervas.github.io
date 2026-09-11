@@ -20,6 +20,9 @@ pageType: post
             {% endif %}
           </div>
           <h2 class="posts-article-title">{{ title }}</h2>
+          {% if description %}
+          <p class="posts-article-dek">{{ description }}</p>
+          {% endif %}
           <div class="posts-article-body">
 {{ content | safe }}
           </div>
