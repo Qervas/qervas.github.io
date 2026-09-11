@@ -1,15 +1,31 @@
 {% if collections.journal and collections.journal.length %}
       {% set latest = collections.journal[0] %}
-      <a class="home-journal-card" id="home-journal-teaser" href="{{ latest.url }}">
-        {% if latest.data.cover %}
-        <img class="home-journal-card-thumb" src="{{ latest.data.cover }}" alt="" loading="lazy" decoding="async" />
-        {% endif %}
-        <div class="home-journal-card-copy">
-          <div class="home-journal-card-kicker">Latest journal · {{ latest.date | dateDisplay }}</div>
-          <div class="home-journal-card-title">{{ latest.data.title }}</div>
-          {% if latest.data.description %}
-          <p class="home-journal-card-dek">{{ latest.data.description }}</p>
+      <section class="home-journal-hero" aria-label="Latest journal">
+        <a class="home-journal-hero-card" id="home-journal-teaser" href="{{ latest.url }}">
+          {% if latest.data.cover %}
+          <div class="home-journal-hero-media">
+            <img src="{{ latest.data.cover }}" alt="" loading="lazy" decoding="async" />
+            <span class="home-journal-hero-badge">Journal</span>
+          </div>
           {% endif %}
-        </div>
-      </a>
+          <div class="home-journal-hero-copy">
+            <div class="home-journal-hero-meta">
+              <span class="home-journal-hero-kicker">New</span>
+              <time datetime="{{ latest.date | dateISO }}">{{ latest.date | dateDisplay }}</time>
+              {% if latest.data.tags %}
+              <span class="home-journal-hero-tags">
+                {% for tag in latest.data.tags %}
+                  {% if tag != "journal" %}<span class="posts-tag">{{ tag }}</span>{% endif %}
+                {% endfor %}
+              </span>
+              {% endif %}
+            </div>
+            <h2 class="home-journal-hero-title">{{ latest.data.title }}</h2>
+            {% if latest.data.description %}
+            <p class="home-journal-hero-dek">{{ latest.data.description }}</p>
+            {% endif %}
+            <span class="home-journal-hero-cta">Read the note →</span>
+          </div>
+        </a>
+      </section>
 {% endif %}
