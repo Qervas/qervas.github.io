@@ -7,6 +7,7 @@ tags:
   - engine
   - sampling
 math: true
+cover: /assets/journal/mipmaps/16_cornell.jpg
 ---
 
 The usual sentence is: mipmaps blur when things get far. Wrong family.
