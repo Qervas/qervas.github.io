@@ -283,3 +283,13 @@
   overflow-y: hidden;
   padding: 0.25em 0;
 }
+
+.posts-article-body .katex-display-block {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 1em 0;
+  padding: 0.35em 0;
+}
+.posts-article-body .katex-display-block .katex-display {
+  margin: 0;
+}
