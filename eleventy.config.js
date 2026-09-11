@@ -162,6 +162,24 @@ export default function (eleventyConfig) {
     typographer: false,
   });
   markdownItKatex(md);
+  // Journal figures: wrap images in <figure> with figcaption from alt (reading + phone).
+  md.renderer.rules.image = (tokens, idx, options, env, self) => {
+    const token = tokens[idx];
+    const src = token.attrGet("src") || "";
+    const alt = token.content || token.attrGet("alt") || "";
+    const title = token.attrGet("title");
+    const esc = (s) =>
+      String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    const titleAttr = title ? ` title="${esc(title)}"` : "";
+    const caption = alt
+      ? `<figcaption class="posts-figcaption">${esc(alt)}</figcaption>`
+      : "";
+    return `<figure class="posts-figure"><img src="${esc(src)}" alt="${esc(alt)}"${titleAttr} loading="lazy" decoding="async" />${caption}</figure>`;
+  };
   eleventyConfig.setLibrary("md", md);
 
   eleventyConfig.addCollection("journal", (api) =>
@@ -194,6 +212,16 @@ export default function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("json", (value) => JSON.stringify(value));
+
+
+  eleventyConfig.addTransform("journalTableWrap", (content, outputPath) => {
+    if (!outputPath || !outputPath.endsWith(".html")) return content;
+    if (!content.includes("posts-article-body")) return content;
+    return content.replace(
+      /<table>/g,
+      '<div class="posts-table-wrap"><table>'
+    ).replace(/<\/table>/g, "</table></div>");
+  });
 
   return {
     dir: {
