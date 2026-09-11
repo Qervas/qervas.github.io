@@ -250,3 +250,36 @@
 .home-journal-teaser a:hover {
   color: var(--accent);
 }
+
+.posts-article-body img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--rule);
+  margin: 0.25em 0;
+}
+.posts-article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  overflow-x: auto;
+  display: block;
+}
+.posts-article-body th,
+.posts-article-body td {
+  border: 1px solid var(--rule);
+  padding: 6px 10px;
+  text-align: left;
+}
+.posts-article-body th {
+  background: var(--surface);
+  font-weight: 600;
+}
+.posts-article-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em 0;
+}
