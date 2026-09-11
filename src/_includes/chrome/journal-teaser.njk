@@ -1,4 +1,15 @@
 {% if collections.journal and collections.journal.length %}
       {% set latest = collections.journal[0] %}
-      <p class="home-journal-teaser" id="home-journal-teaser"><a href="{{ latest.url }}">Latest journal: {{ latest.data.title }} · {{ latest.date | dateDisplay }}</a></p>
+      <a class="home-journal-card" id="home-journal-teaser" href="{{ latest.url }}">
+        {% if latest.data.cover %}
+        <img class="home-journal-card-thumb" src="{{ latest.data.cover }}" alt="" loading="lazy" decoding="async" />
+        {% endif %}
+        <div class="home-journal-card-copy">
+          <div class="home-journal-card-kicker">Latest journal · {{ latest.date | dateDisplay }}</div>
+          <div class="home-journal-card-title">{{ latest.data.title }}</div>
+          {% if latest.data.description %}
+          <p class="home-journal-card-dek">{{ latest.data.description }}</p>
+          {% endif %}
+        </div>
+      </a>
 {% endif %}
