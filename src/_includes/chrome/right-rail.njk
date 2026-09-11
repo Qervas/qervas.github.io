@@ -1,9 +1,38 @@
     <aside class="rail-right" aria-label="Sidebar">
-      <div class="aside-card aside-status-card">
-        <div class="aside-card-title">Status</div>
-        <div class="aside-status-lines">
-          <p>Graphics · Engine · GPU · Agents · AI-infra welcome</p>
+      <div class="aside-card aside-journal-card">
+        <div class="aside-card-head">
+          <div class="aside-card-title">Journal</div>
+          <a class="aside-journal-all" href="/posts/">All →</a>
         </div>
+        {% if collections.journal and collections.journal.length %}
+        <div class="aside-journal-list">
+          {% for post in collections.journal %}
+          <a class="aside-journal-item" href="{{ post.url }}">
+            {% if post.data.cover %}
+            <img class="aside-journal-thumb" src="{{ post.data.cover }}" alt="" loading="lazy" decoding="async" />
+            {% endif %}
+            <div class="aside-journal-copy">
+              <time class="aside-journal-date" datetime="{{ post.date | dateISO }}">{{ post.date | dateDisplay }}</time>
+              <div class="aside-journal-title">{{ post.data.title }}</div>
+              {% if post.data.description %}
+              <p class="aside-journal-dek">{{ post.data.description }}</p>
+              {% endif %}
+              {% if post.data.tags %}
+              <div class="aside-journal-tags">
+                {% for tag in post.data.tags %}
+                  {% if tag != "journal" %}
+                  <span class="posts-tag">{{ tag }}</span>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p class="aside-journal-empty">No entries yet.</p>
+        {% endif %}
       </div>
 
       <div class="aside-card aside-heatmap" id="aside-heatmap">
@@ -59,83 +88,11 @@
         <div class="gh-tooltip" id="gh-tooltip" hidden></div>
       </div>
 
-      <div class="aside-card">
-        <div class="aside-card-title">What’s hot</div>
-        <a class="aside-row" href="/posts/">
-          <div class="aside-kicker">Journal · new</div>
-          <div class="aside-label">Dev log</div>
-          <div class="aside-sub">WIP notes, ship logs, half-thoughts</div>
-        </a>
-        <a class="aside-row" href="/#featured-work">
-          <div class="aside-kicker">Graphics · trending</div>
-          <div class="aside-label">Ohao Engine path tracing</div>
-          <div class="aside-sub"><span class="aside-num">~67 fps</span> · DLSS-RR + ReSTIR</div>
-        </a>
-        <a class="aside-row" href="/#featured-work">
-          <div class="aside-kicker">Neural · trending</div>
-          <div class="aside-label">3DGS vs NeRF benchmark</div>
-          <div class="aside-sub"><span class="aside-num">+11 dB</span> · 209 GB dataset</div>
-        </a>
-        <a class="aside-row" href="/#projects">
-          <div class="aside-kicker">Agents · open source</div>
-          <div class="aside-label">NIUA Godot MCP</div>
-          <div class="aside-sub"><span class="aside-num">182</span> tools · playtest evidence</div>
-        </a>
-        <a class="aside-row" href="/#projects">
-          <div class="aside-kicker">Physics</div>
-          <div class="aside-label">MLS-MPM flood sims</div>
-          <div class="aside-sub">Taichi · up to 4M particles</div>
-        </a>
-      </div>
-
-      <div class="aside-card">
-        <div class="aside-card-title">Stack</div>
-        <div class="aside-chips">
-          <span class="aside-chip">Vulkan RT</span>
-          <span class="aside-chip">CUDA</span>
-          <span class="aside-chip">C++20</span>
-          <span class="aside-chip">3DGS</span>
-          <span class="aside-chip">MCP</span>
-          <span class="aside-chip">Taichi</span>
-          <span class="aside-chip">TypeScript</span>
-          <span class="aside-chip">Godot</span>
-        </div>
-      </div>
-
-      <div class="aside-card">
-        <div class="aside-card-title">Links</div>
-        <a class="aside-row" href="https://github.com/Qervas" target="_blank" rel="noopener">
-          <div class="aside-label">GitHub</div>
-          <div class="aside-sub">github.com/Qervas</div>
-        </a>
-        <a class="aside-row" href="https://x.com/FrankYin17" target="_blank" rel="noopener">
-          <div class="aside-label">X</div>
-          <div class="aside-sub">x.com/FrankYin17</div>
-        </a>
-        <a class="aside-row" href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener">
-          <div class="aside-label">LinkedIn</div>
-          <div class="aside-sub">linkedin.com/in/sxyin</div>
-        </a>
-        <a class="aside-row" href="https://frankyin17.itch.io/" target="_blank" rel="noopener">
-          <div class="aside-label">itch.io</div>
-          <div class="aside-sub">frankyin17.itch.io</div>
-        </a>
-        <a class="aside-row" href="https://www.youtube.com/@frankyin8509" target="_blank" rel="noopener">
-          <div class="aside-label">YouTube</div>
-          <div class="aside-sub">@frankyin8509</div>
-        </a>
-        <a class="aside-row" href="/assets/Shaoxuan_Yin_CV.pdf" target="_blank" rel="noopener">
-          <div class="aside-label">Download CV</div>
-          <div class="aside-sub">PDF</div>
-        </a>
-      </div>
-
       <div class="aside-footer">
         <a href="mailto:frankyin17@outlook.com">Email</a> ·
         <a href="https://x.com/FrankYin17" target="_blank" rel="noopener">X</a> ·
         <a href="/posts/">Journal</a> ·
-        <a href="/ohao-engine/">Ohao booth</a> ·
-        <a href="/neural-capture/">Capture monograph</a><br />
-        © Frank Yin · built like a feed, not a brochure
+        <a href="/ohao-engine/">Ohao booth</a><br />
+        © Frank Yin
       </div>
     </aside>
