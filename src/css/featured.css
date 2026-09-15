@@ -261,6 +261,12 @@
 }
 .entry li { margin-bottom: 6px; }
 .entry li:last-child { margin-bottom: 0; }
+.entry a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none !important;
+}
+.entry a:hover { text-decoration: underline !important; }
 
 .skill-chips {
   display: flex;
