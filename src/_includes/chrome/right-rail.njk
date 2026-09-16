@@ -1,4 +1,35 @@
     <aside class="rail-right" aria-label="Sidebar">
+      <div class="aside-card aside-listening is-idle" id="aside-listening">
+        <div class="aside-card-head">
+          <div class="aside-card-title">Listening</div>
+          <span class="aside-listening-live" id="listening-live" hidden>Live</span>
+        </div>
+        <a
+          class="aside-listening-now"
+          id="listening-now"
+          hidden
+          target="_blank"
+          rel="noopener"
+        >
+          <img
+            class="aside-listening-art"
+            id="listening-art"
+            alt=""
+            width="56"
+            height="56"
+            decoding="async"
+          />
+          <div class="aside-listening-copy">
+            <div class="aside-listening-track" id="listening-track"></div>
+            <div class="aside-listening-artist" id="listening-artist"></div>
+          </div>
+        </a>
+        <div class="aside-listening-meter" id="listening-meter" hidden aria-hidden="true">
+          <div class="aside-listening-bar" id="listening-bar"></div>
+        </div>
+        <p class="aside-listening-idle" id="listening-idle">Not playing</p>
+      </div>
+
       <div class="aside-card aside-journal-card">
         <div class="aside-card-head">
           <div class="aside-card-title">Journal</div>
