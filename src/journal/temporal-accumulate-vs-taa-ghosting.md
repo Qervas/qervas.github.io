@@ -36,7 +36,7 @@ Two scenes. One mix. Display is inherited: resolve in linear, then Khronos PBR N
 
 **Teaching pin (loft).** Same current frame three times. Left is \(S_t\). Middle is history without a neighborhood bound. Right is the named control.
 
-![Loud loft crop. Left: naive beauty of the ghost edge. Right: |naive−St| linear-luma heat. Mullion stripes, sideboard top, bottle rim, brass limb. If 14 looked like motion blur from across the room, this crop is leftover history.](/assets/journal/taa-ghosting/16_real_crop.jpg)
+![Loud loft crop. Left: naive beauty of the ghost edge. Right: |naive−St| linear-luma heat. Mullion stripes, sideboard top, bottle rim, brass limb. If the hero looked like motion blur from across the room, this crop is leftover history.](/assets/journal/taa-ghosting/16_real_crop.jpg)
 
 **Loud loft crop.** Left naive beauty of the ghost edge. Right \(|\mathrm{naive}-S_t|\) linear-luma heat. Mullion stripes, sideboard top, bottle rim, brass limb. If the hero looked like motion blur from across the room, this crop is the proof it is leftover history.
 
