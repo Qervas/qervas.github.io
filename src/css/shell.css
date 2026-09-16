@@ -1576,3 +1576,115 @@ body.is-searching .is-search-hit { opacity: 1; }
   font-family: var(--mono);
   font-size: 0.82rem;
 }
+
+/* ── Listening (Lanyard / Spotify) ── */
+.aside-card.aside-listening {
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(29, 155, 240, 0.08), transparent 55%),
+    var(--surface);
+  border: 1px solid var(--rule);
+}
+.aside-listening .aside-card-head {
+  align-items: center;
+  padding: 4px 14px 0 0;
+}
+.aside-listening .aside-card-title {
+  padding: 12px 0 6px 14px;
+}
+.aside-listening-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.aside-listening-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.aside-listening-now {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 14px 10px;
+  text-decoration: none !important;
+  color: inherit;
+  border-top: 1px solid var(--rule);
+  transition: background 0.12s var(--ease);
+}
+.aside-listening-now:hover {
+  background: var(--surface-hover);
+  text-decoration: none !important;
+}
+.aside-listening-now.is-static {
+  pointer-events: none;
+}
+.aside-listening-art {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--rule);
+  background: var(--seg-bg);
+}
+.aside-listening-copy {
+  min-width: 0;
+}
+.aside-listening-track {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.aside-listening-artist {
+  margin-top: 3px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.aside-listening-meter {
+  margin: 0 14px 12px;
+  height: 3px;
+  border-radius: 99px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.aside-listening-bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.4s linear;
+}
+.aside-listening-idle {
+  margin: 0;
+  padding: 6px 14px 14px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+}
+.aside-listening.is-idle .aside-listening-now,
+.aside-listening.is-idle .aside-listening-meter,
+.aside-listening.is-idle .aside-listening-live {
+  display: none;
+}
+.aside-listening.is-playing .aside-listening-idle {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aside-listening-bar { transition: none; }
+}
