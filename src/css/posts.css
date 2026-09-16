@@ -51,9 +51,7 @@
 }
 
 .posts-card {
-  display: grid;
-  grid-template-columns: var(--avatar-size) 1fr;
-  gap: 0 12px;
+  display: block;
   padding: var(--post-pad);
   border-bottom: 1px solid var(--rule);
   text-decoration: none !important;
@@ -66,12 +64,6 @@
 }
 [data-theme="light"] .posts-card:hover {
   background: rgba(0, 0, 0, 0.02);
-}
-.posts-card-avatar {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
-  border-radius: 50%;
-  object-fit: cover;
 }
 .posts-card-head {
   display: flex;
