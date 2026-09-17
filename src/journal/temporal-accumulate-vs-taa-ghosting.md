@@ -350,17 +350,6 @@ No assert tolerances were loosened for the photoreal plates.
 
 Full production TAA suite as a product bake-off (SMAA+TAA+sharpen, UE/Unity/Godot stacks). DLSS / FSR / XeSS / any learned reconstructor. Full motion-vector generation as the only subject (screen-space velocity buffers, skinned MV, tessellated displacement MV, optical flow). Path-traced temporal denoisers (SVGF, ReSTIR + temporal, OIDN) as hero. Catmull-Rom 9-tap history, YCoCg + clipToAABB + variance as the **default** stack. Motion-weighted blend as a third hidden policy. Halton / R2 jitter on ghost heroes. Fast specular as a required plate. Toksvig, anisotropic GGX, sRGB-vs-linear texture decode. Tone-mapping bake-off rerun (clip / Reinhard / ACES / Neutral ladders) — Neutral is the inherited display operator. Shadow-map bias. Hardware TAA unit, 60 Hz persistence, display refresh, occupancy, bandwidth. Re-deriving Karis, DFG, or Neutral: cite the live notes.
 
-Album sequence:
-
-1. Perspective-correct — *what* you interpolate
-2. Z-fighting — *how* depth is encoded
-3. Mipmaps — *which frequencies survive* an isotropic minify
-4. Anisotropic — *which UV ellipse* that pixel covers
-5. Parallax occlusion — *fake depth from a height field*; the silhouette is still the quad
-6. Split-sum IBL — *environment lighting as a multiply*: GGX-prefiltered cube \(\times\) DFG, plus distant \(E(\mathbf{n})\)
-7. Tone mapping — *scene-referred to display-referred*; the curve allocates codes, it does not create lighting
-8. **Temporal accumulate** — *history is a color that belonged to a different surface*
-
 ---
 
 ## Resolve lock

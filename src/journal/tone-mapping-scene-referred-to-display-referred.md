@@ -327,16 +327,6 @@ No assert tolerances were loosened for the photoreal plates.
 
 Full cinema LUT pipelines, OCIO shows, film print emulations, AgX / Hable / Uncharted2 as additional heroes. HDR10 / PQ / HLG / Rec.2020 mastering (Neutral’s current spec is sRGB). Local adaptive / operator-TMO / bilateral / photographic-zone TM as the hero. Auto-exposure meters, key-value, histogram-centering as the primary subject (\(e\) is a stated gain). Color-management ICC / display-profile rabbit hole. sRGB-vs-linear texture decode. TAA, temporal accumulation, firefly-suppression as TM. Re-deriving IBL: Karis prefilter, DFG LUT, roughness→mip, distant \(E(\mathbf{n})\). Cite the live note. Toksvig, anisotropic GGX, sheen, clearcoat, layered metals. Shadow-map bias. Hardware “tonemap unit,” real-time cost, occupancy, bandwidth.
 
-Album sequence:
-
-1. Perspective-correct — *what* you interpolate
-2. Z-fighting — *how* depth is encoded
-3. Mipmaps — *which frequencies survive* an isotropic minify
-4. Anisotropic — *which UV ellipse* that pixel covers
-5. Parallax occlusion — *fake depth from a height field*; the silhouette is still the quad
-6. Split-sum IBL — *environment lighting as a multiply*: GGX-prefiltered cube \(\times\) DFG, plus distant \(E(\mathbf{n})\)
-7. **Tone mapping** — *scene-referred to display-referred*; the curve allocates codes, it does not create lighting
-
 ---
 
 ## Display lock

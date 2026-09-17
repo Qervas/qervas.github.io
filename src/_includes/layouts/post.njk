@@ -23,6 +23,7 @@ pageType: post
           {% if description %}
           <p class="posts-article-dek">{{ description }}</p>
           {% endif %}
+{% include "chrome/post-share.njk" %}
           <div class="posts-article-body">
 {{ content | safe }}
           </div>
