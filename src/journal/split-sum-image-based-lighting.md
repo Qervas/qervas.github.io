@@ -326,15 +326,6 @@ No assert tolerances were loosened for the photoreal plates.
 
 Local path-traced GI, photon maps, irradiance caching of *scene* bounce. DDGI, lightmaps, SSGI/SSR as a substitute for the cube. Multi-bounce local solvers of any kind. Anisotropic GGX, Toksvig AA of the NDF, sheen, clearcoat, layered metals. Area lights / LTC. Deep tone-map bake-off (TM is one named operator). Shadow-map bias. Real-time convolution on a “hardware IBL unit.” Re-deriving the mipmaps chirp, the anisotropic ellipse, or the POM height march: cite continuity; this is a BRDF-integral approximation, not a new sampler and not new geometry.
 
-Album sequence:
-
-1. Perspective-correct — *what* you interpolate
-2. Z-fighting — *how* depth is encoded
-3. Mipmaps — *which frequencies survive* an isotropic minify
-4. Anisotropic — *which UV ellipse* that pixel covers
-5. Parallax occlusion — *fake depth from a height field*; the silhouette is still the quad
-6. **Split-sum IBL** — *environment lighting as a multiply*: GGX-prefiltered cube \(\times\) DFG, plus distant \(E(\mathbf{n})\)
-
 ---
 
 ## Fragment lock
