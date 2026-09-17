@@ -36,6 +36,17 @@ description: Dev-log, WIP notes, and ship logs — not the CV.
             </div>
             {% endif %}
           </div>
+          {% if post.data.cover %}
+          <div class="posts-card-media">
+            <img
+              class="posts-card-thumb"
+              src="{{ post.data.cover }}"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          {% endif %}
         </a>
         {% endfor %}
       </div>

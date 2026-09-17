@@ -370,18 +370,6 @@ No assert tolerances were loosened for the photoreal plates.
 
 Full production TAA bakeoff (jitter sequences, variance clip, YCoCg, responsive stencils, TSR). DLSS, FSR, XeSS, or any vendor temporal upsampler. Optical flow as the warp (Farneback, RAFT, DIS, or learned residual MVs). Path-traced denoiser hero (OIDN, NRD, SVGF). Rasterized object motion vectors, skinning previous palettes, particles, transparency. Shadow-map bias (different predicate: rasterization-light, not correspondence). VR compositor ASW / late-stage reprojection. EMA ladder re-derivation; accumulation curves as a study — cite the TAA note. IBL / split-sum / TM Neutral bake-off; loft lighting family. Crowds, trains, glass, water, emissive advertising. Interactive viewer, vsync, GUI. Claiming GPU bit-exact parity with a vendor driver.
 
-Album sequence:
-
-1. Perspective-correct — *what* you interpolate
-2. Z-fighting — *how* depth is encoded
-3. Mipmaps — *which frequencies survive* an isotropic minify
-4. Anisotropic — *which UV ellipse* that pixel covers
-5. Parallax occlusion — *fake depth from a height field*; the silhouette is still the quad
-6. Split-sum IBL — *environment lighting as a multiply*: GGX-prefiltered cube \(\times\) DFG, plus distant \(E(\mathbf{n})\)
-7. Tone mapping — *scene-referred to display-referred*; the curve allocates codes, it does not create lighting
-8. Temporal accumulate — *history is a color that belonged to a different surface*
-9. **Reprojection** — *clamp asks chromatic plausibility; depth reject asks the same surface*
-
 ---
 
 ## Resolve lock
