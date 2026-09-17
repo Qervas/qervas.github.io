@@ -18,12 +18,32 @@
   }
 }
 
-/* Hide right rail — feed takes remaining width */
+/* Single column: keep Listening, hide the rest of the right rail */
 @media (max-width: 1000px) {
   .app {
     grid-template-columns: minmax(0, 1fr);
   }
-  .rail-right { display: none; }
+  .rail-right {
+    order: -1;
+    position: static;
+    align-self: stretch;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    padding: 12px 16px 4px;
+    background: var(--paper);
+    border-left: 1px solid var(--rule);
+  }
+  .rail-right > :not(.aside-listening) {
+    display: none;
+  }
+  .rail-right .aside-listening {
+    margin-bottom: 12px;
+  }
+  /* Lanyard error hides the card — don't leave an empty strip */
+  .rail-right:has(#aside-listening[hidden]) {
+    display: none;
+  }
   .page, .feed {
     border-right: none;
   }
@@ -32,8 +52,14 @@
 /* Phone: glass dock becomes a bottom bar */
 @media (max-width: 688px) {
   .app {
-    display: block;
+    display: flex;
+    flex-direction: column;
     padding: 0 0 72px;
+  }
+  .rail-right {
+    order: -1;
+    flex-shrink: 0;
+    border-left: none;
   }
   .nav-dock {
     left: 8px;
@@ -103,7 +129,7 @@
   .btn-x-primary span:not(:only-child),
   .btn-x-cv span { /* keep short labels */ }
 
-  /* Mobile search in feed top when right rail is gone */
+  /* Mobile search in feed top when the full right rail is gone */
   .feed-top-actions {
     gap: 6px;
   }
