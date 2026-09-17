@@ -212,6 +212,9 @@ export default function (eleventyConfig) {
   });
 
   eleventyConfig.addFilter("json", (value) => JSON.stringify(value));
+  eleventyConfig.addFilter("urlencode", (value) =>
+    encodeURIComponent(String(value ?? ""))
+  );
 
 
   eleventyConfig.addTransform("journalTableWrap", (content, outputPath) => {
