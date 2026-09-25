@@ -10,131 +10,115 @@ math: true
 cover: /assets/journal/importance-sampling-phong-lobe-vs-cosine/00_hero.jpg
 ---
 
-The last note owned correspondence. Color clamp asks whether history looks legal. Depth reject asks whether it is the same surface. Time is out of scope here. Split-sum already hid the samples in a prefilter cube \(\times\) DFG LUT; production then multiplies two tables. Tone mapping is inherited — Neutral after resolve, not re-fit. This note unhides the estimator. **It owns Monte Carlo sampling mismatch — not VNDF, not a MIS bake-off, not a split-sum re-teach.**
+Our previous notes focused on correspondence: color clamping checks whether history looks legal, and depth rejection determines whether it is the same surface. Time constraints are out of scope here. While split-sum approaches have already hidden the samples within a prefilter cube $\times$ DFG LUT—allowing production pipelines to simply multiply two tables—this note unhides the estimator. Tone mapping remains inherited, applying Khronos PBR Neutral after resolve rather than re-fitting. This piece is strictly about Monte Carlo sampling mismatch. It is not about VNDF, it is not a MIS bake-off, and it is not a split-sum refresher.
 
-**Same integral, two pdfs, one \(N\).** Cosine-weighted hemisphere is the Lambertian ticket. A Phong cosine-power lobe about \(R=\mathrm{reflect}(-\omega_o,n)\) is the highlight ticket. On a sharp dielectric they are not interchangeable.
+**Same integral, two pdfs, one $N$.** A cosine-weighted hemisphere is the standard approach for Lambertian surfaces. A Phong cosine-power lobe oriented around the reflection vector $R=\mathrm{reflect}(-\omega_o,n)$ is the right tool for highlights. However, on a sharp dielectric surface, these two approaches are fundamentally not interchangeable.
 
 ![Gallery spotlight: lacquer dielectric sphere on a short dark-stone plinth, dark slate wall, recessed canvas, painted picture rail. Phong-IS, N=256, s=32. Khronos PBR Neutral. Felt wall sparkles — Lambert sampled by a Phong lobe. Photograph only — no RMSE.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/00_hero.jpg)
 
-A new photographic family: gallery spotlight. Lacquer dielectric sphere on a short dark-stone plinth, dark slate wall, recessed canvas, painted picture rail. Phong-IS, \(N=256\), \(s=32\). HUD: `Khronos PBR Neutral`, `PHOTO-ONLY`, `Phong-IS  N=256  s=32`. Do not hang \(\mathrm{RMSE}_H\) on this photograph. The felt wall sparkles: Lambert sampled by a Phong lobe. That is Failure B on the cover, not a denoiser miss. The clean gallery still is the reference plate below.
+To demonstrate this, we introduce a new photographic setup: a gallery spotlight. The scene features a lacquer dielectric sphere resting on a short dark-stone plinth, backed by a dark slate wall, a recessed canvas, and a painted picture rail. Rendered with Phong-IS at $N=256$ and $s=32$, the HUD reads: `Khronos PBR Neutral`, `PHOTO-ONLY`, `Phong-IS  N=256  s=32`. Do not attempt to evaluate $\mathrm{RMSE}_H$ based on this photograph. Notice how the felt wall sparkles; this occurs because a Lambertian surface is being sampled by a tight Phong lobe. This is Failure B shown on the cover, not a denoiser miss. A clean, fully converged version of this gallery is provided as a reference plate below.
 
 ![Teaching pin. Same view, same N=64, same seed stream. Uniform | cosine | Phong-IS. Only p differs. Wedge crop of the highlight crescent under each column. Photograph only.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/01_3up.jpg)
 
-**Pin this.** Same view, same \(N=64\), same seed stream. **Uniform \| cosine \| Phong-IS.** Only \(p\) differs. Wedge crop of the highlight crescent under each column. Caption on the plate: *same view, same N=64, same seed, only p differs.* Photo only.
+**Pin this comparison.** It displays the exact same view, rendered at the same $N=64$ using an identical seed stream. The columns represent **Uniform | cosine | Phong-IS**. Only the pdf $p$ differs between them. The plate includes a wedge crop isolating the highlight crescent beneath each column, captioned: *same view, same N=64, same seed, only p differs*. This is a photograph only.
 
-Hero, Mesa 25.0.7 llvmpipe, linear Rec.709, **Khronos PBR Neutral** \(e=\mathbf{1.00}\), seed **329363537**, key angular radius **3.600°**, \(N=64\), \(s=32\): \(\mathrm{RMSE}_H\) cosine **7.655620** vs Phong-IS **1.999657** (pass: phong \(<\) cosine). \(\mathrm{RMSE}_S\) cosine **0.140667** vs Phong-IS **0.824834** — surround starve, shown honestly. Fireflies (\(k=4\)) **21536** vs **1653**. \(\mathrm{ROI}_H=(502,391,555,432)\), \(\mathrm{ROI}_S=(349,133,613,319)\). Assertions **24 pass / 0 fail**.
+This sequence was generated using Mesa 25.0.7 llvmpipe in linear Rec.709, tone-mapped with **Khronos PBR Neutral** ($e=\mathbf{1.00}$). The random seed is **329363537**, and the key light has an angular radius of **3.600°**. At $N=64$ and $s=32$, the cosine $\mathrm{RMSE}_H$ is **7.655620**, whereas Phong-IS drops to **1.999657** (passing the condition: phong $<$ cosine). Conversely, the surround's $\mathrm{RMSE}_S$ demonstrates the drawback of Phong-IS: cosine sits at **0.140667** while Phong-IS degrades to **0.824834**—an honest look at how it starves the diffuse surround. Firefly counts ($k=4$) are **21536** for cosine versus just **1653** for Phong. The regions of interest are $\mathrm{ROI}_H=(502,391,555,432)$ and $\mathrm{ROI}_S=(349,133,613,319)$. Overall, the test suite reports **24 pass / 0 fail**.
 
 ---
 
 ## Two questions, two pdfs
 
-The integral does not change. Lighting, geometry, camera, BRDF, exposure, and the per-pixel \(\xi\) stream do not change. **Only \(p(\omega)\) changes.** Variance is the photograph.
+The underlying integral remains perfectly constant. The lighting, geometry, camera, BRDF, exposure, and per-pixel $\xi$ stream are completely unchanged. **Only $p(\omega)$ changes.** Variance is what defines the resulting photograph.
 
-**Cosine.** Does this direction match Lambert \(\times\) the projected hemisphere?
+**Cosine.** Does the sampled direction match Lambert $\times$ the projected hemisphere?
 
-**Phong-IS.** Does this direction match the cosine-power highlight about the *reflection vector* \(R\)? Not the half-vector. Not Blinn. Not GGX-VNDF.
+**Phong-IS.** Does the sampled direction match the cosine-power highlight oriented around the *reflection vector* $R$? Note that this is not about the half-vector, Blinn, or GGX-VNDF.
 
-On a lacquer dielectric under a **3.600°** gallery disk they are not the same ticket. Cosine spends almost every sample off the lobe. When a sample *does* hit the small key, \(L_i\) is huge and \(p_c\) is only \((n\cdot\omega)/\pi\) — lottery ticket, firefly. Phong-IS puts the inverse-CDF on \(R\). The crescent cleans up. The flanks do not automatically follow.
+On a lacquer dielectric under a **3.600°** gallery disk light, these two PDFs yield vastly different results. Cosine sampling wastes almost every sample outside the primary lobe. When a sample *does* manage to hit the small key light, the incoming radiance $L_i$ is enormous, but the probability $p_c$ is only $(n\cdot\omega)/\pi$. This creates a lottery-ticket effect, resulting in severe fireflies. In contrast, Phong-IS centers its inverse-CDF directly on $R$, which elegantly cleans up the highlight crescent. However, the flanking diffuse areas do not automatically receive the same benefit.
 
-Uniform hemisphere (\(p=1/(2\pi)\)) is the loud third arm: any-hemisphere sample is not cosine importance. At \(N=64\), \(s=32\), \(\mathrm{RMSE}_H=\mathbf{9.900829}\) vs cosine \(\mathbf{7.655620}\); \(\mathrm{var}_H=\mathbf{90.04}\) vs \(\mathbf{56.93}\). It is not a replacement for cosine. Firefly *count* at the same row is cosine **21536**, uniform **14400**, Phong-IS **1653** — quote \(\mathrm{RMSE}_H\), not that count, as the loudness ranking.
+A uniform hemisphere ($p=1/(2\pi)$) acts as a loud, inefficient third option: a generic hemisphere sample does not equate to cosine importance sampling. At $N=64$ and $s=32$, uniform sampling yields an $\mathrm{RMSE}_H=\mathbf{9.900829}$ compared to cosine's $\mathbf{7.655620}$, and a variance ($\mathrm{var}_H$) of $\mathbf{90.04}$ versus $\mathbf{56.93}$. It is simply not a valid replacement for cosine. Looking at the firefly *count* in that same row, cosine hits **21536**, uniform hits **14400**, and Phong-IS drops to **1653**. When discussing the visual noise and ranking these methods, always quote $\mathrm{RMSE}_H$ rather than just the firefly count.
 
-The scientific claim is narrow: **pdf–integrand mismatch is a measurable variance, not a taste.** Cosine matches Lambert \(\times\) projected hemisphere. Phong-IS matches a cosine-power highlight. Neither matches both at once.
+The core scientific claim here is narrow but vital: **pdf–integrand mismatch manifests as a measurable variance, not merely an aesthetic preference**. Cosine perfectly matches Lambert $\times$ the projected hemisphere, while Phong-IS perfectly matches a cosine-power highlight. Neither PDF can efficiently match both simultaneously.
 
-Two facts, never mixed:
+Keep these two facts distinct and never mix them:
 
-1. **Beauty plates** (hero, 3-up, \(N\) ladders, exponent, surround) are CPU MC, Neutral then sRGB OETF. HUD `photo-only` means do not invent RMSE, firefly count, or \(\mathrm{Y_{mean}}\) from the JPEG. 8-bit Neutral+sRGB clips fireflies.
-2. **Instruments** (variance heat, pdf rose, metrics strip, reference) are the float buffer: linear Rec.709 \(Y\) residual, pdf rose, RMSE, fireflies, horizon fraction. Quote the metrics.
+1. **Beauty plates** (including the hero image, 3-up comparisons, $N$ ladders, exponent tests, and surround crops) are generated via CPU Monte Carlo, then processed through Neutral and an sRGB OETF. A HUD reading `photo-only` means you should not attempt to extract RMSE, firefly counts, or $\mathrm{Y_{mean}}$ from the resulting JPEG. The 8-bit Neutral+sRGB pipeline inherently clips fireflies.
+
+2. **Instruments** (such as the variance heat map, pdf rose, metrics strip, and reference image) evaluate the raw float buffer. These rely on linear Rec.709 $Y$ residuals, pdf roses, RMSE, fireflies, and horizon fractions. When discussing performance, always quote the metrics.
 
 ---
 
 ## Why: the estimator, then the two pdfs
 
-Working space is **scene-referred linear Rec.709**. Domain \(\Omega^+=\{\omega:n\cdot\omega>0\}\). Below-horizon samples contribute **0** and still count in \(N\). Do **not** renormalize \(p\) after a horizon reject.
+Our working color space is **scene-referred linear Rec.709**. The domain is defined as $\Omega^+=\{\omega:n\cdot\omega>0\}$. Any samples falling below the horizon contribute **0** to the result, yet they still count toward the total $N$. Crucially, do **not** renormalize $p$ after rejecting a horizon sample.
 
 ### Same integral
 
-\[
-L_o(\omega_o)=\int_{\Omega^+} f_r(\omega,\omega_o)\,L_i(\omega)\,(n\cdot\omega)\,d\omega.
-\]
+$$L_o(\omega_o)=\int_{\Omega^+} f_r(\omega,\omega_o)\,L_i(\omega)\,(n\cdot\omega)\,d\omega.$$
 
 ### Unbiased solid-angle estimator
 
-\[
-\hat L_o=\frac1N\sum_{k=1}^N\frac{f_r(\omega_k,\omega_o)\,L_i(\omega_k)\,(n\cdot\omega_k)}{p(\omega_k)}.
-\]
+$$\hat L_o=\frac1N\sum_{k=1}^N\frac{f_r(\omega_k,\omega_o)\,L_i(\omega_k)\,(n\cdot\omega_k)}{p(\omega_k)}.$$
 
-Same \(f_r\), same \(L_i\), same camera, same geometry for every arm. Cosine stays in the **numerator**. It is not folded into \(p_p\).
+Every sampling arm utilizes the exact same $f_r$, $L_i$, camera, and geometry. The cosine term stays in the **numerator**. It is not folded into $p_p$.
 
 ### BRDF (Lambert + Lafortune-normalized Phong)
 
-\[
-f_r(\omega,\omega_o)=\frac{\rho_d}{\pi}+\rho_s\frac{s+2}{2\pi}\,(\omega\cdot R)_+^{\,s},
-\qquad
-R=2(n\cdot\omega_o)\,n-\omega_o.
-\]
+$$f_r(\omega,\omega_o)=\frac{\rho_d}{\pi}+\rho_s\frac{s+2}{2\pi}\,(\omega\cdot R)_+^{\,s}, \qquad R=2(n\cdot\omega_o)\,n-\omega_o.$$
 
-Dielectric body, not a metal. This run: \(\rho_d=(0.155,0.175,0.188)\), \(\rho_s=0.12\), default \(s=32\). Metal (\(\rho_d=0\)) would hide Failure B.
+We are evaluating a dielectric body, not a metal. For this run, the parameters are $\rho_d=(0.155,0.175,0.188)$, $\rho_s=0.12$, and a default of $s=32$. Using a purely metallic surface ($\rho_d=0$) would artificially hide Failure B.
 
-\((s+2)\) is the **BRDF energy** constant. \((s+1)\) is the **solid-angle pdf** constant. Mixing them biases \(\hat L\). White-furnace assert (\(L_i\equiv 1\), lobe well above the horizon): \(\hat L_o\approx\rho_d+\rho_s\) within a stated band. Science assert, not a hero plate.
+The $(s+2)$ term acts as the **BRDF energy** constant, while $(s+1)$ is the **solid-angle pdf** constant. Mixing these up will bias $\hat L$. In our white-furnace assertion (where $L_i\equiv 1$ and the lobe is well above the horizon), we verify that $\hat L_o\approx\rho_d+\rho_s$ within a stated tolerance band. This is a scientific assertion, not a hero plate.
 
-No Fresnel, no GGX \(D/G\), no Smith. This is not a microfacet product note.
+Note that there is no Fresnel, no GGX $D/G$, and no Smith terms applied. This post is not a product note about microfacet models.
 
 ### Pdfs (1/sr)
 
-| Arm | Name | \(p(\omega)\) | Inverse CDF |
-|---|---|---|---|
-| C | Uniform hemisphere | \(1/(2\pi)\) on \(\Omega^+\) | \(\cos\theta=\xi_1\), \(\varphi=2\pi\xi_2\), ONB around \(n\) |
-| A | Cosine hemisphere | \((n\cdot\omega)/\pi\) on \(\Omega^+\) | \(\cos\theta=\sqrt{\xi_1}\), \(\varphi=2\pi\xi_2\), ONB around \(n\) |
-| B | Phong lobe about \(R\) | \((s+1)/(2\pi)\,(\omega\cdot R)^s\) if \(\omega\cdot R>0\), else \(0\) | \(\cos\theta=\xi_1^{1/(s+1)}\), \(\varphi=2\pi\xi_2\), ONB around \(R\) |
+| Arm | Name | $p(\omega)$ | Inverse CDF |
+| --- | --- | --- | --- |
+| C | Uniform hemisphere | $1/(2\pi)$ on $\Omega^+$ | $\cos\theta=\xi_1$, $\varphi=2\pi\xi_2$, ONB around $n$ |
+| A | Cosine hemisphere | $(n\cdot\omega)/\pi$ on $\Omega^+$ | $\cos\theta=\sqrt{\xi_1}$, $\varphi=2\pi\xi_2$, ONB around $n$ |
+| B | Phong lobe about $R$ | $(s+1)/(2\pi)\,(\omega\cdot R)^s$ if $\omega\cdot R>0$, else $0$ | $\cos\theta=\xi_1^{1/(s+1)}$, $\varphi=2\pi\xi_2$, ONB around $R$ |
 
-Phong generation is in the \(R\)-frame. If \(n\cdot\omega\le 0\): weight \(=0\), increment `horizon_frac`. RNG is a PCG integer hash, seed **329363537**.
+Phong sample generation occurs within the $R$-frame. If $n\cdot\omega\le 0$, the weight evaluates to $0$, and we increment `horizon_frac`. The RNG relies on a PCG integer hash, using the seed **329363537**.
 
 ### Light (analytic; no HDRI)
 
-1-bounce direct. Finite disk key, upper-front-right, angular radius **3.600°** from the highlight point, \(\mathrm{disk}_r=0.1372\). \(L_{\mathrm{key}}=(980,880,720)\) warm. Dim cool fill \(L_{\mathrm{fill}}=(1.20,1.38,1.62)\) over \(\Omega^+\) so flanks and wall remain measurable.
+This scene utilizes 1-bounce direct lighting. We use a finite disk key light positioned upper-front-right, with an angular radius of **3.600°** from the highlight point and $\mathrm{disk}_r=0.1372$. The key light is warm: $L_{\mathrm{key}}=(980,880,720)$. To ensure the flanks and walls remain measurable, a dim cool fill light of $L_{\mathrm{fill}}=(1.20,1.38,1.62)$ is applied over $\Omega^+$.
 
-\(L_i(\omega)=L_{\mathrm{key}}\) if the ray hits the disk and is not occluded by sphere or plinth, else \(L_{\mathrm{fill}}\). This note samples the **reflection pdf only**. Do not sample the light pdf. Do not MIS. A Dirac directional is illegal — hemisphere MC cannot hit a delta, and the note would collapse into NEE. Tiny key solid angle is what makes cosine firefly, and what a too-sharp \(s\) can miss.
+The incoming radiance $L_i(\omega)=L_{\mathrm{key}}$ if the ray successfully hits the disk without being occluded by the sphere or plinth; otherwise, it evaluates to $L_{\mathrm{fill}}$. This note exclusively samples the **reflection pdf**. We do not sample the light pdf, nor do we employ MIS. Using a Dirac directional light would be mathematically invalid since hemisphere MC cannot hit a delta distribution, collapsing the experiment into Next Event Estimation (NEE). The tiny solid angle of the key light is precisely what causes cosine sampling to generate fireflies, and it highlights how a too-sharp $s$ value can miss the target entirely.
 
 ### Jacobian / solid angle
 
-The inverse-CDF maps \((\xi_1,\xi_2)\in[0,1)^2\) to \(\omega\in\mathbb{S}^2\). \(p\) above is already in solid angle. Do not multiply by an extra \(d\omega/d\xi\). A half-vector sampler *would* need the \(h\to\omega\) Jacobian \(\partial\Omega_h/\partial\Omega_\omega=4(\omega\cdot h)\). That Jacobian is why Blinn / GGX-VNDF is a different note. Cite it. Do not derive it. VNDF is how production samples *this* family of lobes. It is not the A/B.
+The inverse-CDF maps $(\xi_1,\xi_2)\in[0,1)^2$ to $\omega\in\mathbb{S}^2$. The $p$ detailed above is already expressed in solid angle, so do not multiply it by an extra $d\omega/d\xi$. A half-vector sampler *would* necessitate the $h\to\omega$ Jacobian mapping: $\partial\Omega_h/\partial\Omega_\omega=4(\omega\cdot h)$. That specific Jacobian is the reason Blinn or GGX-VNDF requires its own separate deep dive. We cite it here, but we do not derive it. While VNDF is the production standard for sampling this family of lobes, it is not part of this specific A/B comparison.
 
 ### Variance used on plates
 
-All of these are **linear Rec.709 \(Y\)**, scene-referred, never JPEG, never after Neutral.
+All variance measurements operate in **linear Rec.709 $Y$**. They are scene-referred and never evaluated on a JPEG or after Neutral tone mapping is applied.
 
-\[
-\mathrm{RMSE}_{\mathrm{ROI}}
-=\sqrt{\frac1{\lvert\mathrm{ROI}\rvert}\sum_{x\in\mathrm{ROI}}\bigl(Y(\hat L_N(x))-Y(L_{\mathrm{ref}}(x))\bigr)^2}.
-\]
+$$\mathrm{RMSE}_{\mathrm{ROI}} =\sqrt{\frac1{\lvert\mathrm{ROI}\rvert}\sum_{x\in\mathrm{ROI}}\bigl(Y(\hat L_N(x))-Y(L_{\mathrm{ref}}(x))\bigr)^2}.$$
 
-Two named ROIs, inclusive pixel rects at beauty \(960\times 540\) (bottom-up):
+We track two named ROIs, defined as inclusive pixel rectangles at our beauty resolution of $960\times 540$ (measured bottom-up):
 
-- **H** — highlight crescent the key paints: \((502,391,555,432)\).
-- **S** — diffuse flank / plinth / foot: \((349,133,613,319)\).
+* **H** — the highlight crescent painted by the key light: $(502,391,555,432)$.
 
-Per-pixel variance of the mean (no ref required):
+* **S** — the diffuse flank, plinth, and foot: $(349,133,613,319)$.
 
-\[
-\widehat{\mathrm{Var}}(x)=\frac1{N(N-1)}\sum_{k=1}^N\bigl(X_k(x)-\bar X(x)\bigr)^2.
-\]
+Per-pixel variance of the mean (which does not require a reference image) is calculated as:
 
-The heat plate is \(\lvert Y_{64}-Y_{\mathrm{ref}}\rvert\) in turbo, cosine vs Phong, **same highlight-rim crop, shared p98 scale**. Firefly count: \(\#\{x:|Y_N-Y_{\mathrm{ref}}|>k\,Y_{\mathrm{ref}}\}\) with \(k=4\) on hit pixels. Whole-frame RMSE is a footnote. It averages H and S and hides the lesson.
+$$\widehat{\mathrm{Var}}(x)=\frac1{N(N-1)}\sum_{k=1}^N\bigl(X_k(x)-\bar X(x)\bigr)^2.$$
+
+The heat plate visualizes $\lvert Y_{64}-Y_{\mathrm{ref}}\rvert$ in the turbo colormap, comparing cosine against Phong, utilizing the **same highlight-rim crop and a shared p98 scale**. Firefly count is calculated as $\#\{x:\vert{}Y_N-Y_{\mathrm{ref}}\vert{}>k\,Y_{\mathrm{ref}}\}$ with $k=4$ strictly on hit pixels. Whole-frame RMSE is relegated to a footnote because it averages H and S together, effectively obscuring the primary lesson of the post.
 
 ### Display (inherited, not re-derived)
 
-\[
-L_{\mathrm{display}}
-=
-\mathrm{TM}\bigl(\mathrm{expose}(\hat L_o)\bigr)
-\quad\text{then IEC 61966-2-1 sRGB OETF for PNG.}
-\]
+$$L_{\mathrm{display}} = \mathrm{TM}\bigl(\mathrm{expose}(\hat L_o)\bigr) \quad\text{then IEC 61966-2-1 sRGB OETF for PNG.}$$
 
-TM is **Khronos PBR Neutral**, \(e=1.00\), frozen across A/B/C. Constants not re-fit. Cite the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) and [split-sum IBL](/posts/p/split-sum-image-based-lighting/) notes. `GL_FRAMEBUFFER_SRGB` is off; encode is CPU. Measurement is the float buffer, not the JPEG.
+The Tone Mapping (TM) utilized is **Khronos PBR Neutral**, set to $e=1.00$, and frozen uniformly across arms A, B, and C. The constants are deliberately not re-fit. For further context, cite the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) and [split-sum IBL](/posts/p/split-sum-image-based-lighting/) notes. `GL_FRAMEBUFFER_SRGB` is turned off, ensuring the encode happens on the CPU. All measurements strictly evaluate the float buffer, never the JPEG.
 
 ### Reference (not a sampling arm)
 
-\(L_{\mathrm{ref}}\) = analytic Lambert \(\times\) fill + Phong-IS of specular \(\times\) fill (32 spp) + **disk NEE** (96 spp). Independent seed **1374605335**. Arms never sample the light pdf. This is how the box gets a high-\(N\)-quality ref without 4096 spp hemisphere MC on llvmpipe. The reference plate outlines ROI H/S. Not the cover.
+The reference $L_{\mathrm{ref}}$ is constructed from analytic Lambert $\times$ fill, plus Phong-IS of the specular component $\times$ fill (at 32 spp), plus **disk NEE** (at 96 spp). It utilizes an independent random seed: **1374605335**. Crucially, the standard testing arms never sample the light pdf. This hybrid approach is how we secure a high-$N$-quality reference image without forcing llvmpipe to churn through 4096 spp hemisphere MC. The reference plate visibly outlines ROI H and S, and it is not used as the cover image.
 
 ![Science reference. Disk NEE plus analytic Lambert fill. ROI H (highlight crescent) and ROI S (flank / plinth / foot) outlined. Not a sampling arm. Not the cover.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/09_ref.jpg)
 
@@ -142,15 +126,15 @@ TM is **Khronos PBR Neutral**, \(e=1.00\), frozen across A/B/C. Constants not re
 
 ## Teaching pin: three pdfs, one view
 
-The 3-up is the policy compare. Identical camera, geometry, materials, lights, exposure, \(N=64\), seed **329363537**. Only \(p\) differs.
+The 3-up comparison serves as our definitive policy check. It uses identical camera settings, geometry, materials, lights, exposure, an $N=64$ sample count, and the seed **329363537**. The only varying factor is $p$.
 
 | Column | pdf | What the wedge does |
-|---|---|---|
-| Uniform | \(1/(2\pi)\) | Grain. No crescent. Highest \(\mathrm{RMSE}_H\). |
-| Cosine | \((n\cdot\omega)/\pi\) | Body fills. Rim still a lottery. |
-| Phong-IS | \((s+1)/(2\pi)\,(\omega\cdot R)^s\) | Crescent appears. Surround goes dark. |
+| --- | --- | --- |
+| Uniform | $1/(2\pi)$ | Grain. No crescent. Highest $\mathrm{RMSE}_H$. |
+| Cosine | $(n\cdot\omega)/\pi$ | Body fills. Rim still a lottery. |
+| Phong-IS | $(s+1)/(2\pi)\,(\omega\cdot R)^s$ | Crescent appears. Surround goes dark. |
 
-If the full-frame columns look like “Phong is better,” the surround plate is the correction. Trust the wedge for Failure A. Trust the honesty crop for Failure B. Quote \(\mathrm{RMSE}_H\) / \(\mathrm{RMSE}_S\) from the metrics, not from the 8-bit panel.
+If viewing the full-frame columns casually leads you to think "Phong is universally better," the surround plate exists to correct that assumption. Trust the wedge crop to reveal Failure A, and trust the honesty crop to reveal Failure B. Always quote $\mathrm{RMSE}_H$ and $\mathrm{RMSE}_S$ directly from the metrics, rather than eyeballing the 8-bit panel.
 
 ---
 
@@ -158,33 +142,33 @@ If the full-frame columns look like “Phong is better,” the surround plate is
 
 ![Unique artifact. False-color |Y_64−Y_ref|, linear Rec.709 Y, turbo. Cosine vs Phong-IS, same highlight-rim crop, shared p98 scale. Heat leaves the rim under Phong. Instrument — not PNG.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/04_var_heat.jpg)
 
-This is the thing this note exists to draw. False-color \(\lvert Y_{64}-Y_{\mathrm{ref}}\rvert\), linear Rec.709 \(Y\), turbo, **same rim crop, shared p98 scale**. HUD: `INSTRUMENT  FINGERPRINT`, `linear Rec.709 Y residual  not PNG`.
+This specific visualization is the reason this note exists. It displays a false-color $\lvert Y_{64}-Y_{\mathrm{ref}}\rvert$ map in linear Rec.709 $Y$ using the turbo colormap, featuring the **same rim crop and a shared p98 scale**. The HUD reads: `INSTRUMENT  FINGERPRINT`, `linear Rec.709 Y residual  not PNG`.
 
-Cosine heat rings the crescent: a yellow-green residual blob with red firefly speckles. Phong-IS drops there — mostly blue, sparse specks, the outline of a lobe that actually got samples. Heat leaves the rim and may appear on the flank. That swap is the fingerprint. Not another RGB triangle. Not a DFG LUT remake.
+Under cosine sampling, heat intensely rings the crescent, creating a yellow-green residual blob peppered with red firefly speckles. When switching to Phong-IS, the heat entirely drops from that area—turning mostly blue with sparse specks—perfectly outlining a lobe that effectively received samples. As heat leaves the rim, it shifts onto the flank. That distinct swap is the fingerprint of the sampling mismatch. It is not just another RGB triangle or a DFG LUT remake.
 
 ![Instrument. Hemisphere overlay, linear pdf in 1/sr, turbo: cosine about n vs Phong about the same R, s=32. Polar insets under each. Not Blinn, not GGX VNDF.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/05_pdf_rose.jpg)
 
-The pdf rose is the secondary science plate. Hemisphere overlay, linear pdf in 1/sr, turbo: cosine about \(n\) vs Phong about the same \(R\), \(s=32\). Polar insets under each. Caption on the plate: *not Blinn, not GGX VNDF.* Beside the photo, never the cover.
+The pdf rose acts as our secondary scientific plate. It overlays the hemisphere with a linear pdf in 1/sr using the turbo colormap, comparing cosine about $n$ versus Phong about the exact same $R$ at $s=32$. Polar insets are provided beneath each. The plate's caption firmly notes: *not Blinn, not GGX VNDF.*. It is meant to sit beside the photograph and should never be used as the cover.
 
-Quote the metrics, not the JPEG.
+Always quote the metrics, never the JPEG.
 
 ---
 
-## Ladders: \(N\), then \(s\)
+## Ladders: $N$, then $s$
 
 ![Failure A. Cosine at N=4 / 16 / 64 / 256, same seed-stream prefixes. Fireflies decay slowly on the rim. Photograph only.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/02_cosine_ladder.jpg)
 
-**Failure A.** Cosine at \(N=4/16/64/256\), same seed-stream prefixes. Fireflies decay slowly on the rim. At \(N=256\) the body is quieter; the crescent is still not a Phong crescent. \(\mathrm{RMSE}_H\): **27.886635 / 15.989179 / 7.655620 / 3.837384**.
+**Failure A.** We examine cosine at $N=4/16/64/256$, maintaining the same seed-stream prefixes. Fireflies decay remarkably slowly along the rim. By $N=256$, the body becomes quieter, but the crescent still fails to resolve into a clean Phong crescent. The $\mathrm{RMSE}_H$ progression is: **27.886635 / 15.989179 / 7.655620 / 3.837384**.
 
 ![Contrast. Phong-IS at the same N rungs, matching pdf. Rim cleans earlier. Surround stays dark with sparkles. Photograph only.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/03_phong_ladder.jpg)
 
-**Contrast.** Phong-IS at the same \(N\) rungs, matching pdf. The rim cleans earlier. Crescent readable by \(N=16\), tighter at 64/256. Surround stays dark with sparkles — Failure B riding along. \(\mathrm{RMSE}_H\): **8.377738 / 4.037456 / 1.999657 / 1.010789**.
+**Contrast.** Applying Phong-IS at the exact same $N$ rungs with a matching pdf shows the rim cleaning up much earlier. The crescent is easily readable by $N=16$ and grows exceptionally tight at 64 and 256. Meanwhile, the surround stays dark and retains its sparkles—meaning Failure B is riding right along with it. The $\mathrm{RMSE}_H$ progression is: **8.377738 / 4.037456 / 1.999657 / 1.010789**.
 
 ![Exponent control. Phong-IS, fixed N=64, s=8 / 32 / 128, matching pdf. Wide ≈ cosine on H; sharp starves the s=32 crescent and S. Photograph only.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/06_exponent.jpg)
 
-**Exponent control.** Phong-IS, fixed \(N=64\), \(s=8/32/128\), matching pdf. Wide lobe \(\approx\) cosine on H (\(s=8\), \(\mathrm{RMSE}_H=1.783442\), still beats cosine). Default \(s=32\) is the pass plate. Sharp \(s=128\) vs this **3.600°** key: \(\mathrm{RMSE}_H=7.367447\) — ROI H is the \(s=32\) crescent, so the extra rim is starved. That is the exponent control, not the pass predicate. High \(s\) also hurts S.
+**Exponent control.** Holding Phong-IS fixed at $N=64$, we test exponents of $s=8/32/128$ with a matching pdf. A wide lobe roughly approximates cosine on H (at $s=8$, $\mathrm{RMSE}_H=1.783442$, which still outperforms cosine). The default $s=32$ serves as our successful pass plate. A sharp $s=128$ evaluated against this **3.600°** key light yields an $\mathrm{RMSE}_H=7.367447$. Because ROI H isolates the $s=32$ crescent, the sharper exponent starves the extra rim area. This demonstrates exponent control, not a failed pass predicate. Pushing $s$ too high also severely degrades S.
 
-Do not retune exposure or Neutral to hide cosine fireflies on a beauty plate. Fireflies are the lesson. The heat plate is where they are measured.
+Do not attempt to retune exposure or Neutral tone mapping just to hide cosine fireflies on a beauty plate. The fireflies are the fundamental lesson here. The heat plate is exactly where they must be measured.
 
 ---
 
@@ -192,17 +176,17 @@ Do not retune exposure or Neutral to hide cosine fireflies on a beauty plate. Fi
 
 ![Honesty plate. Tight crop of flank / plinth / foot. Cosine N=64 | Phong-IS s=32 | Phong-IS s=128. Starve is allowed to win the crop. Photograph only — RMSE from float Y.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/07_surround.jpg)
 
-This is the honesty plate. Tight crop of flank / plinth / foot. Cosine \(N=64\) \| Phong-IS \(s=32\) \| Phong-IS \(s=128\). Starve is allowed to win the crop. HUD: `PHOTO-ONLY ON BEAUTY  RMSE FROM FLOAT Y`. Caption: *Failure B  flank / plinth / foot  starve is allowed.*
+This is our honesty plate. It features a tight crop of the flank, plinth, and foot. Comparing Cosine $N=64$ | Phong-IS $s=32$ | Phong-IS $s=128$, the starvation effect is permitted to visually dominate the crop. The HUD reads: `PHOTO-ONLY ON BEAUTY  RMSE FROM FLOAT Y`, and the caption clearly states: *Failure B  flank / plinth / foot  starve is allowed.*.
 
-At \(N=64\), \(s=32\): \(\mathrm{RMSE}_S\) cosine **0.140667** vs Phong-IS **0.824834**. At \(s=128\): **0.860317**. Both **above** cosine. The pdf lives around \(R\). Lambert still needs samples on the rest of \(\Omega^+\). High \(s\) will not feed the plinth.
+At $N=64$ and $s=32$, the cosine $\mathrm{RMSE}_S$ is **0.140667**, while Phong-IS worsens to **0.824834**. Pushing the exponent to $s=128$ yields **0.860317**. Both Phong results are significantly **above** the cosine error. Because the pdf heavily concentrates around $R$, the Lambertian component still desperately needs samples across the rest of $\Omega^+$. A high $s$ value simply will not feed the plinth.
 
-The same starve is why Phong \(\mathrm{Y_{mean}}\approx 0.059\) vs cosine \(\approx 0.146\) at \(N=64\). Combined Phong white furnace (\(\rho_d+\rho_s\)) undershoots: measured **0.1930** vs expect **0.2917**. At \(s=32\) the inverse-CDF never places the Lambert tail in float32 (\(\xi=\mu^{s+1}\) underflows). Spec-only Phong furnace hits \(\rho_s=\mathbf{0.1200}\) exactly — that is the \(s+1\) vs \(s+2\) check. Cosine combined hits **0.2923** vs **0.2917**. Logged, not hidden. Unbiased in theory; float inverse-CDF is not a full-hemisphere Lambert sampler at this \(s\).
+This precise starvation explains why the Phong $\mathrm{Y_{mean}}\approx 0.059$ compared to the cosine $\approx 0.146$ at $N=64$. The combined Phong white furnace test ($\rho_d+\rho_s$) noticeably undershoots: it measured **0.1930** against an expected **0.2917**. At $s=32$, the inverse-CDF essentially never places the Lambert tail into standard float32 precision (the $\xi=\mu^{s+1}$ operation underflows). However, a spec-only Phong furnace nails $\rho_s=\mathbf{0.1200}$ perfectly—verifying the mathematical $s+1$ vs $s+2$ check. The cosine combined approach cleanly hits **0.2923** vs **0.2917**. This is explicitly logged, not hidden. While it is unbiased in pure theory, the float inverse-CDF acts as a poor full-hemisphere Lambert sampler at this specific $s$ value.
 
-Phong \(\mathrm{RMSE}_S\) is not monotone in \(N\) on this one seed: **0.824834** at 64, **1.754730** at 256. Rare disk hits on the plinth are high-leverage. Residual heat, not a second theorem.
+Interestingly, the Phong $\mathrm{RMSE}_S$ does not scale monotonically with $N$ on this particular random seed: it measures **0.824834** at 64, but jumps to **1.754730** at 256. This is caused by rare, high-leverage disk hits striking the plinth. It represents residual heat, not the discovery of a second theorem.
 
-Hero is Phong-IS, so the felt wall sparkles. That is this failure on the cover. The clean gallery photograph is the reference plate.
+The hero image uses Phong-IS, which is exactly why the felt wall sparkles. That sparkling artifact is this specific failure proudly displayed on the cover. The clean gallery photograph serves as the true reference plate.
 
-Veach / MIS is how you stop choosing. One closer sentence, not a bake-off hero.
+Employing Veach / MIS is how production engines avoid having to make this harsh choice. We offer that as one closing sentence, not as an excuse to generate a bake-off hero image.
 
 ---
 
@@ -210,142 +194,155 @@ Veach / MIS is how you stop choosing. One closer sentence, not a bake-off hero.
 
 ![Instrument. Snapshot of the float-buffer table. RMSE / var / fireflies from linear Rec.709 Y, never JPEG. Not a cover.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/08_metrics.jpg)
 
-Float buffer, Mesa llvmpipe. RMSE / var / fireflies from linear Rec.709 \(Y\), never JPEG. Firefly \(k=4\). Seed **329363537**. Ref seed **1374605335**. Hash = pcg.
+The following data is extracted from the float buffer running on Mesa llvmpipe. All RMSE, variance, and firefly metrics are calculated from linear Rec.709 $Y$, never from the JPEG. Fireflies are thresholded at $k=4$. The primary seed is **329363537**, and the reference seed is **1374605335**, utilizing the pcg hash.
 
-Pass predicate, \(N=64\), \(s=32\):
+Pass predicate, $N=64$, $s=32$:
 
-| pdf | \(\mathrm{RMSE}_H\) | \(\mathrm{RMSE}_S\) | fireflies | \(\mathrm{var}_H\) | `horizon_frac` | \(\mathrm{Y_{mean}}\) |
-|---|---|---|---|---|---|---|
+| pdf | $\mathrm{RMSE}_H$ | $\mathrm{RMSE}_S$ | fireflies | $\mathrm{var}_H$ | `horizon_frac` | $\mathrm{Y_{mean}}$ |
+| --- | --- | --- | --- | --- | --- | --- |
 | uniform | 9.900829 | 0.133294 | 14400 | 90.03990936 | 0 | 0.145754 |
 | **cosine** | **7.655620** | **0.140667** | 21536 | 56.92735672 | 0 | 0.146241 |
 | **phong** | **1.999657** | **0.824834** | 1653 | 3.95137548 | 0.025246 | 0.059415 |
 
-**\(\mathrm{RMSE}_H(\mathrm{phong})<\mathrm{RMSE}_H(\mathrm{cosine})\): 1.999657 \(<\) 7.655620. PASS.**
+**$\mathrm{RMSE}_H(\mathrm{phong})<\mathrm{RMSE}_H(\mathrm{cosine})$: 1.999657 $<$ 7.655620. PASS.**
 
-\(N\) ladder, \(s=32\), \(\mathrm{RMSE}_H\):
+$N$ ladder, $s=32$, $\mathrm{RMSE}_H$:
 
-| \(N\) | cosine | phong |
-|---|---|---|
+| $N$ | cosine | phong |
+| --- | --- | --- |
 | 4 | 27.886635 | 8.377738 |
 | 16 | 15.989179 | 4.037456 |
 | 64 | 7.655620 | 1.999657 |
 | 256 | 3.837384 | 1.010789 |
 
-Exponent, Phong-IS, \(N=64\):
+Exponent, Phong-IS, $N=64$:
 
-| \(s\) | \(\mathrm{RMSE}_H\) | \(\mathrm{RMSE}_S\) | fireflies | `horizon_frac` | \(\mathrm{Y_{mean}}\) |
-|---|---|---|---|---|---|
+| $s$ | $\mathrm{RMSE}_H$ | $\mathrm{RMSE}_S$ | fireflies | `horizon_frac` | $\mathrm{Y_{mean}}$ |
+| --- | --- | --- | --- | --- | --- |
 | 8 | 1.783442 | 0.879714 | 2897 | 0.084079 | 0.102782 |
 | 32 | 1.999657 | 0.824834 | 1653 | 0.025246 | 0.059415 |
 | 128 | 7.367447 | 0.860317 | 587 | 0.002089 | 0.030926 |
 
-White furnace (\(L_i\equiv 1\), \(R=n\), lobe off-horizon):
+White furnace ($L_i\equiv 1$, $R=n$, lobe off-horizon):
 
-| Sampler | Measured \(Y\) | Expected | Band |
-|---|---|---|---|
-| Cosine, \(\rho_d+\rho_s\) | **0.2923** | 0.2917 | PASS (\(<0.04\)) |
-| Phong, \(\rho_s\) only | **0.1200** | 0.1200 | PASS (\(<0.03\)) — \(s+1\) vs \(s+2\) |
-| Phong, \(\rho_d+\rho_s\) | 0.1930 | 0.2917 | short; inverse-CDF tail, see Failure B |
+| Sampler | Measured $Y$ | Expected | Band |
+| --- | --- | --- | --- |
+| Cosine, $\rho_d+\rho_s$ | **0.2923** | 0.2917 | PASS ($<0.04$) |
+| Phong, $\rho_s$ only | **0.1200** | 0.1200 | PASS ($<0.03$) — $s+1$ vs $s+2$ |
+| Phong, $\rho_d+\rho_s$ | 0.1930 | 0.2917 | short; inverse-CDF tail, see Failure B |
 
-Header constants, as written:
+Header constants, exactly as written:
 
 | item | value |
-|---|---|
+| --- | --- |
 | seed / ref_seed | **329363537** / **1374605335** |
 | exposure / TM | **1.000** / Khronos PBR Neutral (not re-fit) |
-| firefly \(k\) | **4.0** |
-| key angular radius / \(\mathrm{disk}_r\) | **3.600°** / **0.1372** |
-| \(L_{\mathrm{key}}\) / \(L_{\mathrm{fill}}\) | \((980.0,880.0,720.0)\) / \((1.200,1.380,1.620)\) |
-| \(\rho_d\) / \(\rho_s\) / \(s\) | \((0.155,0.175,0.188)\) / **0.120** / **32** |
-| \(\mathrm{ROI}_H\) / \(\mathrm{ROI}_S\) | \((502,391,555,432)\) / \((349,133,613,319)\) inclusive, beauty \(960\times 540\) |
+| firefly $k$ | **4.0** |
+| key angular radius / $\mathrm{disk}_r$ | **3.600°** / **0.1372** |
+| $L_{\mathrm{key}}$ / $L_{\mathrm{fill}}$ | $(980.0,880.0,720.0)$ / $(1.200,1.380,1.620)$ |
+| $\rho_d$ / $\rho_s$ / $s$ | $(0.155,0.175,0.188)$ / **0.120** / **32** |
+| $\mathrm{ROI}_H$ / $\mathrm{ROI}_S$ | $(502,391,555,432)$ / $(349,133,613,319)$ inclusive, beauty $960\times 540$ |
 
-Hero rounding used in the lede: \(\mathrm{RMSE}_H\) **7.66 / 2.00**; \(\mathrm{RMSE}_S\) **0.141 / 0.825**; fireflies **21536 / 1653**; key **3.600°**; seed **329363537**; **24 pass / 0 fail**. Do **not** invent RMSE from the hero, the 3-up, or the surround crop. Those frames are `photo-only`. The metrics strip is a science snapshot of the same table; quoted numbers are the float buffer.
+Hero rounding applied in the introduction: $\mathrm{RMSE}_H$ **7.66 / 2.00**; $\mathrm{RMSE}_S$ **0.141 / 0.825**; fireflies **21536 / 1653**; key **3.600°**; seed **329363537**; **24 pass / 0 fail**. Do **not** invent RMSE numbers from the hero image, the 3-up, or the surround crop. Those specific frames are marked `photo-only`. The metrics strip represents a scientific snapshot of the exact same table, and all quoted numbers are derived purely from the float buffer.
 
 ---
 
 ## Controls
 
-Every A/B/C plate shares bit-identical camera, geometry, materials, lights, exposure, and per-pixel \(\xi\) stream. Inverse-CDF differs; directions differ. Do not reuse a cosine direction under a Phong weight.
+Every single A/B/C plate shares bit-identical camera, geometry, materials, lights, exposure, and per-pixel $\xi$ streams. Only the inverse-CDF differs, resulting in different sample directions. Crucially, do not reuse a direction sampled via cosine under a Phong weight.
 
 ### Seed
 
-One published integer: **329363537**. Same stream across arms. A residual that flips with a re-seed is RNG, not a theorem.
+We publish a single integer seed: **329363537**. This same stream is utilized across all arms. If a residual flips entirely upon re-seeding, it represents random noise (RNG), not a solid mathematical theorem.
 
 ### Horizon
 
-Weight 0, count in \(N\), log `horizon_frac`. No pdf renormalize. Renormalizing biases the estimator toward the upper hemisphere. Phong \(s=32\): **0.025246**. Cosine / uniform: **0** (generation in the \(n\)-frame). Wider lobe (\(s=8\)) \(\to\) **0.084079**; sharper (\(s=128\)) \(\to\) **0.002089**.
+Samples below the horizon receive a weight of 0 but are still counted in $N$, and we explicitly log the `horizon_frac`. There is no pdf renormalization. Renormalizing would artificially bias the estimator toward the upper hemisphere. For Phong at $s=32$, the fraction is **0.025246**. For cosine and uniform samplers (generated in the $n$-frame), it is **0**. A wider lobe ($s=8$) pushes the fraction to **0.084079**, while a sharper lobe ($s=128$) drops it to **0.002089**.
 
 ### White furnace
 
-\(L_i=1\), lobe off-horizon. Cosine combined and Phong spec-only are the gated asserts. Combined Phong shortfall is the float inverse-CDF tail, not a loosened band.
+Evaluated with $L_i=1$ and the lobe situated safely off-horizon. Both the cosine combined approach and the Phong spec-only approach serve as gated asserts. The observed shortfall in the combined Phong test is strictly due to the float inverse-CDF tail underflowing, not because we loosened the passing band.
 
-### Firefly \(k\)
+### Firefly $k$
 
-\(k=4\) on linear \(Y\). Do not score fireflies on the JPEG. Neutral+OETF hides them.
+Defined as $k=4$ strictly on linear $Y$. Never attempt to score fireflies on the final JPEG, as the Neutral+OETF pass heavily masks them.
 
 ### Light angular size
 
-Stated **3.600°**. Small enough that cosine misses, large enough that Phong-\(s=32\) hits. Delta light \(\to\) experiment becomes NEE. Fat light \(\to\) cosine looks fine and the note dies.
+Firmly stated as **3.600°**. This is small enough that standard cosine sampling severely misses it, yet large enough that a Phong lobe at $s=32$ successfully hits it. If we used a delta light, the experiment would collapse into trivial NEE. If we used a fat, broad light, cosine sampling would look perfectly acceptable and the fundamental premise of this note would die.
 
 ### Material
 
-Dielectric, both \(\rho_d\) and \(\rho_s\) live. Plinth / wall / floor are Lambert. Metal-only hides surround starve.
+We evaluate a dielectric surface, ensuring both $\rho_d$ and $\rho_s$ are active. The plinth, wall, and floor are Lambertian. Testing on a purely metallic surface would completely hide the surround starvation issue.
 
 ### ROI
 
-H = crescent the key actually paints. S = flank + plinth, no highlight pixels. Whole-frame RMSE is not a substitute.
+H defines the specific crescent that the key light paints. S covers the flank and plinth, deliberately excluding any highlight pixels. Whole-frame RMSE is not an acceptable substitute, as it indiscriminately averages H and S together.
 
 ---
 
 ## Two paths, do not mix the instruments
 
 | path | frames | instrument |
-|---|---|---|
-| **Photograph** | hero, 3-up, \(N\) ladders, exponent, surround | CPU MC of reflection pdfs on this llvmpipe, Neutral \(e=1.00\), sRGB OETF. HUD `photo-only`. |
-| **Instrument** | variance heat, pdf rose, metrics strip, reference | \(\lvert Y_N-Y_{\mathrm{ref}}\rvert\) heat, pdf rose, RMSE / fireflies / horizon, NEE reference. |
-| **Display** | every plate | expose \(e=1.00\) \(\to\) Neutral \(\to\) sRGB OETF. Resolve is linear. Operator is inherited. |
+| --- | --- | --- |
+| **Photograph** | hero, 3-up, $N$ ladders, exponent, surround | CPU MC of reflection pdfs on this llvmpipe, Neutral $e=1.00$, sRGB OETF. HUD `photo-only`. |
+| **Instrument** | variance heat, pdf rose, metrics strip, reference | $\lvert Y_N-Y_{\mathrm{ref}}\rvert$ heat, pdf rose, RMSE / fireflies / horizon, NEE reference. |
+| **Display** | every plate | expose $e=1.00$ $\to$ Neutral $\to$ sRGB OETF. Resolve is linear. Operator is inherited. |
 
-The 3-up is a photograph of the control *and* the source of the teaching. Quote the metrics for RMSE and fireflies. Do not quote the 8-bit panel as 7.655620.
+The 3-up graphic acts as both a photograph of our control methodology *and* the primary source of the teaching. Always quote the metrics for RMSE and firefly counts. Do not look at the 8-bit panel and mistakenly quote it as 7.655620.
 
 ---
 
 ## Honesty gaps
 
-1. **Offline spp strip on OSMesa / llvmpipe.** Named \(N\) on a still. Not 60 Hz. Not “interactive 1 spp.” Not a real-time path tracer. Not hardware RT. Not a production IBL baker.
-2. **JPEG is 8-bit display-referred.** Neutral+OETF clips fireflies. RMSE / var / firefly count are linear \(Y\) on the float buffer.
-3. **Hero is Phong-IS.** Felt wall sparkles. Failure B on the cover, not a denoiser miss. Clean still is the reference plate.
-4. **\(L_{\mathrm{ref}}\) uses disk NEE.** That is **not** an A/B/C arm. The note still samples reflection pdfs only.
-5. **Combined Phong white furnace undershoots** (0.1930 vs 0.2917). Inverse-CDF at \(s=32\) cannot place the Lambert tail in float32. Spec-only hits \(\rho_s\) exactly; cosine combined hits \(\rho_d+\rho_s\).
-6. **Phong \(\mathrm{RMSE}_S\) is not monotone in \(N\)** on this seed (64: 0.824834, 256: 1.754730). Rare disk hits on the plinth. Residual heat, not a second theorem.
-7. **\(s=128\) \(\mathrm{RMSE}_H=7.367447\)** is the exponent control against a 3.600° key and an \(s=32\) ROI H, not a failed pass predicate.
-8. **Beauty \(960\times 540\)** (\(\le 1280\times 720\)). Composites \(1280\times 720\). Not full-frame 4k spp.
-9. **Analytic sphere.** \(n\) from the implicit surface, not a faceted mesh that sparkles under a sharp lobe. One sphere, one plinth, dark gallery.
-10. **No Fresnel, no GGX, no Smith, no HDRI, no MIS arm.** 1-bounce disk + constant fill.
-11. **Whole-frame RMSE is not the lesson.** It would average H and S.
-12. **Not DLSS / OIDN / SVGF / ReSTIR.** Offline spp strip, not a 1-spp product.
-13. **Neutral constants copied from the tone-mapping note / Khronos PBR Neutral.** Not re-fit.
-14. **Cousin only:** VNDF is how production samples this family of lobes; Veach is how you stop starving Lambert.
+1. **Offline spp strip on OSMesa / llvmpipe.** This test uses named $N$ values on a static still image. It is not running at 60 Hz. It is not an "interactive 1 spp" showcase, a real-time path tracer, hardware RT, or a production IBL baker.
+
+2. **JPEG is 8-bit display-referred.** The Neutral+OETF pipeline inherently clips fireflies. Proper RMSE, variance, and firefly counts are strictly linear $Y$ evaluated on the raw float buffer.
+
+3. **Hero is Phong-IS.** This is why the felt wall sparkles. This is Failure B intentionally placed on the cover, not a denoiser miss. The truly clean still is relegated to the reference plate.
+
+4. **$L_{\mathrm{ref}}$ uses disk NEE.** It is **not** part of the standard A/B/C testing arms. The core note still exclusively samples reflection pdfs.
+
+5. **Combined Phong white furnace undershoots** (scoring 0.1930 vs the expected 0.2917). The inverse-CDF calculated at $s=32$ simply cannot place the Lambert tail correctly within float32 precision. The spec-only test nails $\rho_s$ exactly, while the cosine combined test successfully hits $\rho_d+\rho_s$.
+
+6. **Phong $\mathrm{RMSE}_S$ is not monotone in $N$** on this specific seed (measuring 0.824834 at 64, but 1.754730 at 256). This anomaly is caused by rare disk hits on the plinth. It is merely residual heat, not a hidden second theorem.
+
+7. **$s=128$ $\mathrm{RMSE}_H=7.367447$** acts as an exponent control against a 3.600° key light and an $s=32$ optimized ROI H. It is not a failed pass predicate.
+
+8. **Beauty $960\times 540$** (which scales to $\le 1280\times 720$). The final composites are $1280\times 720$. This is not a full-frame 4k spp render.
+
+9. **Analytic sphere.** The normal $n$ is derived from the implicit mathematical surface, not from a faceted mesh that would sparkle inappropriately under a sharp lobe. The scene is constrained to one sphere and one plinth in a dark gallery.
+
+10. **No Fresnel, no GGX, no Smith, no HDRI, no MIS arm.** The scene uses purely 1-bounce disk lighting plus a constant fill.
+
+11. **Whole-frame RMSE is not the lesson.** Relying on it would erroneously average H and S.
+
+12. **Not DLSS / OIDN / SVGF / ReSTIR.** This is an offline spp strip, not an evaluation of a 1-spp denoised product.
+
+13. **Neutral constants copied from the tone-mapping note / Khronos PBR Neutral.** They are deliberately not re-fit.
+
+14. **Cousin only:** VNDF represents how modern production engines actually sample this family of lobes, while Veach represents how we stop starving the Lambertian terms.
 
 ---
 
 ## Mesa / llvmpipe — what this run can claim
 
 | item | value |
-|---|---|
+| --- | --- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
 | `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
 | OSMesa | core 3.3 request; driver reports 4.5 core |
-| FBO color | **RGBA32F** complete, \(1280\times 720\). 8-bit fallback **not hit** |
+| FBO color | **RGBA32F** complete, $1280\times 720$. 8-bit fallback **not hit** |
 | `GL_FRAMEBUFFER_SRGB` | disabled (Neutral + sRGB OETF on CPU) |
 | MSAA | disabled |
-| Beauty / composite | \(960\times 540\) / \(1280\times 720\) |
-| Neutral \(e\) | **1.00** |
+| Beauty / composite | $960\times 540$ / $1280\times 720$ |
+| Neutral $e$ | **1.00** |
 | seed / hash | **329363537** / pcg |
 | key | finite disk, **3.600°** from the highlight point |
 
-**Can claim:** on this OSMesa / llvmpipe build, the same integral under cosine vs Phong-IS at published \(N\) and \(s\) produces these \(\mathrm{RMSE}_H\) / \(\mathrm{RMSE}_S\) / firefly numbers; the heat plate is that residual; the 3-up is the same view with only \(p\) changed.
+**Can claim:** On this specific OSMesa / llvmpipe build, evaluating the same integral under cosine versus Phong-IS at the published $N$ and $s$ settings produces these exact $\mathrm{RMSE}_H$, $\mathrm{RMSE}_S$, and firefly metrics. The heat plate accurately maps that residual, and the 3-up demonstrates the identical view when only $p$ is changed.
 
-**Cannot claim:** hardware RT, a real-time budget, “Phong is the correct production sampler,” energy identity after Neutral, anything measured off the JPEG. Discrete-GPU metrics, occupancy, bandwidth, or “this is how the hardware works.”
+**Cannot claim:** This is not hardware RT, a real-time performance budget, or proof that "Phong is the correct production sampler". It does not prove energy identity after Neutral tone mapping, nor does it make claims based on JPEG measurements. It is entirely divorced from discrete-GPU metrics, warp occupancy, bandwidth analysis, or broad hardware behavior claims.
 
 ---
 
@@ -354,23 +351,23 @@ The 3-up is a photograph of the control *and* the source of the teaching. Quote 
 This run: **24 pass / 0 fail**.
 
 | check | result |
-|---|---|
+| --- | --- |
 | FBO is RGBA32F | PASS |
 | Required gallery plates exist and are non-empty | PASS |
 | No NaNs in the estimator | PASS |
-| Sphere / plinth pixel counts | PASS (\(>2000\) / \(>200\)) |
-| White-furnace cosine \(\lvert Y-(\rho_d+\rho_s)\rvert<0.04\) | PASS **0.2923 vs 0.2917** |
-| White-furnace Phong spec-only \(\lvert Y-\rho_s\rvert<0.03\) | PASS **0.1200** |
-| ROI H/S non-empty | PASS **\((502,391,555,432)\) / \((349,133,613,319)\)** |
-| \(\mathrm{RMSE}_H(\mathrm{phong})<\mathrm{RMSE}_H(\mathrm{cosine})\) at \(N=64\), \(s=32\) | PASS **1.999657 \(<\) 7.655620** |
+| Sphere / plinth pixel counts | PASS ($>2000$ / $>200$) |
+| White-furnace cosine $\lvert Y-(\rho_d+\rho_s)\rvert<0.04$ | PASS **0.2923 vs 0.2917** |
+| White-furnace Phong spec-only $\lvert Y-\rho_s\rvert<0.03$ | PASS **0.1200** |
+| ROI H/S non-empty | PASS **$(502,391,555,432)$ / $(349,133,613,319)$** |
+| $\mathrm{RMSE}_H(\mathrm{phong})<\mathrm{RMSE}_H(\mathrm{cosine})$ at $N=64$, $s=32$ | PASS **1.999657 $<$ 7.655620** |
 
-No assert tolerances were loosened to hide cosine fireflies or Phong surround starve.
+Absolutely no assert tolerances were loosened to artificially hide cosine fireflies or mask Phong surround starvation.
 
 ---
 
 ## Out of scope
 
-Full MIS product bake-off as hero — Veach is one closer sentence, no balance-heuristic plates. GGX VNDF deep dive — cousin sentence only; no Smith \(G\), no half-vector Jacobian derivation, no roughness \(\to\) mip. Re-deriving Neutral TM, Karis prefilter, DFG LUT, split-sum energy tables — cite IBL + TM. Spectral path tracer. DLSS / SVGF / OIDN / ReSTIR as the denoiser of this still. Multi-bounce GI, next-event estimation as a *sampling arm*, area-light LTC. Shadow-map bias. Toksvig / anisotropic GGX / sRGB-vs-linear texture decode. A second photographic family as cover or journal hero. Real-time path-tracer claims, hardware RT cores, occupancy, bandwidth.
+We are explicitly excluding a full MIS product bake-off as a hero piece; Veach is merely a closing thought, and there are no balance-heuristic plates included here. A GGX VNDF deep dive is also excluded—treated only as a cousin concept—meaning no Smith $G$, no half-vector Jacobian derivation, and no roughness $\to$ mip mapping. We are not re-deriving Neutral TM, the Karis prefilter, the DFG LUT, or split-sum energy tables. Refer instead to the existing IBL and TM citations. Additionally out of scope: spectral path tracing, evaluating DLSS / SVGF / OIDN / ReSTIR as denoisers for this still image, multi-bounce GI, utilizing next-event estimation as a true *sampling arm*, and area-light LTC. We also skip shadow-map bias, Toksvig, anisotropic GGX, and sRGB-vs-linear texture decoding. Developing a second photographic family for the cover or journal hero is excluded. Finally, any real-time path-tracer claims, hardware RT core usage, occupancy, and bandwidth analysis are strictly outside the bounds of this note.
 
 ---
 
@@ -382,6 +379,7 @@ p_c  = (n·ω)/π                         // ONB around n
 p_p  = (s+1)/(2π) (ω·R)^s              // ONB around R; n·ω≤0 → weight 0, still in N
 f_r  = ρd/π + ρs (s+2)/(2π) (ω·R)_+^s  // s+1 is pdf; s+2 is BRDF
 PNG  = sRGB_OETF( Neutral(e * Lo) )    // e=1.00, inherited
+
 ```
 
-Locked: same integral, two pdfs, one \(N\); cosine in the numerator; horizon weight 0 and still in \(N\); Neutral inherited, not re-fit. Pin the gallery still as the presentation. Pin the 3-up as the teaching. Pin the variance heat as the fingerprint. Pin the surround crop as the honesty plate. The tickets are not interchangeable.
+Locked fundamentals: we maintain the exact same integral, two varying pdfs, and a single $N$. Cosine firmly remains in the numerator. Horizon weight correctly hits 0 while still counting in $N$. The Neutral tone mapper is inherited exactly as-is, not re-fit. We pin the gallery still as the final visual presentation. We pin the 3-up as the core teaching mechanism. We pin the variance heat map as the distinct mathematical fingerprint. We pin the surround crop as our definitive honesty plate. These sampling tickets are simply not interchangeable.
