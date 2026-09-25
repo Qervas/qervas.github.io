@@ -9,8 +9,6 @@ tags:
 math: true
 cover: /assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg
 ---
-光采样与面积雅可比
-
 Our last note, [Solid Angle and the Rendering Equation](/posts/p/solid-angle-and-the-rendering-equation/), focused on the measure. Path tracers sample \(d\omega\), while irradiance and the rendering equation naturally track \(\Omega_\perp\). It turned out that area was the wrong closed form for a disk. In this note, we're drawing uniform area on a **rectangle** and walking through the correct conversion.
 
 At its core, a legal light sample is just an area density pushed onto \(d\omega\). If you use an estimator that casually drops \(r^2\) or the emitter cosine, your result is strictly **biased**. That error does not fall, no matter how high you crank \(N\).
@@ -29,9 +27,13 @@ We're citing it here, but the actual Phong-versus-cosine comparison stays over i
 
 Say hello to our new photographic setup: the **night inspection bench**. It features a vertical rectangular softbox on a stand (with both the diffuser and light in frame), a matte bench, a white Lambert card, and a matte vise for scale, all sitting in a dark, closed shop. We'll leave the loft bottle, the metro colonnade, the gallery lacquer sphere, and the courtyard atrium back in their respective notes.
 
+![Night inspection bench. Vertical rectangular softbox, the diffuser in frame and the light. Matte bench, white Lambert card, vise for scale, dark closed shop. Legal rectangle lighting plus named shop fill, Khronos PBR Neutral e=1.00, after an 8× linear box. Photograph only — the meter is not this frame.](/assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg)
+
 The Lambert card acts as our instrument here. Uniform draws on the diffuser give us a density per square meter, but the rendering equation still integrates incoming radiance in steradians. So while \(p(A)\) is a perfectly legal area density, it only becomes a valid \(p(\omega)\) after we multiply by the conversion factor above.
 
 **Pin this.** Here's what equal-\(\Omega\) occupancy of the panel footprint actually looks like. On the left, we map an area-uniform distribution. On the right, we draw the exact same count of directions uniformly in \(\Omega\) and keep only the ones that strike the diffuser. The white edge marks our interior mask, and the orange curve traces the footprint outline. The axes are \(\mu=\cos\theta\) and azimuth \(\phi\), with a cell solid angle of \(2\pi/512\,\mathrm{sr}\). We have **35** interior cells. Notice the area occupancy spans **86..952**, while the uniform-in-\(\Omega\) occupancy sits much tighter at **314..400**.
+
+![Teaching pin. Equal-Ω occupancy of the panel footprint on the receiver hemisphere. Left, area-uniform. Right, the same count drawn uniform in Ω and kept on the diffuser. μ=cos θ, azimuth φ, cell 2π/512 sr. Orange curve is the footprint. White edge is the interior mask: 35 cells, area occupancy 86..952 beside uniform-Ω 314..400. Each chart uses its own color max.](/assets/journal/light-sampling-and-the-area-jacobian/01_bins.jpg)
 
 Let's run the hero stats: Mesa 25.0.7 llvmpipe, linear Rec.709, **Khronos PBR Neutral** \(e=\mathbf{1.00}\), seed **20260924**. We get \(\Omega_\perp=\mathbf{0.419598441342}\,\mathrm{sr}\), \(E_Y=\mathbf{1.67839376537}\), and a relative error \((E_c-E)/E=\mathbf{-0.194936551657}\). The centroid plate rounds that relative error to **-0.195**. If we track the legal RMSE across \(K=32\) shared prefixes, it falls steadily as expected: \(0.1644\to 0.1089\to 0.06826\to 0.02638\) at \(N=16/64/256/1024\). The exact tokens are `rmse_legal_N16` **0.164412278931**, `rmse_legal_N64` **0.108928582911**, `rmse_legal_N256` **0.0682573241753**, and `rmse_legal_N1024` **0.0263804488107**.
 
@@ -240,6 +242,8 @@ The weight is massive where the panel is near simply because \(r\) is small ther
 
 Think of the bias plate as our primary meter. The gold line represents the legal estimator. Red drops \(r^2\), and blue drops the emitter cosine. These are computed over \(K=32\) shared prefixes. (We left the double-count arm off this chart.)
 
+![Bias chart. K=32 relative RMSE, N on a log axis. Gold legal falls from N=16 to N=1024. Red drop-r² and blue drop-cosine sit on floors. Signed means under the chart: legal +0.007753, drop r² -0.645747, drop cosine +1.040131. The broken weights are this chart, not a photograph of the shop.](/assets/journal/light-sampling-and-the-area-jacobian/02_bias.jpg)
+
 Here is the exact relative RMSE from this run:
 
 | \(N\) | legal | drop \(r^2\) | drop \(\cos_y\) |
@@ -272,6 +276,8 @@ For completeness, the double-count RMSE (tracked in metrics only, using the same
 
 The centroid plate is where Failure C finally becomes visible. Since the full frames make it hard to read the card, we've marked the crop with a gold box and opened it up in the lower row.
 
+![Failure C. Same eye: legal rectangle form factor beside the centroid stand-in. Gold boxes mark the card. Callout -0.195, (Ec-E)/E = -0.194937 from this run. Crops print linear Y 0.446 legal and Y 0.362 centroid. The third panel is linear |ΔY| of that crop before Neutral; the ramp is marked 0.115 and the card is the bright end.](/assets/journal/light-sampling-and-the-area-jacobian/03_centroid.jpg)
+
 Both shop frames share the exact same eye \((1.70,\,1.45,\,0.70)\), target \((0.10,\,1.40,\,-0.02)\), \(46^\circ\) vertical field, \(L_i\), shop fill, \(\rho=0.80\), exposure \(1.00\), and Neutral \(e=1.00\). The legal shading strictly uses \(L_i\,\Omega_\perp\), while the centroid shading uses \(E_c\) evaluated at the shaded point, sharing the exact same fill rule. We apply no per-half gain.
 
 The callout highlights this run's centroid relative error. You can clearly read the large type **-0.195**, sitting directly above `(EC-E)/E = -0.194937`. If you check the metrics token, it is exactly **-0.194936551657**. \(E_c\) is coming in about a fifth too low. Waving it off as "a few percent" just doesn't describe the reality.
@@ -285,6 +291,8 @@ The small-angle limit—where the centroid term and the true contour actually ag
 ---
 
 ## Quote the metrics. Do not quote the beauty photographs as meters.
+
+![Metrics strip. A two-column picture of this run’s table: seed 20260924, Ω⊥, EY, centroid relative, Jacobian ratio, RMSE ladder, omission floors, histogram counts, 72 pass / 0 fail. Quote the table in the text. Not a cover.](/assets/journal/light-sampling-and-the-area-jacobian/04_metrics.jpg)
 
 Everything is processed as CPU double before hitting Neutral. The seed is strictly **20260924**. The beauty display is Khronos PBR Neutral, \(e=1.00\), and it is purposely not re-fit. The RMSE ladder is precisely the table outlined in the previous section; we repeat the exact tokens here so this summary sheet can stand completely alone.
 
