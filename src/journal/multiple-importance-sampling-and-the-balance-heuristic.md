@@ -11,82 +11,82 @@ cover: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/00
 ---
 多重重要性采样与平衡启发式
 
-Our last note, [Light Sampling and the Area Jacobian](/posts/p/light-sampling-and-the-area-jacobian/), put a legal light density on \(d\omega\). The note before that, [Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-sampling-phong-lobe-vs-cosine/), kept two BSDF pdfs on one integral, both already in \(1/\mathrm{sr}\). This note puts the two ideas on the same mouth.
+Our last note, [Light Sampling and the Area Jacobian](/posts/p/light-sampling-and-the-area-jacobian/), put a legal light density on \(d\omega\). The one before that, [Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-sampling-phong-lobe-vs-cosine/), kept two BSDF pdfs on a single integral, both already in \(1/\mathrm{sr}\). This time, we're bringing both ideas together on the same kiln mouth.
 
-Two legal densities estimate one direct-light integral. One is a Phong–Lambert BSDF. The other draws a point uniformly on a rectangle and pushes that area density through the area Jacobian. Each arm, divided by the density it actually sampled, is unbiased. Each one is noisy where the other one is quiet. The balance heuristic weights the sample by its own pdf over the sum of the two:
+We have two legal densities estimating one direct-light integral. One is a Phong–Lambert BSDF. The other draws a point uniformly on a rectangle and pushes that area density through the area Jacobian. Each arm—when divided by the density it actually sampled—is strictly unbiased, and each happens to be noisy exactly where the other is quiet. The balance heuristic weights a given sample by its own pdf over the sum of the two:
 
-\[
-w_i=\frac{p_i}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}}.
-\]
+\[w_i=\frac{p_i}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}}.\]
 
-The variance moves. The estimator stays unbiased. With equal technique counts the \(n_i\) cancel, and the weight on the page is \(w_i=p_i/(p_{\mathrm{bsdf}}+p_{\mathrm{light}})\). The light weight still carries \(r^2\). Dropping \(r^2\), or dropping the emitter cosine, is a biased floor, and that floor belongs to the area-Jacobian note. This note does not put the omission on a plate.
+The variance shifts around, but the estimator itself remains unbiased. If we use equal technique counts, the \(n_i\) terms cancel out, leaving the weight exactly as written on the page: \(w_i=p_i/(p_{\mathrm{bsdf}}+p_{\mathrm{light}})\). Notice that the light weight still carries \(r^2\). Dropping that \(r^2\), or forgetting the emitter cosine, creates a biased floor—a pitfall we covered thoroughly in the area-Jacobian note, so we won't re-litigate that omission here.
 
-[Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-sampling-phong-lobe-vs-cosine/) owns variance as the photograph for two BSDF pdfs, and the split that puts \((s+1)\) in the pdf and \((s+2)\) in the BRDF. We keep that split and that horizon rule. We do not rematch Phong against cosine, and we do not reprint that note's RMSE pair. [Light Sampling and the Area Jacobian](/posts/p/light-sampling-and-the-area-jacobian/) owns
+[Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-sampling-phong-lobe-vs-cosine/) owns the variance photograph for two BSDF pdfs, as well as the split that puts \((s+1)\) in the pdf and \((s+2)\) in the BRDF. We're keeping that split and that horizon rule. We aren't going to rematch Phong against cosine, and we aren't reprinting that note's RMSE pair. [Light Sampling and the Area Jacobian](/posts/p/light-sampling-and-the-area-jacobian/) owns:
 
-\[
-p(\omega)=p(A)\,\frac{r^2}{n_y\cdot\omega}.
-\]
+\[p(\omega)=p(A)\,\frac{r^2}{n_y\cdot\omega}.\]
 
-We reimplement that factor as \(p_{\mathrm{light}}\). [Solid Angle and the Rendering Equation](/posts/p/solid-angle-and-the-rendering-equation/) owns the projected solid angle a diffuse term integrates. The Lambert piece here uses that same signed contour. The disk ratios and the omission floors stay in their own notes.
+We are reimplementing that exact factor here as \(p_{\mathrm{light}}\). [Solid Angle and the Rendering Equation](/posts/p/solid-angle-and-the-rendering-equation/) owns the projected solid angle that a diffuse term integrates, and the Lambert piece here uses that same signed contour. The disk ratios and the omission floors belong in their own notes.
 
-Say hello to the **kiln-mouth glaze shelf**. A rectangular muffle mouth sits flush in firebrick. One pale glaze tile lies flat on a stoneware shelf. Two matte pyrometric cones and one wooden rib give scale. The camera is inside the kiln, low along the shelf, looking at the mouth. The loft bottle, the metro colonnade, the gallery lacquer sphere, the courtyard atrium, and the night inspection bench stay in their own notes.
+Say hello to the **kiln-mouth glaze shelf**. Imagine a rectangular muffle mouth sitting flush in firebrick, with a single pale glaze tile lying flat on a stoneware shelf. We've got two matte pyrometric cones and a wooden rib in there for scale. The camera is inside the kiln, positioned low along the shelf, looking straight at the mouth. (The loft bottle, the metro colonnade, the gallery lacquer sphere, the courtyard atrium, and the night inspection bench are all staying in their respective notes.)
 
 ![Cover. Kiln-mouth glaze shelf: a rectangular muffle mouth flush in firebrick, one pale glaze tile on a stoneware shelf, two matte pyrometric cones and a wooden rib for scale. Balance arm at N=1024 plus the analytic diffuse fill. Khronos PBR Neutral e=1.00. Photograph only — Lo,Y and the RMSE are not this frame.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/00_hero.jpg)
 
-Let's run the hero stats. Mesa 25.0.7 llvmpipe, linear Rec.709, **Khronos PBR Neutral** \(e=\mathbf{1.00}\), seed **20260926**. \(k_d=0.34\), \(k_s=0.28\), \(s=160\). \(L_i=(7.5,\,4.8,\,2.2)\), so \(L_{i,Y}=5.186299999999999\). Mouth area \(0.2596\,\mathrm{m}^2\). The bound product in the metrics table is \(0.2595999999999999\).
+Let's run the hero stats. We're on Mesa 25.0.7 llvmpipe, linear Rec.709, **Khronos PBR Neutral** (\(e=\mathbf{1.00}\)), with seed **20260926**. Parameters are \(k_d=0.34\), \(k_s=0.28\), \(s=160\). Radiance \(L_i=(7.5,\,4.8,\,2.2)\), giving us \(L_{i,Y}=5.186299999999999\). The mouth area is \(0.2596\,\mathrm{m}^2\). (The bound product you'll see in the metrics table is \(0.2595999999999999\)).
 
-Lip \(x_L=(0.04,\,0.90,\,0.40)\): \(\Omega_\perp=\mathbf{0.3212572527424995}\,\mathrm{sr}\), \(L_{o,Y}=\mathbf{0.8922731625666653}\), specular over diffuse \(\mathbf{3.948324937768523}\). Miss \(x_M=(-0.28,\,0.90,\,0.28)\): \(\Omega_\perp=\mathbf{0.2742559005975028}\,\mathrm{sr}\), \(L_{o,Y}=\mathbf{0.1539368726945163}\), specular over diffuse \(2.114893779357608\times 10^{-10}\). That miss ratio is zero beside the Lambert term.
+For the lip \(x_L=(0.04,\,0.90,\,0.40)\): \(\Omega_\perp=\mathbf{0.3212572527424995}\,\mathrm{sr}\), \(L_{o,Y}=\mathbf{0.8922731625666653}\), and the specular-over-diffuse ratio is \(\mathbf{3.948324937768523}\).
+For the miss \(x_M=(-0.28,\,0.90,\,0.28)\): \(\Omega_\perp=\mathbf{0.2742559005975028}\,\mathrm{sr}\), \(L_{o,Y}=\mathbf{0.1539368726945163}\), and the specular-over-diffuse ratio is a tiny \(2.114893779357608\times 10^{-10}\). That miss ratio is effectively zero next to the Lambert term.
 
-Winners, the single arm with the smaller RMSE: lip **bsdf** at \(N=64\) and at \(N=1024\); miss **light** at both (`winner_lip_N64`, `winner_lip_N1024`, `winner_miss_N64`, `winner_miss_N1024`). Lip RMSE from \(N=16\) to \(N=1024\): BSDF \(0.2140099356194824\to 0.03737322030225639\), light \(0.7304631415769416\to 0.07772808316858408\), balance \(0.2677916704168401\to 0.0394574853759122\). Miss: BSDF \(1.127800620513927\to 0.121007411701054\), light \(0.1665406649163094\to 0.02502486831590404\), balance \(0.2027174941744856\to 0.03449795333963287\).
+Now for the winners (the single arm with the smaller RMSE): at the lip, it's **bsdf** at both \(N=64\) and \(N=1024\); at the miss, it's **light** at both (`winner_lip_N64`, `winner_lip_N1024`, `winner_miss_N64`, `winner_miss_N1024`).
+Look at how the lip RMSE drops from \(N=16\) to \(N=1024\): the BSDF goes \(0.2140099356194824\to 0.03737322030225639\), light goes \(0.7304631415769416\to 0.07772808316858408\), and balance goes \(0.2677916704168401\to 0.0394574853759122\).
+For the miss: BSDF drops \(1.127800620513927\to 0.121007411701054\), light drops \(0.1665406649163094\to 0.02502486831590404\), and balance drops \(0.2027174941744856\to 0.03449795333963287\).
 
-Disk standard error on the \(N=64\) variance plate: at the lip, light \(\mathbf{0.3079049113038804}\) (lede **0.308**) above BSDF \(0.1197899661872358\), with balance at \(0.1312898735904618\); at the miss, BSDF \(0.0772988573354273\) above light \(0.01309165077371938\), with balance at \(0.01779797833390362\). At the lip's mirror hit, \(p_{\mathrm{bsdf}}=11.65879108669897\), \(p_{\mathrm{light}}=0.956701082414125\), \(w_{\mathrm{bsdf}}=0.9241645851315697\), \(w_{\mathrm{light}}=0.07583541486843028\). Assertions **53 pass / 0 fail**.
+Let's check the disk standard error on the \(N=64\) variance plate. At the lip, the light arm sits at \(\mathbf{0.3079049113038804}\) (our lede **0.308**) compared to the BSDF arm's \(0.1197899661872358\), with balance at \(0.1312898735904618\). Over at the miss, the BSDF arm sits at \(0.0772988573354273\) compared to the light arm's \(0.01309165077371938\), with balance at \(0.01779797833390362\).
+Right at the lip's mirror hit, we have \(p_{\mathrm{bsdf}}=11.65879108669897\), \(p_{\mathrm{light}}=0.956701082414125\), \(w_{\mathrm{bsdf}}=0.9241645851315697\), and \(w_{\mathrm{light}}=0.07583541486843028\). Assertions: **53 pass / 0 fail**.
 
-**Pin this.** The variance plate is the teaching figure. It is the standard error of those same \(N=64\) draws, one shared scale, authored in sRGB. The screen-right ring is the lip. The screen-left ring is the miss. The light panel is hot on the lip ring and quiet on the miss ring. The BSDF panel is hotter on the miss ring than on the lip ring. Balance sits under the hot ring in both places, and a little over the quiet ring in both places. Balance does not have to beat the arm that already matched the integrand. On this run it does not.
+**Pin this.** The variance plate is our primary teaching figure here. It maps the standard error of those exact \(N=64\) draws using a shared scale, authored in sRGB. The ring on the right of the screen is the lip; the left ring is the miss. Notice how the light panel runs hot on the lip ring but quiet on the miss ring. Conversely, the BSDF panel is hotter on the miss ring than on the lip ring. Balance comfortably sits under the hot ring in both places, and just a little over the quiet ring in both places. Keep in mind: the balance heuristic doesn't *have* to beat the single arm that already perfectly matched the integrand. On this particular run, it doesn't.
 
 ![Teaching pin. Shared-scale standard error of the N=64 draws on the glaze tile. Left bsdf, middle light, right balance. Turbo on the tile; the room is a flat dark field outside the scale. Two 12 mm rings: screen-left is the miss at x=-0.28, screen-right is the lip at x=0.04. Lip light disk mean 0.3079049113038804 against BSDF 0.1197899661872358; miss BSDF 0.0772988573354273 against light 0.01309165077371938. Balance sits below the hot ring at both points. Scale maximum 0.9246898237889386 is one tile pixel, not the disk mean. Authored sRGB. Not Neutral. Not a photograph of radiance.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/02_variance.jpg)
-
-![Three legal arms at one N. Left bsdf, middle light, right balance. Each panel is 640 by 720, assembled to 1920 by 720, N=64, same eye, same target, same 46 degree vertical field. Khronos PBR Neutral e=1.00 on every panel. The BSDF panel carries grain where the highlight has left the mouth. The light panel carries bright specks on the reflected mouth. Balance keeps the reflection and quiets both failures. A light-arm speck at this N can shoulder to white; the size of that speck is the standard error on the variance plate. Photograph only.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/01_three_arms.jpg)
 
 ---
 
 ## What you are seeing
 
-The working space is **scene-referred linear Rec.709**. One kiln, one rectangle, one glaze tile. The display path on the photographs is the one from the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) note: Khronos PBR Neutral, \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), \(K_d=0.15\), then the IEC 61966-2-1 sRGB OETF on the CPU. Neutral assigns code values. It does not author \(L_o\).
+The working space is **scene-referred linear Rec.709**. We have one kiln, one rectangle, one glaze tile. For the photographs, the display path matches the one from the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) note: Khronos PBR Neutral, \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), \(K_d=0.15\), followed by the IEC 61966-2-1 sRGB OETF applied on the CPU. Remember, Neutral assigns code values; it doesn't author \(L_o\).
 
-**Cover — the kiln.** Balance at \(N=1024\), plus the named diffuse fill, \(1280\times 720\). Mouth, brick, shelf, cones, rib. No labels and no digits. The JPEG is the photograph. It is not the meter.
+**Cover — the kiln.** This is the balance arm at \(N=1024\), plus the named diffuse fill, rendered at \(1280\times 720\). You can see the mouth, brick, shelf, cones, and rib. There are no labels and no digits here. Treat the JPEG strictly as a photograph—it's not the meter.
 
-**Three arms — the control.** BSDF, light, and balance at \(N=64\). The mouth, the brick, and the shelf match across the panels before Neutral. Only tile pixels change with the arm. The cones and the rib are cropped by these narrow frames; the cover shows them whole, to the right of the tile.
+**Three arms — the control.** BSDF, light, and balance evaluated at \(N=64\). The mouth, the brick, and the shelf all match across the panels before Neutral is applied. Only the tile pixels actually change with the arm. The cones and the rib are cropped out by these narrow frames, but you can see them whole on the right side of the tile in the cover image.
 
-**Variance plate — teaching pin.** Per-pixel standard error of the \(N=64\) terms that drew the three-arm photograph. One shared scale. The scale maximum is the hottest tile pixel of the three arms, `stderr_scale_max` \(=0.9246898237889386\). The lip light disk mean, \(0.3079049113038804\), is about a third of that maximum. The maximum is one pixel. The disk is an average. Non-tile pixels sit outside the scale. This plate does not go through Neutral.
+![Three legal arms at one N. Left bsdf, middle light, right balance. Each panel is 640 by 720, assembled to 1920 by 720, N=64, same eye, same target, same 46 degree vertical field. Khronos PBR Neutral e=1.00 on every panel. The BSDF panel carries grain where the highlight has left the mouth. The light panel carries bright specks on the reflected mouth. Balance keeps the reflection and quiets both failures. A light-arm speck at this N can shoulder to white; the size of that speck is the standard error on the variance plate. Photograph only.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/01_three_arms.jpg)
 
-**Ladder — the RMSE.** Relative RMSE against the quadrature \(L_o\), lip row on top, miss row below. BSDF in blue, light in orange, balance in green. \(N\in\{16,64,256,1024\}\) is categorical, so the four rungs are equally spaced, and RMSE is linear. Each row scales to its own maximum. A tall mark on the miss row and a tall mark on the lip row are not the same number. The chart prints no RMSE digits. The table below is the quote.
+**Variance plate — teaching pin.** This maps the per-pixel standard error of the \(N=64\) terms that drew the three-arm photograph. It uses one shared scale. The scale maximum is anchored by the hottest tile pixel across all three arms, `stderr_scale_max` \(=0.9246898237889386\). The lip's light disk mean, \(0.3079049113038804\), is roughly a third of that maximum. Keep in mind that the maximum is a single pixel, while the disk is an average. Non-tile pixels fall outside the scale entirely, and this plate skips Neutral completely.
+
+**Ladder — the RMSE.** Here's the relative RMSE plotted against the quadrature \(L_o\), with the lip row on top and the miss row below. BSDF is blue, light is orange, and balance is green. Because \(N\in\{16,64,256,1024\}\) is categorical, the four rungs are spaced equally, making the RMSE linear. Each row scales to its own local maximum, meaning a tall mark on the miss row and a tall mark on the lip row represent completely different numbers. We don't print RMSE digits on the chart itself; quote the table below for the actual numbers.
 
 ![Ladder. Relative RMSE against N at the lip (top) and the miss (bottom). Blue bsdf, orange light, green balance. N is categorical: 16, 64, 256, 1024 equally spaced. Each row has its own vertical scale, so the tall marks are not one number. At the lip the light arm is the high curve and balance tracks just above bsdf. At the miss the BSDF arm is the high curve and balance tracks just above light. Every series falls. The digits live in the table, not on the chart.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/03_ladder.jpg)
 
-**Metrics strip — snapshot.** A \(1280\times 720\) picture of the metrics table, two columns. If a glyph on that JPEG is soft or clipped, the table in the text wins.
+**Metrics strip — snapshot.** A \(1280\times 720\) capture of our metrics table across two columns. If any glyph on that JPEG looks soft or gets clipped, trust the markdown table in the text.
 
 ![Metrics strip. A two-column picture of this run's table: seed 20260926, mouth area, Omega_perp, Lo,Y, the RMSE ladder, disk standard errors, winners bsdf / bsdf / light / light, furnace mean, Lambert residual, 53 pass / 0 fail. Quote the table in the text. Not a cover.](/assets/journal/multiple-importance-sampling-and-the-balance-heuristic/04_metrics.jpg)
 
-Keep two facts separate.
+Keep two facts completely separate:
 
-1. **Photographs** (the cover and the three-arm panels) are the room, passed through Neutral, then sRGB. \(\Omega_\perp\), \(L_o\), RMSE, and the disk standard errors are not values you read off those JPEGs. An \(N=64\) light-arm firefly can shoulder to white under Neutral. The estimator is not clamped before the standard error is formed.
-2. **Instruments** (the variance plate, the ladder, the metrics strip, and the tables) are the CPU double estimator. Quote the tables.
+1. **Photographs** (like the cover and the three-arm panels) show the room passed through Neutral, then sRGB. You cannot read \(\Omega_\perp\), \(L_o\), RMSE, or the disk standard errors off those JPEGs. At \(N=64\), a light-arm firefly can easily shoulder to white under Neutral. The estimator isn't clamped before we form the standard error.
+2. **Instruments** (like the variance plate, the ladder, the metrics strip, and the tables) come straight from the CPU double estimator. Always quote the tables.
 
 ---
 
 ## Two legal arms on one mouth
 
-The rendering equation at a shade point on the tile asks for an integral in steradians. The BSDF arm draws those steradians from one mixture: with probability \(\pi_d\) a cosine hemisphere about the tile normal, otherwise a Phong lobe about the reflection of the view. The light arm draws a point uniformly on the mouth and converts that area density with the Jacobian. Both arms estimate outgoing radiance \(L_o\), specular included. The diffuse closed form \(E=L_i\Omega_\perp\) is the ground truth of the Lambert piece only. Reading a glossy estimator against \(L_i\Omega_\perp\) and calling the gap bias misreads the meter. At the lip the specular is about four times the diffuse. At the miss the two agree.
+The rendering equation at a shade point on our tile asks for an integral in steradians. The BSDF arm draws those steradians from a mixture: with probability \(\pi_d\) it uses a cosine hemisphere around the tile normal, and otherwise it uses a Phong lobe around the reflection of the view vector. The light arm, meanwhile, draws a point uniformly on the mouth and converts that area density using the Jacobian. Both arms are estimating outgoing radiance \(L_o\), specular included. The diffuse closed form \(E=L_i\Omega_\perp\) acts as the ground truth strictly for the Lambert piece. If you try reading a glossy estimator against \(L_i\Omega_\perp\) and call the gap "bias", you're misreading the meter. Down at the lip, the specular is roughly four times the diffuse. Over at the miss, the two agree perfectly.
 
-**Lip.** The mirror ray from \(x_L\) hits the mouth at \((0,\,1.13,\,0)\). The metrics table prints that hit as \((1.387778780781446\times 10^{-17},\,1.13,\,0)\). It sits 80 mm above the sill and 0.22 m from either side edge. The Phong lobe of exponent 160 sits on that hit, so most specular samples land on the emitter. The mouth is \(0.3212572527424995\,\mathrm{sr}\). A lobe of this exponent concentrates on a cap of order \(2\pi/(s+1)\approx 0.039\,\mathrm{sr}\), and the mouth is about eight times that cap, so a uniform area draw usually misses the peak and occasionally lands in it. Those rare hits are the fireflies. The BSDF arm already aims at the peak, and its variance stays lower. The photograph of this failure is the lower lip of the reflected mouth, speckled on the light panel.
+**Lip.** The mirror ray cast from \(x_L\) hits the mouth exactly at \((0,\,1.13,\,0)\). (Our metrics table prints that hit exactly as \((1.387778780781446\times 10^{-17},\,1.13,\,0)\)). This sits 80 mm above the sill and 0.22 m from either side edge. Because our Phong lobe of exponent 160 sits right on that hit, most specular samples land directly on the emitter. The mouth covers \(0.3212572527424995\,\mathrm{sr}\). A lobe with this tight an exponent concentrates on a cap of order \(2\pi/(s+1)\approx 0.039\,\mathrm{sr}\), making the mouth about eight times larger than that cap. As a result, a uniform area draw usually misses the peak entirely, but occasionally lands right inside it. Those rare, lucky hits? Those are your fireflies. The BSDF arm is already aimed at the peak, which is why its variance stays lower. In the photograph, this failure mode looks like speckling on the light panel right across the lower lip of the reflected mouth.
 
-**Miss.** The mirror ray from \(x_M\) misses the mouth. The hit prints as \((-0.3814786798045011,\,1.044538867186654,\,0)\), past the left edge and below the sill. The largest \(R\cdot\omega\) on the rectangle is \(0.8789249543972235\), about \(28^\circ\) off the mirror axis. This view is the more grazing of the two: \(n\cdot\omega_o=0.4366167162249477\) at the miss, against \(0.4966085446506598\) at the lip. The specular integral is numerically zero. What remains is the Lambert term, spread over the whole mouth. The mixture still spends \(\pi_s\) of its samples in a lobe that never meets the emitter. A cosine sample hits the mouth with probability \(\Omega_\perp/\pi\), about \(0.087\) at this point. The light arm draws the mouth on every sample. The Lambert integrand varies smoothly across the rectangle, and that arm is quiet. The photograph of this failure is grain on the lit tile where the highlight has slid off the mouth.
+**Miss.** Cast the mirror ray from \(x_M\) and it misses the mouth entirely. The actual hit prints as \((-0.3814786798045011,\,1.044538867186654,\,0)\), missing past the left edge and dropping below the sill. The largest \(R\cdot\omega\) value we find anywhere on the rectangle is \(0.8789249543972235\), sitting roughly \(28^\circ\) off the mirror axis. This view is notably more grazing than the other: \(n\cdot\omega_o=0.4366167162249477\) at the miss, compared to \(0.4966085446506598\) at the lip. Numerically, the specular integral here is zero. All we have left is the Lambert term, spread cleanly across the whole mouth. However, the mixture still burns \(\pi_s\) of its samples on a lobe that never even touches the emitter. A cosine sample hits the mouth with probability \(\Omega_\perp/\pi\), which works out to about \(0.087\) at this point. The light arm, by contrast, draws the mouth flawlessly on every single sample. Because the Lambert integrand varies so smoothly across the rectangle, that arm runs incredibly quiet. In the photograph, this failure mode shows up as grain on the lit tile exactly where the highlight slid off the mouth.
 
-**Balance.** On each sample the weight is that sample's pdf divided by the sum of the two pdfs. A light sample that lands in the lobe, where \(p_{\mathrm{bsdf}}\) is large, is down-weighted. That is what cuts the lip firefly. At the mirror hit the light sample is kept at \(w_{\mathrm{light}}=0.07583541486843028\), and the BSDF sample, already where that arm aimed, stays at \(w_{\mathrm{bsdf}}=0.9241645851315697\). A BSDF sample that hits the mouth out on the Lambert flank, where \(p_{\mathrm{light}}\) is the density that covers the emitter, is down-weighted the other way. Where one pdf is zero the other weight is 1. Off the mouth the integrand is already zero. The combined estimator stays unbiased when each technique is unbiased and the weights partition unity on the support of the integrand.
+**Balance.** On every sample, the weight is just that sample's pdf divided by the sum of the two pdfs. If a light sample manages to land directly inside the lobe—where \(p_{\mathrm{bsdf}}\) is enormous—it gets heavily down-weighted. That mechanic is exactly what cuts out the lip firefly. Right at the mirror hit, the light sample gets throttled to \(w_{\mathrm{light}}=0.07583541486843028\), while the BSDF sample, which was already aiming where the arm needed it to, stays dominant at \(w_{\mathrm{bsdf}}=0.9241645851315697\). Conversely, if a BSDF sample hits the mouth way out on the Lambert flank—where \(p_{\mathrm{light}}\) represents the density faithfully covering the emitter—it gets down-weighted in the other direction. Wherever one pdf hits zero, the other weight simply becomes 1. Off the mouth entirely, the integrand is already zero anyway. The combined estimator remains unbiased as long as each technique is unbiased on its own, and the weights cleanly partition unity wherever the integrand is nonzero.
 
-Balance sits below the worse single arm at both points, at every rung from \(N=16\) to \(N=1024\), and inside both disks on the variance plate. It may sit above the better arm. On this run it does, in those same places. At the lip the winner is the BSDF arm. At the miss the winner is the light arm. The lip's balance series tracks the BSDF arm, a little above it, and stays well below the light arm. The miss's balance series tracks the light arm the same way.
+Notice that balance comfortably sits below the worse single arm at both points, across every single rung from \(N=16\) all the way to \(N=1024\), and sits inside both disks on the variance plate. It *might* sit above the better arm, and on this run, it actually does in those exact places. At the lip, the BSDF arm wins. At the miss, the light arm wins. The balance series for the lip tracks the BSDF arm (hovering just above it) while staying well below the light arm. The miss's balance series tracks the light arm the exact same way.
 
-All three arms are legal. Neutral is on every panel of the three-arm photograph because none of them is a broken weight.
+All three arms are entirely legal. Neutral is applied on every panel of the three-arm photograph because none of these represents a broken weight.
 
 ---
 
@@ -119,138 +119,99 @@ One shade point \(x\), one outgoing direction \(\omega_o\) toward the eye, one r
 | \(N\) | integrand evaluations in one estimate | count |
 | \(n\) | \(N/2\), the count of each technique inside balance | count |
 
-\(\cos_y\) uses the direction from the mouth toward the tile. \(\cos_x\) uses the direction from the tile toward the mouth. One shared \(\omega\) dotted into both normals would flip a sign. Both cosines are positive for every mouth point at both instrument points. The printed minima are \(\min\cos_x=0.2999400179940021\) at the lip and \(0.2532209156959798\) at the miss, and \(\min\cos_y=0.4543108504242547\) at the lip and \(0.2991616902194818\) at the miss.
+Just to clarify the vectors: \(\cos_y\) uses the direction from the mouth pointing toward the tile. \(\cos_x\) uses the direction from the tile pointing toward the mouth. If we used one shared \(\omega\) dotted into both normals, we'd end up flipping a sign. Fortunately, both cosines are positive for every mouth point across both instrument points. The printed minima are \(\min\cos_x=0.2999400179940021\) at the lip and \(0.2532209156959798\) at the miss, alongside \(\min\cos_y=0.4543108504242547\) at the lip and \(0.2991616902194818\) at the miss.
 
-**BSDF.** Lambert plus a Lafortune Phong lobe about \(R\). Achromatic. The same split as the importance-sampling note.
+**BSDF.** This is Lambert plus a Lafortune Phong lobe aligned around \(R\). It's achromatic, using the exact same split we detailed in the importance-sampling note.
 
-\[
-f_r(\omega_i)=\frac{k_d}{\pi}+k_s\frac{s+2}{2\pi}\,(R\cdot\omega_i)_+^{\,s}.
-\]
+\[f_r(\omega_i)=\frac{k_d}{\pi}+k_s\frac{s+2}{2\pi}\,(R\cdot\omega_i)_+^{\,s}.\]
 
-\[
-\begin{aligned}
-p_{\cos}(\omega)&=\frac{n_x\cdot\omega}{\pi}, & n_x\cdot\omega>0,\\
-p_{\mathrm{phong}}(\omega)&=\frac{s+1}{2\pi}\,(R\cdot\omega)_+^{\,s}, & R\cdot\omega>0,\\
-p_{\mathrm{bsdf}}(\omega)&=\pi_d\,p_{\cos}(\omega)+\pi_s\,p_{\mathrm{phong}}(\omega).
-\end{aligned}
-\]
+\[\begin{aligned} p_{\cos}(\omega)&=\frac{n_x\cdot\omega}{\pi}, & n_x\cdot\omega>0,\\ p_{\mathrm{phong}}(\omega)&=\frac{s+1}{2\pi}\,(R\cdot\omega)_+^{\,s}, & R\cdot\omega>0,\\ p_{\mathrm{bsdf}}(\omega)&=\pi_d\,p_{\cos}(\omega)+\pi_s\,p_{\mathrm{phong}}(\omega). \end{aligned}\]
 
-Locked values: \(k_d=0.34\), \(k_s=0.28\), \(s=160\). Then \(\pi_d=0.34/0.62\) and \(\pi_s=0.28/0.62\). The metrics table prints \(\pi_d=0.5483870967741935\) and \(\pi_s=0.4516129032258064\).
+Our locked values for the run are \(k_d=0.34\), \(k_s=0.28\), and \(s=160\). That puts \(\pi_d=0.34/0.62\) and \(\pi_s=0.28/0.62\). Our metrics table prints these explicitly as \(\pi_d=0.5483870967741935\) and \(\pi_s=0.4516129032258064\).
 
-\((s+2)\) is the BRDF constant. \((s+1)\) is the pdf constant. At \(s=160\) they differ by \(1/161\), so a white furnace at the hero exponent will not show a swap. The ratio \(f_{\mathrm{spec}}/p_{\mathrm{phong}}=k_s(s+2)/(s+1)\) is an algebraic check. The furnace that can see a swap runs at \(s=8\). Its mean is \(0.619901030295896\) against \(k_d+k_s=0.62\), a relative gap of about \(1.6\times 10^{-4}\).
+Notice that \((s+2)\) is the BRDF constant, while \((s+1)\) is the pdf constant. At \(s=160\), they only differ by \(1/161\), so testing a white furnace at our hero exponent won't easily catch a swap bug. The ratio \(f_{\mathrm{spec}}/p_{\mathrm{phong}}=k_s(s+2)/(s+1)\) serves as an algebraic check. If you want a furnace that actually exposes a swap, run it at \(s=8\). At that exponent, the mean is \(0.619901030295896\) against \(k_d+k_s=0.62\), exposing a relative gap of about \(1.6\times 10^{-4}\).
 
-Sampling the BSDF arm is one technique. Draw \(\xi_c,\xi_1,\xi_2\). If \(\xi_c<\pi_d\), draw the cosine hemisphere (\(\cos\theta=\sqrt{\xi_1}\), \(\phi=2\pi\xi_2\)). Otherwise draw the Phong lobe about \(R\) (\(\cos\theta=\xi_1^{1/(s+1)}\), \(\phi=2\pi\xi_2\)). The contribution divides by the mixture \(p_{\mathrm{bsdf}}(\omega)\). The balance weight has to see that marginal density. Dividing by the component density alone would be a different estimator. If \(n_x\cdot\omega\le 0\), the integrand is 0, the sample still counts, and \(p_{\mathrm{phong}}\) is not renormalized. That is the importance-sampling horizon rule. At both locked points the lobe axis is above the horizon, and both horizon fractions print 0.
+Sampling the BSDF arm acts as a single technique. We draw \(\xi_c,\xi_1,\xi_2\). If \(\xi_c<\pi_d\), we draw from the cosine hemisphere (\(\cos\theta=\sqrt{\xi_1}\), \(\phi=2\pi\xi_2\)). Otherwise, we draw from the Phong lobe around \(R\) (\(\cos\theta=\xi_1^{1/(s+1)}\), \(\phi=2\pi\xi_2\)). The contribution is then divided by the full mixture \(p_{\mathrm{bsdf}}(\omega)\). It's critical that the balance weight sees that marginal density—if we just divided by the individual component density, we'd be building a completely different estimator. If \(n_x\cdot\omega\le 0\), the integrand goes to 0, the sample still counts, and \(p_{\mathrm{phong}}\) isn't renormalized. That's our importance-sampling horizon rule at work. At both of our locked points, the lobe axis sits above the horizon, so both horizon fractions safely print as 0.
 
-**Light density.** Mouth in the front half-space, and the ray hits the rectangle:
+**Light density.** Assuming the mouth sits in the front half-space and the ray actually hits the rectangle:
 
-\[
-p_{\mathrm{light}}(\omega)=\frac{1}{A}\,\frac{r^2}{\cos_y}.
-\]
+\[p_{\mathrm{light}}(\omega)=\frac{1}{A}\,\frac{r^2}{\cos_y}.\]
 
-Otherwise \(p_{\mathrm{light}}=0\). This is the area-Jacobian factor. A sample that misses the rectangle contributes 0 because \(L_i=0\) there. The area draw, with \(u,v\in[0,1)\), is
+Otherwise, \(p_{\mathrm{light}}=0\). This is simply our area-Jacobian factor. A sample missing the rectangle contributes exactly 0 because \(L_i=0\) there. The area draw itself, using \(u,v\in[0,1)\), looks like this:
 
-\[
-y=\bigl(X_0+u(X_1-X_0),\; Y_0+v(Y_1-Y_0),\; 0\bigr).
-\]
+\[y=\bigl(X_0+u(X_1-X_0),\; Y_0+v(Y_1-Y_0),\; 0\bigr).\]
 
-**Integrand**, mouth only. The analytic fill is outside the three arms.
+**Integrand**, mouth only. (The analytic fill sits completely outside these three arms).
 
-\[
-\ell(\omega_i)=f_r(\omega_i)\,L_i\,\cos_x
-\]
+\[\ell(\omega_i)=f_r(\omega_i)\,L_i\,\cos_x\]
 
-when the ray hits the mouth and both cosines are positive, and \(\ell=0\) otherwise.
+when the ray successfully hits the mouth and both cosines are positive. Otherwise, \(\ell=0\).
 
-\[
-L_o=\int_{\Omega^+}\ell(\omega)\,d\omega.
-\]
+\[L_o=\int_{\Omega^+}\ell(\omega)\,d\omega.\]
 
-The light-arm term has two writings of the same quantity:
+The light-arm term gives us two ways to write the exact same quantity:
 
-\[
-\frac{\ell}{p_{\mathrm{light}}}=f_r\,L_i\,\cos_x\,\cos_y\,\frac{A}{r^2}.
-\]
+\[\frac{\ell}{p_{\mathrm{light}}}=f_r\,L_i\,\cos_x\,\cos_y\,\frac{A}{r^2}.\]
 
-The emitter cosine in the numerator is the geometry term. It is the Jacobian undone, not a second copy of it. An extra \(\cos_y\), or a missing \(r^2\), fails the Lambert reduction. That failure is a check. It has no frame. The measured omission floors from the inspection-bench note are not this note's result.
+That emitter cosine in the numerator is just the geometry term. It's the Jacobian undone, not a second copy of it. If you throw in an extra \(\cos_y\), or forget the \(r^2\), the Lambert reduction breaks immediately. We rely on that failure as a check. It doesn't get a frame. The measured omission floors from the inspection-bench note are not the result of this note.
 
-**Balance, equal counts.** The general weight for technique \(i\) with \(n_i\) samples is \(n_i p_i\big/\sum_j n_j p_j\). This note gives the two techniques the same count \(n=N/2\), so the counts cancel:
+**Balance, equal counts.** For any technique \(i\) taking \(n_i\) samples, the general weight is \(n_i p_i\big/\sum_j n_j p_j\). Because this note gives both techniques the exact same count \(n=N/2\), those counts gracefully cancel out:
 
-\[
-w_{\mathrm{bsdf}}=\frac{p_{\mathrm{bsdf}}}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}},\qquad
-w_{\mathrm{light}}=\frac{p_{\mathrm{light}}}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}}.
-\]
+\[w_{\mathrm{bsdf}}=\frac{p_{\mathrm{bsdf}}}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}},\qquad w_{\mathrm{light}}=\frac{p_{\mathrm{light}}}{p_{\mathrm{bsdf}}+p_{\mathrm{light}}}.\]
 
-On the support of \(\ell\), both densities are positive at the locked points. The mouth lies in the front hemisphere, so the cosine piece of \(p_{\mathrm{bsdf}}\) is positive, and \(p_{\mathrm{light}}\) is positive on the mouth. There \(w_{\mathrm{bsdf}}+w_{\mathrm{light}}=1\). The lip-direction pair sums to 1 within the \(10^{-12}\) check.
+Everywhere on the support of \(\ell\), both densities are strictly positive at our locked points. Because the mouth sits in the front hemisphere, the cosine piece of \(p_{\mathrm{bsdf}}\) stays positive, and \(p_{\mathrm{light}}\) is positive on the mouth. Right there, \(w_{\mathrm{bsdf}}+w_{\mathrm{light}}=1\). The lip-direction pair sums perfectly to 1 within our \(10^{-12}\) check.
 
-Off the mouth, \(p_{\mathrm{light}}=0\). A BSDF sample that misses has \(w_{\mathrm{bsdf}}=1\) and an integrand that is already 0. A direction with \(p_{\mathrm{bsdf}}=0\) and \(p_{\mathrm{light}}>0\) carries \(w_{\mathrm{light}}=1\). The weights partition unity wherever the integrand can be nonzero.
+Off the mouth entirely, \(p_{\mathrm{light}}=0\). If a BSDF sample misses, it gets \(w_{\mathrm{bsdf}}=1\), but its integrand is already 0. Conversely, any direction where \(p_{\mathrm{bsdf}}=0\) and \(p_{\mathrm{light}}>0\) simply gets \(w_{\mathrm{light}}=1\). The weights cleanly partition unity anywhere the integrand has a chance to be nonzero.
 
-Stable evaluation, used when \(p_{\mathrm{light}}>0\): \(w_{\mathrm{light}}=1/(1+p_{\mathrm{bsdf}}/p_{\mathrm{light}})\). Same number as the ratio.
+For stable evaluation (used whenever \(p_{\mathrm{light}}>0\)): just use \(w_{\mathrm{light}}=1/(1+p_{\mathrm{bsdf}}/p_{\mathrm{light}})\). It yields the exact same number as the raw ratio.
 
-**Three arms, budget \(N\).** \(N\in\{16,64,256,1024\}\). Budget means integrand evaluations. Evaluating the other pdf for a balance weight is not a second sample. The single arms do not receive extra samples to pay for that pdf.
+**Three arms, budget \(N\).** We're looking at \(N\in\{16,64,256,1024\}\). By "budget", we mean strictly the number of integrand evaluations. Evaluating the *other* pdf to build a balance weight doesn't count as a second sample. We don't give the single arms extra samples to pay for calculating that pdf.
 
-\[
-\begin{aligned}
-\widehat L_{\mathrm{bsdf}}&=\frac1N\sum_{j=1}^{N}\frac{\ell(\omega_j)}{p_{\mathrm{bsdf}}(\omega_j)},\\[4pt]
-\widehat L_{\mathrm{light}}&=\frac1N\sum_{j=1}^{N}\frac{\ell(\omega_j)}{p_{\mathrm{light}}(\omega_j)},\\[4pt]
-\widehat L_{\mathrm{bal}}
-&=\frac1n\sum_{j=1}^{n} w_{\mathrm{bsdf}}(\omega_j)\,\frac{\ell(\omega_j)}{p_{\mathrm{bsdf}}(\omega_j)}
-+\frac1n\sum_{j=1}^{n} w_{\mathrm{light}}(y_j)\,\frac{\ell(y_j)}{p_{\mathrm{light}}(y_j)}.
-\end{aligned}
-\]
+\[\begin{aligned} \widehat L_{\mathrm{bsdf}}&=\frac1N\sum_{j=1}^{N}\frac{\ell(\omega_j)}{p_{\mathrm{bsdf}}(\omega_j)},\\ \widehat L_{\mathrm{light}}&=\frac1N\sum_{j=1}^{N}\frac{\ell(\omega_j)}{p_{\mathrm{light}}(\omega_j)},\\ \widehat L_{\mathrm{bal}} &=\frac1n\sum_{j=1}^{n} w_{\mathrm{bsdf}}(\omega_j)\,\frac{\ell(\omega_j)}{p_{\mathrm{bsdf}}(\omega_j)} +\frac1n\sum_{j=1}^{n} w_{\mathrm{light}}(y_j)\,\frac{\ell(y_j)}{p_{\mathrm{light}}(y_j)}. \end{aligned}\]
 
-The \(1/n\) is required. A factor \(1/N\) in front of each balance sum cuts the estimator in half. The technique split is deterministic: the first \(n\) draws of the BSDF stream and the first \(n\) of the light stream.
+That \(1/n\) is absolutely required. If you put a \(1/N\) in front of each balance sum, you accidentally cut the estimator in half. The technique split is purely deterministic: the first \(n\) draws come from the BSDF stream, and the first \(n\) come from the light stream.
 
-**Fill**, after the arm, diffuse only. The Phong term does not see it. Both instruments have the mouth fully in the front hemisphere, so
+**Fill**, computed after the arm, diffuse only. The Phong term never sees it. Because both instruments keep the mouth fully in the front hemisphere, we get:
 
-\[
-L_{o,\mathrm{fill}}=\frac{k_d}{\pi}\,L_{\mathrm{fill}}\,(\pi-\Omega_\perp).
-\]
+\[L_{o,\mathrm{fill}}=\frac{k_d}{\pi}\,L_{\mathrm{fill}}\,(\pi-\Omega_\perp).\]
 
-The ladder and the signed means compare the mouth integral to the quadrature \(L_o\). Fill is not inside those numbers. The photographs add this one analytic term, the same term on every arm. Matte surfaces use the analytic Lambert expression with their own albedo in place of \(k_d\), and they never take a Phong sample. Fill radiance is \((0.012,\,0.014,\,0.018)\), \(Y=1.3863600000\times 10^{-2}\).
+When you look at the ladder and the signed means, they're comparing the mouth integral strictly against the quadrature \(L_o\). The fill is not inside those numbers. The photographs add this one analytic term—the exact same term across every arm. Matte surfaces fall back to the analytic Lambert expression using their own albedo in place of \(k_d\), and they never take a Phong sample. Fill radiance sits at \((0.012,\,0.014,\,0.018)\), with \(Y=1.3863600000\times 10^{-2}\).
 
-**Truth.** The diffuse piece is the signed four-corner projected solid angle. Vertex order is part of the sign. The run prints \(\Omega_\perp>0\) at both points.
+**Truth.** The diffuse piece is just the signed four-corner projected solid angle. Vertex order inherently handles the sign. Our run prints \(\Omega_\perp>0\) at both points.
 
-\[
-E=L_i\,\Omega_\perp,\qquad L_{o,d}=\frac{k_d}{\pi}\,E.
-\]
+\[E=L_i\,\Omega_\perp,\qquad L_{o,d}=\frac{k_d}{\pi}\,E.\]
 
-The specular piece has no four-corner form for this Phong. The truth of \(L_o\), specular included, is a tensor-product Gauss–Legendre rule on the mouth's parameter square, \(8\times 8\) cells, order 40 in each cell. The metrics table names it `gauss_legendre_8x40`. A \(6\times 32\) rule agrees with it within a relative \(10^{-8}\) on \(Y\) at both points. The diffuse-only quadrature agrees with the contour \(L_{o,d,Y}\) within a relative \(10^{-9}\). The published \(L_{o,Y}\) is the order-40 value.
+As for the specular piece, there is no tidy four-corner form for this specific Phong model. The absolute truth of \(L_o\), specular included, is computed via a tensor-product Gauss–Legendre rule across the mouth's parameter square, using \(8\times 8\) cells with order 40 in each cell. The metrics table refers to this as `gauss_legendre_8x40`. A lighter \(6\times 32\) rule agrees with it to within a relative \(10^{-8}\) on \(Y\) at both points. The diffuse-only quadrature agrees with the contour \(L_{o,d,Y}\) to within a relative \(10^{-9}\). The published \(L_{o,Y}\) you see here is the heavy order-40 value.
 
-**Why \(s=160\).** The Phong mass sits on a cap of order \(2\pi/(s+1)\approx 0.039\,\mathrm{sr}\). At the lip the mouth is several times that cap, so area samples miss the peak while Phong samples aimed at the inset hit land on the mouth. At the miss, \((R\cdot\omega)^{160}\) on the whole rectangle is negligible beside the Lambert term, which is what the miss specular/diffuse ratio records. An exponent wide enough to cover this mouth would stop the light arm from fireflying. One exponent. No exponent plate.
+**Why \(s=160\).** The Phong mass is concentrated tightly on a cap of order \(2\pi/(s+1)\approx 0.039\,\mathrm{sr}\). At the lip, the mouth is several times larger than that cap, so area samples mostly miss the peak, while Phong samples aimed right at the inset hit comfortably land on the mouth. Down at the miss, evaluating \((R\cdot\omega)^{160}\) over the whole rectangle is utterly negligible compared to the Lambert term, which is exactly what the miss specular/diffuse ratio is telling us. If we used an exponent wide enough to cover this mouth, it would stop the light arm from fireflying entirely. We're using one exponent, so there is no exponent plate.
 
-**Error.** \(K=32\) independent prefixes, seed **20260926**, SplitMix64, the top 53 bits mapped to \([0,1)\). Stream 0 opens at \(0.7466817377103402\), \(0.669510631620856\), \(0.5708748435191999\). The estimate at \(N\) is the prefix. Error is on Rec.709 \(Y\) (coefficients \(0.2126\), \(0.7152\), \(0.0722\)) against the quadrature:
+**Error.** We use \(K=32\) independent prefixes, seeded at **20260926** via SplitMix64, mapping the top 53 bits directly to \([0,1)\). Stream 0 opens with \(0.7466817377103402\), \(0.669510631620856\), \(0.5708748435191999\). The estimate at \(N\) is simply the prefix. We measure error on Rec.709 \(Y\) (coefficients \(0.2126\), \(0.7152\), \(0.0722\)) directly against the quadrature:
 
-\[
-\mathrm{rel}_k(N)=\frac{\widehat L_{k,Y}(N)-L_{o,Y}}{L_{o,Y}},
-\qquad
-\mathrm{rmse}(N)=\sqrt{\frac1K\sum_k\mathrm{rel}_k(N)^2}.
-\]
+\[\mathrm{rel}_k(N)=\frac{\widehat L_{k,Y}(N)-L_{o,Y}}{L_{o,Y}}, \qquad \mathrm{rmse}(N)=\sqrt{\frac1K\sum_k\mathrm{rel}_k(N)^2}.\]
 
-The draws are IID. The statistic that has to fall is the RMSE across the \(K\) prefixes. One prefix of a heavy-tailed light arm can wiggle while the estimator is unbiased.
+The draws are IID. The statistic we actually need to see fall is the RMSE across the \(K\) prefixes. A single prefix of a heavy-tailed light arm can wiggle wildly while the overall estimator remains completely unbiased.
 
-**Standard error on the variance plate**, from the same \(N=64\) draws as the three-arm photograph. For a single arm, the sample variance of the Rec.709 \(Y\) terms uses \(N-1\), and \(\mathrm{stderr}=\sqrt{s^2/N}\). For balance, \(n=32\) terms from each technique, each term already multiplied by its balance weight, and
+**Standard error on the variance plate**, pulled from the same \(N=64\) draws as the three-arm photograph. For a single arm, the sample variance of the Rec.709 \(Y\) terms uses \(N-1\), giving us \(\mathrm{stderr}=\sqrt{s^2/N}\). For balance, we pull \(n=32\) terms from each technique, with each term already multiplied by its respective balance weight, yielding:
 
-\[
-\mathrm{stderr}=\sqrt{\frac{s_b^2}{n}+\frac{s_l^2}{n}}.
-\]
+\[\mathrm{stderr}=\sqrt{\frac{s_b^2}{n}+\frac{s_l^2}{n}}.\]
 
-The two techniques stay separate. They are not one population of \(N\) numbers, and the variance is not divided by \(N\) a second time. Fill is a constant on a pixel and sits outside this accumulator. The quoted disk figures are the mean of that per-pixel standard error inside a 12 mm radius.
+The two techniques are strictly kept separate. They aren't treated as one giant population of \(N\) numbers, and the variance isn't divided by \(N\) a second time. Since fill is a constant on a given pixel, it sits outside this accumulator. The quoted disk figures are simply the mean of that per-pixel standard error evaluated inside a 12 mm radius.
 
 ---
 
 ## The kiln mouth
 
-World in meters, \(Y\) up, right-handed. The only emitter is the muffle mouth: plane \(z=0\), \(x\in[-0.22,\,0.22]\), \(y\in[1.05,\,1.64]\), outward normal \(+Z\). Width \(0.44\,\mathrm{m}\), height \(0.59\,\mathrm{m}\), \(A=0.2596\,\mathrm{m}^2\). One-sided: \(z<0\) emits nothing. Exposure \(1.00\).
+World in meters, \(Y\) up, right-handed. The only emitter in the scene is the muffle mouth: bounded by plane \(z=0\), \(x\in[-0.22,\,0.22]\), \(y\in[1.05,\,1.64]\), with an outward normal of \(+Z\). That gives a width of \(0.44\,\mathrm{m}\), height of \(0.59\,\mathrm{m}\), and \(A=0.2596\,\mathrm{m}^2\). It's one-sided, so \(z<0\) emits nothing. Exposure is set to \(1.00\).
 
-The eye is the reflection construction that puts the lip's mirror ray on the chosen hit, so the inset is an identity.
+The eye is just the reflection construction that maps the lip's mirror ray cleanly onto the chosen hit, making the inset an identity.
 
-| | value |
+|  | value |
 | --- | --- |
 | eye | \((0.1453673781693574,\; 1.505862424473805,\; 1.453673781693575)\) |
 | target | \((0,\; 1.18,\; 0.28)\) |
 | vertical FOV | \(46^\circ\) |
 
-| | lip | miss |
+|  | lip | miss |
 | --- | --- | --- |
 | \(\Omega_\perp\) | \(0.3212572527424995\,\mathrm{sr}\) | \(0.2742559005975028\,\mathrm{sr}\) |
 | \(E_Y\) | \(1.666136489898425\) | \(1.422373377268829\) |
@@ -260,9 +221,9 @@ The eye is the reflection construction that puts the lip's mirror ray on the cho
 | \(E_Y/E_{\mathrm{fill},Y}\) | \(42.61218441186641\) | \(35.78152895218164\) |
 | \(n\cdot\omega_o\) | \(0.4966085446506598\) | \(0.4366167162249477\) |
 
-\(f_r\) is achromatic, so \(L_o\) and \(E\) share one scalar across channels with \(L_i\). The mouth dominates the fill at both points. The glaze tile is the only Phong surface. Its top is \(y=0.900\). Both instruments and the 12 mm disks around them lie on that top. The shelf, the cones, the rib, the firebrick, and the floor are matte. The cones and the rib sit on the camera side of both instruments, so a segment from either instrument to the mouth does not meet them. The estimator is unoccluded. Corners the mouth does not face are dark, because the back wall is the mouth's own plane and fill is a constant Lambert ambient. Nothing bounces. There is no contact shadow under a cone.
+Because \(f_r\) is achromatic, \(L_o\) and \(E\) share a single scalar across all channels with \(L_i\). The mouth easily dominates the fill at both sample points. The glaze tile is the only Phong surface in the entire scene, and its top surface sits at \(y=0.900\). Both of our instruments—and the 12 mm disks drawn around them—lie flush on that top surface. Everything else (the shelf, cones, rib, firebrick, and floor) is purely matte. The cones and rib sit strictly on the camera side of both instruments, so a line segment drawn from either instrument straight to the mouth will never intersect them. The estimator runs completely unoccluded. Corners facing away from the mouth are dark simply because the back wall sits exactly on the mouth's own plane, and our fill is just a constant Lambert ambient. Nothing bounces. There are no contact shadows beneath the cones.
 
-The distance ratios \(r_{\max}/r_{\mathrm{closest}}\) are \(2.06098792642672\) at the lip and \(2.89530225013162\) at the miss. They say the Jacobian is not a constant on this mouth. They are not an omission floor, and this note does not plot one.
+The distance ratios \(r_{\max}/r_{\mathrm{closest}}\) sit at \(2.06098792642672\) for the lip and \(2.89530225013162\) for the miss. That tells us the Jacobian isn't just a constant across this mouth. But to be clear, they aren't an omission floor, and we aren't plotting one here.
 
 ---
 
@@ -286,13 +247,13 @@ Miss, against \(L_{o,Y}=0.1539368726945163\):
 | 256 | \(0.2255597833559149\) | \(0.04945588327264005\) | \(0.06214339069118716\) |
 | 1024 | \(0.121007411701054\) | \(0.02502486831590404\) | \(0.03449795333963287\) |
 
-Every series falls at every rung. Each \(N=16\) value is more than five times the matching \(N=1024\) value. The check was a fall at every rung and a factor of at least three. No numeric RMSE target was set in advance. The table is the result.
+Look at how every series cleanly falls at every rung. Each \(N=16\) value is more than five times higher than its matching \(N=1024\) value. Our check was simply that it falls at every rung and drops by a factor of at least three. We didn't set a hard numeric RMSE target in advance—the table you see is just the raw result.
 
-Dividing the printed keys, light over BSDF at the lip is about \(5.10\) at \(N=64\) and about \(2.08\) at \(N=1024\). BSDF over light at the miss is about \(7.00\) at \(N=64\) and about \(4.84\) at \(N=1024\). The same direction, without that numeric factor, holds at \(N=16\) and at \(N=256\): the light arm is the worse one at the lip, the BSDF arm is the worse one at the miss, and balance is below that worse arm. The winners are the literals `bsdf`, `bsdf`, `light`, `light`.
+If you divide the printed keys, light over BSDF at the lip runs about \(5.10\) at \(N=64\) and about \(2.08\) at \(N=1024\). Over at the miss, BSDF over light is roughly \(7.00\) at \(N=64\) and \(4.84\) at \(N=1024\). The same dynamic, even without those exact numeric factors, holds true at \(N=16\) and \(N=256\): the light arm is consistently the worse one at the lip, the BSDF arm is the worse one at the miss, and balance comfortably tucks itself below whichever arm is failing. The winners are exactly the literals `bsdf`, `bsdf`, `light`, `light`.
 
-Balance stays above the better arm on every rung. At the lip at \(N=1024\) it is \(0.0394574853759122\) against the BSDF arm's \(0.03737322030225639\). At the miss at \(N=1024\) it is \(0.03449795333963287\) against the light arm's \(0.02502486831590404\). The gap to the worse arm is the one the weight is there to close.
+Notice that balance stays above the better arm on every single rung. At the lip at \(N=1024\), it's \(0.0394574853759122\) against the BSDF arm's \(0.03737322030225639\). At the miss at \(N=1024\), it hits \(0.03449795333963287\) against the light arm's superior \(0.02502486831590404\). That gap to the worse arm is precisely what the weight is designed to close.
 
-The lip light arm is the heavy tail. A few area samples carry the lobe. Its RMSE falls from \(0.7304631415769416\) to \(0.07772808316858408\), faster than the BSDF arm, and it is still the worse of the two at \(N=1024\). The miss BSDF arm is the other heavy tail, and it is still the worse arm at the top of the ladder.
+The lip light arm is our heavy tail. Just a few lucky area samples end up carrying the lobe. Its RMSE plummets from \(0.7304631415769416\) down to \(0.07772808316858408\)—dropping faster than the BSDF arm—but it's still definitively the worse of the two at \(N=1024\). The miss BSDF arm is our other heavy tail, and it remains the worse arm even at the top of the ladder.
 
 Signed means at \(N=1024\):
 
@@ -302,9 +263,9 @@ Signed means at \(N=1024\):
 | light | \(-0.003899555994426759\) | \(-0.008199037159731746\) |
 | balance | \(-0.01277686469507701\) | \(-0.01175426953620759\) |
 
-The unbiasedness check is \(\lvert\mathrm{mean\_rel}(1024)\rvert\le 5\,\mathrm{rmse}(1024)/\sqrt{K}\) with \(K=32\). A bias floor would put the absolute mean on the scale of the RMSE. Every arm at both points sits inside the gate. The largest absolute mean at the lip is the balance arm, about a third of its RMSE. The largest at the miss is the BSDF arm, just under a quarter of its RMSE.
+The unbiasedness check we use is \(\lvert\mathrm{mean\_rel}(1024)\rvert\le 5\,\mathrm{rmse}(1024)/\sqrt{K}\) with \(K=32\). If there were a bias floor, the absolute mean would land on the same scale as the RMSE. Every arm at both sample points comfortably clears the gate. The largest absolute mean at the lip is from the balance arm, sitting at about a third of its RMSE. The largest at the miss is the BSDF arm, hovering just under a quarter of its RMSE.
 
-Disk means of the \(N=64\) standard error, the numbers drawn on the teaching pin:
+Here are the disk means of the \(N=64\) standard error, the exact numbers drawn on the teaching pin:
 
 | disk | BSDF | light | balance |
 | --- | --- | --- | --- |
@@ -315,7 +276,7 @@ Disk means of the \(N=64\) standard error, the numbers drawn on the teaching pin
 
 ## Quote the metrics. Do not quote the beauty photographs as meters.
 
-CPU double, before Neutral. Seed **20260926**. Beauty display is Khronos PBR Neutral, \(e=1.00\), constants not re-fit. The RMSE series are the tables in the previous section.
+CPU double, before Neutral. Seed **20260926**. Beauty display is Khronos PBR Neutral, \(e=1.00\), with constants not re-fit. The RMSE series are the tables in the previous section.
 
 | item | value |
 | --- | --- |
@@ -354,29 +315,21 @@ CPU double, before Neutral. Seed **20260926**. Beauty display is Khronos PBR Neu
 | ground truth | **gauss_legendre_8x40** |
 | asserts | **53 pass / 0 fail** |
 
-A few shortenings are for the eye only. Lip light disk standard error **0.308** is \(0.3079049113038804\). Mouth area **0.2596** is the bound product \(0.2595999999999999\). None of these shortenings replaces the table.
+A few shortenings are strictly for the eye. Lip light disk standard error **0.308** translates to \(0.3079049113038804\). Mouth area **0.2596** is actually the bound product \(0.2595999999999999\). Keep in mind, none of these quick visual shortenings replace the full precision table.
 
 ---
 
 ## Honesty gaps
 
-1. **The meter is the CPU double contour, the double Gauss–Legendre rule, and the double estimator.** The room drawn for the photograph is float32. The metrics table is not read off a JPEG. \((R\cdot\omega)^{160}\) stays in double. A float32 evaluation of that power underflows on the lobe shoulder and would bias the lip. A mouth pixel reads back \(R=7.5\) before Neutral. The framebuffer is linear. One front-facing shelf pixel agrees between the CPU double Lambert value and the float32 shading to \(2.8\times 10^{-6}\) relative on \(Y\). The build's linear reading of the hero pixel nearest the lip is the balance sample, \(Y\,0.902\), against an analytic Lambert stand-in \(Y\,0.184\). Those two readings are not keys in the metrics table.
-
-2. **Neutral may shoulder an \(N=64\) light-arm firefly to white.** The estimator is not clamped before the standard error is formed. The size of the firefly is the standard error on the variance plate. Energy after Neutral is not a claim. The constants are the tone-mapping note's, \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), \(K_d=0.15\), not re-fit.
-
-3. **The variance plate is float standard error, authored in sRGB.** It shares one scale, \(0.9246898237889386\). A per-panel autoscale would still pass the disk inequalities and would still be the wrong plate. The disk means are averages. The scale maximum is one tile pixel.
-
-4. **Balance sits below the worse arm and above the better arm.** At the lip it tracks the BSDF series. At the miss it tracks the light series. The weight is doing the mixture. It is not a claim that balance beats the arm that already matched the integrand.
-
-5. **The integral is unoccluded.** The back wall is the mouth's plane, so it does not see the emitter. Corners are dark because fill is a constant Lambert ambient and nothing bounces. Specular fill is omitted on purpose: a Phong lobe over a constant dome would add a highlight that is not the mouth. There is no contact shadow under a cone. There is no visibility term.
-
-6. **One prefix is not the monotone statistic.** The locked meter is RMSE over \(K=32\). The lip light arm is heavy-tailed. A single walk of length 1024 can wiggle while the weight is right.
-
-7. **The Lambert residual is the band at a final count of 16384.** `lambert_reduction_max_abs_mean_rel` \(=0.002711173413998751\). The check is \(k_s=0\) at the lip, eight replicates, truth the contour \(L_{o,d}\), and the printed number is the largest absolute mean relative error of the three arms at that final count. On these replicates the cosine arm is a hit-or-miss draw, \(\Omega_\perp/\pi\) about a tenth. The absolute mean relative error was \(0.024\) at 512 and \(0.017\) at 4096, both outside \(10^{-2}\), while the light arm stayed quiet. The fall from a prefix of 32 to a prefix of 512 is a separate check, and it still holds. A dropped \(r^2\), an extra \(\cos_y\), or a balance average that puts \(1/N\) in front of each sum still misses the band by a wide margin. The count 16384 is the sample count behind this one residual. It is not a beauty rung and not a second ladder.
-
-8. **The white furnace is \(s=8\), not the hero exponent.** Mean \(0.619901030295896\) against \(0.62\). Fixture S, \(\Omega_\perp=0.002397921970815975\,\mathrm{sr}\), is the on-axis contour. Neither test is a frame.
-
-9. **The JPEG is 8-bit display-referred.** \(\Omega_\perp\), \(L_o\), RMSE, signed means, and standard errors live in the double estimator and in the table above. The room is one fragment shader on llvmpipe. There is no GPU, wavefront, or frame-time claim.
+1. **The actual meter is the CPU double contour, the double Gauss–Legendre rule, and the double estimator.** The room we render for the photograph uses float32. The metrics table isn't read off a JPEG. We keep \((R\cdot\omega)^{160}\) in double precision because a float32 evaluation of that power would aggressively underflow on the lobe shoulder, heavily biasing the lip. A mouth pixel reads back \(R=7.5\) before Neutral even touches it. The framebuffer is perfectly linear. One front-facing shelf pixel cleanly agrees between the CPU double Lambert value and the float32 shading to a relative \(2.8\times 10^{-6}\) on \(Y\). Our build's linear reading of the hero pixel nearest the lip is the balance sample at \(Y\,0.902\), against an analytic Lambert stand-in at \(Y\,0.184\). Those two readings are not keys in our metrics table.
+2. **Neutral might easily shoulder an \(N=64\) light-arm firefly right to white.** We do not clamp the estimator before forming the standard error. The absolute size of the firefly is simply the standard error on the variance plate. We aren't making claims about energy *after* Neutral is applied. The constants are exactly from the tone-mapping note: \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), \(K_d=0.15\), and they are not re-fit.
+3. **The variance plate maps float standard error, authored in sRGB.** It shares a single scale anchored at \(0.9246898237889386\). If we used a per-panel autoscale, it would still technically pass the disk inequalities, but it would fundamentally be the wrong plate. The disk means are strictly averages, while the scale maximum is drawn from one single tile pixel.
+4. **Balance sits below the worse arm and above the better arm.** At the lip, it tracks the BSDF series. At the miss, it tracks the light series. The weight handles the mixture exactly as designed, but this is not a claim that balance somehow beats the arm that already perfectly matched the integrand.
+5. **The integral is completely unoccluded.** Because the back wall is coplanar with the mouth, it doesn't see the emitter at all. Corners stay dark because the fill is a constant Lambert ambient and absolutely nothing bounces. We intentionally omitted specular fill: if we put a Phong lobe over a constant dome, we'd add a highlight that isn't the mouth. You won't find a contact shadow under a cone, and there is no visibility term.
+6. **A single prefix is not a monotone statistic.** The locked meter relies on RMSE over \(K=32\). The lip light arm has a notoriously heavy tail. A single walk of length 1024 can wiggle wildly while the underlying weight remains perfectly correct.
+7. **The Lambert residual is the band evaluated at a final count of 16384.** We have `lambert_reduction_max_abs_mean_rel` \(=0.002711173413998751\). The check uses \(k_s=0\) at the lip across eight replicates, treating the contour \(L_{o,d}\) as truth. The printed number is the largest absolute mean relative error of the three arms at that final count. On these specific replicates, the cosine arm acts as a hit-or-miss draw, with \(\Omega_\perp/\pi\) sitting around a tenth. The absolute mean relative error was \(0.024\) at 512 and \(0.017\) at 4096—both landing outside \(10^{-2}\)—while the light arm stayed perfectly quiet. The fall from a prefix of 32 down to a prefix of 512 serves as a separate check, and it safely holds. If you drop \(r^2\), add an extra \(\cos_y\), or build a balance average that mistakenly puts \(1/N\) in front of each sum, you will miss the band by a massive margin. The count of 16384 is just the sample count behind this single residual; it's not a beauty rung and certainly not a second ladder.
+8. **The white furnace runs at \(s=8\), not the hero exponent.** Mean \(0.619901030295896\) against \(0.62\). Fixture S, with \(\Omega_\perp=0.002397921970815975\,\mathrm{sr}\), acts as the on-axis contour. To be clear, neither test constitutes a frame.
+9. **The JPEG is simply 8-bit display-referred.** Everything that matters—\(\Omega_\perp\), \(L_o\), RMSE, signed means, and standard errors—lives directly inside the double estimator and in the table above. The room is drawn via a single fragment shader on llvmpipe. We make zero GPU, wavefront, or frame-time claims here.
 
 ---
 
@@ -394,21 +347,21 @@ A few shortenings are for the eye only. Lip light disk standard error **0.308** 
 | Neutral \(e\) | **1.00** |
 | Estimator | CPU double. The shader draws the analytic room. The CPU overwrites tile pixels. |
 
-**Can claim:** on this OSMesa / llvmpipe build, a CPU double estimator drew a Phong–Lambert mixture and a uniform area on one unoccluded rectangle, converted the area draw with the legal Jacobian, and combined the two with the balance weight at equal technique counts. At both locked points, all three arms' \(K=32\) relative RMSE fell from \(N=16\) to \(N=1024\) against the quadrature \(L_o\), and the balance RMSE sat below the worse single arm at every rung. The lip's winner was the BSDF arm at \(N=64\) and at \(N=1024\). The miss's winner was the light arm at both. The variance plate is the per-pixel standard error of those terms at \(N=64\), one shared scale, with the lip light disk at \(0.3079049113038804\). The cover is the balance estimator at \(N=1024\), plus the named diffuse fill, under Neutral \(e=1.00\). The run prints **53 pass / 0 fail**.
+**Can claim:** On this specific OSMesa / llvmpipe build, a CPU double estimator successfully drew a Phong–Lambert mixture and a uniform area on a single unoccluded rectangle, accurately converted the area draw using the legal Jacobian, and neatly combined the two with the balance weight using equal technique counts. At both locked points, all three arms' \(K=32\) relative RMSE successfully fell from \(N=16\) to \(N=1024\) against the quadrature \(L_o\), and the balance RMSE securely sat below the worse single arm at every single rung. At the lip, the BSDF arm won at \(N=64\) and at \(N=1024\). Over at the miss, the light arm won at both. The variance plate cleanly shows the per-pixel standard error of those terms at \(N=64\) on one shared scale, placing the lip light disk at \(0.3079049113038804\). The cover genuinely shows the balance estimator at \(N=1024\), backed by the named diffuse fill, under Neutral \(e=1.00\). The run proudly prints **53 pass / 0 fail**.
 
-**Cannot claim:** a GPU, a wavefront, a ray-tracing core, or a frame-time budget. The meter never reads the shader's tile pixels back as \(L_o\). Energy after Neutral. Anything measured by sampling the JPEG of the cover or the three-arm plate. Interreflection. A shadow under a cone. That one prefix is monotone. That balance beats the better arm. That this weight has been ranked against a power heuristic, against VNDF, or against a multi-light survey. That \((R\cdot\omega)^{160}\) was evaluated in float32.
+**Cannot claim:** Any GPU, wavefront, ray-tracing core, or frame-time budget. The meter absolutely never reads the shader's tile pixels back as \(L_o\). We claim nothing regarding energy after Neutral. You cannot safely measure anything by sampling the JPEG of the cover or the three-arm plate. We make no claims about interreflection or shadows cast under cones. We do not claim that one prefix acts monotone, or that balance magically beats the better arm. Finally, this weight hasn't been ranked against a power heuristic, VNDF, or a complex multi-light survey, and we definitely didn't evaluate \((R\cdot\omega)^{160}\) in float32.
 
-For this run: **53 pass / 0 fail**. Geometry, the signed contour, the Gauss–Legendre agreement, the lip-direction pdf, and both balance weights were checked before the photographs were treated as meters. The RMSE fell on every arm at both points. The disk inequalities hold on one shared scale. The horizon fraction is 0 at both points. The Lambert band at its final count prints \(0.002711173413998751\).
+For this specific run: **53 pass / 0 fail**. We rigorously checked the geometry, the signed contour, the Gauss–Legendre agreement, the lip-direction pdf, and both balance weights *before* treating the photographs as meters. The RMSE successfully fell on every arm at both sample points. The disk inequalities consistently hold on one shared scale, and the horizon fraction safely reports 0 at both points. At its final count, the Lambert band prints exactly \(0.002711173413998751\).
 
 ---
 
 ## Out of scope
 
-A power of \(p_i\), including a point marked \(\beta=2\), is a different weight. Balance here is the weight proportional to \(p_i\). A second mouth, an environment, a mesh light, and a three-strategy balance that splits cosine and Phong into separate arms are out. One rectangle already makes the two single arms fail in different places.
+Tweaking a power of \(p_i\), including targeting a point marked \(\beta=2\), creates a completely different weight. Balance in this context strictly refers to the weight proportional to \(p_i\). Adding a second mouth, an environment map, a mesh light, or a three-strategy balance that tears cosine and Phong into totally separate arms is strictly out of scope. We intentionally use one rectangle because it already forces the two single arms to fail in distinct, useful places.
 
-Occlusion, a cone casting on the tile, multi-bounce, Russian roulette, and any path longer than the direct mouth are out. The half-vector Jacobian, Smith \(G\), VNDF, GGX, and Fresnel stay out. A balance weight can be written for a Phong lobe about \(R\) because that lobe is already a density in \(d\omega\).
+We're keeping occlusion, a cone casting shadows on the tile, multi-bounce, Russian roulette, and any path longer than the direct mouth out of bounds. The half-vector Jacobian, Smith \(G\), VNDF, GGX, and Fresnel all stay out as well. We can easily write a balance weight for a Phong lobe aligned around \(R\) simply because that lobe is already formulated as a density in \(d\omega\).
 
-Phong against cosine as competing arms, firefly counts, and an exponent sweep stay in the importance-sampling note. Cosine exists here only as a component inside \(p_{\mathrm{bsdf}}\). Dropped \(r^2\), dropped emitter cosine, the equal-\(\Omega\) histogram, and the centroid shortcut stay in the area-Jacobian note. The Jacobian appears here only as the legal \(p_{\mathrm{light}}\).
+Pitting Phong directly against cosine as competing arms, tracking firefly counts, and running an exponent sweep stay firmly in the importance-sampling note. Cosine only shows up here as a basic component inside \(p_{\mathrm{bsdf}}\). Dropping \(r^2\), omitting the emitter cosine, reviewing the equal-\(\Omega\) histogram, and discussing the centroid shortcut all live in the area-Jacobian note. The Jacobian's only role here is serving as the legal \(p_{\mathrm{light}}\).
 
 ```text
 w_i            = p_i / (p_bsdf + p_light)          # n_bsdf = n_light, so n_i cancels
@@ -429,6 +382,7 @@ stderr lip, light arm = 0.3079049113038804          # disk mean, N=64; lede 0.30
 asserts        = 53 pass / 0 fail
 beauty 00, 01  = sRGB_OETF(Neutral(e * Lo))         # e=1.00
 variance plate = authored sRGB of float stderr
+
 ```
 
-Pin the cover as the kiln at balance, \(N=1024\). Pin the variance plate as the teaching figure. Pin the three-arm photograph as the two legal densities at one \(N\). Pin the ladder as the RMSE. Two legal densities on one mouth. The balance weight moves the variance. The estimator stays unbiased.
+Pin the cover as the kiln evaluated at balance, \(N=1024\). Pin the variance plate as our teaching figure. Pin the three-arm photograph to show two legal densities evaluated at a single \(N\). Pin the ladder to track the RMSE. That's two legal densities on one mouth. The balance weight successfully shifts the variance, and the estimator stays perfectly unbiased.
