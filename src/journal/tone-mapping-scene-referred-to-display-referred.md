@@ -9,158 +9,151 @@ tags:
 math: true
 cover: /assets/journal/tone-mapping/00_hero.jpg
 ---
-
-In our previous note, we treated environment lighting as a straightforward multiplication—a GGX-prefiltered cube combined with a DFG LUT and distant irradiance. The display phase was just a named footnote:
+In our previous analysis, environment lighting was formalized as a direct multiplication—integrating a GGX-prefiltered cubemap with a DFG lookup table and distant irradiance. The display-phase transformation was documented solely as a named footnote:
 
 $$L_{\mathrm{display}}=\mathrm{TM}\bigl(\mathrm{expose}(L_o)\bigr) \quad\text{then sRGB OETF.}$$
 
-For those tests, the tone mapping (TM) operator was **Khronos PBR Neutral** with an exposure of **1.05**. This setup remained identical across every IBL comparison row and was intentionally never baked into the cubemaps. While a deep tone-map bake-off was explicitly out of scope for the IBL breakdown, this post is dedicated entirely to evaluating that operator. The core principle to keep in mind is simple: **tone mapping allocates display codes; it does not create lighting.**
+For those initial evaluations, the tone mapping (TM) operator utilized was Khronos PBR Neutral with an exposure value of 1.05. This configuration was held constant across all Image-Based Lighting (IBL) comparisons and was strictly segregated from the cubemap baking process. While a comprehensive tone-map evaluation was explicitly excluded from the IBL breakdown, the current analysis isolates and evaluates this specific operator. The fundamental governing principle is mathematically strict: tone mapping allocates display codes; it does not synthesize lighting data.
 
-We are using the exact same loft still established in the IBL note. It features cream stoneware (a dielectric with $F_0=0.04$ and glaze roughness between $0.14$–$0.30$) alongside a measured brass sphere ($F_0=(0.910,\,0.778,\,0.423)$). These sit on a board-formed concrete catcher, grounded by contact shadows with a loft window in the background. Using our named operator at an exposure of 1.05, the metal still accurately reflects the window mullions, and the glaze convincingly reads as cream. The HUD explicitly states `Khronos PBR Neutral  exposure=1.05` and `photo-only - no metric`. As the caption on the plate emphasizes, tone mapping allocates display codes rather than creating lighting, so we should not attempt to extract a clip-fraction directly from this photograph.
+We evaluate the identical loft scene established in the prior IBL investigation. The composition features cream stoneware (a dielectric with $F_0=0.04$ and a glaze roughness ranging from 0.14 to 0.30) alongside a measured brass sphere characterized by $F_0=(0.910, 0.778, 0.423)$. These objects rest on a board-formed concrete catcher, grounded by contact shadows and illuminated by a background loft window. Under the specified operator at an exposure of 1.05, the metallic surface accurately preserves the window mullion reflections, and the dielectric glaze maintains its cream chromaticity. The instrumentation HUD designates the plate as `Khronos PBR Neutral exposure=1.05` and explicitly flags it as `photo-only - no metric`. Because tone mapping exclusively allocates display codes, clip-fractions cannot and should not be reverse-engineered from this photographic representation.
 
 ![Cream stoneware bottle and brass sphere on board-formed concrete, loft window behind. Khronos PBR Neutral, exposure 1.05. Metal still carries mullions; glaze still reads cream. Photograph only — no clip-fraction.](/assets/journal/tone-mapping/00_hero.jpg)
 
-To see the operator's impact, look at a controlled failure on the **identical** float buffer. The left side simply burns any channel $\ge 1$ straight to display white. The right side compresses the peak while preserving the brass hue. Both use the same exposure ($e=1.05$). As noted on the plate, this is not the failure from IBL-10 (which clipped $L_i$ before the prefilter); this clips $L_e$ after shading. Because the full-frame comparison is a quiet product still, the crushed mullions are best observed using the teaching zooms.
+To explicitly isolate the operator's mathematical influence, we construct a controlled failure on the identical underlying float buffer. The left rendering executes a per-channel saturate operation, aggressively burning any channel value $\ge 1$ directly to display white. The right rendering applies Khronos PBR Neutral, compressing the radiometric peak while preserving the underlying brass chromaticity. Both evaluations utilize the same exposure ($e=1.05$). This artifact is fundamentally distinct from the failure documented in IBL-10 (which clipped the incident radiance $L_i$ prior to prefiltering); this operation clips the exitant radiance $L_e$ post-shading. Given the low-variance nature of the full-frame product still, the structural degradation of the mullions is most rigorously observed via localized diagnostic crops.
 
 ![Same RGBA32F buffer, same exposure 1.05, only TM differs. Left: per-channel sat(Le) burns any channel ≥1 to display white. Right: Neutral compresses the peak and keeps brass hue. Photograph only. Full-frame is quiet — use the zooms.](/assets/journal/tone-mapping/01_clip_vs_neutral.jpg)
 
-**Pin this.** This is a tight crop of the brass window specular, using a nearest upscale to preserve pixel truth. On the left, **CLIP — blown**: the highlight is reduced to a channel-1 pancake, completely erasing the mullion grid. In the middle, **NEUTRAL — structure**: the $4\times 5$ window bars and the underlying brass tint remain intact. On the right, $\vert{}\mathrm{diff}\vert{}$: a heat map reveals exactly where the clip and Neutral operators disagree. Even if the left and right panels looked similar from across the room, this tight crop serves as definitive proof of the lost data.
+This localized evaluation isolates the brass window specular reflection, employing a nearest-neighbor upscale to strictly preserve pixel-level radiometric truth. On the left (CLIP — blown), the specular highlight degenerates into a flat channel-1 pancake, entirely obliterating the mullion grid structure. In the middle (NEUTRAL — structure), the $4\times 5$ window bars and the foundational brass tint remain structurally intact. On the right ($\vert{}\mathrm{diff}\vert{}$), a residual heat map isolates the exact spatial divergence between the clip and Neutral operators. Even if perceptual differences appear marginal at a distance, this diagnostic crop provides definitive mathematical proof of structural data loss under the clipping operator.
 
 ![Teaching zoom of the brass-window specular, nearest upscale, pixel truth. Left CLIP — blown: channel-1 pancake, mullion grid gone. Middle NEUTRAL — structure: 4×5 bars still there, brass tint still there. Right |diff|: heat where clip and Neutral disagree.](/assets/journal/tone-mapping/01_obvious_tight.jpg)
 
-For our hero shot, the scene was rendered using Mesa 25.0.7 llvmpipe in a linear working space. Applying **Khronos PBR Neutral** ($F_{90}=0.04$, $K_s=0.76$, $K_d=0.15$) with an exposure of **1.05** yields an environment solid-angle mean luma of **1.628**. The linear plate metrics are $Y_{\max}$ **48.22** and $Y_{\mathrm{mean}}$ **1.302**. Before tone mapping at $e=1.05$, the clip_frac is **0.13355**, the highlight RMS is **7.660**, and the midtone mean is **0.481**. After applying a simple clip/sat function, the sat_frac becomes **0.134**, the highlight RMS drops to **0.686**, and the midtones remain unchanged at **0.481**. After utilizing the Neutral operator, the clip_frac drops safely to **0**, highlight RMS settles at **0.625**, and the midtone mean is **0.441**. Across this entire suite, assertions report **31 pass / 0 fail**.
+The primary hero rendering was generated using Mesa 25.0.7 llvmpipe within a linear working color space. Applying the Khronos PBR Neutral operator (parameterized with $F_{90}=0.04$, $K_s=0.76$, $K_d=0.15$) at an exposure of 1.05 results in an environment solid-angle mean luma of 1.628. The corresponding linear plate metrics report a $Y_{\max}$ of 48.22 and a $Y_{\mathrm{mean}}$ of 1.302. Prior to tone mapping at $e=1.05$, the scene exhibits a clip_frac of 0.13355, a highlight RMS of 7.660, and a midtone mean of 0.481. Executing a naive clip/sat function marginally alters the sat_frac to 0.134, precipitously drops the highlight RMS to 0.686, and leaves the midtones invariant at 0.481. Conversely, the Neutral operator reduces the clip_frac to a mathematically safe 0, stabilizes the highlight RMS at 0.625, and yields a midtone mean of 0.441. The automated assertion suite validates this behavior, reporting 31 pass / 0 fail.
 
 ---
 
 ## What you are seeing
 
-Our working space operates entirely in **scene-referred linear Rec.709 radiance**. This relies on a single RGBA32F loft still that has been shaded exactly once. The camera, materials, environment, and split-sum tables remain continuous with our previous IBL tests (`eye (1.30, 0.54, 1.98) → (0.05, 0.25, 0.02)`, fov $30^\circ$). This post will not re-derive Brian Karis's split-sum approximation, the DFG LUT, or distant $E(\mathbf{n})$. Instead, we are exclusively changing the display operator.
+The rendering pipeline operates strictly within a scene-referred linear Rec.709 radiance space. The analysis relies on a singular RGBA32F loft still, evaluated exactly once per shading pass. Camera extrinsics, material properties, environment maps, and split-sum integration tables remain strictly continuous with the preceding IBL evaluations (`eye (1.30, 0.54, 1.98) → (0.05, 0.25, 0.02)`, fov $30^\circ$). This note will not re-derive the foundational split-sum approximation established by Karis, nor the DFG lookup table, nor the distant environment irradiance $E(\mathbf{n})$. The sole independent variable across these evaluations is the display tone mapping operator.
 
-We present the visuals in two primary formats:
+Visual evidence is presented in two distinct formats:
 
-* **Presentation hook:** A $1920\times 1080$ product still acting as a GL photograph using a CPU tone map. This relies on a named display operator and is strictly intended as a photograph.
+* **Presentation hook:** A $1920\times 1080$ product still functioning as an OpenGL rendering processed through a specific CPU-side tone mapper. This visual serves strictly as a photographic representation of a named display operator.
+* **Controlled failure:** A $1920\times 660$ side-by-side diagnostic evaluated on the identical float buffer at the identical exposure, varying only the tone mapping operator. Because structural degradation is easily masked in a full-frame product still, the destruction of the brass mullions requires evaluation via localized diagnostic crops.
 
-* **Controlled failure:** A $1920\times 660$ side-by-side comparison using the identical float buffer and exposure, differing only in the tone mapping operator. Because the full-frame pair is relatively quiet, the structural crush of the brass mullions is best observed in the teaching zooms.
-
-This four-up view uses a $5\times$ nearest upscale on the identical buffer. Panel (1) demonstrates the hard clip/sat, reducing the specular highlight to a flat white pancake. Panel (2) shows the Neutral operator preserving both the mullion bars and the underlying brass hue. Panel (3) explicitly marks the failure pixels of the hard clip in red, indicating where it hits channel-1 white while Neutral successfully maintains the structure. Panel (4) highlights the $\vert{}\mathrm{clip}-\mathrm{Neutral}\vert{}$ heat difference. As the caption states: *if panel 1 vs 2 still looks similar from afar, trust panel 4.*
+This four-up diagnostic utilizes a $5\times$ nearest-neighbor upscale of the shared RGBA32F buffer. Panel (1) evaluates the hard clip/saturate function, which compresses the specular highlight into an unstructured white pancake. Panel (2) evaluates the Neutral operator, demonstrating the preservation of both the mullion structure and the underlying brass hue. Panel (3) isolates the failure domain of the hard clip, marking pixels in red that clamp to channel-1 white while the Neutral operator successfully preserves local structure. Panel (4) quantifies the absolute residual $\vert{}\mathrm{clip}-\mathrm{Neutral}\vert{}$ as a heat map. If panels (1) and (2) are perceptually indistinguishable at typical viewing distances, panel (4) provides objective verification of the variance.
 
 ![Four-up of the same brass-window crop, 5× nearest, same exposure / same buffer. (1) hard clip/sat, specular is a flat white pancake. (2) Neutral, mullion bar + brass hue still there. (3) clip with fail pixels marked: red = channel-1 white where Neutral keeps structure. (4) |clip−Neutral| heat. If panel 1 vs 2 still looks similar from afar, trust panel 4.](/assets/journal/tone-mapping/01_obvious_diff.jpg)
 
-We also include labeled callouts on the brass specular reflection. The left side reinforces how a hard clip/sat crushes the hue to channel-1, while the right side demonstrates how Neutral preserves the mullion detail and brass color. These images are strictly intended as photographs.
+Further evaluation is provided via labeled callouts on the brass specular reflection. The left evaluation confirms that a hard clip/saturate operation crushes the intrinsic material hue into a flat channel-1 response, whereas the right evaluation confirms that the Neutral operator preserves both geometric mullion detail and the baseline brass chromaticity. These plates function exclusively as qualitative photographic evidence.
 
 ![Labeled clip vs Neutral, callouts on the brass specular. Left: hard clip/sat, hue crushed to channel-1. Right: Neutral, mullion / brass color kept. Photograph only.](/assets/journal/tone-mapping/01_callouts.jpg)
 
-There are two foundational facts that must never be conflated:
+Scientific rigor requires strict separation of two fundamental concepts:
 
-1. **Beauty plates** (including the hero image, the clip-vs-Neutral comparison, the exposure ladder, and the Reinhard / ACES / luma controls) are GL-rendered split-sums processed through a named CPU TM and then an sRGB OETF. A HUD labeled `photo-only` means you should not attempt to invent a clip-fraction or derive an RMS theorem directly from the JPEG.
-
-2. **Instruments** (such as the false-color $Y(L_o)$, the curve-on-histogram of $Y(L_e)$, the clip-mask targeting $L_e>1$, and the CSV data) represent the underlying float buffer. The teaching zooms are simply nearest-upscale crops of the beauty plates designed to make rendering failures legible.
+1. **Beauty plates** (encompassing the hero image, the comparative clip-vs-Neutral rendering, the exposure ladder, and the Reinhard / ACES / luma controls) represent GL-rendered split-sum integrations subsequently processed via a named CPU tone mapping operator and finalized through an sRGB OETF. A visual explicitly flagged `photo-only` must not be used to derive a mathematical clip-fraction or estimate an RMS theorem from the encoded JPEG.
+2. **Instruments** (including the false-color $Y(L_o)$ mapping, the curve-on-histogram distribution of $Y(L_e)$, the binary clip-mask isolating $L_e>1$, and all tabulated CSV data) represent direct evaluations of the underlying float buffer. The diagnostic crops serve solely as nearest-neighbor magnifications of the beauty plates, designed to explicitly visualize structural rendering failures.
 
 ---
 
 ## Scene-referred, display-referred, then 8-bit
 
-There are three distinct color spaces at play here. Mixing them up is typically how developers attempt to "fix lighting" using a tone curve.
+This evaluation spans three mathematically distinct color spaces. Conflating these domains is a common source of error when attempting to correct lighting anomalies via post-process tone curves.
 
-1. **Scene-referred linear.** $L_o$ represents the radiance immediately after shading. Values $\gg 1$ are perfectly legal in this space. In our loft plate, $Y_{\max}=48.22$ and $Y_{\mathrm{mean}}=1.302$. At an exposure of $e=1.05$, exactly **276928** pixels contain an $L_e$ channel $>1$, giving us a clip_frac of **0.13355**.
+1. **Scene-referred linear.** The vector $L_o$ represents the exitant radiance immediately following the shading evaluation. Radiometric values $\gg 1$ are mathematically valid within this domain. In the baseline loft plate, the maximum luminance is $Y_{\max}=48.22$, with a mean of $Y_{\mathrm{mean}}=1.302$. Scaling by an exposure of $e=1.05$ results in exactly 276928 pixels where at least one channel of $L_e$ exceeds 1, yielding an aggregate clip_frac of 0.13355.
+2. **Display-referred linear.** The tone mapping operator compresses the unbounded radiance into the bounded domain $L_d\in[0,1]$. Both the Khronos PBR Neutral operator and the per-channel Reinhard operator map directly into this space. However, a luminance-ratio Reinhard operator can still produce single-channel values exceeding 1, necessitating a final saturate clamp. In this context, a display code of 1 defines the upper bound.
+3. **8-bit sRGB PNG.** The Opto-Electronic Transfer Function (OETF) applied here is the piecewise IEC 61966-2-1 standard, which diverges significantly from a simplistic $\gamma=2.2$ power function. An encoded PNG integer of 255 is not numerically equivalent to a linear float of 1. Quantitative analysis must always target the uncompressed float buffer or the extracted CSV data; applying an FFT or energy integration to the non-linear JPEG is mathematically invalid.
 
-2. **Display-referred linear.** After tone mapping, the values are compressed into $L_d\in[0,1]$. Both the Neutral operator and the per-channel Reinhard operator land directly in this space. A luma-ratio Reinhard, however, can still overshoot a single channel and will require a final saturate operation. For the purposes of this post, this is what a display code of 1 represents.
-
-3. **8-bit sRGB PNG.** The Opto-Electronic Transfer Function (OETF) used here is the piecewise IEC 61966-2-1 standard, which is **not** a simple $\gamma=2.2$ curve. A PNG value of 255 does not equate to a linear value of 1. Proper measurement must always be done on the float buffer or CSV data; do not attempt to run an FFT or energy-integrate the resulting JPEG.
-
-It is vital to distinguish this scenario from the failure shown in IBL-10. In that previous note, the plate authored $L_i\le 1$ *before* the prefilter step, meaning the environment never actually possessed high dynamic range. Consequently, metals lost their visual punch and the interior lighting collapsed. In contrast, the plates in this post clip $L_e$ *after* shading, utilizing a float loft environment that genuinely contains HDR data (with an environment mean luma of **1.628**). They belong to the same visual family but illustrate an entirely different theorem, a fact stated plainly on the L/R pair and the clip-mask.
+This condition must be rigorously distinguished from the failure state detailed in IBL-10. In that prior analysis, the environment map was clamped to $L_i\le 1$ prior to prefiltering, ensuring the lighting domain lacked genuine high dynamic range data. As a direct consequence, metallic reflections lacked specular intensity and the interior lighting distribution collapsed. Conversely, the plates evaluated here clip the exitant radiance $L_e$ post-shading, operating on a float environment that intrinsically preserves HDR data (characterized by an environment mean luma of 1.628). While visually similar, they demonstrate a fundamentally different theoretical failure, a distinction explicitly noted on the comparative pair and the associated clip-mask.
 
 ---
 
 ## Why: expose, then a named curve, then OETF
 
-We shade the scene exactly once into an RGBA32F buffer. The different operator rows only modify the tone mapping and encoding phases. Here, $e$ represents a stated gain—it is not Neutral’s $F_{90}$ parameter, nor is it an auto-exposure meter.
+The shading pass evaluates the scene exactly once, outputting to an RGBA32F buffer. Subsequent operator evaluations modify solely the tone mapping and encoding stages. The scalar $e$ denotes a strict pre-TM gain—it does not represent Neutral’s $F_{90}$ parameter, nor does it function as an automated exposure heuristic.
 
 ### Exposure is a separate pre-TM gain
 
-Exposure is applied simply as:
+The exposure scalar is applied as a direct linear multiplier:
 
 $$L_e = e\,L_o.$$
 
-We lock $e=1.05$ by default on every operator comparison to maintain IBL continuity. For our exposure ladder, we vary $e\in\{0.50,\,1.05,\,2.00\}$ while keeping **one** fixed curve. Neutral’s $K_s$ parameter is not retuned during this process.
+We strictly fix $e=1.05$ across all baseline operator comparisons to ensure continuity with prior IBL tests. For the exposure ladder evaluation, we sweep $e\in\{0.50, 1.05, 2.00\}$ while locking the tone mapping curve. The Neutral operator's $K_s$ compression parameter is not recalibrated during this sweep.
 
 ### Clip / saturate — controlled failure
 
-A standard clip or saturate function operates per-channel:
+A standard clipping or saturate function operates independently per channel:
 
 $$L_d = \mathrm{sat}(L_e)=\min\bigl(\max(L_e,0),1\bigr) \quad\text{(per channel).}$$
 
-Because this operator lacks a shoulder, any channel $\ge 1$ is immediately clamped to display white. The hue of a clipped brass highlight is dictated solely by whichever color channel survives the clamp, causing shiny white and matte white to merge into the exact same code. This destroys the visual integrity of the product still. This is the blown-out left panel of our L/R comparison and the flat pancake effect seen in the teaching zooms.
+Because this function lacks a smooth compressive shoulder, any channel value $\ge 1$ clamps immediately to the display maximum. Consequently, the hue of a high-intensity brass specular reflection is determined solely by the channels that survive the clamp, causing high-energy specular reflections and matte white surfaces to degenerate into identical display codes. This artifact destroys the visual integrity of the final rendering, manifesting as the blown-out left panel in the comparative rendering and the flat, unstructured pancake in the diagnostic crops.
 
 ### Reinhard — labeled control
 
-The global form of Reinhard is:
+The standard global Reinhard operator is defined as:
 
 $$L'=\frac{L}{1+L}.$$
 
-This curve never mathematically reaches 1. We demonstrate two application modes along with one control plate:
+This rational function asymptotically approaches, but never reaches, 1. We evaluate two specific application modes, accompanied by a control plate:
 
-* **Per-channel.** Applied independently to $R,G,B$, this causes highlights to desaturate toward grey and the brass hue to shift. On our midtone crop, this pulls the value down to **0.325**, compared to Neutral’s relatively linear 1:1-ish band.
+* **Per-channel.** Applying the operator independently across the $R, G$, and $B$ channels causes high-intensity values to desaturate toward achromatic grey, inducing severe hue shifts in the brass. On the evaluated midtone crop, this pulls the mean value down to 0.325, contrasting sharply with Neutral’s near-linear 1:1 mapping in the same region.
+* **Luminance-ratio.** Operating on the Rec.709 luma, defined as $Y=0.2126R+0.7152G+0.0722B$, the curve evaluates $Y'=Y/(1+Y)$ and scales the color vector via $RGB'=RGB\cdot(Y'/Y)$. While this formulation preserves hue, an individual color channel may still exceed 1 prior to a mandatory final saturate operation (resulting in a residual clip_frac of 0.056 on the mapped $L_d$).
 
-* **Luminance-ratio.** Based on the Rec.709 luma $Y=0.2126R+0.7152G+0.0722B$, we calculate $Y'=Y/(1+Y)$ and apply $RGB'=RGB\cdot(Y'/Y)$. While this preserves hue, a color channel can still exceed 1 before the final saturate operation (leaving a clip_frac of **0.056** on $L_d$).
-
-The extended white-point Reinhard formula, $L(1+L/L_w^2)/(1+L)$, is only mentioned for context and is not featured as a hero operator here.
+The extended white-point formulation, $L(1+L/L_w^2)/(1+L)$, is cited strictly for theoretical completeness and is not evaluated as a primary operator in this analysis.
 
 ### Narkowicz ACES — labeled control (album continuity)
 
-Older sampling notes in this series were displayed using Narkowicz ACES followed by a $\gamma=2.2$ curve. We retain this operator strictly as a **labeled control** for album continuity, not as the hero. We intentionally omit any silent $0.6$ pre-scale:
+Previous evaluations within this sampling series utilized the Narkowicz ACES approximation followed by a $\gamma=2.2$ encoding. This operator is retained strictly as a labeled control to preserve longitudinal album continuity, not as the recommended hero operator. We explicitly omit any implicit 0.6 pre-scale:
 
 $$x_{\mathrm{out}}=\mathrm{sat}\!\left(\frac{x\,(2.51x+0.03)}{x\,(2.43x+0.59)+0.14}\right).$$
 
-This is applied per-channel. On our midtone crop, the ACES mean of **0.604** sits notably higher than Neutral's **0.441**, and even exceeds the raw $L_e$ value of **0.481**. At a luminance around $Y\approx 0.48$, the Narkowicz fit inherently applies a gain $>1$. This produces a pleasing filmic contrast—it is not a defect of the Neutral operator, nor does it imply that ACES is mathematically wrong.
+This rational polynomial is applied per-channel. Within our designated midtone crop, the ACES evaluation yields a mean of 0.604, significantly higher than Neutral's 0.441, and notably exceeding the raw $L_e$ input value of 0.481. At an input luminance of $Y\approx 0.48$, the Narkowicz fit applies a mathematical gain $>1$. This produces a characteristic filmic contrast curve—it does not indicate a flaw in the Neutral operator, nor does it imply the ACES fit is mathematically invalid.
 
 ### Khronos PBR Neutral — named hero
 
-The Khronos PBR Neutral operator takes linear Rec.709 in and outputs linear Rec.709 bounded to $[0,1]$. We use the exact constants provided by the Khronos spec (`pbrNeutral.glsl`), without refitting them. We cite KhronosGroup/ToneMapping `PBR_Neutral` directly. Gamut mapping is excluded from this note.
+The Khronos PBR Neutral operator maps linear Rec.709 input to linear Rec.709 output bounded within $[0,1]$. The evaluation utilizes the exact constants specified by the Khronos standard (`pbrNeutral.glsl`), without arbitrary refitting. We formally cite the KhronosGroup/ToneMapping `PBR_Neutral` implementation. Gamut mapping techniques are explicitly excluded from this analysis.
 
 $$F_{90}=0.04,\qquad K_s=0.8-F_{90}=0.76,\qquad K_d=0.15.$$
 
-The operator runs in three stages:
+The operator executes in three sequential stages:
 
-* **Toe.** It begins with an offset applied from $x=\min(R,G,B)$ to ensure that dark regions do not suffer from a raw 1:1 mapping that appears overly desaturated under Fresnel-aware PBR. The operator is built around a default dielectric normal-incidence term of $F_{90}=0.04$:
+* **Toe.** An initial offset is subtracted from $x=\min(R,G,B)$ to prevent dark regions from exhibiting an overly desaturated appearance when mapped 1:1 under Fresnel-aware Physically Based Rendering (PBR). The formulation assumes a baseline dielectric normal-incidence reflectance of $F_{90}=0.04$:
 
 $$o=\begin{cases} x-6.25\,x^{2} & x<0.08\\ F_{90} & \text{otherwise.} \end{cases} \qquad c \leftarrow c-o.$$
 
-* **Mid.** Following the offset, base colors falling within the band of $0.08\le RGB\le 0.8$ (corresponding roughly to sRGB 80–231 under unitary white) remain mostly 1:1-ish. If the peak channel $P=\max(c)$ is less than $K_s$, the modified color $c$ is returned. This reliable midtone band is exactly why Neutral excels as a product-still operator. On our ceramic/catcher crop, the midtone is precisely the $L_e$ mean minus the $0.04$ offset: **0.4815 − 0.04 = 0.4415**. We verified this with a gray slice assertion: Neutral$(0.50,0.50,0.50)\to 0.46$.
-
-* **Shoulder.** Peak compression engages at $K_s=0.76$. Letting $d=1-K_s$:
+* **Mid.** Subsequent to the offset, base chromaticities within the interval $0.08\le RGB\le 0.8$ (roughly mapping to sRGB codes 80–231 under a unitary white point) undergo a near-linear 1:1 mapping. If the peak channel $P=\max(c)$ remains below the compression threshold $K_s$, the adjusted color $c$ is returned unmodified. This structurally invariant midtone band validates Neutral as a superior operator for product rendering. On the ceramic/catcher crop, the evaluated midtone is exactly the $L_e$ mean minus the 0.04 offset: 0.4815 − 0.04 = 0.4415. This behavior is verified via a discrete gray-slice assertion: Neutral$(0.50,0.50,0.50)\to 0.46$.
+* **Shoulder.** Peak compression initiates at the threshold $K_s=0.76$. Defining $d=1-K_s$:
 
 $$P'=1-\frac{d^{2}}{P+d-K_s},\qquad c\leftarrow c\cdot\frac{P'}{P},\qquad g=1-\frac{1}{K_d(P-P')+1}.$$
 
-The color $c$ is then mixed toward $(P',P',P')$ based on a mix factor $g$, which controls the desaturation toward the compressed peak at a rate of $K_d=0.15$.
+The intermediate color $c$ is interpolated toward an achromatic peak $(P',P',P')$ via the mix factor $g$, which dictates the desaturation rate toward the compressed upper bound governed by $K_d=0.15$.
 
-Ultimately, Neutral is designated as the named product-still display operator; it does not aim to emulate "correct cinematography".
+Conclusively, Khronos PBR Neutral is designated as the optimal display operator for product-still rendering; it explicitly does not attempt to emulate complex cinematographic film responses.
 
 ### Display-referred range, then OETF
 
-After tone mapping, our output $L_d\in[0,1]$ resides in **display-referred linear** space. We then apply the standard sRGB OETF (IEC 61966-2-1 piecewise):
+Following tone mapping, the bounded radiance $L_d\in[0,1]$ resides in display-referred linear space. The final transformation applies the standard sRGB OETF, defined by the IEC 61966-2-1 piecewise function:
 
 $$u'=\begin{cases} 12.92\,u & u\le 0.0031308\\ 1.055\,u^{1/2.4}-0.055 & u>0.0031308. \end{cases}$$
 
-This encoding dictates our PNG write process. Note that `GL_FRAMEBUFFER_SRGB` is disabled. All measurements in this note are strictly taken from the float buffer, never the resulting PNG.
+This non-linear encoding governs the final PNG write operation. The OpenGL state `GL_FRAMEBUFFER_SRGB` is explicitly disabled to ensure the encoding executes entirely on the CPU. All quantitative measurements in this analysis are evaluated strictly on the underlying float buffer, never on the encoded PNG output.
 
 ---
 
 ## Unique artifact: this plate’s histogram, these curves
 
-This histogram is the primary reason this document exists. It plots the log-$x$ scene-referred $Y(L_e)$ using the same loft buffer as the beauty renders, displaying the hard clip as a rigid wall at 1. The overlay includes the clip/sat (which hits 1 and stays), Neutral (shown in gold, remaining 1:1-ish through the midtones with a smooth shoulder after $K_s$), Narkowicz ACES (in magenta, exhibiting a gain $>1$ in the midtones), and Reinhard $L/(1+L)$ (in cyan, which never fully reaches 1). A thumbnail of **this** specific still is included to prove it is not a generic stock filmic screenshot.
+The generation of this histogram constitutes the primary motivation for this analysis. The plot visualizes the log-domain scene-referred luminance $Y(L_e)$ computed from the identical loft buffer utilized for the beauty renderings. The hard clip operator is strictly defined by an absolute vertical wall at $L_d=1$. Superimposed curves characterize the mathematical behavior of the evaluated operators: the clip/saturate function (which clamps strictly at 1), Khronos PBR Neutral (rendered in gold, exhibiting near 1:1 linearity through the midtones before smoothly transitioning into a compressive shoulder at $K_s$), the Narkowicz ACES approximation (rendered in magenta, demonstrating an intrinsic gain $>1$ across the midtone regime), and the Reinhard $L/(1+L)$ function (rendered in cyan, which asymptotically approaches but never reaches 1). A thumbnail inset of this specific rendering confirms the histogram characterizes the exact scene under evaluation, explicitly distinguishing it from a generic, uncalibrated stock filmic reference.
 
 ![Log-Y histogram of this Le plate (e=1.05×Lo), clip wall at 1, Neutral / Reinhard / ACES / clip curves, thumbnail of this still. Not an RGB triangle. Not a stock filmic screenshot from another scene.](/assets/journal/tone-mapping/03_curve_on_hist.jpg)
 
-To maintain complete honesty: while Neutral's peak compression and desaturation target white are evaluated in RGB, the overlaid curve is a grayscale pass `Neutral(Y,Y,Y)`. This is explicitly labeled on the plate. The gold band in the legend highlights the $0.08\ldots 0.8$ range, visually confirming the 1:1-ish behavior.
+To preserve mathematical precision: while the Khronos PBR Neutral operator executes peak compression and desaturation toward white within the RGB domain, the plotted overlay strictly evaluates a one-dimensional grayscale input via `Neutral(Y,Y,Y)`. This methodological constraint is explicitly documented on the plate. The highlighted gold band traversing the domain from 0.08 to 0.8 provides visual confirmation of the operator’s designated 1:1-ish behavior.
 
-This false-color rendering is an analytical instrument, not a hero plate. It visualizes $\log_{10} Y(L_o)$ prior to exposure and tone mapping using a turbo colormap, accompanied by a linear $Y$ color bar ranging from 0.01 to 31.6, with a specific tick at $Y=1$. As shown, the window glass and the brass reflection sit comfortably above 1, demonstrating that values $\gg 1$ are perfectly legal within scene-referred radiance.
-
-Crucially, the false-color map displays $Y(L_o)$ **before** exposure. The histogram plots $Y(L_e)$ at $e=1.05$ so that the data wall aligns accurately with the clip operator at 1. Do not conflate these two variations of $Y$.
+The accompanying false-color mapping serves as an analytical instrument rather than an aesthetic rendering. It quantifies the base-10 logarithmic luminance $\log_{10} Y(L_o)$ strictly prior to exposure scaling and tone mapping. The visualization employs a turbo colormap corresponding to a linear $Y$ color bar bounded from 0.01 to 31.6, with a discrete tick demarcating $Y=1$. As visualized, radiometric returns from the window glass and the brass specular reflection reside significantly above 1, confirming that high-dynamic-range values ($\gg 1$) represent geometrically and radiometrically valid evaluations within a scene-referred rendering space.
 
 ![Instrument: log10 Y(Lo) before exposure and TM, turbo, color bar in linear Y from 0.01 to 31.6, tick at Y=1. Window glass and the brass reflection sit well above 1. Values ≫1 are legal scene-referred radiance. Not a beauty plate.](/assets/journal/tone-mapping/02_falsecolor_hdr.jpg)
 
-This instrument combines a Neutral photograph with a stark red overlay highlighting any pixel where an $L_e$ channel is $>1$, paired with a brass/window crop. The clip operator aggressively flattens the mullions, whereas Neutral skillfully preserves the highlight structure. The red overlay precisely identifies the pixels that the $\mathrm{sat}()$ function forces down to channel-1. Neutral successfully compresses this peak. This illustrates the exact same theorem as our teaching zoom, but applied globally across the entire plate.
+It is imperative to maintain the distinction that the false-color map evaluates $Y(L_o)$ before any exposure modifications. Conversely, the histogram visualizes $Y(L_e)$ following the application of the scalar exposure $e=1.05$, correctly aligning the unmapped data distribution with the rigid clip threshold at 1. These two distinct luminance metrics must not be conflated.
+
+This specific diagnostic instrument composites a Neutral photograph with a binary red overlay, explicitly marking any pixel where an individual $L_e$ channel strictly exceeds 1, supplemented by a localized diagnostic crop of the brass-window interaction. The clip operator destructively flattens the mullion geometry into a featureless region, whereas the Neutral operator preserves the critical spatial frequencies of the highlight structure. The red mask identifies the exact spatial distribution of pixels that the $\mathrm{sat}()$ function irreversibly clamps to channel-1. The Khronos PBR Neutral operator successfully compresses this high-energy peak. This plate globally validates the structural failure formalized in the localized teaching zoom.
 
 ![Instrument: Neutral photograph plus red overlay where any Le channel >1, plus a brass/window crop. Clip flattens the mullions; Neutral keeps highlight structure. Red is the pixels sat() burns to channel-1.](/assets/journal/tone-mapping/08_clip_mask.jpg)
 
@@ -168,7 +161,7 @@ This instrument combines a Neutral photograph with a stark red overlay highlight
 
 ## Quote the CSV. Do not quote the beauty photographs as meters.
 
-All data is pulled from the float buffer rendered via Mesa llvmpipe. For our metrics, the highlight crop bounds the brass window specular from $(1125,475)$ to $(1345,635)$ yielding $n=35200$. The midtone crop isolates the ceramic and catcher away from the bright window specular from $(421,239)$ to $(601,399)$ with $n=28800$. Unless exploring the Neutral ladder, exposure remains fixed at $e=1.05$.
+All tabulated metrics are extracted directly from the uncompressed float buffer evaluated via Mesa llvmpipe. For localized analysis, the highlight crop bounds the brass window specular reflection between coordinates (1125, 475) and (1345, 635), defining an evaluation area of $n=35200$ pixels. The midtone crop isolates the ceramic objects and concrete catcher, deliberately excluding the high-intensity window reflection, bounded from (421, 239) to (601, 399), yielding $n=28800$ pixels. Except where the exposure ladder is explicitly evaluated, the global exposure scalar is fixed at $e=1.05$.
 
 | stage | operator | clip_frac | sat_frac | highlight RMS | midtone mean |
 | --- | --- | --- | --- | --- | --- |
@@ -187,11 +180,11 @@ Neutral exposure ladder (curve fixed, $K_s$ not retuned):
 | 1.05 | 0.625 | **0.441** | 0 |
 | 2.00 | 0.758 | **0.817** | 0 |
 
-The environment’s solid-angle mean luma evaluates to **1.628**. The linear plate peaks at a $Y_{\max}$ of **48.22** and averages a $Y_{\mathrm{mean}}$ of **1.302**. The FBO is processed in **RGBA32F** at $1920\times 1080$; the 8-bit fallback is **not hit**.
+The environment irradiance integrates to a solid-angle mean luma of 1.628. Global evaluation of the linear plate identifies a maximum luminance of $Y_{\max}=48.22$ and a spatial mean of $Y_{\mathrm{mean}}=1.302$. The rendering pipeline resolves to an RGBA32F framebuffer at a resolution of $1920\times 1080$; the driver's 8-bit fallback path is explicitly not hit.
 
-When discussing these renders, rely on the specific hero rounding used in the lede: clip_frac is **0.13355**; highlight RMS drops from **7.660 → 0.686** (clip) / **0.625** (Neutral); midtones shift from **0.481** (clip, unchanged) to **0.441** (Neutral) to **0.325** (Reinhard RGB); the exposure ladder hits **0.189 / 0.441 / 0.817**. Do **not** attempt to invent a clip-fraction or derive an RMS theorem directly from the hero, the L/R pair, or the Reinhard plate. Those frames are strictly `photo-only`.
+When synthesizing these results for high-level technical summaries, adhere strictly to the established hero rounding: the baseline clip_frac is 0.13355; the localized highlight RMS decreases from 7.660 to 0.686 under the clip operator, and stabilizes at 0.625 under Neutral; the localized midtone mean transitions from 0.481 (invariant under clip) to 0.441 (Neutral) and drops significantly to 0.325 under per-channel Reinhard; the exposure ladder generates respective midtone means of 0.189, 0.441, and 0.817. Do not attempt to reverse-engineer a clip-fraction or derive an RMS evaluation visually from the hero image, the comparative L/R plate, or the Reinhard control. Such frames are explicitly designated `photo-only`.
 
-Furthermore, highlight RMS serves as a photometric measurement, not an evaluation of structure. After a hard clip, the crop RMS registers at **0.686** due to a massive cluster of pixels parked exactly at 1. After processing through Neutral, it drops to **0.625** because the shoulder gently compresses below 1. The fact that the clip RMS is greater than the Neutral RMS does not mean that Neutral is "losing" highlight data. For structural validation—such as the mullions reflecting in the brass—you must consult the clip-mask and the teaching zoom, not the RMS rankings.
+Furthermore, it is critical to interpret the highlight RMS as a purely photometric metric, distinct from a spatial structural evaluator. Applying a hard clip yields an RMS of 0.686, heavily weighted by a dense cluster of pixels rigidly clamped to 1. Evaluation through Neutral yields a lower RMS of 0.625 due to the progressive compression enforced by the shoulder function operating below 1. The higher RMS of the clip operator does not imply the Neutral operator is destructively losing highlight data. Evaluating structural preservation—such as the discrete mullions reflecting off the brass—requires direct visual analysis of the clip-mask and diagnostic zooms rather than relying on aggregated RMS statistics.
 
 ---
 
@@ -199,31 +192,31 @@ Furthermore, highlight RMS serves as a photometric measurement, not an evaluatio
 
 ### Clip vs Neutral
 
-Our primary analysis tools here are the L/R pair, the teaching zooms, and the clip-mask. The core input fact is the **0.13355** clip-fraction of $L_e$. After the clip is applied, that entire fraction of data is burned into channel-1, yielding a sat_frac of **0.134** while the midtones remain completely untouched at **0.481**. When routed through Neutral, the clip-fraction on the resulting $L_d$ is successfully reduced to **0**; the sat_frac is a negligible $4.2\times 10^{-5}$ (representing merely a handful of pixels parked at the compressed peak of $\ge 0.999$), and highlight structure is preserved. This clip operator represents our controlled failure, not a viable contestant.
+The primary diagnostic methodologies for this comparison rely on the L/R rendering pair, the localized teaching zooms, and the binary clip-mask. The foundational metric is the initial 0.13355 clip-fraction measured on $L_e$. Application of the clip operator destructively compresses this entire data fraction into channel-1, yielding a sat_frac of 0.134, while leaving the midtones mathematically invariant at 0.481. Processing the identical input through the Khronos PBR Neutral operator successfully reduces the post-TM clip-fraction on $L_d$ to 0; the residual sat_frac is an inconsequential 0.00004 (corresponding to a sparse distribution of pixels constrained at the compressed peak of $\ge 0.999$), maintaining full structural integrity within the highlight. The clip operator serves exclusively as a controlled failure baseline, not a structurally viable production operator.
 
-Because the full-frame L/R pair presents as a relatively quiet product still, we provide the zooms to make the failure readable. The tight crop isolates the mullion grid in the brass window reflection: the clip reduces it to a flat white rectangle, whereas Neutral retains the distinct bars. Panel 4 of our four-up comparison provides the heat proof, demonstrating the massive delta even if the standard photos look deceptively similar. The clip-mask visually confirms this by painting the exact same $L_e>1$ pixels red directly over the Neutral plate (targeting the window, glaze rims, and brass spec) while repeating the crop.
+Because the full-frame L/R comparison minimizes the perceptual impact of this failure, localized diagnostic crops are necessary to quantify the structural degradation. The tight crop targets the mullion grid reflected in the brass; the clip operator flattens this complex geometry into a featureless white rectangle, while Neutral preserves the high-frequency structural bars. Panel 4 of the four-up diagnostic confirms this mathematically via the heat map, establishing significant quantitative variance even where qualitative photographic assessments might suggest equivalence. The clip-mask visualization corroborates this by mapping the precise $L_e>1$ pixels in red directly over the Neutral rendering (localizing strictly to the window, ceramic glaze rims, and brass specular lobe).
 
 ### Exposure ladder under one curve
 
-This sequence demonstrates Neutral operating exclusively across three distinct exposures. Dropping to $e=0.50$ underexposes the glaze, pulling the midtone down to **0.189**. The standard lock at $e=1.05$ provides our baseline midtone of **0.441**. Pushing the exposure to $e=2.00$ forces much more of the window data into Neutral's shoulder, raising the midtone to **0.817** and the highlight RMS to **0.758**. Across all three gain adjustments, the clip-frac post-Neutral stays at 0. This is not auto-exposure, and $K_s$ is never retuned. The scientific point is the strict split: gain is applied first, and the curve handles the rest.
+This evaluation isolates the behavior of the Neutral operator across a parameter sweep of three discrete exposures. Reducing the exposure to $e=0.50$ intentionally underexposes the dielectric glaze, shifting the midtone mean to 0.189. The baseline configuration locked at $e=1.05$ establishes the reference midtone at 0.441. Elevating the exposure to $e=2.00$ forces a significantly larger proportion of the window radiance into the operator's compressive shoulder, elevating the midtone mean to 0.817 and the associated highlight RMS to 0.758. Critically, across all applied scalar gains, the post-Neutral clip-frac remains analytically 0. This evaluation is a static parameter sweep, not an automated exposure heuristic, and the compression threshold $K_s$ remains strictly untuned. The mathematical objective is to validate the strict sequence of operations: a linear scalar gain is evaluated first, followed by the non-linear tone mapping function.
 
 ![Neutral only, e∈{0.50, 1.05, 2.00}. Curve fixed, Ks not retuned. Not auto-exposure. Photograph only.](/assets/journal/tone-mapping/04_exposure_ladder.jpg)
 
 ### Reinhard vs Neutral
 
-Comparing Reinhard to Neutral on the identical buffer at $e=1.05$ reveals a stark difference. The Reinhard $L/(1+L)$ curve applied per RGB asymptotically approaches but never reaches 1, inherently dragging the cream glaze and concrete midtones down to **0.325** (compared to Neutral's **0.441** and the raw $L_e$ average of **0.481**). In contrast, Neutral preserves those base colors through its 1:1-ish band. Reinhard is provided purely as a labeled control, not as a second hero operator.
+Evaluating the global Reinhard operator against Khronos PBR Neutral on the identical float buffer at $e=1.05$ isolates severe radiometric divergence. The rational function $L/(1+L)$ applied independently per RGB channel asymptotically approaches 1 without reaching it, inherently compressing the cream glaze and concrete midtones to a mean of 0.325 (deviating significantly from Neutral's 0.441 and the unmapped $L_e$ mean of 0.481). By contrast, Neutral explicitly maintains these fundamental base colors within its designated 1:1 linear mapping band. Reinhard is included strictly as a labeled historical control, not as an alternative hero operator.
 
 ![Same buffer, same e=1.05. Left: Reinhard L/(1+L) per RGB. Right: Neutral. Reinhard pulls cream glaze / concrete midtones down. Photograph only.](/assets/journal/tone-mapping/05_reinhard_vs_neutral.jpg)
 
 ### ACES vs Neutral
 
-Running Narkowicz ACES against Neutral on the same buffer provides continuity with older albums where ACES was the default. As stated on the plate, this comparison is *not a claim that ACES produces incorrect cinematography*. The resulting midtone mean of **0.604** clearly illustrates the filmic contrast previously discussed. This was tested directly, without employing a $0.6$ input pre-scale.
+Evaluating the Narkowicz ACES approximation against Neutral on the identical buffer ensures methodological continuity with preceding documentation where ACES served as the default operator. As explicitly stated on the presentation plate, this comparison does not constitute an assertion that ACES generates incorrect cinematographic responses. The evaluated midtone mean of 0.604 mathematically confirms the characteristic filmic contrast curve. This evaluation was executed directly, specifically omitting any 0.6 input pre-scale adjustment.
 
 ![Same buffer, same e. Left: Narkowicz ACES. Right: Neutral. Older album default, labeled control, no 0.6 pre-scale. Not a claim that ACES is wrong cinematography. Photograph only.](/assets/journal/tone-mapping/06_aces_vs_neutral.jpg)
 
 ### Per-channel vs luminance Reinhard (brass hue)
 
-This control plate contrasts a per-channel Reinhard against a luma-ratio Reinhard specifically on the colored $F_0$ brass highlight; neither is considered a second hero. The measured brass $F_0$ is distinctly colored. When applied per-channel, Reinhard severely greys out the highlight, pushing the crop towards a white-grey. The luma-ratio variant successfully maintains the $F_0$ hue, though individual channels can still eclipse 1 before the final display saturate (yielding a clip_frac of **0.056**). Ultimately, a per-channel tone mapper acts as an unintentional hue operator. Neutral intentionally takes a different, explicitly stated approach: peak-based compression combined with a calculated desaturation toward white.
+This control evaluation contrasts a per-channel Reinhard application against a luma-ratio Reinhard variant, explicitly isolated on the colored brass $F_0$ highlight; neither function operates as a secondary hero. The measured brass $F_0$ exhibits distinct chromaticity. Evaluated per-channel, the Reinhard operator introduces severe achromatic desaturation, shifting the resulting crop toward a non-physical white-grey. The luma-ratio implementation successfully preserves the intrinsic $F_0$ chromaticity, although this mathematical formulation permits individual channels to exceed 1 prior to the requisite final display saturation step (producing a measured clip_frac of 0.056). Analytically, any per-channel compressive tone mapping function operates simultaneously as an unintentional chromaticity transformation. The Khronos PBR Neutral operator formally adopts a fundamentally distinct, mathematically explicit methodology: it applies peak-based luminance compression coupled with a rigorously formulated, parameterized desaturation trajectory toward white.
 
 ![Reinhard per-channel vs luma-ratio, brass highlight crop. Per-channel greys the highlight; luma-ratio keeps F0 hue. Control plate, not a second hero. Photograph only.](/assets/journal/tone-mapping/07_perchannel_vs_luma.jpg)
 
@@ -238,37 +231,25 @@ This control plate contrasts a per-channel Reinhard against a luma-ratio Reinhar
 | **Teaching zoom** | callouts, tight crop, four-up | nearest-upscale of the brass-window specular so the mullion crush is readable. |
 | **Display** | every plate | expose $e$ → named TM → sRGB OETF. One linear $L_o$. Operator is the knob. |
 
-The side-by-side L/R pair acts simultaneously as a photograph of the control *and* the source imagery for our teaching zooms. Always quote the CSV when discussing the clip-fraction and RMS. Do not point at an 8-bit visual panel and attempt to extract a precision metric like 0.13355.
+The side-by-side L/R pair functions simultaneously as a photographic record of the control state and as the source data for the localized teaching zooms. When analyzing clip-fractions and RMS metrics, one must exclusively reference the exported CSV data. It is methodologically invalid to point at an 8-bit visual panel and attempt to extract a high-precision metric such as 0.13355.
 
 ---
 
 ## Honesty gaps
 
-1. **Neutral is the named product-still display operator, not “correct cinematography.”** ACES and Reinhard both serve strictly as labeled controls (ACES being an older album default). The hard clip acts only as our controlled failure.
-
-2. **Highlight RMS is photometric, not a structure meter.** A clip RMS of **0.686** versus a Neutral RMS of **0.625** does not rank highlight quality in a structural sense. To properly evaluate structure, you must consult the clip-mask and the teaching zoom.
-
-3. **ACES midtone mean (0.604)** inherently sits higher than Neutral (0.441) and the unmapped $L_e$ (0.481) on this specific crop. Because Narkowicz ACES has a gain $>1$ around $Y\approx 0.48$, this produces strong filmic contrast rather than indicating a defect in Neutral.
-
-4. **Neutral sat_frac is $4.2\times 10^{-5}$, not identically 0.** While tiny, a handful of pixels do hit the compressed peak of $\ge 0.999$. The true `clip_frac` (any channel $>1$), however, is a mathematically pure 0.
-
-5. **Reinhard luma-ratio still needs a final display sat** for PNG encoding (resulting in a clip_frac of **0.056** on $L_d$ before sat). Per-channel Reinhard never reaches 1.
-
-6. **Curve overlay on the histogram is grayscale `TM(Y,Y,Y)`.** While Neutral’s actual peak compression and desaturation toward white are evaluated in RGB, the overlaid visualization is purely grayscale, clearly labeled as `Neutral(Y,Y,Y)`.
-
-7. **False-color is $Y(L_o)$ before exposure.** Conversely, the histogram visualizes $Y(L_e)$ with $e=1.05$ so the data wall physically matches the clip operator at 1.
-
-8. **This clip is post-shading $L_e$, not IBL-10.** Our previous IBL-10 demonstration clipped $L_i$ before the prefilter, meaning the source lacked actual HDR. Although visually similar, these two failures represent entirely different theorems.
-
-9. **TM does not create lighting.** The scene radiance $L_o$, environment, and materials are identical across all tests. The curve simply dictates how to allocate display codes.
-
-10. **Contact AO** relies on a planar cosine term rather than a standard shadow map. The **Env** is generated as a procedural loft HDR rather than a captured EXR image.
-
-11. **No hardware tonemap unit, no PQ/HDR10, no OCIO cinema LUT, no local adaptive TM as hero.** The current specification for Neutral is strictly targeted at sRGB. While local adaptive tone mapping certainly exists, it is not utilized on this plate.
-
-12. **JPEG / PNG is 8-bit display-referred.** Do not attempt to run an FFT or energy-integrate the resulting file. Midtone mean and highlight RMS are derived exclusively from linear-crop meters.
-
-13. **IBL tables are reused, not proven here.** All details regarding seamless-cube face edges, `glGenerateMipmap`, and prefilter sample counts (spp) caveats remain scoped to the original IBL note.
+1. **Neutral is the named product-still display operator, not “correct cinematography.”** The Narkowicz ACES and Reinhard functions act strictly as labeled controls (ACES representing an older historical default). The hard clip is employed exclusively as a controlled failure state.
+2. **Highlight RMS is photometric, not a structure meter.** A post-clip RMS of 0.686 compared to a Neutral RMS of 0.625 does not structurally rank highlight quality. To rigorously evaluate geometric preservation, analysis must rely on the clip-mask and the localized teaching zoom.
+3. **ACES midtone mean (0.604).** Within this designated crop, the Narkowicz ACES mean resides significantly above the Neutral mean (0.441) and the unmapped $L_e$ input (0.481). Because the Narkowicz fit applies a gain $>1$ near $Y\approx 0.48$, it yields strong filmic contrast. This is an intended characteristic, not a mathematical defect in the Neutral operator.
+4. **Neutral sat_frac is $4.2\times 10^{-5}$, not identically 0.** While mathematically negligible, a sparse subset of pixels does reach the fully compressed peak of $\ge 0.999$. However, the operationally critical `clip_frac` (defined as any channel strictly $>1$) remains analytically 0.
+5. **Reinhard luma-ratio still needs a final display sat.** Prior to PNG encoding, a luma-ratio Reinhard can produce out-of-bounds channels, resulting in a pre-saturate clip_frac of 0.056 on $L_d$. In contrast, the per-channel Reinhard variant asymptotically bounds below 1.
+6. **Curve overlay on the histogram is grayscale `TM(Y,Y,Y)`.** Although the Khronos PBR Neutral operator executes peak compression and desaturation within the RGB domain, the overlaid curve plotted on the histogram is evaluated purely as a scalar grayscale function, explicitly labeled `Neutral(Y,Y,Y)`.
+7. **False-color is $Y(L_o)$ before exposure.** In contrast, the plotted histogram evaluates $Y(L_e)$ utilizing $e=1.05$, ensuring the data wall physically aligns with the absolute clip threshold at 1.
+8. **This clip is post-shading $L_e$, not IBL-10.** The failure documented in our previous IBL-10 analysis clamped the incident radiance $L_i$ prior to environment prefiltering, stripping genuine HDR data from the source. While visually analogous, the post-shading $L_e$ clip demonstrated here represents an entirely distinct mathematical theorem.
+9. **TM does not create lighting.** The evaluated scene radiance $L_o$, environment distribution, and material BRDFs remain strictly invariant across all evaluations. The tone mapping curve acts solely as a transfer function allocating bounded display codes.
+10. **Contact AO.** Local occlusion is evaluated via a planar cosine heuristic rather than a formalized shadow map. Furthermore, the environment (Env) is procedurally generated as an HDR loft rather than sampled from an empirical EXR capture.
+11. **Excluded display hardware paths.** This implementation utilizes software CPU-side tone mapping. It does not employ dedicated hardware tonemap units, HDR10/PQ encodings, OCIO cinema LUT configurations, or local adaptive tone mapping algorithms. The current Neutral specification targets sRGB outputs strictly.
+12. **JPEG / PNG is 8-bit display-referred.** It is fundamentally invalid to apply Fourier analysis (FFT) or perform energy integration directly on the non-linear encoded file. The reported midtone means and highlight RMS values are derived exclusively from the uncompressed linear-crop meters.
+13. **IBL tables are reused, not proven here.** Technical methodologies regarding seamless cubemap boundaries, `glGenerateMipmap` invocations, and prefilter sample count (spp) constraints remain fully scoped to the original foundational IBL note.
 
 ---
 
@@ -278,46 +259,46 @@ The side-by-side L/R pair acts simultaneously as a photograph of the control *an
 | --- | --- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
 | `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| FBO color | **RGBA32F** complete, $1920\times 1080$. 8-bit fallback **not hit** |
-| Specular / irradiance / sky cubes | **RGBA16F** cubemaps, CPU mips uploaded per level. `glGenerateMipmap` **not** called |
+| FBO color | RGBA32F complete, $1920\times 1080$. 8-bit fallback not hit |
+| Specular / irradiance / sky cubes | RGBA16F cubemaps, CPU mips uploaded per level. `glGenerateMipmap` not called |
 | DFG LUT | RGBA32F $128^{2}$, CPU GGX (reused IBL integrator, not re-derived as a theorem) |
 | `GL_FRAMEBUFFER_SRGB` | disabled (TM + sRGB OETF on CPU) |
 | MSAA | disabled |
 | Neutral gamut | Rec.709 in, Rec.709 out, no gamut mapping |
-| Exposure / TM | **1.05** / **Khronos PBR Neutral** ($F_{90}=0.04$, $K_s=0.76$, $K_d=0.15$) |
+| Exposure / TM | 1.05 / Khronos PBR Neutral ($F_{90}=0.04$, $K_s=0.76$, $K_d=0.15$) |
 
-Can claim: Operating on this specific llvmpipe build with a single linear HDR loft buffer, exposed via a stated gain, we can reliably produce these exact photographs using clip, Reinhard, ACES, and Neutral operators. The clip-fraction, highlight RMS, and midtone mean fluctuate exactly as documented in the CSV. Furthermore, Neutral serves efficiently as the named display operator carried forward from our IBL experiments.
+**Can claim:** Executing on this specific llvmpipe architecture with a singular linear HDR scene buffer, scaled by a stated scalar gain, we consistently produce these documented photographic outputs employing the clip, Reinhard, ACES, and Neutral operators. The measured clip-fraction, highlight RMS, and midtone mean fluctuate exactly as tabulated in the CSV. Furthermore, the Khronos PBR Neutral function operates deterministically as the designated display operator inherited from prior IBL experiments.
 
-Cannot claim: We cannot assert that Neutral represents "correct cinematography," nor can we claim that ACES is mathematically wrong. We cannot claim that a JPEG histogram accurately reflects the underlying scene histogram, or that a PNG value of 255 cleanly equates to a linear 1. Modifying a curve does not miraculously invent lighting, and our software implementation does not necessarily mirror the inner workings of a dedicated hardware display chip's tonemap unit. Discrete-GPU metrics, occupancy, bandwidth concerns, HDR10/PQ encoding, and OCIO cinema LUTs fall entirely outside the scope of these claims.
+**Cannot claim:** We make no assertion that the Neutral operator constitutes "correct cinematography," nor do we claim the ACES fit is mathematically erroneous. We do not assert that a histogram derived from a JPEG accurately represents the radiometric distribution of the underlying scene, nor that a PNG integer of 255 maps linearly to a radiometric 1. Modifying a transfer curve cannot synthesize missing illumination data, and this software implementation makes no structural claims regarding the operation of dedicated hardware tonemap silicon. Metrics pertaining to discrete-GPU performance, hardware occupancy, memory bandwidth, HDR10/PQ stream encoding, and OCIO cinema LUT integration fall strictly outside the boundaries of these claims.
 
 ---
 
 ## Assertions
 
-This run: **31 pass / 0 fail**.
+This run: 31 pass / 0 fail.
 
 | check | result |
 | --- | --- |
 | Required gallery plates + CSV exist and are non-empty | PASS |
 | FBO is RGBA32F; 8-bit fallback not hit | PASS |
 | No NaNs in $L_o$ | PASS |
-| Env mean luma in $(0.15,\,25)$ | PASS **1.628** |
-| Cube upload not `fail` | PASS **RGBA16F** |
-| $L_e$ clip-frac $>0.002$ | PASS **0.13355** |
-| Neutral clip-frac $<10^{-4}$ | PASS **0** |
-| Clip sat-frac tracks input clip-frac | PASS **0.13362** |
-| Highlight RMS drops under clip and Neutral vs $L_e$ | PASS **7.660 → 0.686 / 0.625** |
-| Reinhard per-channel midtones below Neutral in the 1:1 band | PASS **0.325 < 0.441** |
+| Env mean luma in $(0.15, 25)$ | PASS 1.628 |
+| Cube upload not `fail` | PASS RGBA16F |
+| $L_e$ clip-frac $>0.002$ | PASS 0.13355 |
+| Neutral clip-frac $<10^{-4}$ | PASS 0 |
+| Clip sat-frac tracks input clip-frac | PASS 0.13362 |
+| Highlight RMS drops under clip and Neutral vs $L_e$ | PASS 7.660 → 0.686 / 0.625 |
+| Reinhard per-channel midtones below Neutral in the 1:1 band | PASS 0.325 < 0.441 |
 | Neutral gray slice $0.50\to 0.46$ (F90 offset, not re-fit) | PASS |
 | Neutral constants not re-fit | PASS |
 
-No assert tolerances were loosened to accommodate the photoreal plates.
+Assertion tolerances were strictly maintained and not artificially widened to accommodate photoreal rendering variance.
 
 ---
 
 ## Out of scope
 
-This note explicitly ignores full cinema LUT pipelines, OCIO show configurations, film print emulations, and alternative hero operators like AgX, Hable, or Uncharted2. We are not addressing HDR10, PQ, HLG, or Rec.2020 mastering workflows, as Neutral’s current spec targets sRGB. Local adaptive tone mapping, operator-based TMOs, bilateral filtering, and photographic-zone mapping are completely evaluated. Auto-exposure metering, key-value targeting, and histogram-centering are excluded because $e$ is treated strictly as a manual, stated gain. Color-management ICC profiling and the display-profile rabbit hole are avoided entirely. We also skip sRGB-vs-linear texture decoding, TAA, temporal accumulation, and firefly-suppression. Re-deriving foundational IBL mathematics—such as the Karis prefilter, the DFG LUT, roughness-to-mip mapping, or distant $E(\mathbf{n})$—belongs in the live IBL note, not here. We skip Toksvig integration, anisotropic GGX, sheen, clearcoat layers, and layered metals. Shadow-map bias is not covered. Finally, hardware tonemap units, real-time computational cost, GPU occupancy, and memory bandwidth are completely out of bounds.
+This analysis explicitly excludes comprehensive cinema LUT pipelines, OCIO show configuration management, film print emulation (FPE) workflows, and alternative hero tone mapping operators such as AgX, Hable, or Uncharted2. We do not evaluate HDR10, PQ, HLG, or Rec.2020 wide-gamut mastering constraints, as the evaluated Neutral specification is strictly constrained to the sRGB domain. Furthermore, local adaptive tone mapping architectures, spatial operator-based TMOs, bilateral filtering techniques, and photographic-zone mapping are excluded. Algorithmic auto-exposure metering, heuristic key-value targeting, and automated histogram-centering are bypassed, as $e$ is treated strictly as a manually parameterized scalar gain. Color-management via ICC profiling and OS-level display mapping are avoided entirely. We similarly omit discussions of sRGB-vs-linear texture decoding, Temporal Anti-Aliasing (TAA), temporal frame accumulation, and spatial firefly-suppression filters. The re-derivation of foundational IBL mathematics—including the Karis prefilter, the DFG LUT integration, roughness-to-mip mapping distributions, and the distant irradiance integral $E(\mathbf{n})$—is scoped strictly to the foundational IBL documentation. We omit evaluations of Toksvig mapping, anisotropic GGX models, sheen terms, clearcoat BRDF layers, and multi-layered metallic systems. Shadow-map biasing techniques are not addressed. Finally, hardware tonemap units, real-time computational cost analysis, GPU warp occupancy, and memory bandwidth utilization fall completely outside the scope of this evaluation.
 
 ---
 
@@ -330,4 +311,4 @@ sRGB = OETF(sat(Ld))
 
 ```
 
-We maintain locked Neutral constants without re-fitting them: $F_{90}=0.04$, $K_s=0.76$, and $K_d=0.15$. Input and output both remain in Rec.709. Pin the hero image as our presentation standard. Pin the tight crop to visualize the structural failure. Pin the histogram as the definitive, unique artifact of this evaluation. The formula block above essentially serves as the ultimate caption. Across all these variations, the scene radiance $L_o$ never changes. The curve simply dictates how to allocate display codes.
+We maintain strictly locked Neutral parameter constants without per-evaluation refitting: $F_{90}=0.04$, $K_s=0.76$, and $K_d=0.15$. Both input radiance and output display coordinates remain bounded within the Rec.709 gamut. The primary hero rendering serves as the visual presentation standard. The localized tight crop provides the analytical visualization of structural degradation. The log-domain histogram stands as the definitive, unique quantitative artifact of this analysis. The sequential formula block provided above acts as the fundamental mathematical caption governing the evaluation. Across all tested variations, the pre-tone-mapped scene radiance $L_o$ remains strictly invariant. The transfer curve functions exclusively to allocate finite display codes.
