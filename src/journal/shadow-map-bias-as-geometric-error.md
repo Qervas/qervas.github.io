@@ -9,7 +9,6 @@ tags:
 math: true
 cover: /assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg
 ---
-阴影贴图偏移作为几何误差
 
 Shadow-map bias represents a physical length along the light ray, added just before the depth comparison. Applying too little of this length causes an analytically lit receiver to be incorrectly classified as shadowed, resulting in acne. Applying too much detaches the contact shadow of a thin occluder from its true foot, creating peter-panning. The overarching curve in this note visualizes the exact trade-off between these two artifacts.
 
