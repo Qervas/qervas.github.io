@@ -9,7 +9,6 @@ tags:
 math: true
 cover: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/00_hero.jpg
 ---
-多重重要性采样与平衡启发式
 
 Our last note, [Light Sampling and the Area Jacobian](/posts/p/light-sampling-and-the-area-jacobian/), put a legal light density on \(d\omega\). The one before that, [Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-sampling-phong-lobe-vs-cosine/), kept two BSDF pdfs on a single integral, both already in \(1/\mathrm{sr}\). This time, we're bringing both ideas together on the same kiln mouth.
 
