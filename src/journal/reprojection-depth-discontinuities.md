@@ -9,146 +9,153 @@ tags:
 math: true
 cover: /assets/journal/reprojection-depth-discontinuities/00_hero.jpg
 ---
+Our previous analysis of frame reuse modeled temporal integration as an exponential moving average (EMA) constrained by a \(3\times 3\) RGB minmax clamp. The persistent ghosting observed at textured occlusion boundaries demonstrated that a color clamp is insufficient for resolving visibility. Depth-based rejection, the corresponding geometric control, was disabled for those prior evaluations and tested only coarsely at \(\tau=0.25\) in world-\(z\). This article focuses strictly on depth discontinuity detection. Fundamentally, a color clamp evaluates whether historical data is chromatically plausible, whereas a depth reject determines if the sample originates from the identical geometric surface. Along high-frequency depth edges—such as a structural pillar—these heuristics yield contradictory results.
 
-Our previous note treated frame reuse as an exponential bet: an EMA paired with a \(3\times 3\) RGB minmax clamp. We identified the leftover ghosting at textured edges then—*a color clamp is not a visibility solve*. Depth-rejection was the related control, disabled for those hero shots and evaluated at \(\tau=0.25\) in world-\(z\). This note focuses entirely on that depth test. **A color clamp asks whether historical data is chromatically plausible, while a depth reject asks whether it represents the same surface.** Along the edge of a metro pillar, those two answers completely diverge.
-
-This is not another lecture on EMA. History weight is locked as a frozen accept \(w_0\), or strictly zero. We exclude jitter sequences, \(\alpha\) ladders, and YCoCg spaces from this evaluation.
+This discussion isolates the history weight formulation, defining it either as a static acceptance factor (\(w_0\)) or strictly zero. We explicitly exclude sub-pixel jitter sequences, \(\alpha\) integration ladders, and YCoCg variance clipping from the present scope.
 
 ![Underground metro platform colonnade: square concrete pillars, tubular railing, tiled floor, yellow safety line, far track void. Current color after a camera truck in +X. Khronos PBR Neutral e=1.00. Photograph only — no residual RMS.](/assets/journal/reprojection-depth-discontinuities/00_hero.jpg)
 
-We introduce a new photographic family: an underground metro platform colonnade to replace the loft scene. The environment features square concrete pillars, a thin tubular railing, a large-format tiled floor with visible grout, a yellow safety line, a distant track void, and recessed ceiling coffers. The world geometry is fully static. The camera trucks exclusively in the \(+X\) direction with a locked look-at offset to enforce pure translation. The HUD overlay reads `CURRENT COLOR  METRO COLONNADE`, `STATIC WORLD  CAMERA TRUCK +X`, and `PHOTO-ONLY`. Because this is only a photograph, do not attach a residual RMS to it.
+We introduce a novel static environment for evaluation: an underground metro platform colonnade, superseding the previous loft scene. The architectural geometry includes square concrete pillars, a thin tubular railing, large-format tiled flooring with distinct grout lines, a yellow safety strip, a distant track void, and recessed ceiling coffers. The camera undergoes pure translation strictly in the \(+X\) direction with a locked look-at offset. The diagnostic overlay confirms `CURRENT COLOR  METRO COLONNADE`, `STATIC WORLD  CAMERA TRUCK +X`, and `PHOTO-ONLY`. As this rendering operates in a purely photographic mode, no residual Root Mean Square (RMS) error should be ascribed to this baseline.
 
 ![Teaching pin. Identical current color and current depth. Left: no temporal. Middle: reproject + RGB 3×3 clamp, no depth test — wrong-surface history that still sits in the box. Right: reproject + τ depth reject — that sample is killed. Wedge crops under each column. Photograph only.](/assets/journal/reprojection-depth-discontinuities/10_3up.jpg)
 
-**Pin this as the core reference.** The current color and current depth buffers are perfectly identical; only the applied history policy changes. The left column (**A**) employs no temporal filtering. The middle column (**B**) applies reprojection alongside an RGB \(3\times 3\) clamp without a depth test, allowing wrong-surface history to survive as long as it fits inside the local color box. The right column (**C**) utilizes reprojection paired with a \(\tau\) depth reject, successfully killing the invalid sample. The caption notes: *B keeps wrong-surface history in the 3×3 box. C zeros \(w\) on \(d>\tau\).* If the full frames look similar from across the room, the wedge crops beneath each column highlight the disparity. This remains a photo-only plate.
+**Pin this as the core reference.** The current color and depth buffers remain perfectly identical across all tested pipelines; variance stems exclusively from the temporal history policy. Configuration **A** (left) bypasses temporal filtering entirely. Configuration **B** (middle) applies backward reprojection with an RGB \(3\times 3\) bounding box clamp, omitting depth validation. This permits wrong-surface history to persist provided its chromaticity falls within the localized spatial neighborhood. Configuration **C** (right) augments reprojection with a \(\tau\) relative-depth reject threshold, effectively discarding the invalid temporal sample. To summarize: B retains disparate-surface history within the \(3\times 3\) gamut constraint; C enforces \(w=0\) when \(d>\tau\). While macro-scale visual differences may appear subtle, the isolated wedge crops reveal severe artifacting in the clamped approach.
 
-Testing executed on Mesa 25.0.7 llvmpipe operating in linear Rec.709, outputting via **Khronos PBR Neutral** tone mapping after the resolve at \(e=\mathbf{1.00}\). We lock \(\tau=\mathbf{0.020}\). The camera trucks at \(\approx\mathbf{14.51}\) px/frame at the named pillar, generating a rejection fraction of \(\approx\mathbf{0.0249}\). The depth-edge Region of Interest (ROI) residual RMS values hit **0** for A, **0.140465** for B, and **0.053736** for C (\(n=128952\)). The frozen acceptance weight is \(w_0=0.90\). Mask dilation is disabled, leaving static-camera rejection at **0**. We define the mix as \(C=w\,H+(1-w)\,S\). The suite confirms **37 pass / 0 fail** on all assertions.
+Testing was executed on Mesa 25.0.7 (llvmpipe) operating in linear Rec. 709 color space. The resolve pass utilizes Khronos PBR Neutral tone mapping at an exposure of \(e=1.00\). The rejection threshold is locked at \(\tau=0.020\). Under a lateral camera velocity of \(\approx 14.51\) px/frame at the foreground pillar, the system records a rejection fraction of \(\approx 0.0249\).
+
+The depth-edge Region of Interest (ROI) residual RMS values (\(n=128952\)) are as follows:
+
+| Policy | Control Mechanism | Residual RMS |
+| --- | --- | --- |
+| **A** (No Temporal) | N/A | 0 |
+| **B** (Clamp Only) | None | 0.140465 |
+| **C** (Depth Reject) | \(\tau=0.020\) | 0.053736 |
+
+Integration employs a frozen acceptance weight of \(w_0=0.90\). With mask dilation disabled, static-camera rejections identically evaluate to 0. The composite formulation is defined as \(C = w\,H + (1-w)\,S\). Our internal verification suite confirms 37 pass / 0 fail across all invariant assertions.
 
 ---
 
 ## What you are seeing
 
-The setup captures a single scene using one warp built from the previous and current view-projection matrices alongside the current linearized view-Z. We evaluate three distinct history policies on **identical** current buffers. The display pipeline is fully inherited: the engine resolves in linear space, passes through Khronos PBR Neutral, and applies the IEC 61966-2-1 sRGB OETF. A tone curve cannot synthesize lighting, and reprojection cannot synthesize samples that were never shaded to begin with.
+This experimental setup captures the scene utilizing a unified reprojection warp, derived from the previous and current view-projection matrices alongside the current linearized view-Z. We evaluate the three history policies against perfectly identical current-frame buffers. The display pipeline is fully inherited: the engine resolves lighting in linear space, passes through the Khronos PBR Neutral operator, and applies the standard IEC 61966-2-1 sRGB Opto-Electronic Transfer Function (OETF). A tone curve cannot synthesize unrendered lighting, nor can reprojection invent samples absent from the shading pass.
 
-**Presentation hook.** We showcase current color at designated frame 8, extracted from an offline \(N=9\) strip. The framing shows pillars marching across the bay, the railing crossing in front of multiple pillars, and floor tiles receding into the track void. This visual is for photographic reference only.
+**Presentation hook.** We sample the current color buffer at frame 8, extracted from an offline integration strip of length \(N=9\). The composition frames repeating structural pillars, a foreground railing, and floor tiles extending into the track void. This visualization serves as a photographic reference rather than an analytical output.
 
-**Teaching pin.** The comparison pits A, B, and C against the same \(S_t\) buffer. Below each full frame is a nearest-neighbor wedge crop isolating the disocclusion slab at the named pillar.
+**Teaching pin.** The comparative analysis evaluates paths A, B, and C using an identical \(S_t\) signal. Each full-frame rendering is accompanied by a nearest-neighbor wedge crop isolating the disocclusion slab at the reference pillar.
 
 ![Loud failure, clamp path. Same current frame as A and C. Honest VP warp, in-domain ⇒ w=w0, then RGB 3×3 minmax of current St. No depth test. A history texel from the pillar body can sit inside that color box after the truck reveals floor or void. Photograph only.](/assets/journal/reprojection-depth-discontinuities/08_clamp_only.jpg)
 
-**Loud failure, clamp path.** This uses the exact same current frame as paths A and C, applying an honest view-projection warp. If the sample falls in-domain, it assigns \(w=w_0\) and executes an RGB \(3\times 3\) minmax clamp against the current \(S_t\) without checking depth. Once the camera truck reveals the floor or track void, a history texel from the pillar body can easily land inside that new color box. Because the clamp accepts it, a wrong-surface smear persists. Photograph only.
+**Loud failure, clamp path.** This path utilizes the identical current frame as paths A and C, executing a standard view-projection warp. If a historical sample projects within the screen domain, the solver assigns \(w=w_0\) and restricts the color via an RGB \(3\times 3\) minmax clamp against the current \(S_t\), explicitly ignoring depth correlation. As the camera translates and disoccludes the background track void, historical pixels representing the foreground pillar surface may numerically satisfy the bounding box of the newly revealed background. The clamp erroneously accepts this signal, producing a persistent wrong-surface smear.
 
 ![Unique artifact. Beauty dimmed; HOT = d>τ (wrong-surface history); BLUE = reprojected UV out of domain. Named-pillar crop inset. τ=0.020, reject frac 0.025, relative d test. Geometric fingerprint the clamp plate cannot draw.](/assets/journal/reprojection-depth-discontinuities/05_fail_mask.jpg)
 
-**Unique artifact (pin this with the 3-up).** The beauty pass is dimmed to highlight tracking data. **HOT** regions indicate \(d>\tau\), representing wrong-surface history. **BLUE** regions denote areas where the reprojected UV fell out of domain. We include a crop inset of the named pillar. The HUD reads \(\tau=0.020\) with a reject fraction of \(0.025\) based on a relative \(d\) test. This produces a distinct geometric fingerprint that the color clamp plate is fundamentally incapable of drawing.
+**Unique artifact.** We attenuate the beauty pass to prioritize analytical tracking data. Hot regions (red) indicate spatial coordinates where the relative depth test fails (\(d>\tau\)), flagging wrong-surface history. Blue regions denote areas where the backward-reprojected UV coordinate fell out of domain. We include a crop inset of the named pillar. The diagnostic overlay confirms \(\tau=0.020\) with a rejection fraction of 0.025, derived from the relative \(d\) test. This yields a precise geometric fingerprint that a purely chromatic clamp is mathematically incapable of isolating.
 
 ![Depth-reject path. Same warp as B. w=0 on d>τ or OOB; current shading stands alone on a rejected pixel. Photograph only.](/assets/journal/reprojection-depth-discontinuities/09_depth_reject.jpg)
 
-**Depth-reject path.** This path relies on the exact same warp as path B. It strictly sets \(w=0\) if \(d>\tau\) or if the sample is Out of Bounds (OOB). On any rejected pixel, the current shading stands entirely alone. Photograph only.
+**Depth-reject path.** This approach utilizes the identical reprojection warp as path B. However, it rigidly forces \(w=0\) if the relative depth disparity exceeds \(\tau\) (\(d>\tau\)) or if the sample projects out of bounds (OOB). Consequently, the current shading signal stands alone at any rejected pixel.
 
-These visuals rely on two facts that must never be mixed:
+These visualizations depend on two distinct methodologies that must remain decoupled:
 
-1. **Beauty plates** (including the hero, 3-up, clamp-only, and depth-reject images) display GL-rendered current buffers plus the resolve, Neutral mapping, and sRGB OETF. The `photo-only` HUD tag mandates that you do not invent a residual or a reject fraction directly from the JPEG.
-2. **Instruments** (such as the fail mask, history weight, ROI overlay, and residual heat) visualize the actual float buffers. These maps measure linearized view-Z, the fail mask, history weight, ROI residual RMS, and reject fractions. Only quote the metrics for these evaluations.
+1. **Beauty plates** (including the hero, 3-up, clamp-only, and depth-reject images) represent GL-rendered current buffers processed through the resolve step, Neutral tone mapping, and sRGB OETF. Given the `photo-only` constraint, residual errors or rejection fractions must not be inferred directly from the encoded JPEG.
+2. **Instruments** (including the failure mask, history weight visualization, ROI overlay, and residual heatmaps) directly interrogate the underlying floating-point buffers. These maps quantify linearized view-Z, rejection flags, temporal weight, ROI residual RMS, and precise rejection fractions. Quantitative claims must be drawn exclusively from these instrumented readbacks.
 
 ---
 
 ## Two questions, one warp
 
-Our previous Temporal Anti-Aliasing (TAA) note already demonstrated why a neighborhood Axis-Aligned Bounding Box (AABB) continues to leak at textured edges. Because a \(3\times 3\) window spans both an occluder and a newly revealed surface, stale color remains safely in range. That specific artifact left a **0.02162** residual on the loft ghost ROI. We are not rerunning that loft scene here; instead, we address the correspondence question that an AABB is blind to.
+Our preceding Temporal Anti-Aliasing (TAA) analysis illustrated why a neighborhood Axis-Aligned Bounding Box (AABB) exhibits structural leaking at textured occlusion boundaries. Because a \(3\times 3\) spatial window inherently spans both the foreground occluder and the newly disoccluded background surface, stale color data frequently remains within the minmax gamut. That specific topological failure resulted in a 0.02162 residual on the loft scene's ghost ROI. Rather than revisiting the loft environment, we focus on the geometric correspondence problem that the AABB algorithm fundamentally ignores.
 
-**Clamp (path B).** Is this history *color* plausible among the current neighbors?
+**Clamp (path B).** Is this historical *color* chromatically plausible given the current spatial neighborhood?
 
-**Depth reject (path C).** Is this history *sample* genuinely the same geometric surface?
+**Depth reject (path C).** Does this historical *sample* correspond to the identical geometric surface?
 
-On a metro pillar or a thin railing edge, the current \(3\times 3\) neighborhood is highly mixed, capturing concrete, grout, painted steel, and the dark track void. When the camera trucks laterally, a history texel originally on the pillar body can fall into a box belonging to newly revealed floor or void. This makes it chromatically legal but geometrically incorrect. The clamp blindly preserves it, whereas a relative-depth reject ignores the color box entirely.
+At the boundary of a metro pillar or a thin railing edge, the current \(3\times 3\) neighborhood is highly heterogeneous—encompassing concrete, grout, painted steel, and the unlit track void. Under lateral camera translation, a historical texel originating from the pillar body can effortlessly map into a color bounding box defined by the newly revealed floor. This satisfies chromatic legality while failing geometric correspondence. The color clamp blindly preserves the artifact, whereas a relative-depth rejection identifies the discontinuity and discards the historical data entirely.
 
-The warp is shared across paths. We store the previous and current view-projection matrices per frame, reconstructing history UV directly from current depth. If those matrices or the depth buffer contain errors, the test is fundamentally invalid—there is no learned flow to paper over that.
+The reprojection warp is invariant across paths. The engine stores the previous and current view-projection matrices per frame, reconstructing the history UV coordinate analytically from the current depth buffer. If these matrices or the depth buffer contain discrepancies, the reprojection predicate is fundamentally compromised; no localized learned optical flow can correct a globally invalid transform.
 
 ---
 
 ## Why: VP warp, then relative \(d\)
 
-The internal working space is **linear Rec.709**, with history tracked in RGBA32F. We blend entirely in linear space. The display transform is applied as a named step after the resolve, ensuring it is not baked into \(H\). All depths referenced below are **view-linear** (positive, MRT), rather than window-Z.
+The engine's internal working space is linear Rec. 709, with temporal history maintained in an RGBA32F texture format. Integration is performed entirely in linear space. The display transform operates strictly as a post-resolve operation, ensuring non-linear encoding is never baked into the history buffer \(H\). Furthermore, all depth values referenced below are view-linear (positive, matching the MRT conventions) rather than non-linear window-Z.
 
 ### Backward reprojection
 
-History UV is calculated using the current pixel and the current depth. This relies on a clip-space warp; do not reconstruct world positions as a product claim.
+History UV coordinates are derived from the current pixel location and the current depth value. This formulation strictly requires a clip-space warp; avoid reconstructing intermediate world-space positions.
 
 \[\mathbf{x}_{t}^{\mathrm{clip}} = P_{t}\,V_{t}\, \pi^{-1}(u,v,z_{t}), \qquad \mathbf{x}_{t-1}^{\mathrm{clip}} = P_{t-1}\,V_{t-1}\, V_{t}^{-1}\,P_{t}^{-1}\, \mathbf{x}_{t}^{\mathrm{clip}}\]
 
 \[(u',v',z_{\mathrm{exp}}) = \pi(\mathbf{x}_{t-1}^{\mathrm{clip}}).\]
 
-Any off-screen \((u',v')\) coordinate constitutes an automatic reject. We fetch history color bilinearly at \((u',v')\), but history depth must be **point-sampled**. For instrumentation only, we measure implied velocity as \(\mathbf{v}=(u,v)-(u',v')\). We do not run a separate MV buffer or rely on optical flow.
+Any reprojected coordinate \((u',v')\) falling outside the screen domain triggers an automatic rejection. While the history color is fetched via bilinear interpolation at \((u',v')\), the history depth buffer must be point-sampled. For diagnostic instrumentation only, we quantify the implied velocity vector as \(\mathbf{v} = (u,v) - (u',v')\). We do not compute a discrete motion vector (MV) buffer or depend on optical flow approximations.
 
 ### Expected previous-view Z versus fetched history Z
 
-Once the camera moves, \(z_t\) and the previous camera's view-Z no longer represent the same coordinate space. We must reconstruct the current view-space point, transform it into the previous view, and compare the **expected** previous-view Z against the point-sampled history depth.
+Following camera motion, the current \(z_t\) and the previous camera's view-Z operate in disparate coordinate spaces. To establish correspondence, the solver reconstructs the current view-space coordinate, transforms it into the previous view frustum, and compares the **expected** previous-view Z against the point-sampled history depth.
 
 \[\mathbf{X}_{t}=\pi^{-1}(u,v,z_{t}), \qquad \mathbf{X}_{t-1}=V_{t-1}\,V_{t}^{-1}\,\mathbf{X}_{t}, \qquad z_{\mathrm{exp}}=(\mathbf{X}_{t-1})_{z}\]
 
 \[z_{\mathrm{hist}}=\text{point-sample linearized view-Z}_{t-1}(u',v').\]
 
-Comparing \(z_{\mathrm{hist}}\) directly to the current-camera \(z_t\) is a **translation bug**. Implementing that would falsely illuminate wrong pixels during a lateral truck, and light the entire floor during a boom move.
+Comparing \(z_{\mathrm{hist}}\) directly against the current-camera \(z_t\) constitutes a fundamental translation error. Such a flaw would artificially illuminate static pixels during lateral camera trucking and erroneously reject entire ground planes during boom operations.
 
 ### Named relative-depth discontinuity
 
-\[ d = \frac{\lvert z_{\mathrm{hist}}-z_{\mathrm{exp}}\rvert} {\max(\lvert z_{\mathrm{exp}}\rvert,\,z_{\varepsilon})}, \qquad \text{reject if }d>\tau\text{ or }(u',v')\text{ out of domain.} \]
+\[d = \frac{\lvert z_{\mathrm{hist}}-z_{\mathrm{exp}}\rvert} {\max(\lvert z_{\mathrm{exp}}\rvert,\,z_{\varepsilon})}, \qquad \text{reject if }d>\tau\text{ or }(u',v')\text{ out of domain.}\]
 
-We lock \(\tau=\mathbf{0.020}\) and \(z_{\varepsilon}=\mathbf{0.050}\,\mathrm{m}\). Here, \(\tau\) acts as a published threshold constant, not a hidden epsilon. The previous TAA test evaluated \(\lvert z_t-z_{t-1}\rvert\) in world-\(z\), which is a completely different predicate.
+We enforce \(\tau=0.020\) and \(z_{\varepsilon}=0.050\,\mathrm{m}\). In this formulation, \(\tau\) functions as a deliberate architectural threshold constant, not an arbitrary floating-point epsilon. Note that the prior TAA implementation evaluated the absolute difference \(\lvert z_t-z_{t-1}\rvert\) in world-\(z\), constituting a mathematically distinct—and inferior—predicate.
 
 ### History weight (hard cut, not an EMA)
 
-\[ w = \begin{cases} 0 & \text{if reject or }(u',v')\text{ out of domain}\\ w_{0} & \text{otherwise} \end{cases} \qquad C=w\,C_{\mathrm{hist}}+(1-w)\,C_{\mathrm{curr}}. \]
+\[w = \begin{cases} 0 & \text{if reject or }(u',v')\text{ out of domain}\\ w_{0} & \text{otherwise} \end{cases} \qquad C=w\,C_{\mathrm{hist}}+(1-w)\,C_{\mathrm{curr}}.\]
 
-The variable \(w\) represents the **history weight**. We employ a frozen \(w_0=\mathbf{0.90}\). Do not conflate this with the TAA note’s \(\alpha\), which controlled current-frame weight. Avoid re-deriving an accumulation curve from it. The asserted unit proves that if \(H=1\), \(S=0\), and \(w_0=0.90\), the output cleanly calculates to \(C=0.90\).
+The variable \(w\) defines the binary history weight. We apply a frozen parameter \(w_0=0.90\). This must not be conflated with the TAA evaluation's \(\alpha\) factor, which governed the current-frame weight. Do not attempt to derive an accumulation curve from this formulation. The logic verifies trivially: if \(H=1\), \(S=0\), and \(w_0=0.90\), the composite output strictly resolves to \(C=0.90\).
 
-An optional mask dilate (acting strictly as a 1 px expansion on the **binary reject mask**, rather than a min-filter applied to the depth fetch) is available as a control. In this specific run, it is toggled **off**.
+An optional mask dilation phase—functioning strictly as a 1 px expansion upon the binary reject mask, rather than a min-filter over the depth fetch—is available as a topological control. For this specific dataset, dilation is toggled off.
 
 ### Color clamp (the failure control, not the product)
 
-Path B entirely ignores \(d\). It forces \(w=w_0\) as long as \((u',v')\) remains in domain, then replaces history with:
+Path B unconditionally ignores the depth differential \(d\). It assigns \(w=w_0\) provided \((u',v')\) remains in domain, then mutates the historical sample via:
 
 \[C_{\mathrm{hist}}^{\ast} = \mathrm{clamp}\!\bigl( C_{\mathrm{hist}},\; \min_{\mathcal{N}_{3\times 3}}C_{\mathrm{curr}},\; \max_{\mathcal{N}_{3\times 3}}C_{\mathrm{curr}} \bigr)\]
 
-This evaluates in linear RGB, avoiding YCoCg and variance clipping. The bounding neighborhood relies solely on current-frame color. This policy inevitably preserves a plausible but physically incorrect wrong-surface sample.
+This function is evaluated in linear RGB, purposefully omitting YCoCg transformations and localized variance clipping. The bounding topology is constructed exclusively from current-frame color data. Consequently, this policy mathematically guarantees the preservation of plausible, yet physically invalid, wrong-surface temporal samples.
 
-Path C fundamentally does **not** clamp. The defining thesis is the strict depth cut, not a secondary AABB.
+In contrast, Path C completely eschews the clamping operation. Its defining thesis relies solely on the rigid geometric depth cut, rejecting the necessity of a secondary AABB color constraint.
 
 ### Display (inherited, not re-derived)
 
 \[L_{\mathrm{display}} = \mathrm{TM}\bigl(\mathrm{expose}(C)\bigr) \quad\text{then sRGB OETF for PNG.}\]
 
-The active Tone Mapper (TM) is **Khronos PBR Neutral**, evaluated at \(e=1.00\) for this specific metro plate. `GL_FRAMEBUFFER_SRGB` remains off; encoding executes on the CPU. All measurements rely on the float buffer rather than the final PNG.
-
----
+The active Tone Mapper (TM) is Khronos PBR Neutral, parameterized at \(e=1.00\) for the metro dataset. The state `GL_FRAMEBUFFER_SRGB` is explicitly disabled; color encoding is executed asynchronously on the CPU. All quantitative measurements are extracted directly from the floating-point rendering buffers, completely bypassing the final PNG quantization.
 
 ## Unique artifact: fail mask on the pillar silhouette
 
-This note exists primarily to draw the fail mask. HOT pixels accurately trace the pillar limbs and the railing where they intersect the dark track void—these identify the specific set where the fetched history Z contradicts the expected previous-view Z of the current sample. BLUE pixels mark the out-of-bounds left-edge slab generated by the camera truck. The inset cropping the named pillar perfectly matches the wedge examined in the 3-up layout.
+This technical note exists primarily to document the failure mask. Hot pixels successfully delineate the structural pillar boundaries and the railing segments overlapping the unlit track void. These artifacts explicitly identify regions where the sampled historical Z contradicts the expected previous-view Z mapped from the current sample. Blue pixels correspond to the out-of-bounds (OOB) left-edge domain generated by the camera translation. The inset crop isolating the foreground pillar corresponds exactly to the disocclusion wedge analyzed in the 3-up comparative layout.
 
-The 3-up effectively compares policies across that exact slab. Path A represents current geometry. Path B illegally keeps the sample because the AABB accepts it. Path C properly zeros out \(w\) anywhere the mask is hot.
+The 3-up structure inherently evaluates these temporal policies across that specific geometric slab. Path A isolates the aliased current geometry. Path B incorrectly retains the historical sample because the purely chromatic AABB minmax heuristic accepts it. Path C successfully asserts \(w=0\) uniformly across the hot failure mask.
 
 ![Instrument. C-path history weight, false-color 0…1. Accept is w0; reject / OOB is 0. Agrees with the fail mask on the rejected set (fail ⇒ w=0).](/assets/journal/reprojection-depth-discontinuities/06_history_weight.jpg)
 
-The history weight aligns exactly with the rejected set as a mapped weight: a failure guarantees \(w=0\) as asserted. Accepted pixels sit at \(w_0\), while rejects or OOB boundaries sit at \(0\).
+The measured history weight corresponds flawlessly with the theoretical rejection set as a continuous mapping: a geometric failure guarantees \(w=0\), satisfying the established assertion. Accepted pixels sustain \(w_0\), whereas relative-depth rejections or OOB boundary traversals evaluate strictly to 0.
 
-Lag observed behind a 1–2 px railing stems from a combination of **coverage and correspondence**, not from inaccurate velocity tracking. Subpixel coverage operates purely in binary space without MSAA. A geometric sample that fails to resolve in current \(S_t\) can persist in \(H\) if the warp inadvertently lands on the railing's previous coordinates while the color box happens to include steel.
+The residual temporal lag observed trailing the 1–2 px railing structure derives fundamentally from a combination of **coverage aliasing and geometric correspondence**, rather than an erroneous velocity field. Subpixel coverage is resolved strictly as binary inclusion, omitting MSAA coverage vectors. A geometric surface that fails the spatial sampling in the current \(S_t\) buffer can erroneously persist in \(H\) if the backward reprojection warp inadvertently intercepts the railing's historical coordinates, provided the chromatic bounding box accommodates the metallic steel values.
 
-Quote the float metrics, not the JPEG.
+Metrics must be quoted strictly from the floating-point rendering targets, explicitly rejecting any quantization artifacts embedded in the compressed JPEG output.
 
 ---
 
 ## Quote the metrics. Do not quote the beauty photographs as meters.
 
-All figures derive from the Mesa llvmpipe float buffer. Residual RMS calculates the RGB disparity against the current \(S_t\) uniquely inside the painted depth-edge ROI. We construct this using a CPU morph gradient and a 6 px dilate, evaluating \(n=128952\) pixels:
+All quantitative figures are derived from the Mesa llvmpipe floating-point buffer. The residual RMS calculates the RGB disparity against the current \(S_t\) signal uniquely within the delineated depth-edge Region of Interest (ROI). This specific geometric mask is constructed utilizing a CPU-side morphological gradient followed by a 6 px structural dilation, yielding a sample population of \(n=128952\) pixels:
 
 \[\mathrm{RMS} = \sqrt{ \frac{1}{3n} \sum_{p\in\mathrm{ROI}} \lVert C(p)-S_t(p)\rVert_2^2 }.\]
 
-We evaluate designated frame **8** from the total \(N=9\). Frame 0 inherently lacks history and goes unscored. The truck velocity targets named pillar index **4**, bound roughly by \((414,206)\)–\((505,608)\).
+The primary evaluation targets frame 8 out of the total \(N=9\) sequence. Frame 0 lacks a valid temporal history and is consequently excluded from scoring. The lateral camera velocity targets the defined pillar index 4, bounded approximately within the coordinate window \((414,206)\)–\((505,608)\).
 
-| item | value |
-|---|---|
+| Parameter | Value |
+| --- | --- |
 | \(\tau\) | **0.020** |
 | \(w_0\) | **0.90** |
 | dilate (reject mask) | **0** |
@@ -165,27 +172,27 @@ We evaluate designated frame **8** from the total \(N=9\). Frame 0 inherently la
 | reject \(\tau=0.005/0.02/0.08\) | **0.025028** / **0.024903** / **0.024638** |
 | static-camera reject | **0.000000** |
 
-Hero rounding is utilized in the introduction: \(\tau=\mathbf{0.020}\); truck speed is \(\approx\mathbf{14.51}\) px/frame; reject fraction is \(\approx\mathbf{0.0249}\); ROI RMS hits **0 / 0.140465 / 0.053736**; yielding **37 pass / 0 fail**. Do **not** invent a residual or a reject fraction from the hero, the 3-up, or the clamp plates. Those specific frames strictly maintain a `photo-only` status.
+Hero rounding conventions are employed strictly within the introduction: \(\tau=\mathbf{0.020}\); lateral truck speed approximates \(\mathbf{14.51}\) px/frame; the composite rejection fraction is \(\approx \mathbf{0.0249}\); and the ROI RMS targets are established at **0 / 0.140465 / 0.053736**, satisfying the **37 pass / 0 fail** test suite. Do **not** hallucinate an arbitrary residual or rejection fraction from the hero, 3-up, or clamp visual plates. Those specific outputs maintain a strict `photo-only` display status.
 
-RMS_A naturally equals 0 because pass A **is** the unaltered \(S_t\). The test validates RMS_C \(<\) RMS_B precisely because the silhouette slab properly zeros out, rather than due to subjective claims that "C looks better". Path C fundamentally still mixes a \(w_0\) history on accepted, same-surface pixels (producing bilinear fetch lag on the grout lines translating across a plane). This ongoing mix is exactly why RMS_C settles at **0.053736**, rather than absolute zero. Clamp algorithms do not resolve visibility, and depth-rejection algorithms do not act as denoisers.
+RMS_A necessarily evaluates to 0 because configuration A **is** the unmutated \(S_t\) signal. The architectural validation confirms RMS_C \(<\) RMS_B because the silhouette disocclusion slab correctly asserts a zero-weight reject, not based on a subjective appraisal that "C looks better." Path C inherently continues to mix a \(w_0\) temporal history on accepted, contiguous-surface pixels (introducing bilinear sampling lag across the translating grout lines along the planar floor). This continuous temporal integration explains why RMS_C settles at **0.053736**, rather than absolute zero. Color clamping algorithms fundamentally cannot resolve visibility discontinuities, just as depth-rejection heuristics do not function as spatial denoisers.
 
-The \(\tau\) sweep behaves monotonically as asserted and remains exceptionally **tight**: registering **0.0250 / 0.0249 / 0.0246**. The physical geometric jump located at the pillar-to-void edge is so massive it exceeds even \(\tau=0.08\). Furthermore, OOB accesses account for \(\approx 0.0107\) of the total 0.0249 fraction and do not scale with \(\tau\). This explicitly is not a \(\tau\)-sensitivity study. We enforce a firm lock at \(0.02\) after observing that path B ghosts effectively while path C correctly avoids rejecting the entire frame.
+The \(\tau\) sensitivity sweep behaves monotonically as asserted and remains extremely **tight**, measuring **0.0250 / 0.0249 / 0.0246**. The magnitude of the physical geometric discontinuity at the pillar-to-void boundary is sufficiently massive to trigger a rejection even under a highly permissive \(\tau=0.08\). Furthermore, OOB coordinate accesses account for \(\approx \mathbf{0.0107}\) of the total 0.0249 rejection fraction and remain entirely invariant to the \(\tau\) tuning parameter. This is purposefully not a \(\tau\)-sensitivity paper. The engine enforces a firm lock at 0.02 based on the empirical observation that path B successfully replicates ghosting artifacts while path C preserves temporal stability without rejecting the entire geometric frame.
 
 ---
 
 ## Failures / controls
 
-Paths A, B, and C rely on bit-identical current color and depth buffers. The isolated history policy is the only variable. Do not attempt to dynamically retune the clamp parameters to artificially hide B's failure.
+Configurations A, B, and C process perfectly bit-identical current color and depth inputs. The temporal history policy is the sole independent variable. Do not attempt to dynamically tune the AABB clamping constraints to artificially suppress B's failure mode.
 
 ### History policy (the 3-up)
 
-This evaluates the 3-up composition alongside the clamp-only and depth-reject visuals. We process one current frame through three distinct resolves. The isolated ghosting is entirely driven by **wrong-surface correspondence**, not an extended EMA tail. A full-frame evaluation of B vs C produces a quieter result than a naive TAA comet trail. This is completely expected due to enforcing a frozen, one-frame \(w_0\) without a trailing \((1-\alpha)^N\) sequence. The artifact lives natively inside the disocclusion wedge. Trust the crop, the fail mask, and the precise RMS metrics.
+This comparative matrix evaluates the 3-up composite adjacent to the isolated clamp-only and depth-reject renderings. The engine processes a singular current frame through three divergent resolve pathways. The resulting ghosting is driven exclusively by **wrong-surface correspondence**, not an extended EMA sequence tail. A full-frame evaluation comparing B versus C yields a less severe visual degradation than a naive TAA continuous integration trail. This outcome is precisely aligned with theoretical expectations given the enforcement of a static, single-frame \(w_0\) weight rather than a trailing \((1-\alpha)^N\) recursive sequence. The core artifact resides natively within the structural disocclusion wedge. Rely explicitly upon the isolated crops, the continuous failure mask, and the precise RMS analytical metrics.
 
-| Path | Warp | History policy | Silhouette |
-|---|---|---|---|
-| A no temporal | none | \(w=0\) | Aliased current. Reference. RMS **0**. |
-| B clamp-only | honest VP | in-domain \(\Rightarrow w=w_0\), RGB \(3\times 3\) clamp | Wrong-surface ghost. RMS **0.140465**. |
-| C depth-reject | same warp | \(d>\tau\) or OOB \(\Rightarrow w=0\) | Fail mask lights that wedge. RMS **0.053736**. |
+| Path | Warp | History Policy | Silhouette Geometry |
+| --- | --- | --- | --- |
+| **A** (no temporal) | None | \(w=0\) | Aliased current state. Baseline reference. RMS **0**. |
+| **B** (clamp-only) | Honest VP | In-domain \(\Rightarrow w=w_0\), RGB \(3\times 3\) clamp | Unresolved wrong-surface ghosting. RMS **0.140465**. |
+| **C** (depth-reject) | Same warp | \(d>\tau\) or OOB \(\Rightarrow w=0\) | Correctly illuminates disocclusion wedge. RMS **0.053736**. |
 
 ### Clamp on/off is not the thesis
 
@@ -193,122 +200,120 @@ This evaluates the 3-up composition alongside the clamp-only and depth-reject vi
 
 ![Instrument. |C−St| residual heat, depth-reject path. HUD quotes ROI RMS 0.0537. Silhouette slab is punched; accepted same-surface pixels still mix w0 bilinear history.](/assets/journal/reprojection-depth-discontinuities/13_residual_C.jpg)
 
-Path B functions explicitly as the **controlled failure**. Path C inherently does not apply a clamp. An experiment that "fixes" B simply by shrinking the AABB boundaries constitutes an entirely different evaluation. The residual heat visualization maps \(\lvert C-S_t\rvert\) directly from the float buffer. The active HUD quotes an ROI RMS of **0.1405** for B and **0.0537** for C. This specific number originates from the metrics table, not the JPEG.
+Configuration B is implemented strictly as the **controlled failure state**. Configuration C intentionally bypasses the AABB clamp logic. Any experiment attempting to "fix" B by arbitrarily constraining the chromatic spatial bounds represents a fundamentally distinct evaluation topology. The residual heatmap visualizes \(\lvert C-S_t\rvert\) mapped directly from the floating-point execution buffer. The real-time diagnostic overlay quotes an ROI RMS of **0.1405** for B and **0.0537** for C. These localized metrics correspond directly to the analytical tables, bypassing non-linear JPEG quantization.
 
 ### \(\tau\) (locked, not a hero ladder)
 
-The threshold is firmly set to **0.020** after evaluating the set \(\{0.005,\,0.02,\,0.08\}\). The resulting reject fractions sit at **0.025028 / 0.024903 / 0.024638**. This produces a sequence that is rigorously monotone and tight. Under the locked threshold, full-frame rejection cleanly sits within the \((0.02,\,0.35)\) band, resting at **0.0249**. If the output falls outside that defined band, either the \(\tau\) value or the truck speed is broken—retune the truck speed rather than tweaking the written narrative.
+The rejection threshold is immutably set to **0.020**, validated against the limited set \(\{0.005,\,0.02,\,0.08\}\). The resulting aggregate rejection fractions sit at **0.025028 / 0.024903 / 0.024638**. This sequence successfully proves rigorously monotone and extremely tight. Given the locked threshold, full-frame spatial rejection strictly adheres to the mandated \((0.02,\,0.35)\) operational band, converging at **0.0249**. If an experimental output exits this established band, either the \(\tau\) initialization or the structural truck velocity is erroneous—correct the translation speed rather than manipulating the technical narrative.
 
 ### Truck speed
 
-The pillars transit across the screen at \(\approx\mathbf{14.51}\) px/frame (targeting an 8–16 range). Mean in-domain velocity resolves to \(\lvert v_x\rvert=\mathbf{15.02}\) and \(\lvert v_y\rvert=\mathbf{0.066}\). This successfully validates the required y-convention check where \(\lvert v_y\rvert\ll\lvert v_x\rvert\). If path B fails to produce ghosting, simply raise the translation speed. Do not attempt to falsely "improve" the clamp function.
+The pillar geometry translates at \(\approx\mathbf{14.51}\) px/frame (safely bounded within the target 8–16 range). The calculated mean in-domain velocity resolves to \(\lvert v_x\rvert=\mathbf{15.02}\) and \(\lvert v_y\rvert=\mathbf{0.066}\). This satisfies the essential y-convention verification asserting \(\lvert v_y\rvert\ll\lvert v_x\rvert\). Should path B fail to generate sufficient ghosting artifacts, the correct architectural response is to increase translation speed, not to artificially cripple the clamping logic.
 
 ### Static camera
 
-Under purely static conditions, the reject fraction hits absolute **0**. Path B and path C would render identical frames. If a static frame somehow registers a reject, it exposes a broken VP y-convention or flawed depth linearization. This specific run does not suffer from that bug.
+Under absolute static parameters, the total rejection fraction equals exactly **0**. In this state, paths B and C construct perfectly identical frames. Any recorded rejection in a strictly static frame indicates a fundamentally broken view-projection y-convention or flawed depth linearization math. This specific testing run confirms those underlying systems are uncorrupted.
 
 ### Off-screen UV
 
-OOB mapping inherently contributes **0.010707** to the overall reject fraction, aggressively forcing \(w=0\). This is clearly visible as the blue slab marking the fail mask and as the darkened left edge visible on the history-weight plate.
+Out-of-bounds (OOB) mapping operations inherently inject a **0.010707** fraction into the overall rejection metric, correctly forcing \(w=0\). This contribution is visualized as the continuous blue slab delineating the failure mask and the darkened left perimeter on the corresponding history-weight render.
 
 ### Dilate
 
-The reject-mask dilate is forced **off**. The ROI dilate relies on a completely different metric of **6 px** applied against the morph-gradient mask, which functions strictly for scoring the RMS.
+The rejection-mask morphological dilation operation is forced **off**. The ROI morphological dilation utilizes a distinct parameter of **6 px** applied exclusively against the morphological-gradient geometric mask, operating solely as a constraint for the spatial RMS calculation.
 
 ![Depth-edge ROI overlay. Pillars + railing + other depth silhouettes. CPU 3×3 morphological gradient of current view-Z, then a published 6 px dilate. Not dFdx. Residual RMS is this set only.](/assets/journal/reprojection-depth-discontinuities/11_roi.jpg)
 
-Do not attempt to min-filter the depth fetch. The residual RMS calculations apply exclusively to this uniquely painted set (\(n=128952\)).
-
----
+Do not attempt to apply a structural min-filter across the temporal depth fetch. The residual RMS calculations are intentionally constrained exclusively to this uniquely identified spatial set (\(n=\mathbf{128952}\)).
 
 ## Two paths, do not mix the instruments
 
-| path | frames | instrument |
-|---|---|---|
-| **Photograph** | hero, 3-up, clamp-only, depth-reject | GLSL 330 metro on this llvmpipe, CPU history fetch, Neutral \(e=1.00\). HUD `photo-only`. |
-| **Instrument** | fail mask, history weight, ROI overlay, residual heat | view-Z, fail mask, \(w\), ROI residual. |
-| **Display** | every plate | expose \(e=1.00\) \(\to\) Neutral \(\to\) sRGB OETF. Resolve is linear. Operator is inherited. |
+| Render Path | Output Modality | Visual Instruments |
+| --- | --- | --- |
+| **Photograph** | Hero, **3**-up comparative, clamp-only, and depth-reject plates. | Evaluated via GLSL **330** utilizing the llvmpipe driver, CPU-side history sampling, and Khronos PBR Neutral tone mapping (\(e=\mathbf{1.00}\)). Validated under the HUD `photo-only` condition. |
+| **Instrument** | Failure mask, temporal history weight, ROI overlay, and residual heatmap. | Exposes view-linear Z, binary fail mask, history weight (\(w\)), and ROI residual RMS. |
+| **Display** | Uniform pipeline across all presented plates. | Expose (\(e=\mathbf{1.00}\)) \(\to\) Neutral operator \(\to\) standard sRGB OETF. Lighting resolve strictly operates in linear space; the display operator is purely inherited. |
 
-The 3-up layout fundamentally acts as a photograph of the control while doubling as the primary source of teaching. When referencing data, exclusively quote the metrics tied to RMS and the reject fraction. Do not erroneously quote an 8-bit panel output as possessing a 0.140465 value.
+The **3**-up layout operates fundamentally as a true photograph of the algorithmic control while simultaneously serving as the primary pedagogical instrument. When citing quantitative outcomes, analysis must be restricted strictly to the formal RMS and geometric rejection fraction metrics. Assertions characterizing a mathematically derived **0.140465** magnitude based upon a quantized **8**-bit panel output remain procedurally invalid.
 
 ---
 
 ## Honesty gaps
 
-1. **A selected frame of an offline \(N=9\) strip, not a 60 Hz persistence photograph.** Metrics begin at frame 1, designating frame 8 for visual review. No real-time display refresh claims are made.
-2. **Warp is previous/current view-projection + current linearized view-Z.** It inherently avoids rasterized motion vectors, skinned motion vectors, and optical flow.
-3. **\(z_{\mathrm{hist}}\) is compared to \(z_{\mathrm{exp}}\), not to current-camera \(z_t\).** Comparing it to \(z_t\) guarantees a devastating translation bug.
-4. **Clamp is not a visibility solve.** Path B actively preserves wrong-surface history whenever that historical color value falls securely inside the current \(3\times 3\) RGB box (such as in a grout / edge mix).
-5. **Depth-reject is a hard cut at published \(\tau\), not a production TAA stack.** It omits jitter, variance clipping, responsive stencils, and EMA ladders entirely. The acceptance weight \(w_0\) remains tightly frozen.
-6. **History color is bilinear** (\(`u'*W-0.5`\)). This serves as a named blur source. It strictly avoids 9-tap filtering and Catmull-Rom filtering. History depth evaluates strictly point-sampled (\(`floor(u'*W)`\)).
-7. **NDC y versus texture v.** OSMesa FBO and `glReadPixels` inherently share a bottom-left origin, while PNG encoding flips the rows. History UV calculations rely on that specific buffer layout. If this convention was accidentally inverted, the fail mask would flood the entire screen—which is why checking that mean \(\lvert v_y\rvert\ll\lvert v_x\rvert\) is mandatory.
-8. **Depth visual is 32-bit float** (`DEPTH_COMPONENT32F`, queried bits = 32). The underlying predicate evaluates directly against stored linear view-Z via MRT, ignoring window-Z. Deploying a 16-bit depth visual would immediately introduce severe false rejects.
-9. **`dFdx` / `dFdy` are not used.** The depth-edge ROI generates from a CPU \(3\times 3\) morphological gradient calculating against current view-Z. The internal llvmpipe derivatives prove far too coarse and frequently return zero against 1-px features.
-10. **MSAA off.** All geometric silhouettes render natively aliased. The ROI radius explicitly absorbs a 1-px jag. The visual lag along the thin rail exists as a combination of subpixel coverage limits and correspondence matching.
-11. **\(\tau\) sweep is monotone and tight.** Values rest firmly at **0.0250 / 0.0249 / 0.0246**. The massive pillar-to-void jump is mathematically huge compared to our tested \(\tau\in\{0.005,0.02,0.08\}\) set.
-12. **RMS_C is not zero.** Even on correctly accepted same-surface pixels, the algorithm mixes \(w_0\) bilinear history. Grout shifting across a translating plane inevitably lags. While depth-reject punches out the wrong-surface elements, it cannot fully freeze the translating tiles.
-13. **Truck is set so B still ghosts** (\(\approx 14.51\) px/frame). This rejects the overly slow panning typical of a product-still dolly.
-14. **Not the loft family.** We purely inherit the Neutral curve without conducting a Tone Map (TM) bake-off. No IBL or split-sum models act as supporting theorems.
-15. **Not DLSS / FSR / XeSS, not a hardware TAA unit, not bit-exact GPU validation.**
-16. **PNG is 8-bit display-referred.** Do not execute an FFT or attempt to energy-integrate the output JPEG. Residual RMS and the reject fraction are designed strictly as linear-buffer meters.
+**1**. **An isolated frame from an offline \(N=\mathbf{9}\) sequence, rather than continuous \(\mathbf{60}\) Hz photographic persistence.** Temporal integration initializes at frame **1**, explicitly designating frame **8** for final visual evaluation. No claims regarding real-time display refresh stability are asserted.
+**2**. **The backward warp integrates previous/current view-projection matrices alongside current linearized view-Z.** This mechanism explicitly excludes rasterized object motion vectors, skeletal skinning velocities, and learned optical flow.
+**3**. **The sampled history depth \(z_{\mathrm{hist}}\) evaluates strictly against the transformed expectation \(z_{\mathrm{exp}}\), not against the current-camera \(z_t\).** Substituting current \(z_t\) analytically guarantees a catastrophic view translation error.
+**4**. **The RGB clamp is mathematically blind to visibility.** Path B structurally preserves wrong-surface history whenever that historical chromaticity falls securely within the localized current \(\mathbf{3}\times \mathbf{3}\) RGB bounding volume (e.g., within a grout and concrete edge mixed neighborhood).
+**5**. **The depth-reject functions as a strict binary threshold at the published \(\tau\), lacking production TAA heuristics.** The formulation systematically omits sub-pixel jitter, localized variance clipping, responsive stencil masking, and multi-frame EMA ladders. The fundamental acceptance weight \(w_0\) remains tightly frozen.
+**6**. **Historical color sampling relies on bilinear interpolation (\(u'W-\mathbf{0.5}\)).** This represents a formalized blur source, explicitly bypassing higher-order reconstructions such as a **9**-tap window or Catmull-Rom filtering. History depth evaluates exclusively via nearest-neighbor point sampling (`floor(u'*W)`).
+**7**. **NDC \(y\) orientation versus texture \(v\).** OSMesa FBOs and `glReadPixels` conventionally share a bottom-left coordinate origin, whereas PNG encoding flips the row order. History UV mathematics depend entirely on this underlying buffer layout. An inverted coordinate convention would erroneously flood the failure mask—thus validating that mean \(\lvert v_y\rvert\ll\lvert v_x\rvert\) operates as a mandatory correctness assertion.
+**8**. **The depth visual operates as a \(\mathbf{32}\)-bit float** (`DEPTH_COMPONENT32F`, queried bits = **32**). The rejection predicate executes directly against linear view-Z via MRT, explicitly ignoring non-linear window-Z representations. Introducing a **16**-bit depth visual would immediately trigger severe quantization-induced false rejections.
+**9**. **Hardware derivative functions (`dFdx` / `dFdy`) are excluded.** The depth-edge ROI geometry is constructed via a CPU-side \(\mathbf{3}\times \mathbf{3}\) morphological gradient evaluating the current view-Z buffer. Internal llvmpipe hardware derivatives prove insufficiently precise and frequently collapse to **0** across **1**-px geometric features.
+**10**. **MSAA is strictly disabled.** All geometric silhouettes render natively aliased. The ROI expansion radius purposefully encompasses a **1**-px spatial quantization jag. The visual latency observed along the thin structural railing exists as a compound consequence of binary subpixel coverage limits and temporal correspondence aliasing.
+**11**. **The \(\tau\) sensitivity sweep acts monotonically and remains exceptionally tight.** Measurement values converge firmly at **0.0250** / **0.0249** / **0.0246**. The massive geometric discontinuity bounding the pillar-to-void edge drastically eclipses the evaluated \(\tau\in\{\mathbf{0.005}, \mathbf{0.02}, \mathbf{0.08}\}\) thresholds.
+**12**. **RMS_C does not converge to absolute zero.** Even on geometrically valid, same-surface pixels, the estimator blends a \(w_0\) bilinear history. Surface detail shifting across a translating plane inherently exhibits sampling lag. While the depth-reject heuristic cleanly excises wrong-surface intersections, it cannot completely freeze translating high-frequency textures.
+**13**. **Lateral translation velocity is tuned to guarantee baseline clamping failure** (\(\approx \mathbf{14.51}\) px/frame). This parameterization intentionally rejects the imperceptibly slow panning velocities typical of product-still dolly rendering.
+**14**. **This dataset diverges from the prior loft evaluation family.** The pipeline directly inherits the Neutral OETF without conducting a Tone Mapper (TM) comparative analysis. Supporting algorithms like Image-Based Lighting (IBL) or split-sum approximations are excluded from the current theoretical framework.
+**15**. **The pipeline is not a substitute for neural or hardware temporal upsampling.** This framework does not model DLSS, FSR, XeSS, hardware-accelerated TAA logic, or bit-exact discrete GPU validation.
+**16**. **The output PNG acts as an \(\mathbf{8}\)-bit display-referred artifact.** Spectral frequency analysis (FFT) or energy-integration should not be executed against the compressed JPEG output. Residual RMS and geometrical rejection fractions function exclusively as linear-buffer analytical meters.
 
 ---
 
 ## Mesa / llvmpipe — what this run can claim
 
-| item | value |
-|---|---|
-| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
-| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| OSMesa | core 3.3 request; driver reports the string above |
-| FBO color | **RGBA32F** complete, \(1280\times 720\), MRT color+meta |
-| Depth visual | **DEPTH_COMPONENT32F**, queried bits = **32** |
-| `GL_FRAMEBUFFER_SRGB` | disabled (Neutral + sRGB OETF on CPU) |
-| MSAA | disabled |
-| History color | bilinear (`u'*W-0.5`) |
-| History depth | point-sampled (`floor(u'*W)`) |
-| Mix | \(C=w\,H+(1-w)\,S\), frozen \(w_0=0.90\) |
-| Clamp | \(3\times 3\) RGB minmax of current \(S_t\) (path B only) |
-| Depth test | relative \(d=\lvert z_{\mathrm{hist}}-z_{\mathrm{exp}}\rvert/\max(\lvert z_{\mathrm{exp}}\rvert,z_{\varepsilon})\), path C |
+| Parameter | Specification |
+| --- | --- |
+| `GL_VERSION` | **4.5** (Core Profile) Mesa **25.0**.7-2+deb13u1 |
+| `GL_RENDERER` | llvmpipe (LLVM **19.1**.7, **256** bits) |
+| OSMesa | core **3.3** request; driver validates the string above |
+| FBO color space | **RGBA32F** complete, \(\mathbf{1280}\times \mathbf{720}\), MRT color+meta |
+| Depth visual format | **DEPTH_COMPONENT32F**, queried bits = **32** |
+| `GL_FRAMEBUFFER_SRGB` | Disabled (Neutral + standard sRGB OETF evaluated on CPU) |
+| MSAA | Disabled |
+| History color sampling | Bilinear (`u'*W-0.5`) |
+| History depth sampling | Point-sampled (`floor(u'*W)`) |
+| Temporal mix operator | \(C=w\,H+(1-w)\,S\), frozen \(w_0=\mathbf{0.90}\) |
+| Chromatic clamp | \(\mathbf{3}\times \mathbf{3}\) RGB minmax of current \(S_t\) (path B only) |
+| Depth test predicate | Relative \(d=\lvert z_{\mathrm{hist}}-z_{\mathrm{exp}}\rvert/\max(\lvert z_{\mathrm{exp}}\rvert,z_{\varepsilon})\), path C |
 | Neutral \(e\) | **1.00** |
 | \(N\) / designated frame | **9** / **8** |
 
-**Can claim:** On this specific OSMesa / llvmpipe build running an offline \(N\)-frame lateral truck against a static metro colonnade, utilizing history UV derived from previous/current VP and current view-Z, a frozen accept weight \(w_0\) paired with a relative-depth reject at published \(\tau\) (C) successfully avoids the visible artifacting generated by an RGB \(3\times 3\) clamp (B). The ROI residual RMS and internal reject fractions track exactly as the metrics predict.
+**Can claim:** Within this specific OSMesa / llvmpipe evaluation executing an offline \(N\)-frame lateral translation against a static architectural colonnade, utilizing history UV coordinates derived from prior/current view-projection and current linear view-Z, a frozen acceptance weight \(w_0\) paired with a relative-depth reject at the published \(\tau\) (Path C) successfully bypasses the structural visual artifacting provoked by an RGB \(\mathbf{3}\times \mathbf{3}\) AABB clamp (Path B). The documented ROI residual RMS and internal geometric rejection fractions align identically with the theoretical predictions.
 
-**Cannot claim:** We explicitly do not claim to offer a production TAA stack, nor do we achieve 60 Hz persistence or match vendor upsamplers. We reject the premise that a clamp can "fix" disocclusion, and we caution against treating a PNG frame grab as a true persistence photograph. We avoid making assertions regarding discrete-GPU metrics, stream occupancy, memory bandwidth, or broad hardware operational truths.
+**Cannot claim:** This analysis explicitly makes no claims regarding a complete production TAA implementation, nor does it guarantee **60** Hz visual persistence or parity with vendor-specific spatial upsamplers. We fundamentally reject the hypothesis that chromatic clamping resolves spatial disocclusion, and we emphasize that compressed PNG frame captures do not constitute rigorous persistence photography. Assertions concerning discrete-GPU throughput, stream occupancy, memory bandwidth, or macro-hardware operational behavior remain explicitly out of scope.
 
 ---
 
 ## Assertions
 
-This specific test suite concludes exactly at: **37 pass / 0 fail**.
+This analytical test suite formally executes and concludes at: **37** pass / **0** fail.
 
-| check | result |
-|---|---|
-| Mix unit: \(w_0=0.90\), \(H=1\), \(S=0\) \(\Rightarrow\) \(C=0.90\) | PASS |
-| FBO is RGBA32F; depth bits \(\ge 24\) | PASS **32** |
-| Required gallery plates exist and are non-empty | PASS |
-| Pillars and rails in the mesh | PASS |
-| No NaNs in resolve | PASS |
-| ROI \(n>200\) | PASS **128952** |
-| RMS_C \(<\) RMS_B | PASS **0.053736 \(<\) 0.140465** |
-| RMS_A \(\approx 0\) | PASS **0** |
-| RMS_B \(>0.002\) (B actually ghosts) | PASS **0.140465** |
-| Reject frac in \((0.02,\,0.35)\) | PASS **0.0249** |
-| \(\tau\) sweep monotone \(0.005\ge 0.02\ge 0.08\) | PASS **0.0250 / 0.0249 / 0.0246** |
-| Static-camera reject \(<0.01\) | PASS **0** |
-| Truck in \((6,\,20)\) px/frame | PASS **14.51** |
-| \(\lvert v_y\rvert\ll\lvert v_x\rvert\) | PASS **0.066 vs 15.02** |
-| Fail \(\Rightarrow w=0\) | PASS |
-| Named pillar bbox non-empty; fail count \(>80\) | PASS |
+| Validation Check | Result |
+| --- | --- |
+| Mix unit invariant: \(w_0=\mathbf{0.90}\), \(H=\mathbf{1}\), \(S=\mathbf{0}\) \(\Rightarrow\) \(C=\mathbf{0.90}\) | PASS |
+| FBO format requires RGBA32F; depth bits \(\ge \mathbf{24}\) | PASS **32** |
+| Required photorealistic gallery plates populate successfully | PASS |
+| Structural pillars and railing exist inside the mesh | PASS |
+| Resolve evaluates without NaN accumulation | PASS |
+| Painted ROI sampling population \(n > \mathbf{200}\) | PASS **128952** |
+| Temporal performance: RMS_C \(<\) RMS_B | PASS **0.053736** \(<\) **0.140465** |
+| Baseline error constraint: RMS_A \(\approx \mathbf{0}\) | PASS **0** |
+| Clamp failure constraint: RMS_B \(> \mathbf{0.002}\) (path B actively ghosts) | PASS **0.140465** |
+| Rejection fraction bounded strictly in \((\mathbf{0.02}, \mathbf{0.35})\) | PASS **0.0249** |
+| Monotonic \(\tau\) sensitivity: \(\mathbf{0.005} \ge \mathbf{0.02} \ge \mathbf{0.08}\) | PASS **0.0250** / **0.0249** / **0.0246** |
+| Static-camera artifact rejection \(< \mathbf{0.01}\) | PASS **0** |
+| Translation velocity constrained in \((\mathbf{6}, \mathbf{20})\) px/frame | PASS **14.51** |
+| Mandatory y-convention translation: \(\lvert v_y\rvert \ll \lvert v_x\rvert\) | PASS **0.066** vs **15.02** |
+| Geometric fail condition mathematically forces \(w=\mathbf{0}\) | PASS |
+| Named pillar bounding box non-empty; fail count \(> \mathbf{80}\) | PASS |
 
-Absolutely no assertion tolerances were loosened to artificially accommodate the photoreal plates.
+Under no circumstances were operational assertion tolerances relaxed to artificially optimize the photorealistic presentation plates.
 
 ---
 
 ## Out of scope
 
-This post ignores full production TAA bakeoffs covering jitter sequences, variance clipping, YCoCg space transforms, responsive stencils, or TSR functionality. We exclude vendor-specific temporal upsamplers such as DLSS, FSR, and XeSS. We omit optical flow algorithms serving as the warp—meaning Farneback, RAFT, DIS, or any learned residual MVs are off the table. Path-traced denoiser tests implementing OIDN, NRD, or SVGF fall out of bounds. We completely bypass rasterized object motion vectors, skinned previous palettes, particles, and transparency. Shadow-map bias relies on rasterization-light metrics rather than correspondence matching, removing it from our predicate. We bypass VR compositor ASW and any late-stage reprojection routines. Do not attempt to re-derive EMA ladders or accumulation curves from this data—please cite the dedicated TAA note for those. We leave out IBL, split-sum, and TM Neutral bake-offs, essentially walking away from the loft lighting setup. The test scene features no crowds, trains, glass, water, or emissive advertising. We ignore interactive viewers, vsync implementations, and GUI considerations. Ultimately, we refuse to claim bit-exact mathematical parity with vendor GPU drivers.
+This manuscript explicitly excludes comprehensive production TAA comparative analyses encompassing sub-pixel jitter matrices, variance clipping, YCoCg color space transformations, responsive stencil mapping, or TSR functionalities. We omit evaluations of proprietary vendor temporal upsamplers including DLSS, FSR, and XeSS. Optical flow vector models substituting for the rigorous analytical warp—such as Farneback, RAFT, DIS, or any learned residual motion approximations—are strictly out of scope. Performance evaluations of path-traced denoiser architectures, including OIDN, NRD, or SVGF, fall outside the defined analytical boundary. We uniformly bypass rasterized object-space motion vectors, skinned historical palettes, particle kinematics, and alpha transparency rendering. Because shadow-map biasing fundamentally depends on rasterization-light metrics rather than geometric correspondence matching, it is excised from this theoretical predicate. We bypass VR compositor Asynchronous SpaceWarp (ASW) and late-stage reprojection routines. Do not attempt to mathematically re-derive EMA integration ladders or accumulation curves from this constrained dataset—refer to the dedicated TAA literature for those formulations. We omit Image-Based Lighting (IBL), split-sum approximations, and TM Neutral bake-offs, purposefully discarding the prior loft lighting configuration. The tested static scene contains no dynamic crowds, trains, refractive glass, fluid water surfaces, or emissive physical advertising. We ignore interactive display viewers, vsync synchronization latencies, and GUI composite considerations. Ultimately, we reject any claims of bit-exact mathematical parity with vendor-compiled GPU driver implementations.
 
 ---
 
@@ -325,4 +330,6 @@ PNG   = sRGB_OETF( Neutral(e * C) )
 
 ```
 
-Our resolve securely locks $w$ as the history weight parameter, with $w_0=0.90$ and $\tau=0.020$. The clamp function calculates purely as an RGB $3\times 3$ minmax against $S_t$ exclusively during path B execution. Both dilation and jitter remain disabled. Pin the metro truck visualization as the core presentation. Pin the 3-up as the primary instructional tool. Pin the generated fail mask as the true geometric fingerprint. The predicate essentially drives the caption. A color clamp solely evaluates if the retained history looks legal. A depth reject mathematically evaluates if that sample genuinely represents the exact same surface.
+Our finalized resolve explicitly locks \(w\) as the temporal history weight parameter, establishing constant constraints at \(w_0=\mathbf{0.90}\) and \(\tau=\mathbf{0.020}\). The chromatic clamping operation mathematically acts as a strict RGB \(\mathbf{3}\times \mathbf{3}\) spatial minmax against \(S_t\), executing exclusively during the Path B evaluation loop. Both structural mask dilation and camera spatial jitter remain forcibly disabled.
+
+Pin the metro translation sequence as the core analytical presentation. Pin the comparative \(\mathbf{3}\)-up matrix as the primary pedagogical construct. Pin the mathematically derived failure mask as the authoritative geometric fingerprint. The geometric predicate fundamentally mandates the conclusion: A color bounding clamp merely evaluates whether the retained historical sample appears chromatically permissible. A relative depth-rejection heuristic rigorously determines if that identical temporal sample physically represents the corresponding geometric surface.
