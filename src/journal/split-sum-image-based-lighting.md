@@ -1,6 +1,6 @@
 ---
 title: "Split-Sum Image-Based Lighting"
-description: "An HDR loft folded into a GGX-prefiltered cube × DFG LUT. Distant irradiance fills dielectrics — not local multi-bounce GI."
+description: "An HDR loft folded into a GGX-prefiltered cube times a DFG LUT. Distant irradiance fills dielectrics — not local multi-bounce GI."
 date: 2026-09-15
 tags:
   - graphics
@@ -9,6 +9,7 @@ tags:
 math: true
 cover: /assets/journal/ibl-split-sum/00_hero.jpg
 ---
+
 The last note covered tangent-space height marching to make a flat quad read as carved brick, though the silhouette remained completely flat. This note shifts focus away from samplers. Instead, an HDR environment is folded into two specific tables: a GGX-prefiltered specular cube and a DFG lookup table (LUT). The fragment shader simply multiplies them. **Split-sum makes environment lighting display-ready.** Here, toggling irradiance acts as our GI-**shaped** control—providing distant environment fill rather than local multi-bounce illumination.
 
 ![Cream stoneware bottle and brass sphere on board-formed concrete, loft window behind, full split-sum. Metal carries sharp mullions; glaze picks up a dim rim and colored fill. Khronos PBR Neutral, exposure 1.05. Photograph only — no energy metric.](/assets/journal/ibl-split-sum/00_hero.jpg)
@@ -31,10 +32,8 @@ We rendered the hero shot using Mesa 25.0.7 llvmpipe in a linear working space.
 | Environment solid-angle mean luma | 1.628 |
 | Test suite assertions | 25 pass / 0 fail |
 
----
 
-## What you are seeing
-
+## Scene
 The lighting environment is an authored HDR loft—a procedural latlong rather than a captured EXR. It features plaster, baseboards, timber-style beams, a warm floor, offset backdrop sashes, and a key \(+Z\) factory window with jambs and a 4×5 mullion grid. There are no analytical key lights acting on the hero plates; the environment alone provides the illumination.
 
 **Presentation hook.** This is a \(1920\times 1080\) product still photographed in GL with CPU tone mapping. It showcases glazed ceramic (a dielectric with \(F_0=0.04\) and a glaze roughness between \(0.14\) and \(0.30\)) alongside measured brass with \(F_0=(0.910, 0.778, 0.423)\). Both rest with a soft planar contact on the shadow catcher. This plate is strictly photographic.
@@ -62,8 +61,9 @@ Keep these two domains strictly separate:
 
 ---
 
-## Why: the reflection integral, then Karis
+## Method
 
+### Why: the reflection integral, then Karis
 Our working space is strictly **linear radiance**. Cubemaps remain linear, and the tone map acts purely as a named display step applied after shading, rather than being baked into the tables.
 
 ### Reflection equation (specular)
@@ -134,8 +134,7 @@ Toggling this on and off produces the three-up comparison seen earlier. We appli
 
 Our Tone Mapper (TM) is **Khronos PBR Neutral**, accepting linear input and providing linear display-referred output. The exposure sits at **1.05**, matched identically across every comparison row. The tone map is **not** baked into the cubemaps. We keep `GL_FRAMEBUFFER_SRGB` disabled and handle the sRGB encoding entirely on the CPU.
 
-## Unique artifacts: the mip strip, the LUT, the map
-
+### Unique artifacts: the mip strip, the LUT, the map
 ![CPU GGX prefilter, +Z face, mip 0…7. Mip0 is a 4×5 factory window; mullions dissolve into the lobe. Not glGenerateMipmap. Luma variance 70.9 → … → 0.](/assets/journal/ibl-split-sum/04_prefilter_mips.jpg)
 
 This visual is the primary reason this note exists. It displays the CPU GGX prefilter on the \(+Z\) face across mips \(0\ldots 7\), mapping roughness \(=\) mip \(/\) (mips\(-1\)). Mip0 clearly shows the 4×5 factory window and its dark frames. In successive mips, the mullions accurately dissolve into the specular lobe. Caption: `not glGenerateMipmap`. The \(+Z\) luma variance serves as a reliable monotone blur meter, reading: **70.9 → 43.9 → 23.3 → 9.34 → 3.54 → 2.33 → 0.76 → 0**.
@@ -154,7 +153,95 @@ Here we plot \(\lambda(r)=r\cdot(\mathrm{mips}-1)\) alongside mip thumbnails of 
 
 ---
 
-## Quote the CSV. Do not quote the beauty photographs as energy.
+### Two paths, do not mix the instruments
+| path | frames | instrument |
+| :--- | :--- | :--- |
+| **Science** | mip strip, spp residual, DFG LUT, roughness→mip, CSV, white-env energy, mip variance, RMSE | CPU latlong, CPU Karis prefilter, CPU cosine irradiance, CPU DFG. Image is visualization of those buffers after the same TM. |
+| **Photograph** | heroes, ladders, failures, calibration strip | GLSL 330 split-sum on this llvmpipe: `textureLod` of the CPU mips, DFG 2D, irradiance cube. HUD `photo-only`. Flank luma and metal RMS are linear-FBO crops, not JPEG theorems. |
+| **Display** | every plate | expose \(1.05\) → Khronos PBR Neutral → sRGB OETF. One operator, every row. |
+
+The GI-control three-up acts simultaneously as a photographic demonstration of the control parameter *and* the visual source for the flank-ratio CSV row. Always quote the CSV data. Do not attempt to pull an 8-bit panel value and quote it as 5.11.
+
+---
+
+## Discussion
+
+### What-if failures and controls
+### What if: Wrong mip
+
+![Failure: force mip0 on rough (sparkly sandpaper) | correct | force max mip on smooth (pewter blob). Photograph only.](/assets/journal/ibl-split-sum/08_wrong_mip.jpg)
+
+On the left, we force mip0 on a material with roughness \(0.75\). The result looks like sparkly sandpaper because the high-frequency window details remain entirely intact. In the middle, we apply the correct \(\lambda\) for the same roughness. On the right, we force the max mip on a smooth material (roughness \(0.08\)), turning it into a pewter blob. A highly smooth conductor was inappropriately given the roughest available table. Photo only. While the metal ladder represents our honest map, this plate demonstrates the failure mode.
+
+### What if: No DFG LUT (\(F=1\))
+
+![Failure: F=1 (no DFG) washes metals grey vs split-sum F0·S+B. Photograph only.](/assets/journal/ibl-split-sum/09_no_lut.jpg)
+
+Using the same prefilter cube and exposure, the left panel skips the LUT entirely, outputting the prefiltered radiance as if \(F=1\). The metals wash out to grey, the brass \(F_0\) coloration vanishes, the dielectric loses its grazing rim, and overall body energy becomes incorrect. The right panel correctly applies \(F_0 S+B\). Photo only.
+
+### What if: LDR clip vs HDR
+
+![Failure: clipped Li≤1 env vs float HDR, same TM. Window highlight and interior collapse on the left. Photograph only.](/assets/journal/ibl-split-sum/10_ldr_vs_hdr.jpg)
+
+Under identical tone mapping and exposure settings, the left panel demonstrates an environment incorrectly authored with \(L_i\le 1\) prior to prefiltering. The bright window highlight and the interior details both collapse entirely, causing the metal to lose its visual punch. The right panel uses the proper float HDR environment. Because tone mapping is not baked into the cubemaps, clipping the *source* data constitutes a catastrophic failure. Photo only.
+
+### What if: Instrument strip (not a hero)
+
+![Calibration balls: smooth metal / rough metal / Lambertian with spec off. Not the product shot.](/assets/journal/ibl-split-sum/11_instrument_spheres.jpg)
+
+This strip shows smooth metal, rough metal, and a Lambertian surface with specular disabled. Caption: calibration balls, not the product shot. Photo only. If we used this as the cover image, the post would look like a generic void-sphere demo.
+
+## Limits
+
+### Honesty gaps
+1. **Distant-environment irradiance \(\neq\) local GI.** The system simulates no bottle-to-brass bounce, no floor color bleeding into the metal, and features no path tracing, DDGI, lightmaps, or SSGI. Metals render black in the irradiance-only panel simply because \(k_D=0\).
+2. **Single-scatter split-sum.** We lack multi-scatter energy compensation. Grazing metals can artificially pick up a white-ish bias term from the LUT.
+3. **Roughness→mip is linear.** We mapped \(\lambda=r\cdot(\mathrm{mips}-1)\), completely bypassing a proper GGX solid-angle match.
+4. **Prefilter RMSE** evaluates 64-spp against 512-spp at matched roughness levels on an HDR window. It does not compare a production mip against an analytic baseline. The bright sun disc inevitably causes residual fireflies yielding an RMSE between 0.777 and 1.465. This is a documented limitation, not a GL filtering theorem.
+5. **Highlight RMS** predictably grows on the first metal rungs before saturating. We rely on mip variance as the true monotone blur meter.
+6. **Irradiance blur** introduces a 3-pass presentation filter to \(E(\mathbf{n})\) solely to prevent mullions from reprinting as wood grain patterns on dielectrics. The specular prefilter mips remain untouched and unblurred.
+7. **Contact** relies on a planar cosine term rather than proper shadow maps or ray tracing.
+8. **Env** utilizes a procedural loft HDR rather than a captured EXR, exhibiting a solid-angle mean luma of **1.628**.
+9. **Cubemap sampling** runs on llvmpipe RGBA16F with CPU-authored mips. While we request seamless cubemap filtering, face-edge quality remains a known Mesa caveat.
+10. **No hardware IBL unit** is present, and we make no claims regarding real-time convolution costs. Prefilter, irradiance, and DFG calculations are strictly CPU-bound.
+11. **Residual turned-form spec bands** appearing on the bottle simply reflect the loft windows wrapping across a surface of revolution. This is milder than a marble-chalk urn, not evidence of a rogue second lobe.
+12. **JPEG is visualization.** The true measurements exist in the CSV. Do not FFT or energy-integrate the beauty frames.
+
+---
+
+### Mesa / llvmpipe — what this run can claim
+| item | value |
+| :--- | :--- |
+| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
+| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
+| FBO color | **RGBA32F** complete, photo \(1920\times 1080\) |
+| Specular / irradiance / sky cubes | **RGBA16F**, CPU mips uploaded per level |
+| `glGenerateMipmap` | **not** called on the specular chain |
+| DFG LUT | RGBA32F \(128^2\), CPU GGX |
+| `GL_FRAMEBUFFER_SRGB` | disabled (TM + sRGB on CPU) |
+| MSAA | disabled |
+| `GL_TEXTURE_CUBE_MAP_SEAMLESS` | enabled |
+| Exposure / TM | **1.05** / **Khronos PBR Neutral** |
+
+What this run *can* claim: Running on this OSMesa / llvmpipe build, a CPU Karis GGX prefilter processing an authored HDR loft properly conserves white-env energy (**1.000** at all four roughness keys). The CPU DFG LUT accurately targets \(S\approx 1\) and \(B=0\) at the face-on smooth corner. A GLSL 330 split-sum shader multiplying these tables with a distant-environment irradiance cube reliably produces the provided photographs. Disabling irradiance demonstrably darkens dielectric flanks, yielding a linear crop ratio of **5.11**. Introducing the wrong mip, missing the LUT entirely, or applying an LDR-clipped environment produces obvious, visual failures. Photographs of these failure paths serve as accurate visual documentation of **this** specific software rasterizer.
+
+What this run *cannot* claim: It makes no assertions regarding NVIDIA, AMD, or Intel hardware IBL units, nor does it address real-time convolution costs, occupancy, or bandwidth efficiency. We do not claim that llvmpipe's seamless cubemap filtering matches discrete GPU quality. We cannot assert that `glGenerateMipmap` would successfully create a valid GGX chain, because it does not, and we intentionally avoided calling it. Furthermore, we do not claim that distant \(E(\mathbf{n})\) equates to local multi-bounce GI, or that our linear roughness→mip mapping acts as a solid-angle match. Finally, applying an FFT or energy integral against an 8-bit sRGB JPEG is not a valid method for determining the spectrum of the signal. We offer no discrete-GPU metrics or definitive statements on "how the hardware works."
+
+Importantly, the science path remains completely independent of `GALLIVM_PERF`, relying purely on a CPU latlong, CPU prefilter, and CPU DFG.
+
+---
+
+## Out of scope
+
+This note strictly ignores local path-traced GI, photon maps, or irradiance caching for *scene* bounce. We do not use DDGI, lightmaps, or SSGI/SSR as substitutes for the cubemap. Multi-bounce local solvers of any variety are entirely out of scope. We also skip anisotropic GGX, Toksvig AA for the NDF, sheen, clearcoat, layered metals, and Area lights/LTC. You will not find a deep tone-map bake-off here; TM acts strictly as one named operator. Shadow-map bias and real-time convolution on dedicated "hardware IBL units" are excluded. Finally, we do not re-derive the mipmaps chirp, the anisotropic ellipse, or the POM height march. We merely cite continuity; this technique is a BRDF-integral approximation, not a novel sampler or geometric breakthrough.
+
+---
+
+Dense meters follow.
+
+---
+
+## Appendix A — Meters (quote tables, not photographs)
 
 Photoreal gallery, Mesa llvmpipe:
 
@@ -177,85 +264,7 @@ Highlight RMS predictably grows on the first metal rungs, but quickly saturates 
 
 ---
 
-## Failures / controls
-
-### Wrong mip
-
-![Failure: force mip0 on rough (sparkly sandpaper) | correct | force max mip on smooth (pewter blob). Photograph only.](/assets/journal/ibl-split-sum/08_wrong_mip.jpg)
-
-On the left, we force mip0 on a material with roughness \(0.75\). The result looks like sparkly sandpaper because the high-frequency window details remain entirely intact. In the middle, we apply the correct \(\lambda\) for the same roughness. On the right, we force the max mip on a smooth material (roughness \(0.08\)), turning it into a pewter blob. A highly smooth conductor was inappropriately given the roughest available table. Photo only. While the metal ladder represents our honest map, this plate demonstrates the failure mode.
-
-### No DFG LUT (\(F=1\))
-
-![Failure: F=1 (no DFG) washes metals grey vs split-sum F0·S+B. Photograph only.](/assets/journal/ibl-split-sum/09_no_lut.jpg)
-
-Using the same prefilter cube and exposure, the left panel skips the LUT entirely, outputting the prefiltered radiance as if \(F=1\). The metals wash out to grey, the brass \(F_0\) coloration vanishes, the dielectric loses its grazing rim, and overall body energy becomes incorrect. The right panel correctly applies \(F_0 S+B\). Photo only.
-
-### LDR clip vs HDR
-
-![Failure: clipped Li≤1 env vs float HDR, same TM. Window highlight and interior collapse on the left. Photograph only.](/assets/journal/ibl-split-sum/10_ldr_vs_hdr.jpg)
-
-Under identical tone mapping and exposure settings, the left panel demonstrates an environment incorrectly authored with \(L_i\le 1\) prior to prefiltering. The bright window highlight and the interior details both collapse entirely, causing the metal to lose its visual punch. The right panel uses the proper float HDR environment. Because tone mapping is not baked into the cubemaps, clipping the *source* data constitutes a catastrophic failure. Photo only.
-
-### Instrument strip (not a hero)
-
-![Calibration balls: smooth metal / rough metal / Lambertian with spec off. Not the product shot.](/assets/journal/ibl-split-sum/11_instrument_spheres.jpg)
-
-This strip shows smooth metal, rough metal, and a Lambertian surface with specular disabled. Caption: calibration balls, not the product shot. Photo only. If we used this as the cover image, the post would look like a generic void-sphere demo.
-
-## Two paths, do not mix the instruments
-
-| path | frames | instrument |
-| :--- | :--- | :--- |
-| **Science** | mip strip, spp residual, DFG LUT, roughness→mip, CSV, white-env energy, mip variance, RMSE | CPU latlong, CPU Karis prefilter, CPU cosine irradiance, CPU DFG. Image is visualization of those buffers after the same TM. |
-| **Photograph** | heroes, ladders, failures, calibration strip | GLSL 330 split-sum on this llvmpipe: `textureLod` of the CPU mips, DFG 2D, irradiance cube. HUD `photo-only`. Flank luma and metal RMS are linear-FBO crops, not JPEG theorems. |
-| **Display** | every plate | expose \(1.05\) → Khronos PBR Neutral → sRGB OETF. One operator, every row. |
-
-The GI-control three-up acts simultaneously as a photographic demonstration of the control parameter *and* the visual source for the flank-ratio CSV row. Always quote the CSV data. Do not attempt to pull an 8-bit panel value and quote it as 5.11.
-
----
-
-## Honesty gaps
-
-1. **Distant-environment irradiance \(\neq\) local GI.** The system simulates no bottle-to-brass bounce, no floor color bleeding into the metal, and features no path tracing, DDGI, lightmaps, or SSGI. Metals render black in the irradiance-only panel simply because \(k_D=0\).
-2. **Single-scatter split-sum.** We lack multi-scatter energy compensation. Grazing metals can artificially pick up a white-ish bias term from the LUT.
-3. **Roughness→mip is linear.** We mapped \(\lambda=r\cdot(\mathrm{mips}-1)\), completely bypassing a proper GGX solid-angle match.
-4. **Prefilter RMSE** evaluates 64-spp against 512-spp at matched roughness levels on an HDR window. It does not compare a production mip against an analytic baseline. The bright sun disc inevitably causes residual fireflies yielding an RMSE between 0.777 and 1.465. This is a documented limitation, not a GL filtering theorem.
-5. **Highlight RMS** predictably grows on the first metal rungs before saturating. We rely on mip variance as the true monotone blur meter.
-6. **Irradiance blur** introduces a 3-pass presentation filter to \(E(\mathbf{n})\) solely to prevent mullions from reprinting as wood grain patterns on dielectrics. The specular prefilter mips remain untouched and unblurred.
-7. **Contact** relies on a planar cosine term rather than proper shadow maps or ray tracing.
-8. **Env** utilizes a procedural loft HDR rather than a captured EXR, exhibiting a solid-angle mean luma of **1.628**.
-9. **Cubemap sampling** runs on llvmpipe RGBA16F with CPU-authored mips. While we request seamless cubemap filtering, face-edge quality remains a known Mesa caveat.
-10. **No hardware IBL unit** is present, and we make no claims regarding real-time convolution costs. Prefilter, irradiance, and DFG calculations are strictly CPU-bound.
-11. **Residual turned-form spec bands** appearing on the bottle simply reflect the loft windows wrapping across a surface of revolution. This is milder than a marble-chalk urn, not evidence of a rogue second lobe.
-12. **JPEG is visualization.** The true measurements exist in the CSV. Do not FFT or energy-integrate the beauty frames.
-
----
-
-## Mesa / llvmpipe — what this run can claim
-
-| item | value |
-| :--- | :--- |
-| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
-| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| FBO color | **RGBA32F** complete, photo \(1920\times 1080\) |
-| Specular / irradiance / sky cubes | **RGBA16F**, CPU mips uploaded per level |
-| `glGenerateMipmap` | **not** called on the specular chain |
-| DFG LUT | RGBA32F \(128^2\), CPU GGX |
-| `GL_FRAMEBUFFER_SRGB` | disabled (TM + sRGB on CPU) |
-| MSAA | disabled |
-| `GL_TEXTURE_CUBE_MAP_SEAMLESS` | enabled |
-| Exposure / TM | **1.05** / **Khronos PBR Neutral** |
-
-What this run *can* claim: Running on this OSMesa / llvmpipe build, a CPU Karis GGX prefilter processing an authored HDR loft properly conserves white-env energy (**1.000** at all four roughness keys). The CPU DFG LUT accurately targets \(S\approx 1\) and \(B=0\) at the face-on smooth corner. A GLSL 330 split-sum shader multiplying these tables with a distant-environment irradiance cube reliably produces the provided photographs. Disabling irradiance demonstrably darkens dielectric flanks, yielding a linear crop ratio of **5.11**. Introducing the wrong mip, missing the LUT entirely, or applying an LDR-clipped environment produces obvious, visual failures. Photographs of these failure paths serve as accurate visual documentation of **this** specific software rasterizer.
-
-What this run *cannot* claim: It makes no assertions regarding NVIDIA, AMD, or Intel hardware IBL units, nor does it address real-time convolution costs, occupancy, or bandwidth efficiency. We do not claim that llvmpipe's seamless cubemap filtering matches discrete GPU quality. We cannot assert that `glGenerateMipmap` would successfully create a valid GGX chain, because it does not, and we intentionally avoided calling it. Furthermore, we do not claim that distant \(E(\mathbf{n})\) equates to local multi-bounce GI, or that our linear roughness→mip mapping acts as a solid-angle match. Finally, applying an FFT or energy integral against an 8-bit sRGB JPEG is not a valid method for determining the spectrum of the signal. We offer no discrete-GPU metrics or definitive statements on "how the hardware works."
-
-Importantly, the science path remains completely independent of `GALLIVM_PERF`, relying purely on a CPU latlong, CPU prefilter, and CPU DFG.
-
----
-
-## Assertions
+## Appendix B — Assertions
 
 This run logged: **25 pass / 0 fail**.
 
@@ -275,13 +284,7 @@ We loosened no assertion tolerances to achieve the photoreal plates.
 
 ---
 
-## Out of scope
-
-This note strictly ignores local path-traced GI, photon maps, or irradiance caching for *scene* bounce. We do not use DDGI, lightmaps, or SSGI/SSR as substitutes for the cubemap. Multi-bounce local solvers of any variety are entirely out of scope. We also skip anisotropic GGX, Toksvig AA for the NDF, sheen, clearcoat, layered metals, and Area lights/LTC. You will not find a deep tone-map bake-off here; TM acts strictly as one named operator. Shadow-map bias and real-time convolution on dedicated "hardware IBL units" are excluded. Finally, we do not re-derive the mipmaps chirp, the anisotropic ellipse, or the POM height march. We merely cite continuity; this technique is a BRDF-integral approximation, not a novel sampler or geometric breakthrough.
-
----
-
-## Fragment lock
+## Appendix C — Fragment lock
 
 ```glsl
 float lod = rough * uMaxMip;                 // linear: r * (mips-1)
