@@ -1,6 +1,6 @@
 ---
 title: "Light Sampling and the Area Jacobian"
-description: "Vertical softbox on a night inspection bench. Ω⊥=0.419598441342 sr; (Ec-E)/E=-0.194936551657; jacobian_ratio 37.5654619429."
+description: "Vertical softbox on a night inspection bench. Area sampling without the geometry term biases the estimator; the Jacobian puts the measure back."
 date: 2026-09-25
 tags:
   - graphics
@@ -9,6 +9,7 @@ tags:
 math: true
 cover: /assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg
 ---
+
 In [Solid Angle and the Rendering Equation](/posts/p/solid-angle-and-the-rendering-equation/), the analysis centered on the integration measure: while path tracers sample directions over solid angle \(d\omega\), surface irradiance and the projected rendering equation integrate against projected solid angle \(\Omega_\perp\). For planar polygonal sources such as a rectangle, practical Monte Carlo sampling routines draw points uniformly across surface area. Transforming this area density into a directional density requires the differential solid angle conversion:
 
 \[p(\omega)=p(A)\,\frac{\lVert x-y\rVert^2}{n_y\cdot\omega},\qquad d\omega=\frac{(n_y\cdot\omega)}{r^2}\,dA.\]
@@ -58,10 +59,8 @@ Conversely, biased estimators converge to non-zero asymptotic floors at \(N=1024
 
 Photographic references and shop crops on the centroid evaluation plate are rendered with **8×** supersampling box-filtered to **1280**\(\times\)**720** before tonemapping. Diagnostic occupancy distributions, bias plots, and the metrics readouts are rendered directly into native sRGB without supersampling.
 
----
 
-## What you are seeing
-
+## Scene
 The radiometric computations operate strictly in scene-referred linear Rec.709 with **1** shop, **1** rectangular source, and **1** Lambert receiver. Display mapping follows the configuration documented in [Tone Mapping: Scene-Referred to Display-Referred](/posts/p/tone-mapping-scene-referred-to-display-referred/): the Khronos PBR Neutral curve evaluated with parameters \(e=1.00\), \(F_{\mathbf{90}}=\mathbf{0.04}\), \(K_s=\mathbf{0.76}\), and \(K_d=\mathbf{0.15}\), followed by the IEC **61966**-**2**-**1** sRGB transfer function implemented on the CPU. Neutral determines output display code values but does not alter the underlying computed irradiance \(E\).
 
 * **Cover Presentation:** The complete inspection bench environment showing the softbox, calibration card, and reference vise illuminated under verified area lighting and ambient shop fill. The image represents an un-annotated render without radiometric readouts.
@@ -74,8 +73,27 @@ Analytical evaluations should distinguish between tonemapped GLSL photographic r
 
 ---
 
-## Three failures
+## Method
 
+### Equal-\(\Omega\) histogram
+The spherical occupancy distribution empirically demonstrates the directional mapping distortion. The receiver hemisphere, centered on the surface normal \(n_x\), is parameterized using \(\mu=\cos\theta=n_x\cdot\omega_i\) against a wrapped azimuthal angle \(\phi\in[0,2\pi)\). The parameterization domain is uniformly discretized into **16** steps in \(\mu\) and **32** steps in \(\phi\):
+
+\[\Delta\omega=\frac{2\pi}{16\cdot 32}=\frac{2\pi}{512}\,\mathrm{sr}.\]
+
+This uniform grid—enforcing equal \(\Delta\phi\) and equal \(\Delta\cos\theta\)—ensures identical solid angle subtension across all discrete cells, consistent with established derivations for spherical caps.
+
+The evaluation contrasts two distinct spatial sampling populations, each utilizing \(N_{\mathrm{hist}}=\mathbf{16384}\) draws evaluated independently from the irradiance estimator prefixes. The first configuration generates **16384** area-uniform samples directly on the diffuser surface, binning their resulting incident vectors \(\omega_i\). The second configuration generates directions uniformly via \(\mu=U\) and \(\phi=2\pi U\), utilizing ray rejection against the spatial footprint until exactly **16384** valid diffuser intersections are accumulated. A discrete spherical cell is classified strictly as an "interior" cell if all **4** bounding \((\mu,\phi)\) corners maintain geometric intersection with the diffuser. While boundary bins containing partial intersections are rendered, quoted population extrema are rigorously constrained to the interior subset. This verified internal mask encompasses exactly **35** cells. Under the area-uniform generation strategy, the directional occupancy distribution exhibits high density variance spanning **86** to **952** samples. Conversely, the uniform-in-\(\Omega\) strategy maintains a tightly bounded interior occupancy of **314** to **400** samples.
+
+The lower near edge of the physical emitter aligns with the global maximum of the area-to-directional Jacobian \(d\omega/dA\). Consequently, an equal-\(\Omega\) discrete cell mapping to this region corresponds to an extremely small differential surface area, resulting in severe under-sampling by the area-uniform generator. To maintain energy conservation, any stochastic intersection occurring within this domain requires an inversely proportional compensatory weight:
+
+\[w_{\mathrm{legal}}=L_i\,\cos_x\,A\,\frac{d\omega}{dA}\]
+
+By contrast, the far spatial corner correlates with the global minimum of the Jacobian. Here, an equivalent equal-\(\Omega\) discrete cell subtends a dramatically larger differential surface area, thereby over-accumulating area-uniform ray hits that subsequently receive heavily diminished individual scalar weights. This mapping discrepancy mathematically dictates the **86**-to-**952** density disparity across the interior region. The uniformly drawn angular distribution appropriately stabilizes between **314** and **400**. Local maximum normalization separates spatial density gradients from discrete boundary rasterization errors.
+
+The drastic modulation of the compensatory weight is fundamentally dictated by radial distance \(r\). Across this specific spatial footprint, the geometric transfer kernel \(\cos_y/r^2\) diverges by an absolute factor of **37.5654619429**. Estimator formulations that omit this necessary scaling term reliably converge to an invalid radiometric integration target.
+## Discussion
+
+### Three failures
 For a planar emitter with uniform exitant radiance \(L_i\) and zero emission from the rear hemisphere, receiver irradiance is defined by integrating incoming radiance weighted by the geometric transfer kernel. The unbiased formulation accounts for both geometric foreshortening and inverse-square falloff. Systemic bias typically arises from three deviations:
 
 * **Failure A — Omission of the inverse-square law (\(r^2\)):** Preserving surface cosines and \(p(A)\) while omitting \(1/r^2\) shifts the Monte Carlo expectation toward \(\int L_i\,\cos_x\,\cos_y\,dA\), altering the physical dimension of the estimator by \(\mathrm{m}^2\). Because \(1/r^2\) contributes maximal weight along the near boundary of the panel, omitting it severely underestimates total flux, yielding a relative mean error of **-0.645746690189** at \(N=1024\).
@@ -87,8 +105,7 @@ The receiver foreshortening term \(\cos_x\) remains active across all test cases
 Because tonemapping non-linearities and display transforms compress dimensional discrepancies, biased Monte Carlo estimators cannot be reliably evaluated from tonemapped photographic images alone. Numerical error floors are properly verified through raw floating-point error metrics on the bias plate, whereas the dimensionally consistent centroid approximation is analyzed on the centroid plate.
 
 ---
-## Change of measure
-
+### Change of measure
 We first formalize the notation and physical quantities utilized in the subsequent evaluations.
 
 | symbol | meaning | unit |
@@ -189,25 +206,7 @@ The provided bias chart visualizes \(\mathrm{rmse}(N)\). The signed mean of the 
 
 ---
 
-## Equal-\(\Omega\) histogram
-
-The spherical occupancy distribution empirically demonstrates the directional mapping distortion. The receiver hemisphere, centered on the surface normal \(n_x\), is parameterized using \(\mu=\cos\theta=n_x\cdot\omega_i\) against a wrapped azimuthal angle \(\phi\in[0,2\pi)\). The parameterization domain is uniformly discretized into **16** steps in \(\mu\) and **32** steps in \(\phi\):
-
-\[\Delta\omega=\frac{2\pi}{16\cdot 32}=\frac{2\pi}{512}\,\mathrm{sr}.\]
-
-This uniform grid—enforcing equal \(\Delta\phi\) and equal \(\Delta\cos\theta\)—ensures identical solid angle subtension across all discrete cells, consistent with established derivations for spherical caps.
-
-The evaluation contrasts two distinct spatial sampling populations, each utilizing \(N_{\mathrm{hist}}=\mathbf{16384}\) draws evaluated independently from the irradiance estimator prefixes. The first configuration generates **16384** area-uniform samples directly on the diffuser surface, binning their resulting incident vectors \(\omega_i\). The second configuration generates directions uniformly via \(\mu=U\) and \(\phi=2\pi U\), utilizing ray rejection against the spatial footprint until exactly **16384** valid diffuser intersections are accumulated. A discrete spherical cell is classified strictly as an "interior" cell if all **4** bounding \((\mu,\phi)\) corners maintain geometric intersection with the diffuser. While boundary bins containing partial intersections are rendered, quoted population extrema are rigorously constrained to the interior subset. This verified internal mask encompasses exactly **35** cells. Under the area-uniform generation strategy, the directional occupancy distribution exhibits high density variance spanning **86** to **952** samples. Conversely, the uniform-in-\(\Omega\) strategy maintains a tightly bounded interior occupancy of **314** to **400** samples.
-
-The lower near edge of the physical emitter aligns with the global maximum of the area-to-directional Jacobian \(d\omega/dA\). Consequently, an equal-\(\Omega\) discrete cell mapping to this region corresponds to an extremely small differential surface area, resulting in severe under-sampling by the area-uniform generator. To maintain energy conservation, any stochastic intersection occurring within this domain requires an inversely proportional compensatory weight:
-
-\[w_{\mathrm{legal}}=L_i\,\cos_x\,A\,\frac{d\omega}{dA}\]
-
-By contrast, the far spatial corner correlates with the global minimum of the Jacobian. Here, an equivalent equal-\(\Omega\) discrete cell subtends a dramatically larger differential surface area, thereby over-accumulating area-uniform ray hits that subsequently receive heavily diminished individual scalar weights. This mapping discrepancy mathematically dictates the **86**-to-**952** density disparity across the interior region. The uniformly drawn angular distribution appropriately stabilizes between **314** and **400**. Local maximum normalization separates spatial density gradients from discrete boundary rasterization errors.
-
-The drastic modulation of the compensatory weight is fundamentally dictated by radial distance \(r\). Across this specific spatial footprint, the geometric transfer kernel \(\cos_y/r^2\) diverges by an absolute factor of **37.5654619429**. Estimator formulations that omit this necessary scaling term reliably converge to an invalid radiometric integration target.
-## Bias floors
-
+### Bias floors
 The bias plate serves as our primary evaluation instrument. The gold trajectory represents the unbiased legal estimator, while the red and blue trajectories illustrate the respective omissions of \(r^2\) and the emitter cosine. These metrics are computed over \(K=\mathbf{32}\) shared prefixes. (The double-count arm is omitted from this specific visualization.)
 
 ![Bias chart. K=32 relative RMSE, N on a log axis. Gold legal falls from N=16 to N=1024. Red drop-r² and blue drop-cosine sit on floors. Signed means under the chart: legal +0.007753, drop r² -0.645747, drop cosine +1.040131. The broken weights are this chart, not a photograph of the shop.](/assets/journal/light-sampling-and-the-area-jacobian/02_bias.jpg)
@@ -239,8 +238,7 @@ The double-count \(\cos_y\) estimator, tracked exclusively in the metrics array 
 
 ---
 
-## Centroid plate
-
+### Centroid plate
 The centroid plate isolates the geometric distortion introduced by Failure C. Both rendered shop frames utilize identical camera parameters: eye position \((\mathbf{1.70},\,\mathbf{1.45},\,\mathbf{0.70})\), target \((\mathbf{0.10},\,\mathbf{1.40},\,\mathbf{-0.02})\), and a **46**\(^\circ\) vertical field of view. They share the identical \(L_i\) source radiance, ambient shop fill, material albedo \(\rho=\mathbf{0.80}\), photographic exposure **1.00**, and Khronos PBR Neutral parameter \(e=\mathbf{1.00}\).
 
 ![Failure C. Same eye: legal rectangle form factor beside the centroid stand-in. Gold boxes mark the card. Callout -0.195, (Ec-E)/E = -0.194937 from this run. Crops print linear Y 0.446 legal and Y 0.362 centroid. The third panel is linear |ΔY| of that crop before Neutral; the ramp is marked 0.115 and the card is the bright end.](/assets/journal/light-sampling-and-the-area-jacobian/03_centroid.jpg)
@@ -254,7 +252,78 @@ A separate validation verifies the small-angle limit, where the discrete centroi
 
 ---
 
-## Quote the metrics. Do not quote the beauty photographs as meters.
+## Limits
+
+### Honesty gaps
+1. **The reference meter is defined by the CPU double-precision contour evaluation and the shared-sample estimator.** Radiometric validation does not sample float32 output from rendered photographs, nor are metric entries extracted from display-referred JPEGs. The unclamped floating-point ceiling is bounded at **4** (corresponding to source radiance \(L_i\)).
+2. **Biased formulations (Failures A and B) do not undergo Khronos PBR Neutral tonemapping onto beauty renders.** Their quantitative characteristics are evaluated exclusively as error curves on the bias chart and as entries in the benchmark table. The single-point centroid approximation represents the sole analytical proxy visualized spatially, isolated to the centroid plate. The redundant double-count formulation carries no graphical frame and bypasses Neutral evaluation entirely.
+3. **Emitter boundaries exhibit a fractional coverage fringe under Neutral after linear downsampling.** The rendering pipeline bypasses hardware MSAA. Photographic frames target an RGBA32F render target configured at **8**× resolution (**10240**\(\times\)**5760**), filtered via an 8\(\times\)8 linear box kernel down to **1280**\(\times\)**720**, followed by exposure scaling and Neutral application. Where the emitter silhouette intersects a sample column, box averaging produces an approximate one-eighth coverage step. Bench and reference geometry reside within normal dynamic ranges and filter cleanly. The occupancy histograms, bias curves, and metrics capture are generated natively without supersampling.
+4. **Shading locations failing the four-corner frontal half-space test evaluate to zero emitter contribution.** Non-frontal configurations are culled rather than analytically clipped, which can cause horizon grazing regions to appear darker than a clipped polygonal solver. The primary instrument card resides securely within the valid half-space, preserving metric fidelity.
+5. **Surfaces positioned behind the diffuser plane, including mounting fixtures, receive ambient fill exclusively.** Due to the absence of indirect surface interreflections, occluded geometry does not visually detach from background shop bounds, leaving peripheral image boundaries unilluminated.
+6. **The reference vise does not cast cast-shadow occlusions.** Shading evaluations across the receiver assume an unoccluded line-of-sight; the vise serves purely as a physical scale artifact.
+7. **The Neutral tone operator evaluated at exposure 1.00 governs display transform mapping only.** It does not alter physical scene irradiance \(E\). Its operational parameters match prior derivations without per-scene optimization, and radiometric energy conservation post-tonemapping is explicitly out of scope.
+8. **Asymptotic convergence tracking utilizes RMSE aggregated across \(K=32\) independent prefixes.** Individual pseudorandom sample sequences are not asserted to be strictly monotonic, as localized stochastic fluctuations occur naturally despite correct estimator formulation.
+9. **The direct-to-fill irradiance ratio evaluates to 22.0690362063.** This value represents \(E_Y/E_{\mathrm{fill},Y}\) computed strictly for the prescribed emitter radiance, ambient fill, and measured projected solid angle \(\Omega_\perp\).
+10. **Tabulated omission floors represent empirical sample means under the active seed.** Measured asymptotes evaluate to **-0.645746690189** for inverse-square omission and **+1.04013072615** for emitter cosine omission, confirming two distinct failure regimes.
+11. **Uniform area sampling scaled by the geometric Jacobian serves as an isolated baseline.** It represents a foundational change-of-measure test rather than a competitive production sampling strategy such as visible normal distribution functions (VNDF) or environment map multiple importance sampling (env-MIS).
+12. **Region crop readouts (0.446 and 0.362) denote linear \(Y\) luminance at the receiver pixel.** The linear absolute difference \(\vert{}\Delta Y\vert{}\) map peaks at approximately **0.115** on the target card prior to Neutral mapping. The total analytical card luminance combining direct and ambient illumination is **0.446765938864** (`Lo_total_Y`).
+13. **Rendered display output is constrained to standard 8-bit dynamic range.** Radiometric metrics, including \(\Omega_\perp\), \(E\), RMSE convergence rungs, and bias asymptotes, are resolved in high-precision CPU floating-point calculations.
+
+---
+
+### Mesa / llvmpipe — what this run can claim
+| Parameter | Specification / Measured State |
+| --- | --- |
+| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
+| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
+| Context Interface | OSMesa (Core 3.3 profile) |
+| Render Target | **RGBA32F**, **10240**\(\times\)**5760** (**8**× SSAA over **1280**\(\times\)**720**) |
+| Post-Processing | **1280**\(\times\)**720** via 8\(\times\)8 linear box resolve, Neutral mapping, sRGB OETF |
+| Hardware Flags | `GL_FRAMEBUFFER_SRGB` disabled, MSAA disabled |
+| SSAA / Texture | **8**× box resolve on primary scene and centroid plates; `GL_MAX_TEXTURE_SIZE` **16384** |
+| PRNG Configuration | SplitMix64, seed **20260924**, 53-bit mantissa float mapping to \([0,1)\) |
+| Tone Operator | Khronos PBR Neutral (\(e=\mathbf{1.00}\)) |
+
+**Empirical claims established by this benchmark:**
+Under the specified OSMesa and llvmpipe pipeline, a double-precision CPU Monte Carlo estimator drawing uniform area samples across an unoccluded planar rectangle and transformed via the geometric area Jacobian achieves consistent convergence. Evaluated across \(K=\mathbf{32}\) shared prefixes against analytic four-corner contour integration, RMSE decreases monotonically across sample allocations \(N\in\{\mathbf{16},\mathbf{64},\mathbf{256},\mathbf{1024}\}\). Conversely, omitting \(r^2\) or \(\cos_y\) arrests convergence at non-zero bias asymptotes. Discretized equal-solid-angle spherical occupancy bins reveal substantial non-uniform clustering for area-uniform sampling relative to solid-angle generation. At the evaluated receiver position, the single-point centroid approximation diverges from ground truth by **-0.194936551657**. The tonemapped hero visual accurately depicts the combination of direct area illumination and ambient fill post-box downsampling under Neutral \(e=\mathbf{1.00}\).
+
+**Non-claims and technical limitations:**
+The evaluation does not model GPU hardware acceleration, wavefront execution, hardware ray tracing cores, or interactive frame-rate constraints; the synthetic room is generated via an isolated software fragment shader. The benchmark does not extract radiometric ground truth from tonemapped framebuffers or lossy image formats. The formulation omits indirect surface interreflection, dynamic shadow casting under the scale vise, strict monotonicity across single pseudorandom paths, and variance comparisons against VNDF or environment MIS routines. Silhouette coverage boundaries remain bounded by the resolution limits of the **8**× spatial box filter.
+
+---
+
+## Out of scope
+
+Multiple importance sampling heuristics (including balance and power weighting), multi-light sampling, and generalized Veach estimators remain deferred until the directional transformation of light area densities is established.
+
+Similarly, half-vector coordinate transforms, Smith shadowing-masking functions \(G\), and visible normal distribution functions (VNDF) extend microfacet BRDF sampling rather than spatial measure transformations.
+
+Linearly Transformed Cosines (LTC) and analytical solid-angle polygonal integration are omitted; numerical validation relies entirely on exact four-corner contour summation. Polygonal horizon clipping, Phong-versus-cosine variance comparisons, high-variance firefly metrics, disk irradiance ratios, auxiliary shadow maps, multi-bounce transport, Russian roulette path termination, ReSTIR spatio-temporal resampling, and stratified area variance reduction are intentionally excluded. Biased estimators are evaluated strictly via numerical convergence curves rather than spatial renderings.
+
+```text
+d omega          = cos_y / r^2 * dA
+p(omega)         = p(A) * r^2 / cos_y          # p(A) = 1/A
+w_legal          = Li * cos_x * cos_y * A / r^2
+w_drop_r2        = Li * cos_x * cos_y * A
+w_drop_cos       = Li * cos_x * A / r^2
+w_double         = Li * cos_x * cos_y^2 * A / r^2    # metrics only, no frame
+E                = Li * Omega_perp                   # signed four-corner
+Ec               = Li * A * cos_x(yc) * cos_y(yc) / rc^2
+(Ec - E) / E     = -0.194936551657
+Omega_perp       = 0.419598441342 sr
+jacobian ratio   = 37.5654619429
+mean_rel drop r  = -0.645746690189                  # N=1024, K=32
+mean_rel drop cos= +1.04013072615
+beauty           = sRGB_OETF(Neutral(e * Lo))       # e=1.00, after 8x linear box
+
+```
+
+The presentation plates serve distinct diagnostic functions: the primary scene photograph establishes spatial context; the directional occupancy histogram verifies non-uniform angular density; the bias plot quantifies asymptotic error floors; and the centroid plate demonstrates localized geometric divergence. Proper Monte Carlo light sampling requires transforming surface area density into directional solid angle via the full differential Jacobian; omitting \(r^2\) or the emitter cosine yields persistent, non-convergent integration bias.
+Dense meters follow.
+
+---
+
+## Appendix A — Meters (quote tables, not photographs)
 
 All radiometric quantities are resolved in CPU double-precision before entering the Neutral transform. The pseudorandom seed is strictly defined as **20260924**. The comprehensive operational metrics from this execution are organized into a **2**-column format, tabulated below:
 
@@ -299,47 +368,7 @@ All radiometric quantities are resolved in CPU double-precision before entering 
 Display rounding is employed strictly for visual coherence on the output plates. The bias chart's six-decimal means are printed as: \(+\mathbf{0.007753}\), \(\mathbf{-0.645747}\), and \(+\mathbf{1.040131}\). The centroid callout reads: **-0.195** and `\mathbf{-0.194937}`. The crop headers display: legal **0.446**, centroid **0.362**. The heat map peaks at roughly **0.115**. Our opening RMSE sequence lists: **0.1644**, **0.1089**, **0.06826**, and **0.02638**. The opening panel-to-fill ratio is **22.069**, and the radial distance ratio evaluates to **3.349**. These visual abbreviations never supersede the full precision of the analytic table.
 
 The instrument-pixel headers strictly measure the float-buffer luma corresponding to the photograph. The `Lo_total_Y` value belongs exclusively to the analytic card. Always rely upon the raw numerical metrics to dictate the true values for \(E\), \(\Omega_\perp\), and the biased estimator floors.
-## Honesty gaps
-
-1. **The reference meter is defined by the CPU double-precision contour evaluation and the shared-sample estimator.** Radiometric validation does not sample float32 output from rendered photographs, nor are metric entries extracted from display-referred JPEGs. The unclamped floating-point ceiling is bounded at **4** (corresponding to source radiance \(L_i\)).
-2. **Biased formulations (Failures A and B) do not undergo Khronos PBR Neutral tonemapping onto beauty renders.** Their quantitative characteristics are evaluated exclusively as error curves on the bias chart and as entries in the benchmark table. The single-point centroid approximation represents the sole analytical proxy visualized spatially, isolated to the centroid plate. The redundant double-count formulation carries no graphical frame and bypasses Neutral evaluation entirely.
-3. **Emitter boundaries exhibit a fractional coverage fringe under Neutral after linear downsampling.** The rendering pipeline bypasses hardware MSAA. Photographic frames target an RGBA32F render target configured at **8**× resolution (**10240**\(\times\)**5760**), filtered via an 8\(\times\)8 linear box kernel down to **1280**\(\times\)**720**, followed by exposure scaling and Neutral application. Where the emitter silhouette intersects a sample column, box averaging produces an approximate one-eighth coverage step. Bench and reference geometry reside within normal dynamic ranges and filter cleanly. The occupancy histograms, bias curves, and metrics capture are generated natively without supersampling.
-4. **Shading locations failing the four-corner frontal half-space test evaluate to zero emitter contribution.** Non-frontal configurations are culled rather than analytically clipped, which can cause horizon grazing regions to appear darker than a clipped polygonal solver. The primary instrument card resides securely within the valid half-space, preserving metric fidelity.
-5. **Surfaces positioned behind the diffuser plane, including mounting fixtures, receive ambient fill exclusively.** Due to the absence of indirect surface interreflections, occluded geometry does not visually detach from background shop bounds, leaving peripheral image boundaries unilluminated.
-6. **The reference vise does not cast cast-shadow occlusions.** Shading evaluations across the receiver assume an unoccluded line-of-sight; the vise serves purely as a physical scale artifact.
-7. **The Neutral tone operator evaluated at exposure 1.00 governs display transform mapping only.** It does not alter physical scene irradiance \(E\). Its operational parameters match prior derivations without per-scene optimization, and radiometric energy conservation post-tonemapping is explicitly out of scope.
-8. **Asymptotic convergence tracking utilizes RMSE aggregated across \(K=32\) independent prefixes.** Individual pseudorandom sample sequences are not asserted to be strictly monotonic, as localized stochastic fluctuations occur naturally despite correct estimator formulation.
-9. **The direct-to-fill irradiance ratio evaluates to 22.0690362063.** This value represents \(E_Y/E_{\mathrm{fill},Y}\) computed strictly for the prescribed emitter radiance, ambient fill, and measured projected solid angle \(\Omega_\perp\).
-10. **Tabulated omission floors represent empirical sample means under the active seed.** Measured asymptotes evaluate to **-0.645746690189** for inverse-square omission and **+1.04013072615** for emitter cosine omission, confirming two distinct failure regimes.
-11. **Uniform area sampling scaled by the geometric Jacobian serves as an isolated baseline.** It represents a foundational change-of-measure test rather than a competitive production sampling strategy such as visible normal distribution functions (VNDF) or environment map multiple importance sampling (env-MIS).
-12. **Region crop readouts (0.446 and 0.362) denote linear \(Y\) luminance at the receiver pixel.** The linear absolute difference \(\vert{}\Delta Y\vert{}\) map peaks at approximately **0.115** on the target card prior to Neutral mapping. The total analytical card luminance combining direct and ambient illumination is **0.446765938864** (`Lo_total_Y`).
-13. **Rendered display output is constrained to standard 8-bit dynamic range.** Radiometric metrics, including \(\Omega_\perp\), \(E\), RMSE convergence rungs, and bias asymptotes, are resolved in high-precision CPU floating-point calculations.
-
----
-
-## Mesa / llvmpipe — what this run can claim
-
-| Parameter | Specification / Measured State |
-| --- | --- |
-| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
-| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| Context Interface | OSMesa (Core 3.3 profile) |
-| Render Target | **RGBA32F**, **10240**\(\times\)**5760** (**8**× SSAA over **1280**\(\times\)**720**) |
-| Post-Processing | **1280**\(\times\)**720** via 8\(\times\)8 linear box resolve, Neutral mapping, sRGB OETF |
-| Hardware Flags | `GL_FRAMEBUFFER_SRGB` disabled, MSAA disabled |
-| SSAA / Texture | **8**× box resolve on primary scene and centroid plates; `GL_MAX_TEXTURE_SIZE` **16384** |
-| PRNG Configuration | SplitMix64, seed **20260924**, 53-bit mantissa float mapping to \([0,1)\) |
-| Tone Operator | Khronos PBR Neutral (\(e=\mathbf{1.00}\)) |
-
-**Empirical claims established by this benchmark:**
-Under the specified OSMesa and llvmpipe pipeline, a double-precision CPU Monte Carlo estimator drawing uniform area samples across an unoccluded planar rectangle and transformed via the geometric area Jacobian achieves consistent convergence. Evaluated across \(K=\mathbf{32}\) shared prefixes against analytic four-corner contour integration, RMSE decreases monotonically across sample allocations \(N\in\{\mathbf{16},\mathbf{64},\mathbf{256},\mathbf{1024}\}\). Conversely, omitting \(r^2\) or \(\cos_y\) arrests convergence at non-zero bias asymptotes. Discretized equal-solid-angle spherical occupancy bins reveal substantial non-uniform clustering for area-uniform sampling relative to solid-angle generation. At the evaluated receiver position, the single-point centroid approximation diverges from ground truth by **-0.194936551657**. The tonemapped hero visual accurately depicts the combination of direct area illumination and ambient fill post-box downsampling under Neutral \(e=\mathbf{1.00}\).
-
-**Non-claims and technical limitations:**
-The evaluation does not model GPU hardware acceleration, wavefront execution, hardware ray tracing cores, or interactive frame-rate constraints; the synthetic room is generated via an isolated software fragment shader. The benchmark does not extract radiometric ground truth from tonemapped framebuffers or lossy image formats. The formulation omits indirect surface interreflection, dynamic shadow casting under the scale vise, strict monotonicity across single pseudorandom paths, and variance comparisons against VNDF or environment MIS routines. Silhouette coverage boundaries remain bounded by the resolution limits of the **8**× spatial box filter.
-
----
-
-## Assertions
+## Appendix B — Assertions
 
 Execution suite validation: **72 pass / 0 fail**.
 
@@ -360,30 +389,3 @@ Statistical convergence criteria verify that legal estimator RMSE decreases acro
 
 ---
 
-## Out of scope
-
-Multiple importance sampling heuristics (including balance and power weighting), multi-light sampling, and generalized Veach estimators remain deferred until the directional transformation of light area densities is established.
-
-Similarly, half-vector coordinate transforms, Smith shadowing-masking functions \(G\), and visible normal distribution functions (VNDF) extend microfacet BRDF sampling rather than spatial measure transformations.
-
-Linearly Transformed Cosines (LTC) and analytical solid-angle polygonal integration are omitted; numerical validation relies entirely on exact four-corner contour summation. Polygonal horizon clipping, Phong-versus-cosine variance comparisons, high-variance firefly metrics, disk irradiance ratios, auxiliary shadow maps, multi-bounce transport, Russian roulette path termination, ReSTIR spatio-temporal resampling, and stratified area variance reduction are intentionally excluded. Biased estimators are evaluated strictly via numerical convergence curves rather than spatial renderings.
-
-```text
-d omega          = cos_y / r^2 * dA
-p(omega)         = p(A) * r^2 / cos_y          # p(A) = 1/A
-w_legal          = Li * cos_x * cos_y * A / r^2
-w_drop_r2        = Li * cos_x * cos_y * A
-w_drop_cos       = Li * cos_x * A / r^2
-w_double         = Li * cos_x * cos_y^2 * A / r^2    # metrics only, no frame
-E                = Li * Omega_perp                   # signed four-corner
-Ec               = Li * A * cos_x(yc) * cos_y(yc) / rc^2
-(Ec - E) / E     = -0.194936551657
-Omega_perp       = 0.419598441342 sr
-jacobian ratio   = 37.5654619429
-mean_rel drop r  = -0.645746690189                  # N=1024, K=32
-mean_rel drop cos= +1.04013072615
-beauty           = sRGB_OETF(Neutral(e * Lo))       # e=1.00, after 8x linear box
-
-```
-
-The presentation plates serve distinct diagnostic functions: the primary scene photograph establishes spatial context; the directional occupancy histogram verifies non-uniform angular density; the bias plot quantifies asymptotic error floors; and the centroid plate demonstrates localized geometric divergence. Proper Monte Carlo light sampling requires transforming surface area density into directional solid angle via the full differential Jacobian; omitting \(r^2\) or the emitter cosine yields persistent, non-convergent integration bias.

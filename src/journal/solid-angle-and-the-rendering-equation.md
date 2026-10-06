@@ -1,6 +1,6 @@
 ---
 title: "Solid Angle and the Rendering Equation"
-description: "Path tracers sample dω (sr). Irradiance and the RE track projected solid angle Ω⊥. Same Li, α=5° vs 15°: EB/EA=8.818616 (not 9); same-R Ω ratio 3.536 (not 4). Courtyard skylight + Lambert card."
+description: "Path tracers sample dω (sr). Irradiance and the RE track projected solid angle. Courtyard skylight and a Lambert card measure the gap."
 date: 2026-09-22
 tags:
   - graphics
@@ -9,6 +9,7 @@ tags:
 math: true
 cover: /assets/journal/solid-angle-and-the-rendering-equation/00_hero.jpg
 ---
+
 Our previous note addressed a common Monte Carlo sampling mismatch: evaluating the same integral using two different probability density functions at a single sample count, \(N\). Those pdfs were properly defined as densities measured in \(1/\mathrm{sr}\). Because split-sum approximations fold an environment into a GGX prefilter multiplied by a DFG LUT, they leave the measure implicit inside the integral (yielding an environment solid-angle mean luma of **1.628** on that specific loft run). This note focuses directly on formalizing that measure.
 
 Path tracers inherently sample \(d\omega\). Irradiance and the rendering equation, however, track the projected solid angle, \(\Omega_\perp\). A direction is simply a point on the hemisphere, weighted in steradians. Flux passing through a flat surface depends on this projected solid angle, defined mathematically as \(\Omega_\perp=\int(n\cdot\omega)\,d\omega\). Relying on source area, pixel counts, or manipulating \(L_i\) as an arbitrary brightness scalar are fundamentally incorrect approaches.
@@ -37,10 +38,8 @@ Evaluating the system on Mesa 25.0.7 llvmpipe (linear Rec.709, Khronos PBR Neutr
 
 The incident radiance \(L_i=(12.0,\,13.2,\,16.0)\) remains bit-identical between setups, producing a luminance \(L_{iY}=\mathbf{13.147}\) and a disk-to-fill \(Y\)-ratio of **200**.
 
----
 
-## What You Are Seeing
-
+## Scene
 Our working color space is scene-referred linear Rec.709. The environment consists of one courtyard, one analytic cap, and one Lambertian card. Display parameters are inherited from previous work: the Khronos PBR Neutral operator evaluated at \(e=1.00\), followed by the IEC 61966-2-1 sRGB OETF applied on the CPU. We emphasize that the tone curve does not create lighting, and the Neutral operator does not author irradiance (\(E\)). We refer readers to the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) and [split-sum IBL](/posts/p/split-sum-image-based-lighting/) notes for full display-pipeline context.
 
 **Hero — presentation hook.** The atrium features the visible disk, white card, and low bench at \(\alpha=15^\circ\). This plate establishes the aesthetic baseline, but the final JPEG artifacts are not the measurement tool.
@@ -76,35 +75,9 @@ Maintain a strict separation between these two artifact categories:
 1. **Beauty plates** (`00`, `01`, `02`) represent the GLSL courtyard running on llvmpipe, mapped through Neutral and an sRGB OETF. The shader properly evaluates walls, floor, and the card using a disk form factor. Do not attempt to reverse-engineer \(\Omega\), \(E\), or \(L_o\) from these JPEGs.
 2. **Instruments** (`03`, `04`, `05`, `06`, `07`, and the metrics block) represent exact float identities and the CPU estimator.
 
-## Three Failures
+## Method
 
-Radiance \(L_i\) represents power per unit area per steradian. Irradiance on a surface is defined as radiance scaled by the **projected** solid angle of the source. Expanding a spherical cap while maintaining a constant \(L_i\) increases the incident irradiance, thereby brightening the receiving surface. Conversely, tilting the surface while holding both \(L_i\) and the cap geometry fixed decreases the irradiance, as the geometric attenuation term \((n\cdot\omega)\) changes. In neither scenario does the source radiance inherently increase.
-
-**Failure A — Area Versus \(\Omega\).** This distinction is demonstrated in the size A/B experimental plate. The left configuration utilizes a half-angle of \(\alpha=5.000^\circ\) and the right \(\alpha=15.000^\circ\). Both setups maintain a constant source radiance of \(L_i=(12.0,\,13.2,\,16.0)\), an exposure of \(e=1.00\), and a surface albedo of \(\rho=0.80\). The right surface appears brighter strictly because the projected solid angle \(\Omega_\perp\) increases from **0.023863926** sr to **0.210446804** sr. Consequently, the observed disk irradiance ratio is \(E_B/E_A=\mathbf{8.818616}\). A naive quadratic approximation based solely on the angle ratio, \((15/5)^2=9\), is demonstrably inaccurate.
-
-The plate caption further details an area-control experiment. For an on-axis disk of radius \(R\) at distance \(d\), the subtended half-angle is \(\alpha=\arctan(R/d)\), which yields the solid angle:
-
-\[\Omega=2\pi\Bigl(1-\frac{d}{\sqrt{R^2+d^2}}\Bigr).\]
-
-Evaluating this for \(R=1\) and an area of \(\pi\) across two distances:
-
-| \(R\) | \(d\) | \(\alpha=\arctan(R/d)\) | Area | \(\Omega\) [sr] |
-| --- | --- | --- | --- | --- |
-| 1 | 2 | \(26.565^\circ\) | \(\pi\) | **0.663334** |
-| 1 | 4 | \(14.036^\circ\) | \(\pi\) | **0.187600** |
-
-Although the physical disk area remains constant in both configurations, the measured solid angle ratio is **3.536**. Applying a standard inverse-square law derived solely from distance would incorrectly predict a ratio of \((4/2)^2=4\). Uniformly scaling both \(R\) and \(d\) by a factor \(k\) preserves \(\Omega\) while scaling the physical area by \(k^2\). Therefore, equivalent area does not guarantee equivalent solid angle.
-
-**Failure B — The Missing Cosine.** The cosine-tilt plate and the red ghost curve on the \(E\) versus \(\Omega_\perp\) plot illustrate the error of omitting the geometric term. Integrating \(L_i\,d\omega\) without the \((n\cdot\omega)\) factor incorrectly accumulates flux, effectively treating the receiving surface as a spherical probe rather than a flat plate. The rendering equation for an opaque surface explicitly requires this cosine term to account for the foreshortening of the incoming beam; it serves neither as an arbitrary brightness adjustment nor as a component of the BSDF. On the tilt plate, the right card correctly darkens at \(\beta=60^\circ\) despite \(L_i\) remaining constant. Artificially increasing \(L_i\) to offset this darkening would violate fundamental radiometric principles.
-
-**Failure C — Pixels Versus Steradians.** Pixel coverage is merely a rasterized projection of the source, whereas the solid angle evaluated in the rendering equation is continuous and defined relative to the receiving surface. These quantities are decoupled. For example, the metric `pixels_disk_A` captures **910** pixels for a linear \(\alpha=5^\circ\) source evaluated at a \(628\times 720\) resolution. Conversely, `pixels_disk_B` records **7242** pixels for an \(\alpha=15^\circ\) source rendered at \(1280\times 720\). Both values are appropriately flagged as `omega_from_pixels_illegal`. Due to the disparities in frame size and aspect ratio, the ratio of these discrete pixel counts provides no rigorous estimate of \(\Omega_B/\Omega_A\). A \(5^\circ\) spherical cap subtends precisely \(\Omega=0.023909417\,\mathrm{sr}\), irrespective of its projected raster footprint.
-
-The importance-sampling reference from our prior note demonstrates Failure A at a micro-scale: a **3.600^\circ** spherical cap subtends exactly **0.012398431** sr. A cosine-weighted probability density function distributes its mass across the entire hemisphere oriented around \(n\), not solely over this small restricted solid angle.
-
----
-
-## The Rendering Equation Once
-
+### The Rendering Equation Once
 We formally state the integral and define all notation. Subsequent derivations rely upon this specific formulation.
 
 \[L_o(x,\omega_o) = L_e(x,\omega_o) + \int_{\Omega^+} f_r(x,\omega,\omega_o)\, L_i(x,\omega)\, (n\cdot\omega)\, d\omega.\]
@@ -204,8 +177,7 @@ The experimental framework ensures strict radiometric parity across test configu
 
 The only independent variables between frames are the solid angle \(\Omega\) and the applied cosine term. The emissive disk spectrum is fixed at an RGB vector of \((12.0,\,13.2,\,16.0)\), generating a Rec.709 luma of \(Y=13.147\) at an exposure of \(e=1.00\). Consequently, the observed variation in surface brightness isolates the exact radiometric impact of \(\Omega\).
 
-## Unique Artifacts
-
+### Unique Artifacts
 The grid plate visually formalizes this solid angle measure as a 3D hemisphere, discretized into 12 uniform steps of \(\cos\theta\) (from 1 to 0) and 24 uniform steps of \(\phi\). This geometric construction guarantees that every individual cell subtends an identical solid angle:
 
 \[\Delta\Omega=\Delta\phi\,\Delta\cos\theta=\frac{2\pi}{24}\cdot\frac{1}{12}=\frac{\pi}{144}\,\mathrm{sr}.\]
@@ -233,8 +205,46 @@ These three structural analysis plates establish our fundamental mathematical ba
 
 ---
 
-## Size A/B
+### Two Paths, Do Not Mix the Instruments
+| Path | Frames | Description |
+| --- | --- | --- |
+| **Photograph** | `00`, `01`, `02` | GLSL 330 implementations of the courtyard scene executed on llvmpipe. The shader explicitly evaluates the analytical disk form factor. Final output incorporates Neutral tonemapping (\(e=1.00\)) and the sRGB OETF. |
+| **Instrument** | `03`, `04`, `05`, `06`, `07`, metrics | Exact mathematical visualizations: the equal-\(\Omega\) solid angle grid, the \(E\) versus \(\Omega_\perp\) function plot, the projected solid angle wedge diagram, the nested Monte Carlo `rel_err` ladder, and closed-form derivations. |
+| **Display** | Every plate | The linear buffer resolve enforces an exposure of \(e=1.00\) prior to the Neutral tonemapping and sRGB OETF. Tonemapping operators are applied statically. |
 
+While the physical size plate provides an intuitive visual demonstration of the control variables, the mathematically rigorous irradiance ratio of 8.818616 is derived exclusively from the numerical metrics.
+
+---
+
+## Discussion
+
+### Three Failures
+Radiance \(L_i\) represents power per unit area per steradian. Irradiance on a surface is defined as radiance scaled by the **projected** solid angle of the source. Expanding a spherical cap while maintaining a constant \(L_i\) increases the incident irradiance, thereby brightening the receiving surface. Conversely, tilting the surface while holding both \(L_i\) and the cap geometry fixed decreases the irradiance, as the geometric attenuation term \((n\cdot\omega)\) changes. In neither scenario does the source radiance inherently increase.
+
+**Failure A — Area Versus \(\Omega\).** This distinction is demonstrated in the size A/B experimental plate. The left configuration utilizes a half-angle of \(\alpha=5.000^\circ\) and the right \(\alpha=15.000^\circ\). Both setups maintain a constant source radiance of \(L_i=(12.0,\,13.2,\,16.0)\), an exposure of \(e=1.00\), and a surface albedo of \(\rho=0.80\). The right surface appears brighter strictly because the projected solid angle \(\Omega_\perp\) increases from **0.023863926** sr to **0.210446804** sr. Consequently, the observed disk irradiance ratio is \(E_B/E_A=\mathbf{8.818616}\). A naive quadratic approximation based solely on the angle ratio, \((15/5)^2=9\), is demonstrably inaccurate.
+
+The plate caption further details an area-control experiment. For an on-axis disk of radius \(R\) at distance \(d\), the subtended half-angle is \(\alpha=\arctan(R/d)\), which yields the solid angle:
+
+\[\Omega=2\pi\Bigl(1-\frac{d}{\sqrt{R^2+d^2}}\Bigr).\]
+
+Evaluating this for \(R=1\) and an area of \(\pi\) across two distances:
+
+| \(R\) | \(d\) | \(\alpha=\arctan(R/d)\) | Area | \(\Omega\) [sr] |
+| --- | --- | --- | --- | --- |
+| 1 | 2 | \(26.565^\circ\) | \(\pi\) | **0.663334** |
+| 1 | 4 | \(14.036^\circ\) | \(\pi\) | **0.187600** |
+
+Although the physical disk area remains constant in both configurations, the measured solid angle ratio is **3.536**. Applying a standard inverse-square law derived solely from distance would incorrectly predict a ratio of \((4/2)^2=4\). Uniformly scaling both \(R\) and \(d\) by a factor \(k\) preserves \(\Omega\) while scaling the physical area by \(k^2\). Therefore, equivalent area does not guarantee equivalent solid angle.
+
+**Failure B — The Missing Cosine.** The cosine-tilt plate and the red ghost curve on the \(E\) versus \(\Omega_\perp\) plot illustrate the error of omitting the geometric term. Integrating \(L_i\,d\omega\) without the \((n\cdot\omega)\) factor incorrectly accumulates flux, effectively treating the receiving surface as a spherical probe rather than a flat plate. The rendering equation for an opaque surface explicitly requires this cosine term to account for the foreshortening of the incoming beam; it serves neither as an arbitrary brightness adjustment nor as a component of the BSDF. On the tilt plate, the right card correctly darkens at \(\beta=60^\circ\) despite \(L_i\) remaining constant. Artificially increasing \(L_i\) to offset this darkening would violate fundamental radiometric principles.
+
+**Failure C — Pixels Versus Steradians.** Pixel coverage is merely a rasterized projection of the source, whereas the solid angle evaluated in the rendering equation is continuous and defined relative to the receiving surface. These quantities are decoupled. For example, the metric `pixels_disk_A` captures **910** pixels for a linear \(\alpha=5^\circ\) source evaluated at a \(628\times 720\) resolution. Conversely, `pixels_disk_B` records **7242** pixels for an \(\alpha=15^\circ\) source rendered at \(1280\times 720\). Both values are appropriately flagged as `omega_from_pixels_illegal`. Due to the disparities in frame size and aspect ratio, the ratio of these discrete pixel counts provides no rigorous estimate of \(\Omega_B/\Omega_A\). A \(5^\circ\) spherical cap subtends precisely \(\Omega=0.023909417\,\mathrm{sr}\), irrespective of its projected raster footprint.
+
+The importance-sampling reference from our prior note demonstrates Failure A at a micro-scale: a **3.600^\circ** spherical cap subtends exactly **0.012398431** sr. A cosine-weighted probability density function distributes its mass across the entire hemisphere oriented around \(n\), not solely over this small restricted solid angle.
+
+---
+
+### Size A/B
 The size plate provides a direct visualization of Failure A by maintaining constant parameters for source radiance \(L_i\), exposure \(e=1.00\), surface albedo \(\rho=0.80\), and camera configuration across both experimental shots.
 
 Drawing from the untilted disk cap metrics:
@@ -254,8 +264,7 @@ Incorporating the dim hemispherical fill radiance (`Li_fill` \(=(0.0600,\,0.0660
 
 ---
 
-## Cosine Tilt, Then the \(N\) Ladder
-
+### Cosine Tilt, Then the \(N\) Ladder
 The cosine experimental plate isolates the effect of the \((n\cdot\omega)\) geometric term by tilting the receiving surface while fixing the \(\alpha=15.000^\circ\) disk geometry in world space. Source radiance \(L_i\), exposure, and surface albedo (\(\rho=0.80\)) remain strictly constant. The reference flat configuration (\(\beta=0^\circ\), normal aligned to \(+Y\)) yields a projected solid angle of \(\Omega_\perp=\mathbf{0.210446804}\). When the surface is tilted to \(\beta=60^\circ\), a theoretical small-source approximation suggests a scaling factor approaching \(\cos 60^\circ=\mathbf{0.500}\). The exact analytical integration over the cap geometry provides the rigorous value:
 
 \[\Omega_\perp(\alpha,\beta)=\int_{\mathrm{cap}}(n\cdot\omega)_+\,d\omega=\mathbf{0.105223414}.\]
@@ -279,7 +288,83 @@ Observe that transitioning from \(N=64\) to \(N=256\) yields a temporary increas
 
 Executing uniform solid-angle sampling at the narrow \(\alpha=5^\circ\) configuration introduces significant variance, as the cap source occupies an extremely small fraction of the \(2\pi\) hemispherical domain. As documented in the telemetry at \(N=256\), the uniform `rel_err` rests at **0.054307110**, compared to the cosine-weighted `rel_err` at **0.059173158**. Because of this inherent variance issue at small angles, we designate the \(\alpha=15^\circ\) ladder as the definitive benchmark for estimator validation.
 
-## Quote the Metrics. Do Not Quote the Beauty Photographs as Meters.
+### What-if controls
+The experimental design relies on the strict isolation of three independent variables.
+
+### What if: Size (\(\Omega\))
+
+The controlled A/B comparison manipulates the source half-angle \(\alpha\in\{5.000^\circ,15.000^\circ\}\) evaluated from the center of an on-axis card subject to a constant source radiance. The supplementary identity plot evaluates the analytical formulations at intermediate positions including \(8^\circ\), \(20^\circ\), and \(30^\circ\). The constant-\(R\) area control is included strictly as a computed theoretical metric and caption annotation, not as a rendered visual plate.
+
+### What if: Cosine (\(\beta\))
+
+Maintaining the \(\alpha=15.000^\circ\) spherical disk fixed in world space, we rotate the receiving surface normal to angles \(\beta\in\{0^\circ,60^\circ\}\). The corresponding analytical metric evaluates the explicit cap integration against the theoretical small-source approximation \(\cos 60^\circ=0.500\).
+
+### What if: MC-\(N\)
+
+We execute a deterministic sampling ladder \(N\in\{16,64,256,1024\}\) evaluated at the center of the un-tilted card. This ladder drives both uniform-\(\Omega^+\) and cosine-\(\Omega_\perp\) Monte Carlo estimators utilizing identical pseudo-random sequences generated via nested prefixes. The fundamental validation criterion is that both estimators demonstrably converge to minimal error states by \(N=1024\), acknowledging the statistical variance bumps expected at intermediate sample counts.
+
+Across all experimental plates, the following state parameters are held constant:
+
+* Camera transformations, surface albedos (card, walls, floor), fill radiance, disk RGB values, and global exposure (\(e=1.00\)).
+* Tonemapping constants (Neutral PBR) and random seeds.
+* The processing pipeline operates strictly on the CPU, tracing a linear RGBA32F buffer through the Neutral operator and an sRGB OETF; `GL_FRAMEBUFFER_SRGB` is explicitly disabled, and auto-exposure mechanisms are circumvented.
+* The luma ratio defining the contrast between the bright primary disk and the hemispherical fill remains fixed at **200**.
+* Solid angle \(\Omega\) is evaluated using the exact spherical cap analytical formula; the polygonal approximation rendered in the visual output does not redefine the mathematical definition of a steradian.
+
+Crucially, the incident radiance vector \(L_i\) is maintained bit-identical between configurations A and B to ensure analytical parity. Arbitrarily attenuating configuration A to balance the visual appearance of the JPEGs would invalidate the radiometric control.
+
+---
+
+## Limits
+
+### Honesty Gaps
+1. **The beauty shading relies on a direct GLSL evaluation of the disk form factor.** The rigorous validation of the radiometric principles is established via the analytical identity evaluated at the card center and the corresponding CPU Monte Carlo estimator, not the final courtyard JPEG output.
+2. **The disk-to-fill luma ratio is strictly clamped at 200.** For the minimal \(\alpha=5^\circ\) cap geometry, the ambient fill significantly influences the total exitance `Lo_analytic_A_Y` (**0.132081911**). Conversely, at \(\alpha=15^\circ\), the primary disk radiance overwhelmingly dominates the integral (`Lo_analytic_B_Y` evaluates to **0.753613234**). The derived ratio of **8.818616** explicitly isolates the disk contribution.
+3. **The tilted surface integral exhibits minor deviation from pure cosine scaling.** The analytical evaluation \(\Omega_\perp(15^\circ,60^\circ)=\mathbf{0.105223414}\) and exactly half of the baseline \(\Omega_{\perp B}\) (\(0.105223402\)) agree only within our established \(5\times 10^{-4}\) tolerance threshold. This bounding holds true provided the source cap remains entirely above the local horizon. The Monte Carlo \(N\)-ladder is evaluated exclusively on the flat surface.
+4. **Interreflection is intentionally excluded from the A/B numerical identities,** despite the presence of bounding walls included to provide visual context within the courtyard renders.
+5. **The `pixels_disk` metrics evaluate a simple luma threshold on the linear frame buffer** prior to the application of Neutral tonemapping. The distinct raster footprints of **910** and **7242** correspond to entirely different frame resolutions and aspect ratios, precluding any valid geometric correlation to solid angle.
+6. **The uniform-\(\Omega\) Monte Carlo estimator exhibits severe variance at the narrow \(\alpha=5^\circ\) configuration.** Consequently, the definitive convergence milestone is established using the \(\alpha=15^\circ\) evaluation ladder.
+7. **The nested \(N=256\) estimates intentionally exhibit an error bump relative to the \(N=64\) estimates** across both sampling strategies. Standard Monte Carlo convergence analysis requires tracking the definitive error reduction to the final \(N=1024\) milestone.
+8. **The published `rel_err` quantifies the mean error over a localized spatial neighborhood**, rather than a single-pixel deviation or a global root-mean-square error (\(\mathrm{RMSE}_H\)). The numerical rounding applied to the HUD thumbnails is intended for visual clarity in layout, not rigorous formal citation.
+9. **The JPEGs represent strictly 8-bit display-referred data.** The fundamental floating-point quantities for \(\Omega\), \(E\), \(L_o\), and `rel_err` are evaluated directly from the raw linear buffer prior to OETF compression.
+10. **The Neutral tonemapping constants are statically inherited** from prior experimental setups rather than dynamically re-calibrated for this specific environment.
+11. **The experimental setup utilizes a purely analytical disk source.** Substituting a captured EXR environment map or a directional delta light would replace the continuous cap integration with a discrete sum or Dirac delta function, violating the core objective of explicitly evaluating continuous solid angle steradians.
+12. **Both Monte Carlo sampling strategies correctly estimate the identical underlying integral.** Variations in `rel_err` merely reflect differences in sample distribution for a given sample count \(N\). Complex interactions involving probability density mismatches are thoroughly analyzed in the preceding importance-sampling and image-based lighting notes (where the mean luma is logged as **1.628**).
+13. **The naive geometric approximations of \(9\times\) and \(4\times\) are explicitly rejected.** The mathematical identities restrict the true radiometric ratios to precisely **8.818616** and **3.536**.
+
+---
+
+### Mesa / llvmpipe — What This Run Can Claim
+| Component | Value |
+| --- | --- |
+| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
+| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
+| OSMesa Target | core 3.3 request; driver reports 4.5 core |
+| FBO Color Format | **RGBA32F** complete, resolution \(1280\times 720\). 8-bit fallback avoided. |
+| `GL_FRAMEBUFFER_SRGB` | Disabled (Neutral tonemapping + sRGB OETF applied on CPU) |
+| MSAA | Disabled |
+| RNG | PCG hash, static seed **1352782172** (`0x50A1D15C`) |
+| Neutral Tonemapper Exposure \(e\) | **1.00** |
+| Disk / Fill Illumination | Analytic cap + uniform dim hemisphere, luma \(Y\)-ratio **200** |
+| Estimator Implementations | uniform-\(\Omega\) |
+
+**Can claim:** Executed on this controlled OSMesa / llvmpipe software stack, the integration of an analytical sky cap at a specified half-angle \(\alpha\) over a Lambertian surface rigorously produces an irradiance and a corresponding single-bounce exitance \(L_o\) that tracks the projected solid angle \(\Omega_\perp=\pi\sin^2\alpha\). The hemispherical grid visualization, the \(E\) versus \(\Omega_\perp\) response curve, and the projected wedge diagram accurately illustrate this fundamental geometric identity. The CPU-based Monte Carlo estimators generate results matching the exact analytical formulations.
+
+**Cannot claim:** This experiment makes no assertions regarding hardware ray tracing performance, real-time computational budgeting, the viability of interactive 1-spp rendering algorithms, or the preservation of radiometric energy through the Neutral tonemapper. We fundamentally reject the validity of mapping pixel footprints to steradians, and we demonstrably refute the naive \(9\times\) and \(4\times\) area-distance approximations.
+
+---
+
+## Out of scope
+
+The following related topics are intentionally excluded from the scope of this note: Comparative analysis of Phong versus cosine-weighted sampling strategies, Multiple Importance Sampling (MIS) balance heuristics, GGX Visible Normal Distribution Functions (VNDF), the Smith geometric shadowing function \(G\), and the Jacobian associated with the half-vector transformation (refer to the [importance-sampling](/posts/p/importance-sampling-phong-lobe-vs-cosine/) note for comprehensive analysis of PDF and integrand variance). Techniques such as split-sum approximations, Karis pre-integrated environments, DFG Look-Up Tables (LUTs), and High Dynamic Range (HDR) processing pipelines are addressed in the [IBL](/posts/p/split-sum-image-based-lighting/) note. Evaluations of specific tone-mapping operators are relegated to the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) note. Fully integrated path tracing systems incorporating multi-bounce global illumination (GI), Next Event Estimation (NEE), Russian roulette termination, spectral transport, and participating media are entirely distinct subjects. Hardware acceleration strategies, temporal anti-aliasing and denoising algorithms (DLSS/SVGF/OIDN), Linearly Transformed Cosines (LTC), discrete directional light deltas, IES photometric profiles, microfacet metallic BRDFs, shadow mapping techniques, and anisotropic footprint analyses are explicitly omitted from this foundational validation of solid angle measures.
+
+---
+
+Dense meters follow.
+
+---
+
+## Appendix A — Meters (quote tables, not photographs)
 
 All baseline metrics are derived directly from the floating-point buffer evaluated on the Mesa llvmpipe software rasterizer. Quantities including \(\Omega\), \(\Omega_\perp\), \(E\), \(L_o\), and `rel_err` are extracted strictly from the linear Rec.709 color space prior to the application of the Khronos PBR Neutral tonemapping operator. The Monte Carlo estimator is driven by a PCG hash utilizing the fixed seed **1352782172**. The exposure value for the Neutral tonemapper is maintained at \(e=1.00\).
 
@@ -313,86 +398,7 @@ The definitive mathematical parameters established by this experiment are precis
 
 ---
 
-## Controls
-
-The experimental design relies on the strict isolation of three independent variables.
-
-### Size (\(\Omega\))
-
-The controlled A/B comparison manipulates the source half-angle \(\alpha\in\{5.000^\circ,15.000^\circ\}\) evaluated from the center of an on-axis card subject to a constant source radiance. The supplementary identity plot evaluates the analytical formulations at intermediate positions including \(8^\circ\), \(20^\circ\), and \(30^\circ\). The constant-\(R\) area control is included strictly as a computed theoretical metric and caption annotation, not as a rendered visual plate.
-
-### Cosine (\(\beta\))
-
-Maintaining the \(\alpha=15.000^\circ\) spherical disk fixed in world space, we rotate the receiving surface normal to angles \(\beta\in\{0^\circ,60^\circ\}\). The corresponding analytical metric evaluates the explicit cap integration against the theoretical small-source approximation \(\cos 60^\circ=0.500\).
-
-### MC-\(N\)
-
-We execute a deterministic sampling ladder \(N\in\{16,64,256,1024\}\) evaluated at the center of the un-tilted card. This ladder drives both uniform-\(\Omega^+\) and cosine-\(\Omega_\perp\) Monte Carlo estimators utilizing identical pseudo-random sequences generated via nested prefixes. The fundamental validation criterion is that both estimators demonstrably converge to minimal error states by \(N=1024\), acknowledging the statistical variance bumps expected at intermediate sample counts.
-
-Across all experimental plates, the following state parameters are held constant:
-
-* Camera transformations, surface albedos (card, walls, floor), fill radiance, disk RGB values, and global exposure (\(e=1.00\)).
-* Tonemapping constants (Neutral PBR) and random seeds.
-* The processing pipeline operates strictly on the CPU, tracing a linear RGBA32F buffer through the Neutral operator and an sRGB OETF; `GL_FRAMEBUFFER_SRGB` is explicitly disabled, and auto-exposure mechanisms are circumvented.
-* The luma ratio defining the contrast between the bright primary disk and the hemispherical fill remains fixed at **200**.
-* Solid angle \(\Omega\) is evaluated using the exact spherical cap analytical formula; the polygonal approximation rendered in the visual output does not redefine the mathematical definition of a steradian.
-
-Crucially, the incident radiance vector \(L_i\) is maintained bit-identical between configurations A and B to ensure analytical parity. Arbitrarily attenuating configuration A to balance the visual appearance of the JPEGs would invalidate the radiometric control.
-
----
-
-## Two Paths, Do Not Mix the Instruments
-
-| Path | Frames | Description |
-| --- | --- | --- |
-| **Photograph** | `00`, `01`, `02` | GLSL 330 implementations of the courtyard scene executed on llvmpipe. The shader explicitly evaluates the analytical disk form factor. Final output incorporates Neutral tonemapping (\(e=1.00\)) and the sRGB OETF. |
-| **Instrument** | `03`, `04`, `05`, `06`, `07`, metrics | Exact mathematical visualizations: the equal-\(\Omega\) solid angle grid, the \(E\) versus \(\Omega_\perp\) function plot, the projected solid angle wedge diagram, the nested Monte Carlo `rel_err` ladder, and closed-form derivations. |
-| **Display** | Every plate | The linear buffer resolve enforces an exposure of \(e=1.00\) prior to the Neutral tonemapping and sRGB OETF. Tonemapping operators are applied statically. |
-
-While the physical size plate provides an intuitive visual demonstration of the control variables, the mathematically rigorous irradiance ratio of 8.818616 is derived exclusively from the numerical metrics.
-
----
-
-## Honesty Gaps
-
-1. **The beauty shading relies on a direct GLSL evaluation of the disk form factor.** The rigorous validation of the radiometric principles is established via the analytical identity evaluated at the card center and the corresponding CPU Monte Carlo estimator, not the final courtyard JPEG output.
-2. **The disk-to-fill luma ratio is strictly clamped at 200.** For the minimal \(\alpha=5^\circ\) cap geometry, the ambient fill significantly influences the total exitance `Lo_analytic_A_Y` (**0.132081911**). Conversely, at \(\alpha=15^\circ\), the primary disk radiance overwhelmingly dominates the integral (`Lo_analytic_B_Y` evaluates to **0.753613234**). The derived ratio of **8.818616** explicitly isolates the disk contribution.
-3. **The tilted surface integral exhibits minor deviation from pure cosine scaling.** The analytical evaluation \(\Omega_\perp(15^\circ,60^\circ)=\mathbf{0.105223414}\) and exactly half of the baseline \(\Omega_{\perp B}\) (\(0.105223402\)) agree only within our established \(5\times 10^{-4}\) tolerance threshold. This bounding holds true provided the source cap remains entirely above the local horizon. The Monte Carlo \(N\)-ladder is evaluated exclusively on the flat surface.
-4. **Interreflection is intentionally excluded from the A/B numerical identities,** despite the presence of bounding walls included to provide visual context within the courtyard renders.
-5. **The `pixels_disk` metrics evaluate a simple luma threshold on the linear frame buffer** prior to the application of Neutral tonemapping. The distinct raster footprints of **910** and **7242** correspond to entirely different frame resolutions and aspect ratios, precluding any valid geometric correlation to solid angle.
-6. **The uniform-\(\Omega\) Monte Carlo estimator exhibits severe variance at the narrow \(\alpha=5^\circ\) configuration.** Consequently, the definitive convergence milestone is established using the \(\alpha=15^\circ\) evaluation ladder.
-7. **The nested \(N=256\) estimates intentionally exhibit an error bump relative to the \(N=64\) estimates** across both sampling strategies. Standard Monte Carlo convergence analysis requires tracking the definitive error reduction to the final \(N=1024\) milestone.
-8. **The published `rel_err` quantifies the mean error over a localized spatial neighborhood**, rather than a single-pixel deviation or a global root-mean-square error (\(\mathrm{RMSE}_H\)). The numerical rounding applied to the HUD thumbnails is intended for visual clarity in layout, not rigorous formal citation.
-9. **The JPEGs represent strictly 8-bit display-referred data.** The fundamental floating-point quantities for \(\Omega\), \(E\), \(L_o\), and `rel_err` are evaluated directly from the raw linear buffer prior to OETF compression.
-10. **The Neutral tonemapping constants are statically inherited** from prior experimental setups rather than dynamically re-calibrated for this specific environment.
-11. **The experimental setup utilizes a purely analytical disk source.** Substituting a captured EXR environment map or a directional delta light would replace the continuous cap integration with a discrete sum or Dirac delta function, violating the core objective of explicitly evaluating continuous solid angle steradians.
-12. **Both Monte Carlo sampling strategies correctly estimate the identical underlying integral.** Variations in `rel_err` merely reflect differences in sample distribution for a given sample count \(N\). Complex interactions involving probability density mismatches are thoroughly analyzed in the preceding importance-sampling and image-based lighting notes (where the mean luma is logged as **1.628**).
-13. **The naive geometric approximations of \(9\times\) and \(4\times\) are explicitly rejected.** The mathematical identities restrict the true radiometric ratios to precisely **8.818616** and **3.536**.
-
----
-
-## Mesa / llvmpipe — What This Run Can Claim
-
-| Component | Value |
-| --- | --- |
-| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
-| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| OSMesa Target | core 3.3 request; driver reports 4.5 core |
-| FBO Color Format | **RGBA32F** complete, resolution \(1280\times 720\). 8-bit fallback avoided. |
-| `GL_FRAMEBUFFER_SRGB` | Disabled (Neutral tonemapping + sRGB OETF applied on CPU) |
-| MSAA | Disabled |
-| RNG | PCG hash, static seed **1352782172** (`0x50A1D15C`) |
-| Neutral Tonemapper Exposure \(e\) | **1.00** |
-| Disk / Fill Illumination | Analytic cap + uniform dim hemisphere, luma \(Y\)-ratio **200** |
-| Estimator Implementations | uniform-\(\Omega\) |
-
-**Can claim:** Executed on this controlled OSMesa / llvmpipe software stack, the integration of an analytical sky cap at a specified half-angle \(\alpha\) over a Lambertian surface rigorously produces an irradiance and a corresponding single-bounce exitance \(L_o\) that tracks the projected solid angle \(\Omega_\perp=\pi\sin^2\alpha\). The hemispherical grid visualization, the \(E\) versus \(\Omega_\perp\) response curve, and the projected wedge diagram accurately illustrate this fundamental geometric identity. The CPU-based Monte Carlo estimators generate results matching the exact analytical formulations.
-
-**Cannot claim:** This experiment makes no assertions regarding hardware ray tracing performance, real-time computational budgeting, the viability of interactive 1-spp rendering algorithms, or the preservation of radiometric energy through the Neutral tonemapper. We fundamentally reject the validity of mapping pixel footprints to steradians, and we demonstrably refute the naive \(9\times\) and \(4\times\) area-distance approximations.
-
----
-
-## Assertions
+## Appendix B — Assertions
 
 This specific test run validates **28 pass / 0 fail**.
 
@@ -416,13 +422,7 @@ Zero tolerances within the testing suite were deliberately bypassed to forcibly 
 
 ---
 
-## Out of Scope
-
-The following related topics are intentionally excluded from the scope of this note: Comparative analysis of Phong versus cosine-weighted sampling strategies, Multiple Importance Sampling (MIS) balance heuristics, GGX Visible Normal Distribution Functions (VNDF), the Smith geometric shadowing function \(G\), and the Jacobian associated with the half-vector transformation (refer to the [importance-sampling](/posts/p/importance-sampling-phong-lobe-vs-cosine/) note for comprehensive analysis of PDF and integrand variance). Techniques such as split-sum approximations, Karis pre-integrated environments, DFG Look-Up Tables (LUTs), and High Dynamic Range (HDR) processing pipelines are addressed in the [IBL](/posts/p/split-sum-image-based-lighting/) note. Evaluations of specific tone-mapping operators are relegated to the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) note. Fully integrated path tracing systems incorporating multi-bounce global illumination (GI), Next Event Estimation (NEE), Russian roulette termination, spectral transport, and participating media are entirely distinct subjects. Hardware acceleration strategies, temporal anti-aliasing and denoising algorithms (DLSS/SVGF/OIDN), Linearly Transformed Cosines (LTC), discrete directional light deltas, IES photometric profiles, microfacet metallic BRDFs, shadow mapping techniques, and anisotropic footprint analyses are explicitly omitted from this foundational validation of solid angle measures.
-
----
-
-## Measure Lock
+## Appendix C — Measure Lock
 
 ```text
 Omega(alpha)       = 2 pi (1 - cos alpha)

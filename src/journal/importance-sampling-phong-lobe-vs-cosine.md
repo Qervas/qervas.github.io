@@ -1,6 +1,6 @@
 ---
 title: "Importance Sampling: Phong Lobe vs Cosine"
-description: "Same integral, two pdfs, one N. At N=64 s=32, RMSE_H cosine 7.655620 vs Phong 1.999657; RMSE_S 0.140667 vs 0.824834. Cosine fireflies the crescent; Phong starves the surround."
+description: "Same integral, two pdfs, one N. Cosine fireflies the crescent; Phong starves the surround."
 date: 2026-09-20
 tags:
   - graphics
@@ -9,6 +9,7 @@ tags:
 math: true
 cover: /assets/journal/importance-sampling-phong-lobe-vs-cosine/00_hero.jpg
 ---
+
 Prior analyses centered on temporal correspondence mechanisms: color clamping restricts invalid historical integration, whereas depth rejection determines surface occlusion validity. Timing and execution constraints are explicitly out of scope for the current analysis. While split-sum approximations conventionally abstract integration into a prefiltered environment map multiplied by a directional-albedo look-up table (DFG LUT)—facilitating high-performance real-time composition—this exposition isolates the fundamental Monte Carlo estimator. Tone mapping protocols remain consistent with prior pipelines, evaluating the Khronos PBR Neutral operator subsequent to the numerical resolve phase without per-scene parameter refitting. This evaluation strictly isolates stochastic variance induced by Monte Carlo sampling distribution mismatch. It does not encompass visible normal distribution functions (VNDF), multiple importance sampling (MIS) heuristics, or split-sum derivation.
 
 **Invariant Integral, Divergent Distributions, Fixed \(N\).** Sampling proportional to the projected solid angle (cosine-weighted hemisphere) constitutes the analytically optimal distribution for Lambertian reflection. Conversely, generating samples proportional to a cosine-power (Phong) distribution localized about the specular reflection vector \(R=\mathrm{reflect}(-\omega_o,n)\) maximizes efficiency for highly directional highlights. Evaluating a sharp dielectric surface reveals that these fundamental probability density functions (PDFs) are mathematically non-interchangeable.
@@ -23,30 +24,15 @@ To empirically validate this variance disparity, we introduce a controlled radio
 
 Execution metrics were captured via Mesa **25.0**.**7** llvmpipe in linear Rec.**709** color space, tonemapped using Khronos PBR Neutral with exposure coefficient \(e=\mathbf{1.00}\). Pseudorandom generation utilized seed **329363537**. The primary directional source subtends an angular radius of **3.600**°. Evaluated at \(N=\mathbf{64}\) and \(s=\mathbf{32}\), the cosine distribution produces a high highlight error \(\mathrm{RMSE}_H\) of **7.655620**, whereas Phong-IS achieves significant variance reduction, falling to **1.999657** (satisfying the validation condition: Phong \(<\) cosine). Conversely, examining the low-frequency diffuse surround region (\(\mathrm{RMSE}_S\)) quantifies the systemic inefficiency of the specular PDF: the optimal cosine distribution evaluates to **0.140667**, while Phong-IS degrades severely to **0.824834**, demonstrating diffuse starvation under highly localized directional sampling. Measured outlier ("firefly") accumulation (threshold \(k=\mathbf{4}\)) registers **21536** samples for cosine generation versus **1653** samples for Phong. Region-of-interest bounding coordinates evaluate as \(\mathrm{ROI}_H=(\mathbf{502},\mathbf{391},\mathbf{555},\mathbf{432})\) and \(\mathrm{ROI}_S=(\mathbf{349},\mathbf{133},\mathbf{613},\mathbf{319})\). The comprehensive analytic suite reports **24** pass / **0** fail.
 
----
 
-## Two questions, two pdfs
+## Scene
 
-The underlying radiometric integral is strictly preserved. Emissive geometry, receiver topology, virtual camera parameters, BRDF definition, exposure mapping, and the localized per-pixel uniform variate stream \(\xi\) remain invariant. **Only the directional probability density \(p(\omega)\) is modified.** The resultant variance delta dictates the convergence properties of the final image.
+One analytic light, one Lambert+Phong lobe, and one view on Mesa llvmpipe. The cover and teaching pins in the opening lock the highlight crescent and the surround; only the sampling pdf and the \(N\)/\(s\) ladders in Discussion vary. Dense RMSE tables live in the appendices.
 
-* **Cosine:** Does the generated directional distribution correspond to the ideal Lambertian response scaled by the projected solid angle?
 
-* **Phong-IS:** Does the generated directional distribution correspond to the specular cosine-power profile localized symmetrically about the ideal *reflection vector* \(R\)? (This specific evaluation excludes half-vector microfacet derivations, Blinn parameterizations, and GGX-VNDF mappings.)
+## Method
 
-Evaluating a sharp lacquer dielectric illuminated by a constrained **3.600**° primary source reveals the inherent statistical mismatch between these distributions. Cosine sampling allocates minimal probability mass toward the localized specular event. When a generated sample successfully intersects the narrow key light domain, the evaluated incident radiance \(L_i\) dominates the integrand; however, the corresponding probability density \(p_c=(n\cdot\omega)/\pi\) remains minimal, resulting in a disproportionately massive sample weight that manifests visually as a firefly artifact. Conversely, Phong-IS maps the inverse cumulative distribution function (CDF) directly over the reflection vector \(R\), efficiently accumulating probability mass within the highlight crescent. However, this highly localized distribution simultaneously starves the diffuse surround of sufficient sample density.
-
-A uniform hemispherical distribution (\(p=\mathbf{1}/(\mathbf{2}\pi)\)) operates as a highly inefficient baseline: uniform angular density does not mathematically substitute for projected solid angle importance sampling. Evaluated at \(N=\mathbf{64}\) and \(s=\mathbf{32}\), uniform sampling produces an \(\mathrm{RMSE}_H=\mathbf{9.900829}\), exceeding cosine's **7.655620**. The corresponding statistical variance (\(\mathrm{var}_H\)) evaluates to **90.04** versus **56.93** for cosine. Examining the firefly count across the identical analytical row yields **21536** for cosine, **14400** for uniform, and **1653** for Phong-IS. When quantifying estimator convergence, analytical \(\mathrm{RMSE}_H\) supersedes qualitative firefly tallies.
-
-The central analytical conclusion is fundamental: **PDF–integrand divergence mathematically guarantees increased estimator variance, extending beyond subjective visual preference**. Cosine generation optimally minimizes variance for the Lambertian response over the projected hemisphere, while Phong-IS optimally minimizes variance for the localized cosine-power highlight. Neither isolated analytical PDF can optimally sample both phenomena concurrently without adopting multiple importance sampling heuristics.
-
-Quantitative analysis necessitates strict differentiation between radiometric modes:
-
-1. **Photographic Plates** (e.g., hero renders, multi-column comparisons, convergence sweeps, exponent evaluations, and localized crops) represent CPU-evaluated Monte Carlo integration buffers mapped through Khronos PBR Neutral and the standard **8**-bit sRGB opto-electronic transfer function (OETF). The `photo-only` designation explicitly precludes extracting analytical RMSE, exact firefly geometries, or raw mean luminance \(\mathrm{Y_{mean}}\) from non-linear image encodings, as the Neutral mapping and sRGB compression structurally clip extreme statistical outliers.
-
-2. **Analytical Instruments** (e.g., variance differential heat maps, polar PDF roses, tabular metrics, and reference integration fields) operate directly upon the unclamped floating-point buffer. These structures accurately quantify linear Rec.**709** \(Y\) residuals, geometric PDF distributions, true RMSE, statistical outlier frequencies, and geometric horizon limits. Analytical comparisons rely exclusively upon these uncompressed metrics.
-
-## Why: the estimator, then the two pdfs
-
+### Why: the estimator, then the two pdfs
 All evaluations are performed in a scene-referred linear Rec.709 color space. The integration domain is defined as \(\Omega^+=\{\omega:n\cdot\omega>0\}\). Samples falling below the local geometric horizon contribute 0 to the radiance estimate, yet they remain valid samples toward the total count \(N\). Consequently, the probability density function \(p\) must not be renormalized after rejecting a horizon sample.
 
 ### Same integral
@@ -120,8 +106,50 @@ The ground-truth reference \(L_{\mathrm{ref}}\) aggregates an analytic Lambert i
 
 ![Science reference. Disk NEE plus analytic Lambert fill. ROI H (highlight crescent) and ROI S (flank / plinth / foot) outlined. Not a sampling arm. Not the cover.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/09_ref.jpg)
 
-## Teaching pin: three pdfs, one view
+### Two paths, do not mix the instruments
+| path | frames | instrument |
+| --- | --- | --- |
+| **Photograph** | hero, 3-up, \(N\) ladders, exponent, surround | CPU MC of reflection pdfs on this llvmpipe, Neutral \(e=1.00\), sRGB OETF. HUD `photo-only`. |
+| **Instrument** | variance heat, pdf rose, metrics strip, reference | \(\lvert Y_N-Y_{\mathrm{ref}}\rvert\) heat, pdf rose, RMSE / fireflies / horizon, NEE reference. |
+| **Display** | every plate | expose \(e=1.00\) \(\to\) Neutral \(\to\) sRGB OETF. Resolve is linear. Operator is inherited. |
 
+The 3-up graphic serves dually as a photographic record of the control methodology and as the primary pedagogical mechanism. Quantitative analysis must rely exclusively on the reported numerical metrics for RMSE and firefly counts. Visual estimation from the 8-bit composite panel cannot substitute for the precise float-buffer metric of 7.655620.
+
+---
+
+### Estimator lock
+```text
+Lo   = (1/N) sum  f_r(w_k, w_o) * L_i(w_k) * (n·w_k) / p(w_k)
+p_c  = (n·ω)/π                         // ONB around n
+p_p  = (s+1)/(2π) (ω·R)^s              // ONB around R; n·ω≤0 → weight 0, still in N
+f_r  = ρd/π + ρs (s+2)/(2π) (ω·R)_+^s  // s+1 is pdf; s+2 is BRDF
+PNG  = sRGB_OETF( Neutral(e * Lo) )    // e=1.00, inherited
+
+```
+
+Locked fundamentals: we maintain the exact same integral, two varying pdfs, and a single \(N\). Cosine firmly remains in the numerator. Horizon weight correctly hits 0 while still counting in \(N\). The Neutral tone mapper is inherited exactly as-is, not re-fit. We pin the gallery still as the final visual presentation. We pin the 3-up as the core teaching mechanism. We pin the variance heat map as the distinct mathematical fingerprint. We pin the surround crop as our definitive honesty plate. These sampling tickets are simply not interchangeable.
+## Discussion
+
+### Two questions, two pdfs
+The underlying radiometric integral is strictly preserved. Emissive geometry, receiver topology, virtual camera parameters, BRDF definition, exposure mapping, and the localized per-pixel uniform variate stream \(\xi\) remain invariant. **Only the directional probability density \(p(\omega)\) is modified.** The resultant variance delta dictates the convergence properties of the final image.
+
+* **Cosine:** Does the generated directional distribution correspond to the ideal Lambertian response scaled by the projected solid angle?
+
+* **Phong-IS:** Does the generated directional distribution correspond to the specular cosine-power profile localized symmetrically about the ideal *reflection vector* \(R\)? (This specific evaluation excludes half-vector microfacet derivations, Blinn parameterizations, and GGX-VNDF mappings.)
+
+Evaluating a sharp lacquer dielectric illuminated by a constrained **3.600**° primary source reveals the inherent statistical mismatch between these distributions. Cosine sampling allocates minimal probability mass toward the localized specular event. When a generated sample successfully intersects the narrow key light domain, the evaluated incident radiance \(L_i\) dominates the integrand; however, the corresponding probability density \(p_c=(n\cdot\omega)/\pi\) remains minimal, resulting in a disproportionately massive sample weight that manifests visually as a firefly artifact. Conversely, Phong-IS maps the inverse cumulative distribution function (CDF) directly over the reflection vector \(R\), efficiently accumulating probability mass within the highlight crescent. However, this highly localized distribution simultaneously starves the diffuse surround of sufficient sample density.
+
+A uniform hemispherical distribution (\(p=\mathbf{1}/(\mathbf{2}\pi)\)) operates as a highly inefficient baseline: uniform angular density does not mathematically substitute for projected solid angle importance sampling. Evaluated at \(N=\mathbf{64}\) and \(s=\mathbf{32}\), uniform sampling produces an \(\mathrm{RMSE}_H=\mathbf{9.900829}\), exceeding cosine's **7.655620**. The corresponding statistical variance (\(\mathrm{var}_H\)) evaluates to **90.04** versus **56.93** for cosine. Examining the firefly count across the identical analytical row yields **21536** for cosine, **14400** for uniform, and **1653** for Phong-IS. When quantifying estimator convergence, analytical \(\mathrm{RMSE}_H\) supersedes qualitative firefly tallies.
+
+The central analytical conclusion is fundamental: **PDF–integrand divergence mathematically guarantees increased estimator variance, extending beyond subjective visual preference**. Cosine generation optimally minimizes variance for the Lambertian response over the projected hemisphere, while Phong-IS optimally minimizes variance for the localized cosine-power highlight. Neither isolated analytical PDF can optimally sample both phenomena concurrently without adopting multiple importance sampling heuristics.
+
+Quantitative analysis necessitates strict differentiation between radiometric modes:
+
+1. **Photographic Plates** (e.g., hero renders, multi-column comparisons, convergence sweeps, exponent evaluations, and localized crops) represent CPU-evaluated Monte Carlo integration buffers mapped through Khronos PBR Neutral and the standard **8**-bit sRGB opto-electronic transfer function (OETF). The `photo-only` designation explicitly precludes extracting analytical RMSE, exact firefly geometries, or raw mean luminance \(\mathrm{Y_{mean}}\) from non-linear image encodings, as the Neutral mapping and sRGB compression structurally clip extreme statistical outliers.
+
+2. **Analytical Instruments** (e.g., variance differential heat maps, polar PDF roses, tabular metrics, and reference integration fields) operate directly upon the unclamped floating-point buffer. These structures accurately quantify linear Rec.**709** \(Y\) residuals, geometric PDF distributions, true RMSE, statistical outlier frequencies, and geometric horizon limits. Analytical comparisons rely exclusively upon these uncompressed metrics.
+
+### Teaching pin: three pdfs, one view
 The 3-up comparison establishes a baseline experimental control. Operating under strictly identical camera parameters, geometry, materials, lighting states, and exposure, we evaluate at \(N=64\) samples using the deterministic seed 329363537. The probability density function \(p\) serves as the sole independent variable.
 
 | Column | pdf \(p(\omega)\) | Empirical Consequence |
@@ -134,8 +162,7 @@ If evaluating the full-frame renderings casualy suggests that Phong sampling is 
 
 ---
 
-## Unique artifact: variance heat on the highlight rim
-
+### Unique artifact: variance heat on the highlight rim
 This spatial variance visualization represents the primary motivation for this analysis. The plate maps the false-color absolute residual \(\lvert Y_{64}-Y_{\mathrm{ref}}\rvert\) within the linear Rec.709 \(Y\) domain via the turbo colormap. It enforces the same highlight-rim crop and a shared p98 scale. The instrumentation HUD accurately reads: `INSTRUMENT FINGERPRINT`, `linear Rec.709 Y residual not PNG`.
 
 ![Unique artifact. False-color |Y_64−Y_ref|, linear Rec.709 Y, turbo. Cosine vs Phong-IS, same highlight-rim crop, shared p98 scale. Heat leaves the rim under Phong. Instrument — not PNG.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/04_var_heat.jpg)
@@ -148,8 +175,7 @@ The pdf rose visualization functions as a secondary scientific diagnostic. It pr
 
 All diagnostic conclusions must remain rooted in numerical metrics rather than JPEG visual appearances.
 
-## Ladders: \(N\), then \(s\)
-
+### Ladders: \(N\), then \(s\)
 **Failure A.** We evaluate cosine sampling at sample counts \(N \in \{4, 16, 64, 256\}\), maintaining identical seed-stream prefixes. Fireflies decay remarkably slowly along the specular rim. By \(N=256\), the diffuse body stabilizes, but the crescent fails to resolve to a converged state. The \(\mathrm{RMSE}_H\) progression across these four sample counts is: 27.886635, 15.989179, 7.655620, and 3.837384.
 
 ![Failure A. Cosine at N=4 / 16 / 64 / 256, same seed-stream prefixes. Fireflies decay slowly on the rim. Photograph only.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/02_cosine_ladder.jpg)
@@ -166,8 +192,7 @@ We strongly advise against retuning exposure or Neutral tone mapping to conceal 
 
 ---
 
-## Failure B: Phong-IS starves the surround
-
+### Failure B: Phong-IS starves the surround
 This evaluation provides an unvarnished assessment via a tight crop of the flank, plinth, and foot geometries. Comparing the cosine estimator at \(N=64\) against Phong-IS at \(s=32\) and \(s=128\), the visual starvation artifact dictates the crop's convergence.
 
 ![Honesty plate. Tight crop of flank / plinth / foot. Cosine N=64 | Phong-IS s=32 | Phong-IS s=128. Starve is allowed to win the crop. Photograph only — RMSE from float Y.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/07_surround.jpg)
@@ -184,7 +209,90 @@ Production rendering architectures mitigate this compromise via Multiple Importa
 
 ---
 
-## Quote the metrics. Do not quote the beauty photographs as meters.
+### What-if controls
+Every evaluated A/B/C sampling plate enforces bit-identical camera parameters, scene geometry, material configurations, light emissions, exposure settings, and per-pixel uniform variate streams (\(\xi\)). Only the inverse-CDF mapping diverges, strictly isolating the variation in generated sample directions. Crucially, a direction sampled via a cosine distribution must never be evaluated under a Phong pdf weight.
+
+### What if: Seed
+
+We publish a singular deterministic integer seed: 329363537. This specific random stream governs all sampling arms. If a measured residual artifact completely inverts upon altering the seed, the phenomenon is statistically attributable to random noise (RNG variance) rather than demonstrating a persistent mathematical theorem.
+
+### What if: Horizon
+
+Generated samples falling below the local geometric horizon are correctly assigned a weight of 0, yet they mathematically remain part of the sample denominator \(N\). We explicitly log this rejection rate as `horizon_frac`. We strictly prohibit pdf renormalization; renormalizing over the upper hemisphere artificially introduces bias into the estimator. Under Phong importance sampling at an exponent of \(s=32\), the recorded fraction is 0.025246. For the cosine and uniform estimators (which map identically within the strictly positive \(n\)-frame), the fraction remains analytically 0. Expanding the specular lobe to \(s=8\) increases the rejection fraction to 0.084079, whereas constraining the lobe to a sharp \(s=128\) decreases it to 0.002089.
+
+### What if: White furnace
+
+This diagnostic is evaluated under a uniform white illumination condition (\(L_i=1\)), ensuring the primary specular lobe is oriented safely above the horizon. The combined cosine estimator and the specular-only Phong estimator function as mandatory gated assertions. We note that the combined Phong estimator fails this test, undershooting the expected analytic limit; this arises entirely from precision underflow in the single-precision floating-point inverse-CDF tail, not from an artificially relaxed assertion band.
+
+### What if: Firefly \(k\)
+
+Firefly artifacts are strictly classified via a magnitude threshold of \(k=4\), evaluated against the linear \(Y\) luminance buffer. Firefly quantification must never occur on the final 8-bit JPEG, as the non-linear Khronos PBR Neutral operator and subsequent sRGB OETF effectively truncate and mask extreme variance outliers.
+
+### What if: Light angular size
+
+The key light source is strictly parameterized with an angular radius of 3.600°. This specific solid angle is sufficiently small to induce severe sampling deficiencies (fireflies) under a standard cosine distribution, yet large enough that a Phong pdf parameterized at \(s=32\) successfully acquires it. Utilizing a theoretical Dirac delta light would fatally collapse the experiment into trivial Next Event Estimation (NEE). Conversely, deploying an excessively broad light source would artificially mask the cosine estimator's variance, nullifying the fundamental premise of this investigation.
+
+### What if: Material
+
+The evaluated surface constitutes a dielectric material, guaranteeing that both the diffuse (\(\rho_d\)) and specular (\(\rho_s\)) BRDF components actively contribute to the integral. The background plinth, structural walls, and floor exhibit purely Lambertian behavior. Constraining the evaluation to a purely metallic model would erroneously conceal the diffuse surround starvation pathology identified as Failure B.
+
+### What if: ROI
+
+Region of Interest (ROI) H strictly bounds the specular crescent illuminated by the key light. Conversely, ROI S bounds the diffuse flank and plinth, intentionally excluding any high-intensity highlight pixels. We reject whole-frame RMSE as an acceptable metric because it indiscriminately aggregates the fundamentally distinct variance behaviors of regions H and S.
+
+---
+
+## Limits
+
+### Honesty gaps
+1. **Offline spp strip on OSMesa / llvmpipe.** This investigation conducts static offline evaluations using fixed sample counts (\(N\)). It does not evaluate dynamic rendering at 60 Hz, nor does it represent an interactive 1 spp demonstration, hardware ray tracing (RT), or a production image-based lighting (IBL) baker.
+2. **JPEG is 8-bit display-referred.** The sequential application of the Neutral tone mapper and the sRGB OETF structurally clips stochastic fireflies. Consequently, rigorous evaluations of RMSE, variance, and discrete firefly counts are performed strictly on the linear \(Y\) component of the uncompressed float buffer.
+3. **Hero is Phong-IS.** The primary presentation render utilizes Phong-IS, deliberately preserving the visible high-variance speckling on the background felt wall. This artifact constitutes Failure B, proudly displayed rather than obscured by a denoiser. The mathematically clean still is appropriately relegated to the reference plate.
+4. **\(L_{\mathrm{ref}}\) uses disk NEE.** The ground-truth reference incorporates disk Next Event Estimation (NEE). This specific integration strategy is strictly isolated from the standard A/B/C testing arms. The core experimental methodology evaluates reflection pdfs exclusively.
+5. **Combined Phong white furnace undershoots.** The combined Phong estimator yields an energy sum of 0.1930 against an analytic expectation of 0.2917. Operating at \(s=32\), the inverse-CDF mapping cannot accurately resolve the Lambertian tail within standard float32 precision. The isolated specular test exactly recovers \(\rho_s\), while the combined cosine test successfully integrates to \(\rho_d+\rho_s\).
+6. **Phong \(\mathrm{RMSE}_S\) is not monotone in \(N\).** Under this specific random seed, the Phong error metric for the diffuse surround fails to decay monotonically, yielding an \(\mathrm{RMSE}_S\) of 0.824834 at 64 samples, but sharply increasing to 1.754730 at 256 samples. This statistical anomaly derives from rare, high-leverage key light intersections striking the plinth. It represents localized residual heat, not the discovery of a novel integration theorem.
+7. **\(s=128\) yields an \(\mathrm{RMSE}_H\) of 7.367447.** This metric serves as an exponent control evaluated against a 3.600° key light within the \(s=32\) optimized ROI H. It verifies parametric narrowing and is not indicative of a failed structural pass predicate.
+8. **Beauty \(960\times 540\).** The internal rendering resolution is configured to \(960\times 540\), subsequently scaled to fit within a \(1280\times 720\) bounding layout. The final composite plates are delivered at \(1280\times 720\). This analysis does not present full-frame 4k high-spp renders.
+9. **Analytic sphere.** The geometric normal \(n\) is calculated directly from the implicit mathematical definition of the sphere. Utilizing a faceted polygonal mesh would introduce inappropriate geometric speckling under a sharp specular lobe. The spatial domain is constrained to one sphere and one plinth within a controlled, dark gallery environment.
+10. **Excluded rendering features.** The evaluation lacks Fresnel approximations, GGX microfacet distributions, Smith shadowing-masking functions, HDRI environment mapping, and Multiple Importance Sampling (MIS). The lighting model relies purely on 1-bounce direct illumination from a finite disk complemented by a constant ambient fill.
+11. **Whole-frame RMSE is not the lesson.** Relying on a global error metric mathematically conflates the highly divergent variance properties characterizing regions H and S.
+12. **Not DLSS / OIDN / SVGF / ReSTIR.** This investigation focuses on offline Monte Carlo convergence properties over varying sample counts, not the efficacy of modern spatial-temporal denoisers applied to 1-spp inputs.
+13. **Tone mapping constants.** The Khronos PBR Neutral parameters are directly inherited from established tone-mapping documentation and remain strictly fixed; they are deliberately not re-fit per sampling iteration.
+14. **Cousin methodologies.** While Visual Normal Distribution Function (VNDF) sampling represents the modern production standard for this family of lobes, and Veach's MIS formally addresses Lambertian starvation, they function only as comparative theoretical cousins to the specific estimators analyzed herein.
+
+---
+
+### Mesa / llvmpipe — what this run can claim
+| item | value |
+| --- | --- |
+| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
+| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
+| OSMesa | core 3.3 request; driver reports 4.5 core |
+| FBO color | RGBA32F complete, \(1280\times 720\). 8-bit fallback not hit |
+| `GL_FRAMEBUFFER_SRGB` | disabled (Neutral + sRGB OETF on CPU) |
+| MSAA | disabled |
+| Beauty / composite | \(960\times 540\) / \(1280\times 720\) |
+| Neutral \(e\) | 1.00 |
+| seed / hash | 329363537 / pcg |
+| key | finite disk, 3.600° from the highlight point |
+
+**Can claim:** Executed on this specific OSMesa / llvmpipe build, the numerical integration of the defined integral utilizing a cosine versus a Phong-IS distribution at the parameterized \(N\) and \(s\) settings deterministically yields the published \(\mathrm{RMSE}_H\), \(\mathrm{RMSE}_S\), and discrete firefly metrics. The diagnostic heat plate mathematically maps this residual variance, and the 3-up composite verifies the visual consequence of altering only the probability density function \(p\).
+
+**Cannot claim:** This evaluation does not represent hardware-accelerated ray tracing, establish a real-time computational budget, or assert that "Phong is the optimal production sampler." It does not guarantee radiometric energy preservation following the application of the Neutral tone mapper, nor does it derive structural conclusions from JPEG artifacts. The analysis is thoroughly decoupled from discrete-GPU hardware performance metrics, warp occupancy characteristics, memory bandwidth profiling, or broader architectural performance assertions.
+
+---
+
+## Out of scope
+
+Additionally, the scope of this analysis explicitly excludes spectral path tracing, the evaluation of spatial or temporal denoisers (e.g., DLSS, SVGF, OIDN, ReSTIR) on the rendered stills, multi-bounce global illumination, and the deployment of next-event estimation as an independent Monte Carlo sampling arm. Furthermore, we omit discussions regarding linearly transformed cosines (LTC) for area lights, shadow-map biasing, Toksvig filtering, anisotropic GGX distributions, and texture color space decoding (sRGB versus linear). The generation of an alternate photographic set for publication covers or hero images is similarly excluded. Finally, we make no assertions regarding real-time path-tracing performance, hardware ray-tracing (RT) core utilization, wavefront occupancy, or memory bandwidth efficiency; such hardware-level metrics remain strictly outside the bounds of this note.
+
+---
+
+Dense meters follow.
+
+---
+
+## Appendix A — Meters (quote tables, not photographs)
 
 ![Instrument. Snapshot of the float-buffer table. RMSE / var / fireflies from linear Rec.709 Y, never JPEG. Not a cover.](/assets/journal/importance-sampling-phong-lobe-vs-cosine/08_metrics.jpg)
 
@@ -239,93 +347,7 @@ Header constants, exactly as parameterized:
 
 For high-level summaries, hero metrics are rounded as follows: \(\mathrm{RMSE}_H\) reduces to 7.66 and 2.00; \(\mathrm{RMSE}_S\) reduces to 0.141 and 0.825; firefly counts are cited as 21536 and 1653; the key light angular radius is 3.600°; the random seed is 329363537; and the pass/fail ratio is 24 pass to 0 fail. We caution against estimating RMSE values visually from the hero image, the 3-up comparison, or the surround crop. Those frames are explicitly labeled as photo-only. The subsequent metrics strip constitutes a scientific snapshot of this exact data table, ensuring all cited values originate directly from the uncompressed float buffer.
 
-## Controls
-
-Every evaluated A/B/C sampling plate enforces bit-identical camera parameters, scene geometry, material configurations, light emissions, exposure settings, and per-pixel uniform variate streams (\(\xi\)). Only the inverse-CDF mapping diverges, strictly isolating the variation in generated sample directions. Crucially, a direction sampled via a cosine distribution must never be evaluated under a Phong pdf weight.
-
-### Seed
-
-We publish a singular deterministic integer seed: 329363537. This specific random stream governs all sampling arms. If a measured residual artifact completely inverts upon altering the seed, the phenomenon is statistically attributable to random noise (RNG variance) rather than demonstrating a persistent mathematical theorem.
-
-### Horizon
-
-Generated samples falling below the local geometric horizon are correctly assigned a weight of 0, yet they mathematically remain part of the sample denominator \(N\). We explicitly log this rejection rate as `horizon_frac`. We strictly prohibit pdf renormalization; renormalizing over the upper hemisphere artificially introduces bias into the estimator. Under Phong importance sampling at an exponent of \(s=32\), the recorded fraction is 0.025246. For the cosine and uniform estimators (which map identically within the strictly positive \(n\)-frame), the fraction remains analytically 0. Expanding the specular lobe to \(s=8\) increases the rejection fraction to 0.084079, whereas constraining the lobe to a sharp \(s=128\) decreases it to 0.002089.
-
-### White furnace
-
-This diagnostic is evaluated under a uniform white illumination condition (\(L_i=1\)), ensuring the primary specular lobe is oriented safely above the horizon. The combined cosine estimator and the specular-only Phong estimator function as mandatory gated assertions. We note that the combined Phong estimator fails this test, undershooting the expected analytic limit; this arises entirely from precision underflow in the single-precision floating-point inverse-CDF tail, not from an artificially relaxed assertion band.
-
-### Firefly \(k\)
-
-Firefly artifacts are strictly classified via a magnitude threshold of \(k=4\), evaluated against the linear \(Y\) luminance buffer. Firefly quantification must never occur on the final 8-bit JPEG, as the non-linear Khronos PBR Neutral operator and subsequent sRGB OETF effectively truncate and mask extreme variance outliers.
-
-### Light angular size
-
-The key light source is strictly parameterized with an angular radius of 3.600°. This specific solid angle is sufficiently small to induce severe sampling deficiencies (fireflies) under a standard cosine distribution, yet large enough that a Phong pdf parameterized at \(s=32\) successfully acquires it. Utilizing a theoretical Dirac delta light would fatally collapse the experiment into trivial Next Event Estimation (NEE). Conversely, deploying an excessively broad light source would artificially mask the cosine estimator's variance, nullifying the fundamental premise of this investigation.
-
-### Material
-
-The evaluated surface constitutes a dielectric material, guaranteeing that both the diffuse (\(\rho_d\)) and specular (\(\rho_s\)) BRDF components actively contribute to the integral. The background plinth, structural walls, and floor exhibit purely Lambertian behavior. Constraining the evaluation to a purely metallic model would erroneously conceal the diffuse surround starvation pathology identified as Failure B.
-
-### ROI
-
-Region of Interest (ROI) H strictly bounds the specular crescent illuminated by the key light. Conversely, ROI S bounds the diffuse flank and plinth, intentionally excluding any high-intensity highlight pixels. We reject whole-frame RMSE as an acceptable metric because it indiscriminately aggregates the fundamentally distinct variance behaviors of regions H and S.
-
----
-
-## Two paths, do not mix the instruments
-
-| path | frames | instrument |
-| --- | --- | --- |
-| **Photograph** | hero, 3-up, \(N\) ladders, exponent, surround | CPU MC of reflection pdfs on this llvmpipe, Neutral \(e=1.00\), sRGB OETF. HUD `photo-only`. |
-| **Instrument** | variance heat, pdf rose, metrics strip, reference | \(\lvert Y_N-Y_{\mathrm{ref}}\rvert\) heat, pdf rose, RMSE / fireflies / horizon, NEE reference. |
-| **Display** | every plate | expose \(e=1.00\) \(\to\) Neutral \(\to\) sRGB OETF. Resolve is linear. Operator is inherited. |
-
-The 3-up graphic serves dually as a photographic record of the control methodology and as the primary pedagogical mechanism. Quantitative analysis must rely exclusively on the reported numerical metrics for RMSE and firefly counts. Visual estimation from the 8-bit composite panel cannot substitute for the precise float-buffer metric of 7.655620.
-
----
-
-## Honesty gaps
-
-1. **Offline spp strip on OSMesa / llvmpipe.** This investigation conducts static offline evaluations using fixed sample counts (\(N\)). It does not evaluate dynamic rendering at 60 Hz, nor does it represent an interactive 1 spp demonstration, hardware ray tracing (RT), or a production image-based lighting (IBL) baker.
-2. **JPEG is 8-bit display-referred.** The sequential application of the Neutral tone mapper and the sRGB OETF structurally clips stochastic fireflies. Consequently, rigorous evaluations of RMSE, variance, and discrete firefly counts are performed strictly on the linear \(Y\) component of the uncompressed float buffer.
-3. **Hero is Phong-IS.** The primary presentation render utilizes Phong-IS, deliberately preserving the visible high-variance speckling on the background felt wall. This artifact constitutes Failure B, proudly displayed rather than obscured by a denoiser. The mathematically clean still is appropriately relegated to the reference plate.
-4. **\(L_{\mathrm{ref}}\) uses disk NEE.** The ground-truth reference incorporates disk Next Event Estimation (NEE). This specific integration strategy is strictly isolated from the standard A/B/C testing arms. The core experimental methodology evaluates reflection pdfs exclusively.
-5. **Combined Phong white furnace undershoots.** The combined Phong estimator yields an energy sum of 0.1930 against an analytic expectation of 0.2917. Operating at \(s=32\), the inverse-CDF mapping cannot accurately resolve the Lambertian tail within standard float32 precision. The isolated specular test exactly recovers \(\rho_s\), while the combined cosine test successfully integrates to \(\rho_d+\rho_s\).
-6. **Phong \(\mathrm{RMSE}_S\) is not monotone in \(N\).** Under this specific random seed, the Phong error metric for the diffuse surround fails to decay monotonically, yielding an \(\mathrm{RMSE}_S\) of 0.824834 at 64 samples, but sharply increasing to 1.754730 at 256 samples. This statistical anomaly derives from rare, high-leverage key light intersections striking the plinth. It represents localized residual heat, not the discovery of a novel integration theorem.
-7. **\(s=128\) yields an \(\mathrm{RMSE}_H\) of 7.367447.** This metric serves as an exponent control evaluated against a 3.600° key light within the \(s=32\) optimized ROI H. It verifies parametric narrowing and is not indicative of a failed structural pass predicate.
-8. **Beauty \(960\times 540\).** The internal rendering resolution is configured to \(960\times 540\), subsequently scaled to fit within a \(1280\times 720\) bounding layout. The final composite plates are delivered at \(1280\times 720\). This analysis does not present full-frame 4k high-spp renders.
-9. **Analytic sphere.** The geometric normal \(n\) is calculated directly from the implicit mathematical definition of the sphere. Utilizing a faceted polygonal mesh would introduce inappropriate geometric speckling under a sharp specular lobe. The spatial domain is constrained to one sphere and one plinth within a controlled, dark gallery environment.
-10. **Excluded rendering features.** The evaluation lacks Fresnel approximations, GGX microfacet distributions, Smith shadowing-masking functions, HDRI environment mapping, and Multiple Importance Sampling (MIS). The lighting model relies purely on 1-bounce direct illumination from a finite disk complemented by a constant ambient fill.
-11. **Whole-frame RMSE is not the lesson.** Relying on a global error metric mathematically conflates the highly divergent variance properties characterizing regions H and S.
-12. **Not DLSS / OIDN / SVGF / ReSTIR.** This investigation focuses on offline Monte Carlo convergence properties over varying sample counts, not the efficacy of modern spatial-temporal denoisers applied to 1-spp inputs.
-13. **Tone mapping constants.** The Khronos PBR Neutral parameters are directly inherited from established tone-mapping documentation and remain strictly fixed; they are deliberately not re-fit per sampling iteration.
-14. **Cousin methodologies.** While Visual Normal Distribution Function (VNDF) sampling represents the modern production standard for this family of lobes, and Veach's MIS formally addresses Lambertian starvation, they function only as comparative theoretical cousins to the specific estimators analyzed herein.
-
----
-
-## Mesa / llvmpipe — what this run can claim
-
-| item | value |
-| --- | --- |
-| `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
-| `GL_RENDERER` | llvmpipe (LLVM 19.1.7, 256 bits) |
-| OSMesa | core 3.3 request; driver reports 4.5 core |
-| FBO color | RGBA32F complete, \(1280\times 720\). 8-bit fallback not hit |
-| `GL_FRAMEBUFFER_SRGB` | disabled (Neutral + sRGB OETF on CPU) |
-| MSAA | disabled |
-| Beauty / composite | \(960\times 540\) / \(1280\times 720\) |
-| Neutral \(e\) | 1.00 |
-| seed / hash | 329363537 / pcg |
-| key | finite disk, 3.600° from the highlight point |
-
-**Can claim:** Executed on this specific OSMesa / llvmpipe build, the numerical integration of the defined integral utilizing a cosine versus a Phong-IS distribution at the parameterized \(N\) and \(s\) settings deterministically yields the published \(\mathrm{RMSE}_H\), \(\mathrm{RMSE}_S\), and discrete firefly metrics. The diagnostic heat plate mathematically maps this residual variance, and the 3-up composite verifies the visual consequence of altering only the probability density function \(p\).
-
-**Cannot claim:** This evaluation does not represent hardware-accelerated ray tracing, establish a real-time computational budget, or assert that "Phong is the optimal production sampler." It does not guarantee radiometric energy preservation following the application of the Neutral tone mapper, nor does it derive structural conclusions from JPEG artifacts. The analysis is thoroughly decoupled from discrete-GPU hardware performance metrics, warp occupancy characteristics, memory bandwidth profiling, or broader architectural performance assertions.
-
----
-
-## Assertions
+## Appendix B — Assertions
 
 This run: 24 pass / 0 fail.
 
@@ -344,21 +366,3 @@ No assertion tolerances were relaxed to artificially suppress cosine fireflies o
 
 ---
 
-## Out of scope
-
-Additionally, the scope of this analysis explicitly excludes spectral path tracing, the evaluation of spatial or temporal denoisers (e.g., DLSS, SVGF, OIDN, ReSTIR) on the rendered stills, multi-bounce global illumination, and the deployment of next-event estimation as an independent Monte Carlo sampling arm. Furthermore, we omit discussions regarding linearly transformed cosines (LTC) for area lights, shadow-map biasing, Toksvig filtering, anisotropic GGX distributions, and texture color space decoding (sRGB versus linear). The generation of an alternate photographic set for publication covers or hero images is similarly excluded. Finally, we make no assertions regarding real-time path-tracing performance, hardware ray-tracing (RT) core utilization, wavefront occupancy, or memory bandwidth efficiency; such hardware-level metrics remain strictly outside the bounds of this note.
-
----
-
-## Estimator lock
-
-```text
-Lo   = (1/N) sum  f_r(w_k, w_o) * L_i(w_k) * (n·w_k) / p(w_k)
-p_c  = (n·ω)/π                         // ONB around n
-p_p  = (s+1)/(2π) (ω·R)^s              // ONB around R; n·ω≤0 → weight 0, still in N
-f_r  = ρd/π + ρs (s+2)/(2π) (ω·R)_+^s  // s+1 is pdf; s+2 is BRDF
-PNG  = sRGB_OETF( Neutral(e * Lo) )    // e=1.00, inherited
-
-```
-
-Locked fundamentals: we maintain the exact same integral, two varying pdfs, and a single \(N\). Cosine firmly remains in the numerator. Horizon weight correctly hits 0 while still counting in \(N\). The Neutral tone mapper is inherited exactly as-is, not re-fit. We pin the gallery still as the final visual presentation. We pin the 3-up as the core teaching mechanism. We pin the variance heat map as the distinct mathematical fingerprint. We pin the surround crop as our definitive honesty plate. These sampling tickets are simply not interchangeable.
