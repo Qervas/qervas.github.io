@@ -1,6 +1,6 @@
 ---
 title: "Shadow Map Bias as Geometric Error"
-description: "Service-yard curb: bias as a length, b*=36 mm, A_ramp 0.509→0.019, G 0→15→91 mm, slope G=13 mm vs b_match 40 mm, 11 pass / 0 fail."
+description: "On a service-yard curb, constant shadow-map bias is a length along the sun ray: too short yields acne, too long opens a contact gap. One operating point and one slope-scale mark the trade-off."
 date: 2026-09-27
 tags:
   - graphics
@@ -9,86 +9,30 @@ tags:
 math: true
 cover: /assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg
 ---
-Shadow-map bias is fundamentally formulated as a physical length along the incident light ray, applied immediately prior to the depth comparison operation. Specifying an insufficient length misclassifies an analytically illuminated receiver as shadowed, inducing surface acne. Conversely, applying an excessive length mechanically detaches the contact shadow of a thin occluder from its geometric foot, generating a peter-panning artifact. The central optimization curve within this note rigorously quantifies the exact parametric trade-off between these two competing failure modes.
 
-Topical discussions regarding discrete depth encoding, winner-islands heuristics, and reverse-Z architectures are comprehensively addressed in the preceding note, *[Z-fighting is geometric compression plus quantization](/posts/p/z-fighting-is-geometric-compression-plus-quantization/)*. That foundational text explicitly defers to this analysis for the formal distinction between surface acne and contact peter-panning, and fight-fraction metrics remain bounded within that prior scope. The current analysis strictly fixes a single shadow map configuration and deliberately avoids sweeping a depth code variable. The shared theoretical foundation remains strictly geometric: a localized depth failure can be analytically quantified as a physical length. In the context of Z-fighting, this length is an isolatable interval projected in front of the camera; herein, it is defined as a discrete bias \(b\), parameterized in metres strictly along the incident sun vector.
+Shadow-map bias is a physical length along the incident light ray, applied immediately before the depth comparison. Too short a length misclassifies an analytically lit receiver as shadowed—surface acne. Too long a length lifts the contact shadow of a thin occluder off its geometric foot—peter-panning. This note measures that trade-off on one map, one sun, and one constant-bias sweep.
 
-The evaluated test scene is designated as a **service-yard curb**. The geometric composition incorporates an asphalt apron, a 160 mm concrete curb, a poured wash ramp inclined at \(20^\circ\), and a 12 mm steel plate, all contained within a single \(1280\times 720\) framebuffer. The illumination model specifies a singular directional sun positioned at an altitude of \(32^\circ\), projecting into a single \(512^2\) depth-compare map characterized by an 8 m orthographic frustum. The shadow map is evaluated and rendered exactly once per frame. Throughout the evaluated parameter ladder, the comparative bias operates as the sole independent variable.
+Discrete depth encoding, winner-islands, and reverse-Z belong to *[Z-fighting is geometric compression plus quantization](/posts/p/z-fighting-is-geometric-compression-plus-quantization/)*. That note defers the acne-versus-peter-pan distinction here and keeps fight-fraction metrics in its own scope. We fix a single shadow map and do not sweep a depth code. The shared geometric idea is that a depth failure can be stated as a length: there an isolatable interval in front of the camera; here a bias \(b\) in metres along the sun vector.
 
-The primary beauty pass is evaluated via Mesa llvmpipe within a scene-referred linear Rec.709 color space, subsequently routed through the display pipeline formalized in [Tone Mapping: Scene-Referred to Display-Referred](/posts/p/tone-mapping-scene-referred-to-display-referred/). The display operator is strictly parameterized as **Khronos PBR Neutral** utilizing \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), and \(K_d=0.15\), terminating with an sRGB OETF mapping evaluated explicitly on the CPU. The baseline exposure gain is locked at \(K=3.40\) across all bias samples. We emphasize that the Neutral operator functions strictly to assign bounded display codes; it exerts zero influence on the analytically derived acne fraction or the measured contact gap.
+## Scene
 
-The parametric optimization curve isolates a specified operating point at \(b^\star=36\,\mathrm{mm}\) (\(0.036000\,\mathrm{m}\)). As the applied bias transverses from \(b=0\) through \(b^\star\) terminating at \(b_{\max}=120\,\mathrm{mm}\), the localized ramp acne fraction \(A_{\mathrm{ramp}}\) monotonically decays from \(0.509434\) through \(0.018868\) to \(0\), while the corresponding apron acne \(A_{\mathrm{apron}}\) decreases from \(0.482759\) to \(0\). In direct opposition, the measured contact gap \(G\) structurally diverges from \(0\) through \(15\,\mathrm{mm}\) to a maximum of \(91\,\mathrm{mm}\). Alternatively, evaluating a slope-scale parameterization at \(k_s=1\) and \(b_c=0\) successfully eliminates both acne fractions while mathematically constraining the gap to a mere \(13\,\mathrm{mm}\). Comparatively, the minimal constant-bias sample required to identically resolve the ramp acne resides at \(b_{\mathrm{match}}=40\,\mathrm{mm}\), a threshold where the structural gap has already expanded to \(20\,\mathrm{mm}\). The comprehensive verification suite validates this configuration, executing with a status of 11 pass / 0 fail.
+The cover is a **service-yard curb**: asphalt apron, 160 mm concrete curb, poured wash ramp at \(20^\circ\), and a 12 mm steel plate, in one \(1280\times 720\) framebuffer. One directional sun at altitude \(32^\circ\) feeds a single \(512^2\) depth-compare map with an 8 m orthographic frustum. The shadow map is rendered once per frame. Across the ladder, bias is the only independent variable.
 
-These summarized metric abbreviations strictly map to the unrounded, high-precision numeric tokens generated by this execution run as formalized below:
+Beauty runs on Mesa llvmpipe in scene-referred linear Rec.709, then through the display path in [Tone Mapping: Scene-Referred to Display-Referred](/posts/p/tone-mapping-scene-referred-to-display-referred/): **Khronos PBR Neutral** with \(e=1.00\), \(F_{90}=0.04\), \(K_s=0.76\), \(K_d=0.15\), and an sRGB OETF on the CPU. Exposure is locked at \(K=3.40\) for every bias sample. Neutral only assigns display codes; it does not enter the acne fraction or the contact gap.
 
-| lede | this run |
-| --- | --- |
-| \(b^\star=36\,\mathrm{mm}\) | \(0.036000\,\mathrm{m}\) |
-| \(A_{\mathrm{ramp}}\) \(0.509\to 0.019\to 0\) | \(0.509434\), \(0.018868\), \(0\) |
-| \(A_{\mathrm{apron}}\) \(0.483\to 0\) | \(0.482759\), \(0\) |
-| \(G\) \(0\to 15\,\mathrm{mm}\to 91\,\mathrm{mm}\) | \(0\), \(0.015\,\mathrm{m}\), \(0.091\,\mathrm{m}\) |
-| slope \(G=13\,\mathrm{mm}\) | \(0.013000\,\mathrm{m}\) |
-| \(b_{\mathrm{match}}=40\,\mathrm{mm}\), \(G=20\,\mathrm{mm}\) | \(0.040\,\mathrm{m}\), \(0.020\,\mathrm{m}\) |
-| apron median \(-0.35\,\mathrm{mm}\) | \(-0.000350\,\mathrm{m}\) |
-| regime ratio \(54788\) | \(54787.622775\) |
+At the operating point \(b^\star=36\,\mathrm{mm}\) (\(0.036000\,\mathrm{m}\)), as \(b\) runs from \(0\) through \(b^\star\) to \(b_{\max}=120\,\mathrm{mm}\), ramp acne \(A_{\mathrm{ramp}}\) falls from \(0.509434\) through \(0.018868\) to \(0\) (lede abbreviations \(0.509\to 0.019\to 0\)), and apron acne \(A_{\mathrm{apron}}\) falls from \(0.482759\) to \(0\) (lede \(0.483\to 0\)). The contact gap \(G\) opens from \(0\) through \(15\,\mathrm{mm}\) to \(91\,\mathrm{mm}\). Slope-scale at \(k_s=1\), \(b_c=0\) clears both acne fractions with \(G=13\,\mathrm{mm}\). The smallest constant bias that also clears the ramp is \(b_{\mathrm{match}}=40\,\mathrm{mm}\), where \(G\) is already \(20\,\mathrm{mm}\). The run prints **11 pass / 0 fail**. Sweep rows, the full meter table, and gate notes live in the appendices.
 
----
+## Method: bias as a length on one map
 
-## What you are seeing
+A shadow map stores one depth per texel—the front-most surface from the light. The compare asks whether a shaded point lies farther from the light than that stored depth. On a surface tilted relative to the texel plane, continuous shaded points fall deeper than the winning fragment, so the compare fails. Acne is that mismatch: analytic visibility toward the sun is 1, yet the compare marks the sample shadowed.
 
-The radiometric working space for the evaluated scene photographs is explicitly defined as scene-referred linear Rec.709, visually processed via Khronos PBR Neutral at parameters \(K=3.40\) and \(e=1.00\). Conversely, the analytical sweep plot and the supplementary metrics snapshot are authored directly in native sRGB, bypassing the Neutral mapping entirely. This segregation of formats is rigorously intentional: the rendered photographs phenomenologically illustrate the physical curb interactions, while the tabulated data and accompanying plots mathematically quantify the exact fractional area \(A\) and linear gap distance \(G\).
+Under this orthographic frustum, texel slope dominates the 24-bit depth step. Apron slope is \(0.025005\,\mathrm{m}\) per shadow texel; the quantization step is \(4.564028\times 10^{-7}\,\mathrm{m}\). The ratio is \(54787.622775\) (lede \(54788\)), well above the gate floor of \(50\). The acne in the cover sequence is therefore a texel-slope failure; winner-islands stay in the z-fighting note.
 
-**Cover — the operating point.** Evaluated at a resolution of \(1280\times 720\) with the designated operating bias of \(b^\star=36\,\mathrm{mm}\), this plate depicts the core geometric assembly: the service-yard curb, the inclined wash ramp, and the planar steel plate. The overlaid instrumentation HUD explicitly documents the applied bias and the constrained \(512^2\) shadow map resolution. A statistically minor shadow residue persists on the ramp geometry, whereas the horizontal apron evaluates as completely unshadowed. This observable residue correlates exactly with the residual ramp acne fraction of \(0.018868\) documented in the analytical table, while the unshadowed apron verifies the evaluated condition \(A_{\mathrm{apron}}=0\) at this parametric sample. The annotated \(15\,\mathrm{mm}\) gap represents a strictly quantified physical dimension measured across the apron plane, rather than an arbitrary perceptual luminance differential in the compressed JPEG output.
+Bias \(b\) subtracts a length along the ray toward the sun before the compare, sliding the shaded point toward the light. Large enough \(b\) swallows the texel mismatch and acne falls. The same slide moves a thin occluder's shadow boundary away from its foot: the lit band between foot and shadow is the contact gap \(G\), measured along the apron.
 
-![Cover. Service-yard curb at the operating bias of 36 mm. Asphalt apron, concrete curb, 20 degree wash ramp, and a 12 mm steel plate under one sun. HUD reads B=36 MM and 512^2. Khronos PBR Neutral, exposure K=3.40. A faint residue remains on the ramp; the apron is clear. Acne fractions and the contact gap are the tables, not this frame.](/assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg)
+Two receivers keep the trade-off from collapsing to one slope. The wash ramp sees grazing incidence at \(12^\circ\); the apron sees the sun altitude \(32^\circ\). A constant bias large enough to kill ramp acne opens a large gap at the plate. Slope-scale applies a longer offset where the texel slope is steeper (ramp) and a shorter one on the apron, leaving the constant-bias curve.
 
-**Acne — the short end.** This specific evaluation maintains strict continuity of the camera transform and the previously generated shadow map, re-evaluating the comparison strictly at \(b=0\). Both the inclined ramp and the planar apron erroneously exhibit prominent self-shadowing manifesting as high-frequency structural stripes. Each discrete stripe delineates a localized receiver possessing an analytic visibility factor of 1 that the depth comparison logic has falsely classified as occluded. Under this boundary condition, the ramp acne fraction maximizes at \(0.509434\) and the apron acne fraction peaks at \(0.482759\), while the geometric contact gap remains rigorously constrained to \(0\).
-
-![Acne end. Same camera and the same shadow map, bias 0. Ramp and apron self-shadow as stripes: analytically lit receivers classified as shadowed. Ramp acne 0.509434, apron acne 0.482759, contact gap 0. HUD reads B=0 MM and 512^2. Khronos PBR Neutral. Photograph only.](/assets/journal/shadow-map-bias-as-geometric-error/01_acne.jpg)
-
-**Peter-panning — the long end.** This sample evaluates the identical camera and map parameters at the specified maximal bias extreme \(b=b_{\max}=120\,\mathrm{mm}\). At this upper bound, both evaluated acne fractions have successfully converged to \(0\). However, the contact shadow cast by the steel plate has structurally detached from its geometric occluder root. The quantified gap measured longitudinally along the apron plane now extends to \(91\,\mathrm{mm}\) (\(0.091\,\mathrm{m}\)). The stark, unoccluded radiometric band explicitly characterizes this detachment artifact, while the primary occlusion generated by the concrete curb persists as a distinct, spatially independent shadowed region.
-
-![Peter-panning end. Same camera and the same shadow map, bias 120 mm. Both acne fractions are 0. The plate's contact shadow has left the foot; the measured gap along the apron is 91 mm. HUD reads B=120 MM and 512^2. Khronos PBR Neutral. Photograph only.](/assets/journal/shadow-map-bias-as-geometric-error/02_peterpan.jpg)
-
-**Sweep — teaching pin.** This composite plot analytically graphs the ramp acne \(A_{\mathrm{ramp}}\), the apron acne \(A_{\mathrm{apron}}\), and the contact gap \(G\) as functions of a uniform constant bias, incorporating explicit spatial markers for the operating point \(b^\star\) alongside a designated callout detailing the optimal slope-scale triplet. Eight discrete contact strips are embedded beneath the primary plot: representative samples clustered near \(0\), \(24\), \(48\), \(72\), \(96\), and \(120\,\mathrm{mm}\), supplemented by the specific \(b^\star\) sample, and terminating with the derived slope-scale result. The intrinsically quantized, staircase response characteristic of \(G\) is deliberately retained to preserve raw data fidelity. This composite figure serves as the visual summation of the defined parametric trade-off. The corresponding table selectively extracts critical data rows from this comprehensive sweep; the graphical plot functions strictly as a supplement to, rather than a replacement for, the foundational numerical data.
-
-![Teaching pin. Ramp acne, apron acne, and contact gap in millimetres against constant bias from 0 to 120 mm. Marker at b-star = 36 mm. Callout: slope-scale ks=1, bc=0, both acne fractions 0, gap 13 mm. Eight contact strips at 0, 24, 48, 72, 96, and 120 mm, then b-star, then slope-scale. The gap staircase is left visible. Authored sRGB of the curves and the contact strips.](/assets/journal/shadow-map-bias-as-geometric-error/03_sweep.jpg)
-
-The provided table extracts highly specific, constant-bias discrete samples derived directly from this execution run. The comprehensive evaluation ladder constitutes 31 distinct samples parameterized over the interval \(b=0, 4, \ldots, 120\,\mathrm{mm}\), the entirety of which are mapped on the antecedent figure.
-
-| \(b\) (mm) | \(A_{\mathrm{ramp}}\) | \(A_{\mathrm{apron}}\) | \(G\) (mm) |
-| --- | --- | --- | --- |
-| 0 | 0.509434 | 0.482759 | 0 |
-| 16 | 0.283019 | 0 | 0 |
-| 24 | 0.188679 | 0 | 11 |
-| 36 \(=b^\star\) | 0.018868 | 0 | 15 |
-| 40 | 0 | 0 | 20 |
-| 80 | 0 | 0 | 56 |
-| 120 | 0 | 0 | 91 |
-
-Evaluated strictly at \(b=0\), the measurable contact gap remains closed, yet approximately half of every illuminated geometric grid functionally evaluates as a false shadow. The planar apron acne is mathematically resolved by \(16\,\mathrm{mm}\), whereas the inclined ramp continues to yield an acne fraction of \(0.283019\) even while the contact gap remains strictly \(0\). Advancing to the selected operating point \(b^\star\), the ramp fraction decays to \(0.018868\), the apron evaluates as entirely unobstructed, and the gap has initiated structural opening, measuring \(15\,\mathrm{mm}\). The ramp fraction mathematically nulls at a bias of \(40\,\mathrm{mm}\), simultaneously incurring a structural gap of \(20\,\mathrm{mm}\). Forced to the parameter extreme at \(120\,\mathrm{mm}\), both acne fractions evaluate identically to zero, but the corresponding gap expands to a visually unacceptable magnitude of \(91\,\mathrm{mm}\). The designated operating point is thereby isolated strategically within the interior parametric space where ramp acne is substantially attenuated and the contact gap structural detachment is just commencing.
-
-**Metrics snapshot.** This is an unaltered visual capture of the specific parameter table generated during this execution run. Should any numerical glyph present as soft, artifacted, or partially clipped within the visual image, the markdown-formatted textual tables function as the irrefutable, definitive reference.
-
-![Metrics snapshot. Two columns from this run: scene service-yard-curb, the constant-bias sweep, the slope-scale row, apron median -0.000350 m, checksum a816326e2dbe2366, and eleven passing gates. Quote the tables in the text if a glyph is soft.](/assets/journal/shadow-map-bias-as-geometric-error/04_metrics.jpg)
-
-## Bias as a length on one map
-
-A fundamental shadow map stores a singular depth value per texel, corresponding to the front-most geometric surface rasterized from the light source's perspective. The subsequent shadow comparison operation evaluates whether a shaded point resides further from the light than this discrete stored depth. For geometric surfaces inclined relative to the texel plane, the continuous continuum of shaded points will naturally fall further away than the sampled front-most fragment, forcing an erroneous depth comparison failure. Surface acne is the direct, physical manifestation of this discrete mismatch: the receiver’s analytical visibility with respect to the directional sun evaluates to 1, yet the depth comparison falsely classifies the region as occluded.
-
-Under the defined orthographic frustum, the discrete texel slope aggressively dominates the 24-bit depth quantization interval. Specifically, the geometric slope traversing the planar apron spans \(0.025005\,\mathrm{m}\) per shadow texel, whereas the discrete depth quantization step measures only \(4.564028\times 10^{-7}\,\mathrm{m}\). The mathematical ratio between these parameters evaluates to \(54787.622775\) (conceptually \(54788\)), which significantly exceeds the formal acceptance gate threshold specified at \(50\). Therefore, the acne artifacts documented in the primary cover sequence are definitively categorized as texel-slope failures. Related discrete phenomena, such as winner-islands, are mathematically distinct and remain fully documented within the antecedent z-fighting literature.
-
-The introduction of a linear bias \(b\) mathematically subtracts a scalar physical length along the incident ray vector immediately prior to the depth comparison, physically translating the shaded evaluation point toward the light source. Applying a sufficiently large \(b\) fully encompasses the discrete texel mismatch, forcing the acne fraction to monotonically decrease. However, this uniform spatial displacement simultaneously translates the derived shadow boundary of any thin occluder away from its exact physical contact footprint. The intervening unoccluded spatial interval between the geometric foot and the displaced shadow boundary is analytically shadowed, yet the biased depth comparison erroneously evaluates it as illuminated. This detached interval, quantified longitudinally along the apron, formally defines the contact gap \(G\).
-
-The inclusion of two geometrically distinct receivers ensures this optimization trade-off does not trivially collapse to a singular scalar slope. The inclined wash ramp receives grazing illumination governed by a shallow incidence angle of \(12^\circ\). In contrast, the planar apron evaluates at a steeper incidence, dictated strictly by the sun’s unadjusted altitude of \(32^\circ\). Imposing a uniform constant bias sufficient to fully suppress the severe ramp acne predictably forces a severe, detached structural gap at the steel plate boundary. Conversely, a slope-scale heuristic dynamically applies a disproportionately larger spatial offset for the ramp’s elevated texel slope while applying a correspondingly tighter length for the apron. This adaptive structural scaling effectively displaces the evaluated sample off the standard constant-bias curve, aggressively driving the ramp acne metric toward zero while preserving a strictly controlled structural gap.
-
-The discrete sample evaluated at \(b=0\) defines the acne-dominant boundary condition, whereas \(b=b_{\max}=0.120\,\mathrm{m}\) defines the peter-panning boundary condition. The presentation cover image strictly represents the optimized interior configuration, \(b^\star\). It is mathematically crucial that all three parametric configurations share the exact identical camera transform, exposure scalars, physical BRDF materials, and the underlying static shadow map. The optimized slope-scale sample is explicitly isolated as a distinct graphical callout, features as the concluding comparative strip on the pedagogical figure, and occupies an independent row within the tabulated metrics. It operates as a singular, heavily optimized discrete point residing within the identical theoretical parametric space.
-
----
-
-## The compare
-
-The geometric coordinate system is strictly right-handed, defining the \(Y\) axis as vertical up, parameterized globally in metres.
+The environment is right-handed, \(Y\) up, in metres.
 
 | symbol | meaning | unit |
 | --- | --- | --- |
@@ -107,55 +51,133 @@ The geometric coordinate system is strictly right-handed, defining the \(Y\) axi
 
 \[s=(-\cos\alpha,\ \sin\alpha,\ 0),\qquad d(p)=-p\cdot s.\]
 
-A single, stationary light camera parameterizes the complete evaluation ladder. The evaluated depth scalar increases linearly along the \(-s\) vector. The corresponding orthographic projection defines a square frustum constrained by a spatial width of \(W_l=8\,\mathrm{m}\). The normalized window depth is formulated as:
+One light camera serves the whole ladder. Depth increases along \(-s\). The ortho square has width \(W_l=8\,\mathrm{m}\):
 
 \[z_w(d)=\frac{d-n_l}{f_l-n_l}.\]
 
-For this specific execution run, the near and far bounding planes are configured at \(n_l=-3.722583\,\mathrm{m}\) and \(f_l=3.934586\,\mathrm{m}\), respectively, strictly defining a world-space texel dimension of \(t=0.015625\,\mathrm{m}\) (\(15.625\,\mathrm{mm}\)). The associated 24-bit quantization interval evaluates to \(4.564028\times 10^{-7}\,\mathrm{m}\). The analytically derived texel slopes compute to \(0.025005\,\mathrm{m}\) across the apron, \(0.073510\,\mathrm{m}\) traversing the ramp, and \(0.009764\,\mathrm{m}\) along the vertical plate face.
+This run uses \(n_l=-3.722583\,\mathrm{m}\) and \(f_l=3.934586\,\mathrm{m}\), so \(t=0.015625\,\mathrm{m}\) (\(15.625\,\mathrm{mm}\)). The 24-bit step is \(4.564028\times 10^{-7}\,\mathrm{m}\). Texel slopes are \(0.025005\,\mathrm{m}\) on the apron, \(0.073510\,\mathrm{m}\) on the ramp, and \(0.009764\,\mathrm{m}\) on the plate face.
 
-Both the CPU-side metric analysis and the GPU-side beauty shader strictly utilize the identical depth comparison operator. The scalar \(\tilde d\) denotes the stored window \(z\) of the rasterized winning fragment, explicitly decoded utilizing the matched \(n_l\) and \(f_l\) frustum parameters. The discrete depth fetch restricts sampling strictly to nearest-neighbor (point) evaluation. The applied bias function \(b(n_p)\) is computed dynamically against the specific receiver's geometric normal vector.
+CPU meters and the beauty shader share the compare. \(\tilde d\) is the stored window \(z\) of the winning fragment, decoded with the same \(n_l\), \(f_l\). Depth fetch is nearest-neighbor. Bias \(b(n_p)\) depends on the receiver normal:
 
 \[\mathrm{shadowed}(p)\iff d(p)-b(n_p)>\tilde d(u,v).\]
 
-**Constant sweep.** For the formalized baseline evaluation ladder, \(k_s=0\), collapsing the generic bias function to the scalar constant \(b(n)=b\). The systematic measurement ladder evaluates the parameter space \(b=0, 4, \ldots, 120\,\mathrm{mm}\), generating exactly 31 distinct evaluation samples. The baseline shadow map is computed strictly once per run. The map's discrete cryptographic checksum, `a816326e2dbe2366`, remains flawlessly invariant across all evaluated \(b\) samples, persisting even after the completion of the final beauty frame composite. The mathematically applied bias modulates strictly the comparison operator, structurally avoiding any modification of the stored raster depth data.
+**Constant sweep.** With \(k_s=0\), \(b(n)=b\). The ladder is \(b=0, 4, \ldots, 120\,\mathrm{mm}\) (31 samples). The map is built once; checksum `a816326e2dbe2366` is invariant across every \(b\) and after the last beauty. Bias changes only the compare, never the stored depths.
 
-**Slope-scale, one marked point.** For this highly specific evaluation, the scalar constant bias is eliminated (\(b_c=0\)) and slope-scaling is activated (\(k_s=1\)). Evaluated on a planar surface patch, defining unit vectors \(e_1\) and \(e_2\) as the basis axes of the light image plane, the gradients evaluate as:
+**Slope-scale, one marked point.** Here \(b_c=0\) and \(k_s=1\). With light-image basis \(e_1\), \(e_2\),
 
 \[\frac{\partial d}{\partial x_l}=\frac{n\cdot e_1}{n\cdot s},\qquad \frac{\partial d}{\partial y_l}=\frac{n\cdot e_2}{n\cdot s},\]
 
 \[\Delta_{\mathrm{tex}}(n)=t\max\left(\left\vert{}\partial d/\partial x_l\right\vert{},\left\vert{}\partial d/\partial y_l\right\vert{}\right),\qquad b(n)=k_s\,\Delta_{\mathrm{tex}}(n).\]
 
-Because these geometric derivatives are evaluated as scalar parameters per metre spanning the light image, \(\Delta_{\mathrm{tex}}\) structurally defines the linear metres of light depth traversed across a singular shadow texel footprint. Evaluated on the mathematically flat, un-averaged surface geometry, this derived length deterministically controls the applied bias: calculating \(73.510\,\mathrm{mm}\) across the ramp plane and \(25.005\,\mathrm{mm}\) across the apron plane. It is crucial to distinguish that the Khronos PBR Neutral compressive shoulder constant \(K_s=0.76\) operates exclusively as a display-space formatting parameter and constitutes a mathematically orthogonal concept to this geometric slope multiplier \(k_s\).
+\(\Delta_{\mathrm{tex}}\) is metres of light depth across one texel: \(73.510\,\mathrm{mm}\) on the ramp, \(25.005\,\mathrm{mm}\) on the apron. Neutral's display shoulder \(K_s=0.76\) is unrelated to this geometric \(k_s\).
 
-**Acne fraction.** This objective metric evaluates a defined receiver region uniformly subdivided into a rigid \(8\,\mathrm{mm}\) spatial grid. A discrete grid sample contributes to the metric exclusively if its analytical visibility evaluated toward the directional sun evaluates exactly to 1.
+**Acne fraction.** An \(8\,\mathrm{mm}\) grid over a receiver; a sample counts only if analytic visibility toward the sun is exactly 1:
 
 \[ A=\frac{\#\{\text{lit samples the compare marks shadowed}\}}{\#\{\text{lit samples}\}}. \]
 
-Both the designated ramp and apron evaluation grids conform identically to this strict definition. Under this constrained scene geometry, both bounding regions evaluate as completely analytically illuminated: the ramp verifies robustly at \(2703/2703\) samples, and the apron similarly verifies at \(3654/3654\) samples.
+Both regions are fully analytically lit: ramp \(2703/2703\), apron \(3654/3654\).
 
-**Contact gap.** The vertical downstream face of the defined steel plate resides structurally at \(x_c=1\), exhibiting a physical material thickness of \(\tau=12\,\mathrm{mm}\) oriented toward the sun vector. When processing the raster shadow map, each analytically visible ground segment is smoothed using a discrete majority filter over a \(31\,\mathrm{mm}\) sliding window; this specific filtering pass is restricted strictly to the identification of the structural shadow boundary. The scalar gap metric \(G\) computes the spatial starting coordinate of the longest contiguous shadowed run, offset by the precise physical edge coordinate \(x_c\). Methodologically, this spatial smoothing filter is rigorously isolated and is never applied to the calculation of the discrete acne metric \(A\). Evaluated immediately downstream of the plate geometry at \(b=0\), the raw unmodified comparison algorithm accurately shadows \(451/451\) surveyed transect samples. This validates that the mathematically fully closed gap signifies a legitimate, physical geometric contact shadow, rather than representing an artifact originating from a missing shadow-casting occluder.
+**Contact gap.** The plate's downstream face sits at \(x_c=1\) with thickness \(\tau=12\,\mathrm{mm}\) toward the sun. Visible ground is majority-filtered over a \(31\,\mathrm{mm}\) window for boundary finding only—never for \(A\). \(G\) is the start of the longest shadowed run minus \(x_c\). At \(b=0\), the raw compare shadows \(451/451\) transect samples downstream of the plate, so a closed gap is a real contact shadow, not a missing caster.
 
-**Ideal-map oracle.** A continuous, continuous-domain analytical model functions as the formalized unit test bounding the raster metric, parameterized exclusively for this specific plate geometry and sun altitude scalar:
+**Ideal-map oracle.** For this plate and sun altitude,
 
 \[G_{\mathrm{ideal}}(b)=\max(0,\ b\cos\alpha-\tau).\]
 
-The structural response curve intrinsically exhibits a sharp geometric knee situated exactly at \(b=\tau/\cos\alpha\). Evaluated as an unfiltered traversal across the idealized continuous depth profile, the implemented algorithm strictly tracks \(G_{\mathrm{ideal}}\) within a tolerance of \(1.5\,\mathrm{mm}\) across all five designated locking biases. The maximal recorded traversal error evaluates to a peak deviation of only \(0.647\,\mathrm{mm}\). It is analytically vital that the documented raster gap is measured strictly via empirical sampling and is absolutely not artificially fitted to match this theoretical oracle.
+The knee sits at \(b=\tau/\cos\alpha\). Across five locking biases the unfiltered ideal traversal tracks \(G_{\mathrm{ideal}}\) within \(1.5\,\mathrm{mm}\); peak error is \(0.647\,\mathrm{mm}\). The raster gap is measured, not fitted to the oracle.
 
-**Operating point.** Executing a normalization pass against the bounded baseline extremes—parameterizing \(A_0=A_{\mathrm{ramp}}(0)\) and \(G_{\mathrm{hi}}=\max(G(b_{\max}),0)\)—we define the rigorous objective function:
+**Operating point.** With \(A_0=A_{\mathrm{ramp}}(0)\) and \(G_{\mathrm{hi}}=\max(G(b_{\max}),0)\),
 
 \[J(b)=\frac{A_{\mathrm{ramp}}(b)}{A_0}+\frac{\max(G(b),0)}{G_{\mathrm{hi}}}.\]
 
-The mathematically optimal scalar bias evaluates as \(b^\star=\arg\min J\), where any discrete tie unconditionally defaults to the minimum scalar \(b\). For this discrete execution run, the applied solver unambiguously isolates the global minimum at \(b^\star=36\,\mathrm{mm}\), resolving to an objective score of \(J=0.202\), positioning cleanly within the structured interior between the two swept parametric extremes. The bounded sample sweep was methodologically terminated and not extrapolated beyond this defined limit.
+\(b^\star=\arg\min J\) (ties take the smaller \(b\)). This run isolates \(b^\star=36\,\mathrm{mm}\) at \(J=0.202\), interior to the swept extremes. The sweep was not extrapolated past \(b_{\max}\).
 
-## Slope-scale as one marked point
+Photographs are scene-referred linear Rec.709 through Neutral at \(K=3.40\), \(e=1.00\). The sweep plot and metrics snapshot are authored sRGB, bypassing Neutral: photographs show the curb; tables and curves carry \(A\) and \(G\).
 
-Slope-scale bias represents an isolated operating point within this geometric parameter space, configured here as \(k_s=1\) and \(b_c=0\), where spatial depth derivatives are computed in shadow-texel units. In this test run, that single configuration eliminates acne across both surfaces (\(A_{\mathrm{ramp}}=0\) and \(A_{\mathrm{apron}}=0\)) while bounding the contact gap to \(13\,\mathrm{mm}\) (\(0.013\,\mathrm{m}\)).
+## Discussion: what if bias is short, long, or slope-scaled?
+
+### What if you stop at the interior minimum of \(J\)?
+
+The cover is that operating point: \(1280\times 720\), \(b^\star=36\,\mathrm{mm}\). A faint residue remains on the ramp (\(A_{\mathrm{ramp}}=0.018868\)); the apron is clear (\(A_{\mathrm{apron}}=0\)); the annotated gap is the measured \(15\,\mathrm{mm}\) along the apron, not a JPEG luminance cue. Apron acne is already gone by \(16\,\mathrm{mm}\) while the ramp still shows \(0.283019\) with \(G=0\). At \(b^\star\) the gap has just opened; ramp acne nulls only at \(40\,\mathrm{mm}\) with \(G=20\,\mathrm{mm}\). The operating point sits where ramp acne is mostly gone and detachment has only begun.
+
+![Cover. Service-yard curb at the operating bias of 36 mm. Asphalt apron, concrete curb, 20 degree wash ramp, and a 12 mm steel plate under one sun. HUD reads B=36 MM and 512^2. Khronos PBR Neutral, exposure K=3.40. A faint residue remains on the ramp; the apron is clear. Acne fractions and the contact gap are the tables, not this frame.](/assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg)
+
+### What if \(b=0\)?
+
+Same camera and the same shadow map, compare at \(b=0\). Ramp and apron self-shadow as high-frequency stripes: lit receivers marked shadowed. \(A_{\mathrm{ramp}}=0.509434\), \(A_{\mathrm{apron}}=0.482759\), \(G=0\). Contact is correct; about half of every lit grid is a false shadow.
+
+![Acne end. Same camera and the same shadow map, bias 0. Ramp and apron self-shadow as stripes: analytically lit receivers classified as shadowed. Ramp acne 0.509434, apron acne 0.482759, contact gap 0. HUD reads B=0 MM and 512^2. Khronos PBR Neutral. Photograph only.](/assets/journal/shadow-map-bias-as-geometric-error/01_acne.jpg)
+
+### What if \(b=b_{\max}=120\,\mathrm{mm}\)?
+
+Same camera and map at the long extreme. Both acne fractions are \(0\), but the plate's contact shadow has left the foot: \(G=91\,\mathrm{mm}\) (\(0.091\,\mathrm{m}\)) along the apron. The curb's own shadow remains a separate band.
+
+![Peter-panning end. Same camera and the same shadow map, bias 120 mm. Both acne fractions are 0. The plate's contact shadow has left the foot; the measured gap along the apron is 91 mm. HUD reads B=120 MM and 512^2. Khronos PBR Neutral. Photograph only.](/assets/journal/shadow-map-bias-as-geometric-error/02_peterpan.jpg)
+
+### What if slope-scale marks one point instead?
+
+Slope-scale at \(k_s=1\), \(b_c=0\) is one marked point in the same space—not a second ladder. It clears \(A_{\mathrm{ramp}}=0\) and \(A_{\mathrm{apron}}=0\) with \(G=13\,\mathrm{mm}\) (\(0.013000\,\mathrm{m}\)), shorter than \(G(b_{\mathrm{match}})=20\,\mathrm{mm}\) at matched ramp acne. The claim is that inequality, not a product ranking of filtered shadows.
+
+![Teaching pin. Ramp acne, apron acne, and contact gap in millimetres against constant bias from 0 to 120 mm. Marker at b-star = 36 mm. Callout: slope-scale ks=1, bc=0, both acne fractions 0, gap 13 mm. Eight contact strips at 0, 24, 48, 72, 96, and 120 mm, then b-star, then slope-scale. The gap staircase is left visible. Authored sRGB of the curves and the contact strips.](/assets/journal/shadow-map-bias-as-geometric-error/03_sweep.jpg)
+
+The teaching pin plots \(A_{\mathrm{ramp}}\), \(A_{\mathrm{apron}}\), and \(G\) against constant bias from 0 to 120 mm, marks \(b^\star\), and callouts the slope-scale triplet. Eight contact strips sit under the plot at 0, 24, 48, 72, 96, and 120 mm, then \(b^\star\), then slope-scale; the gap staircase is left visible. Selected constant-bias rows are in Appendix A; the full 31-sample ladder is what the figure maps.
+
+![Metrics snapshot. Two columns from this run: scene service-yard-curb, the constant-bias sweep, the slope-scale row, apron median -0.000350 m, checksum a816326e2dbe2366, and eleven passing gates. Quote the tables in the text if a glyph is soft.](/assets/journal/shadow-map-bias-as-geometric-error/04_metrics.jpg)
+
+| frame | role |
+|---|---|
+| [00](/assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg) | **Cover.** Operating point \(b^\star=36\,\mathrm{mm}\). |
+| [01](/assets/journal/shadow-map-bias-as-geometric-error/01_acne.jpg) | **Acne.** Same map, \(b=0\). |
+| [02](/assets/journal/shadow-map-bias-as-geometric-error/02_peterpan.jpg) | **Peter-pan.** Same map, \(b=120\,\mathrm{mm}\). |
+| [03](/assets/journal/shadow-map-bias-as-geometric-error/03_sweep.jpg) | **Sweep.** \(A\) and \(G\) vs constant bias; slope-scale callout. |
+| [04](/assets/journal/shadow-map-bias-as-geometric-error/04_metrics.jpg) | **Metrics snapshot.** Tables and gates from this run. |
+
+
+## Limits: what this run can and cannot claim
+
+**Can claim.** On this OSMesa / llvmpipe build (core 3.3 request), one directional sun, one \(512^2\) nearest-texel shadow map, and one constant-bias sweep from 0 to 120 mm produced falling acne on both receivers and a rising contact gap at a 12 mm plate. The interior minimum of the normalised sum of ramp acne and gap is \(b^\star=36\,\mathrm{mm}\) (\(J=0.202\)). Slope-scale at \(k_s=1\) clears ramp acne at a shorter gap than the matching constant sample (13 mm against 20 mm). The regime ratio places the failure in the texel-slope regime. The run prints **11 pass / 0 fail**.
+
+**Cannot claim.** A discrete GPU, wavefront, or frame-time budget. A filtered shadow, cascade, or soft penumbra. A measured polygon offset, normal-offset bias, or receiver-plane depth. Acne or gap read from a JPEG. A second depth codebook, fight-fraction, or reverse-Z curve. A ranking of this bias length against a product shadow stack.
+
+Honesty notes that stay out of the main argument: the meter uses a 32-bit float color copy of winning fragment \(z\) (attachment **DEPTH_COMPONENT24**; window depth bits **0**); sixteen apron depth-texture texels match that copy; `sampler2DShadow` agrees on 8/8 stable points; probes at \(b=0\) and \(b^\star\) match the CPU test at 16/16 locations. Gate 3 apron median \(d-\tilde d=-0.000350\,\mathrm{m}\) (\(-0.35\,\mathrm{mm}\)) sits under the unquantized floor of 0 because the 8 mm lattice is sunward of \(512^2\) texel centers (projected residual \(-0.349\,\mathrm{mm}\)); the gate accepts any median within \(-2\,\mathrm{mm}\) (an unrendered apron would be about \(-3.3\,\mathrm{m}\)). Specular on the lit plate face is masked by the binary shadow and does not enter \(A\) or \(G\). The 31 mm majority filter is boundary-only; pass requires \(G(b_{\max})>G(0)\), and \(G\) rises monotonically from 0 to \(0.091\,\mathrm{m}\) even if individual staircase steps plateau. One map, one checksum—mismatch stops the run. The ideal-map oracle checks metric code; the raster curve checks the shadow map.
+
+## Out of scope
+
+Percentage-closer and contact-hardening filters, cascades, atlas packing, a second light, an animated sun, and a soft penumbra. Reverse-Z, a depth-format sweep, and the z-fighting note's fight-fractions. Vendor polygon-offset scales and hierarchical-Z. Reading \(A\) or \(G\) from a beauty JPEG.
+
+The cover is the operating point. The sweep is the teaching figure. Bias is a geometric length. Dense meters follow.
 
 ---
 
-## Quote the metrics. The photographs are not the meter.
+## Appendix A — Constant-bias sweep and lede map
 
-All primary metrics are evaluated in double-precision floating point on the CPU prior to applying tone mapping. The beauty display pass executes Khronos PBR Neutral at exposure \(e=1.00\), fixing the static tone-mapping parameters across the entire bias sweep rather than re-optimizing per sample.
+Metrics are CPU double precision before Neutral. The 31-sample ladder is \(b=0, 4, \ldots, 120\,\mathrm{mm}\); selected rows:
+
+| \(b\) (mm) | \(A_{\mathrm{ramp}}\) | \(A_{\mathrm{apron}}\) | \(G\) (mm) |
+| --- | --- | --- | --- |
+| 0 | 0.509434 | 0.482759 | 0 |
+| 16 | 0.283019 | 0 | 0 |
+| 24 | 0.188679 | 0 | 11 |
+| 36 \(=b^\star\) | 0.018868 | 0 | 15 |
+| 40 | 0 | 0 | 20 |
+| 80 | 0 | 0 | 56 |
+| 120 | 0 | 0 | 91 |
+
+Lede abbreviations map to this run's unrounded tokens:
+
+| lede | this run |
+| --- | --- |
+| \(b^\star=36\,\mathrm{mm}\) | \(0.036000\,\mathrm{m}\) |
+| \(A_{\mathrm{ramp}}\) \(0.509\to 0.019\to 0\) | \(0.509434\), \(0.018868\), \(0\) |
+| \(A_{\mathrm{apron}}\) \(0.483\to 0\) | \(0.482759\), \(0\) |
+| \(G\) \(0\to 15\,\mathrm{mm}\to 91\,\mathrm{mm}\) | \(0\), \(0.015\,\mathrm{m}\), \(0.091\,\mathrm{m}\) |
+| slope \(G=13\,\mathrm{mm}\) | \(0.013000\,\mathrm{m}\) |
+| \(b_{\mathrm{match}}=40\,\mathrm{mm}\), \(G=20\,\mathrm{mm}\) | \(0.040\,\mathrm{m}\), \(0.020\,\mathrm{m}\) |
+| apron median \(-0.35\,\mathrm{mm}\) | \(-0.000350\,\mathrm{m}\) |
+| regime ratio \(54788\) | \(54787.622775\) |
+
+Contact strips on the teaching pin: 0, 24, 48, 72, 96, 120 mm, then \(b^\star\), then slope-scale. Sweep plot authored sRGB of the curves and strips.
+
+## Appendix B — Full meter table
 
 | item | value |
 | --- | --- |
@@ -180,32 +202,23 @@ All primary metrics are evaluated in double-precision floating point on the CPU 
 | analytic gap / probes | **pass** / **pass** |
 | asserts | **11 pass / 0 fail** |
 
----
+Renderer row: llvmpipe, OSMesa core 3.3 request; **RGBA32F** copy of winning fragment \(z\); attachment **DEPTH_COMPONENT24**; window depth bits **0**; sixteen apron texels match the color copy; hardware compare 8/8; encode \(K=3.40\), Neutral \(e=1.00\), sRGB OETF on the CPU; map checksum **a816326e2dbe2366**.
 
-## Honesty
+## Appendix C — Assertions and formula cheat sheet
 
-1. **CPU depth verification.** The meter inspects a 32-bit floating-point color copy of the resolved fragment depth against analytic planar geometry. Both the self-shadowing acne fractions \(A\) and contact gap \(G\) derive directly from this numerical pass. Shading probes sample discrete world-space locations through the display pipeline's depth test: across samples at \(b=0\) and \(b^\star\), the rendered fragments replicate the CPU reference test exactly across 16 of 16 probe locations.
-2. **Gate 3 apron median alignment.** The observed apron median residual \(d-\tilde d\) is \(-0.000350\,\mathrm{m}\) (\(-0.35\,\mathrm{mm}\)). This residual lies slightly below the nominal unquantized surface floor of 0 because the 8 mm evaluation sampling lattice is shifted sunward relative to the centers of the \(512^2\) shadow map texels. Projecting the same discrete lattice directly onto reconstructed texel centers yields a theoretical residual of \(-0.349\,\mathrm{mm}\). The verification suite accepts any median within \(-2\,\mathrm{mm}\); for comparison, an unrendered receiver apron would produce a discrepancy of \(-3.3\,\mathrm{m}\).
-3. **Display tone mapping constraints.** Specular reflection along the illuminated face of the plate is strictly masked by the binary shadow term and does not affect the calculation of \(A\) or \(G\). Exposure remains fixed at \(K=3.40\) throughout the sweep.
-4. **Discreteness of the contact gap metric.** The 31 mm majority filter is isolated to boundary edge localization and does not smooth the acne evaluations. The pass criterion requires that \(G(b_{\max})>G(0)\); while individual step samples along the staircase response may plateau, the measured gap increases monotonically from 0 to \(0.091\,\mathrm{m}\).
-5. **Slope-scale is one marked point.** The specific claim is that \(G(k_s=1)<G(b_{\mathrm{match}})\) at matched ramp acne. Percentage-closer filtering, variance and exponential shadow maps, and cascades are outside this measurement.
-6. **One map, one checksum.** The shadow pass runs once. A checksum mismatch stops the run. This run’s checksum `a816326e2dbe2366` is constant across the sweep and after the last beauty.
-7. **Rasterization is llvmpipe’s.** The ideal-map oracle checks the metric code. The raster curve checks the shadow map. There is no discrete-GPU depth claim, no hierarchical-Z claim, and no vendor polygon-offset scale.
+Printed: **11 pass / 0 fail**. The eleven checks cover window depth, the regime ratio, the apron median, lit and covered regions, the ideal-map gap, probes and the checksum, frame projection, falling acne, a rising gap, an interior operating point, and the slope-scale gap.
 
-| item | value |
-| --- | --- |
-| renderer | llvmpipe, OSMesa core 3.3 request |
-| color / depth | **RGBA32F** copy of the winning fragment \(z\); attachment **DEPTH_COMPONENT24** |
-| window depth bits | **0** (the meter does not read that buffer) |
-| depth-texture sample | sixteen apron texels match the color copy |
-| hardware compare | `sampler2DShadow` agrees on 8/8 stable points |
-| encode | \(K=3.40\), Neutral \(e=1.00\), sRGB OETF on the CPU |
-| map | rendered once; checksum **a816326e2dbe2366** |
+Honesty checklist retained from the pre-appendix draft (items 1–7): (1) CPU depth verification; (2) Gate 3 apron median; (3) display tone-mapping constraints; (4) discreteness of \(G\); (5) slope-scale is one marked point; (6) one map, one checksum; (7) rasterization is llvmpipe's.
 
-**This run can claim the following.** On this OSMesa / llvmpipe build, one directional sun, one \(512^2\) nearest-texel shadow map, and one constant-bias sweep from 0 to 120 mm produced a falling acne fraction on both receivers and a rising contact gap at a 12 mm plate. The operating point that minimises the normalised sum of ramp acne and gap is the interior sample \(b^\star=36\,\mathrm{mm}\) (\(J=0.202\)). Slope-scale at \(k_s=1\) clears ramp acne at a shorter gap than the matching constant sample, 13 mm against 20 mm. The regime ratio places the failure in the texel-slope regime. The run prints **11 pass / 0 fail**.
-
-**This run does not claim the following.** A GPU, a wavefront, or a frame-time budget. A filtered shadow, a cascade, or a soft penumbra. A measured polygon offset, a normal-offset bias, or a receiver-plane depth. Acne or gap read from a JPEG. A second depth codebook, a fight-fraction, or a reverse-Z curve. A ranking of this bias length against a product shadow stack.
-
-The eleven checks cover window depth, the regime ratio, the apron median, lit and covered regions, the ideal-map gap, probes and the checksum, frame projection, falling acne, a rising gap, an interior operating point, and the slope-scale gap.
-
-Percentage-closer and contact-hardening filters, cascades, and atlas packing sit outside the measurement, as do a second light, an animated sun, and a soft penumbra. So do reverse-Z, a depth-format sweep, and the z-fighting note’s fight-fractions. The cover is the operating point. The sweep is the teaching figure. Bias is a geometric length, and the curve is the photograph.
+```text
+b*           = 0.036 m (36 mm),  J = 0.202
+A_ramp       = 0.509434 / 0.018868 / 0     at 0, b*, b_max
+A_apron      = 0.482759 / 0
+G            = 0 / 0.015 / 0.091 m
+slope        ks=1, bc=0 → A=0/0, G=0.013 m
+b_match      = 0.040 m, G=0.020 m
+regime ratio = 54787.622775  (lede 54788)
+apron median = -0.000350 m
+checksum     = a816326e2dbe2366
+asserts      = 11 pass / 0 fail
+```
