@@ -2,44 +2,44 @@
 layout: layouts/base.njk
 pageType: post
 ---
-      <article class="posts-article">
-        <a class="posts-back" href="/posts/">← Journal</a>
-        <div class="posts-article-inner">
-          <div class="posts-article-meta">
-            <span>Frank Yin</span>
-            <span>@qervas</span>
-            <time datetime="{{ date | dateISO }}">{{ date | dateDisplay }}</time>
-            {% if tags %}
-            <span class="posts-card-tags">
-              {% for tag in tags %}
-                {% if tag != "journal" %}
-                <span class="posts-tag">{{ tag }}</span>
-                {% endif %}
-              {% endfor %}
-            </span>
-            {% endif %}
-          </div>
-          <h2 class="posts-article-title">{{ title }}</h2>
-          {% if description %}
-          <p class="posts-article-dek">{{ description }}</p>
-          {% endif %}
-{% include "chrome/post-share.njk" %}
+      <div class="watch">
+        <article class="watch-main posts-article">
+          <div class="watch-player">
 {% if video %}
-          <figure class="posts-video">
             <video controls preload="metadata" playsinline poster="{{ video.poster }}" width="1920" height="1080">
               <source src="{{ video.src }}" type="video/mp4">
               {% if video.vtt %}<track kind="captions" src="{{ video.vtt }}" srclang="en" label="English">{% endif %}
               Your browser does not support HTML video. <a href="{{ video.src }}">Download the video</a>.
             </video>
-            {% if video.caption %}<figcaption>{{ video.caption }}</figcaption>{% endif %}
-          </figure>
+{% else %}
+            <img src="{{ cover }}" alt="" width="1280" height="720" />
+            <span class="watch-soon">Video coming</span>
 {% endif %}
-          <div class="posts-article-body">
+          </div>
+          <h1 class="watch-title">{{ title | cleanTitle }}</h1>
+          <div class="watch-bar">
+            <div class="watch-meta">
+              <img class="watch-avatar" src="/assets/profile/avatar.jpg" alt="" width="36" height="36" />
+              <span><strong>Frank Yin</strong><br><time datetime="{{ date | dateISO }}">{{ date | dateDisplay }}</time>{% if video %} · {{ video.src | videoDuration }}{% endif %}</span>
+            </div>
+{% include "chrome/post-share.njk" %}
+          </div>
+          <div class="watch-desc">
+            {% if description %}<p>{{ description }}</p>{% endif %}
+            {% if video and video.caption %}<p class="watch-caption">{{ video.caption }}</p>{% endif %}
+            {% if tags %}<p class="watch-tags">{% for tag in tags %}{% if tag != "journal" and tag != "video" %}<span class="posts-tag">#{{ tag }}</span> {% endif %}{% endfor %}</p>{% endif %}
+          </div>
+          <details class="watch-appendix">
+            <summary>Appendix / Measurements <span>full write-up, figures and tables</span></summary>
+            <div class="posts-article-body">
 {{ content | safe }}
-          </div>
-          <div class="posts-article-foot">
-            <a href="/posts/">All journal entries</a>
-            <a href="/">← Work</a>
-          </div>
-        </div>
-      </article>
+            </div>
+          </details>
+        </article>
+        <aside class="watch-next" aria-label="Up next">
+          <h2 class="watch-next-title">Up next</h2>
+          {% set cardClass = "vcard-row" %}
+          {% for p in collections.journal %}{% if p.url != page.url %}{% include "chrome/video-card.njk" %}{% endif %}{% endfor %}
+          <a class="watch-all" href="/posts/">All videos →</a>
+        </aside>
+      </div>
