@@ -7,6 +7,11 @@ tags:
   - engine
   - lighting
 math: true
+video:
+  src: /assets/journal/light-sampling-and-the-area-jacobian/area-jacobian-explainer.mp4
+  poster: /assets/journal/light-sampling-and-the-area-jacobian/area-jacobian-explainer-poster.jpg
+  vtt: /assets/journal/light-sampling-and-the-area-jacobian/area-jacobian-explainer.vtt
+  caption: "Animated explainer (4 min, English captions): why equal area is not equal light, and how the area Jacobian puts the measure back. The written note with full metrics follows below."
 cover: /assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg
 ---
 
