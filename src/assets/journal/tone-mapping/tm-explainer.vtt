@@ -1,0 +1,133 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:10.107
+Take a phone photo of a room with a bright window, and the window often turns into a flat white blob. The frame, the trees outside, all gone.
+
+2
+00:00:10.457 --> 00:00:17.518
+Our eyes handle it fine. The screen cannot. A screen can only show colours from black up to a fixed white.
+
+3
+00:00:17.868 --> 00:00:25.719
+Real light has no such ceiling. In this loft, the brightest spot is about forty eight times brighter than the screen's white.
+
+4
+00:00:26.069 --> 00:00:30.378
+So how do you squeeze all that light onto a screen, without losing the window?
+
+5
+00:00:31.578 --> 00:00:39.877
+A renderer first computes real amounts of light. This is called scene referred. Here is the same loft, coloured by brightness.
+
+6
+00:00:40.227 --> 00:00:50.253
+Green and blue are ordinary surfaces. Red means more than one, brighter than any screen white. The window glass and its reflection in the brass sphere.
+
+7
+00:00:50.603 --> 00:00:56.214
+Those values are not errors. They are true light. The question is only how to display them.
+
+8
+00:00:57.414 --> 00:01:01.489
+The simplest answer is to clip. Anything above one becomes one.
+
+9
+00:01:01.839 --> 00:01:10.948
+In our frame, about thirteen point four percent of pixels have at least one colour channel above one. Clipping burns all of them to flat white.
+
+10
+00:01:11.298 --> 00:01:16.994
+Look at the window reflected in the brass. Clipped, the window bars are gone. A white pancake.
+
+11
+00:01:18.194 --> 00:01:23.549
+Tone mapping does something smarter. Instead of a hard wall at one, it uses a curve.
+
+12
+00:01:23.899 --> 00:01:26.715
+Here is clipping. A straight line, then a wall.
+
+13
+00:01:27.065 --> 00:01:35.555
+Here is Khronos P B R Neutral. Through the darks and middle tones it stays almost one to one, so colours look as designed.
+
+14
+00:01:35.905 --> 00:01:42.263
+Then it bends into a soft shoulder. Bright values are squeezed closer and closer to white, but never cut.
+
+15
+00:01:42.613 --> 00:01:53.023
+And here is the aha. Clipping throws the brights away. A tone curve folds them in. With the neutral curve, no pixel is clipped at all, and the window bars come back.
+
+16
+00:01:54.223 --> 00:01:59.194
+This is the clipping mask. Red marks every pixel that clipping would burn to white.
+
+17
+00:01:59.544 --> 00:02:04.024
+The neutral curve keeps all of these, compressed, with their structure intact.
+
+18
+00:02:05.224 --> 00:02:12.179
+Different curves make different choices. Look at the average of the middle tones, which starts at zero point four eight.
+
+19
+00:02:12.529 --> 00:02:21.659
+Reinhard's classic curve, light over one plus light, pulls them down to zero point three two five. The glaze and concrete look dimmer.
+
+20
+00:02:22.009 --> 00:02:29.839
+The popular A C E S film curve pushes them up to zero point six zero four. Punchy, film like contrast.
+
+21
+00:02:30.189 --> 00:02:38.487
+The neutral curve lands at zero point four four one. Closest to the original. That is its goal, to show products as they are.
+
+22
+00:02:39.687 --> 00:02:48.221
+Curves can also change colour. Apply a curve to red, green and blue separately, and a bright brass highlight drifts toward grey.
+
+23
+00:02:48.571 --> 00:02:59.387
+Every per channel curve is secretly a colour change. The neutral curve instead compresses brightness, then desaturates toward white on purpose, in a controlled way.
+
+24
+00:03:00.587 --> 00:03:06.347
+One more knob. Exposure is a simple gain before the curve, like a camera's exposure.
+
+25
+00:03:06.697 --> 00:03:21.865
+At exposure zero point five, the middle tones average zero point one eight nine. At one point zero five, zero point four four one. At two, zero point eight one seven. And nothing clips at any of them.
+
+26
+00:03:22.215 --> 00:03:30.364
+Notice what the curve never does. It does not create light. It only decides which screen value each amount of light receives.
+
+27
+00:03:31.564 --> 00:03:40.588
+What this does not prove. This is one loft scene, tone mapped in software for a standard screen. Not H D R television output.
+
+28
+00:03:40.938 --> 00:03:47.786
+A C E S is not wrong. It aims for film contrast. Reinhard and clipping are here as controls.
+
+29
+00:03:48.136 --> 00:03:56.413
+A single error number cannot rank highlight detail, so we judged structure with the mask and the zoom. All thirty one checks passed.
+
+30
+00:03:57.613 --> 00:04:04.952
+The takeaway. Render real light first. Then set the exposure. Then fold it onto the screen with a named curve.
+
+31
+00:04:05.302 --> 00:04:08.502
+Clipping cuts the brights. A tone curve bends them.
+
+32
+00:04:08.852 --> 00:04:17.492
+Film and game pipelines lean on curves like A C E S. Khronos published P B R Neutral for showing products true to colour.
+
+33
+00:04:17.842 --> 00:04:29.063
+For further reading, see Reinhard and colleagues on photographic tone reproduction, Narkowicz's A C E S fit, and the Khronos P B R Neutral specification.

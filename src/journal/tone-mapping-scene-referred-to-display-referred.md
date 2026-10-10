@@ -8,6 +8,11 @@ tags:
   - engine
   - lighting
 math: true
+video:
+  src: /assets/journal/tone-mapping/tm-explainer.mp4
+  poster: /assets/journal/tone-mapping/tm-explainer-poster.jpg
+  vtt: /assets/journal/tone-mapping/tm-explainer.vtt
+  caption: "Animated explainer: why bright windows blow out, and how a tone curve folds them back in"
 cover: /assets/journal/tone-mapping/00_hero.jpg
 ---
 
