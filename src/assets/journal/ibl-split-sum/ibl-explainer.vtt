@@ -1,0 +1,145 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:08.443
+In a modern game, walk past a polished brass lamp, and you see the whole room in it. The windows, the walls, the light from outside.
+
+2
+00:00:08.793 --> 00:00:16.835
+Look closer at a ceramic vase next to it. It is not lit by one lamp. It glows softly with the colours of the room around it.
+
+3
+00:00:17.185 --> 00:00:24.311
+But the game never traced a single ray to that window. It does this sixty times a second, for every shiny pixel.
+
+4
+00:00:24.661 --> 00:00:28.607
+So how does a renderer reflect an entire room, almost for free?
+
+5
+00:00:29.807 --> 00:00:34.885
+Here is what a surface really does. Light arrives from every direction of the room.
+
+6
+00:00:35.235 --> 00:00:42.829
+Each direction is weighted by the material's reflection rule, called the B R D F, and by how squarely the light hits.
+
+7
+00:00:43.179 --> 00:00:52.566
+In words, the outgoing light equals the sum over all directions of incoming light, times the B R D F, times the cosine of the angle.
+
+8
+00:00:52.916 --> 00:00:59.252
+Doing that sum honestly means hundreds of samples per pixel, per frame. Far too slow for a game.
+
+9
+00:01:00.452 --> 00:01:06.297
+The trick is called the split sum, made popular by Brian Karis for Unreal Engine four.
+
+10
+00:01:06.647 --> 00:01:16.802
+Pretend the integral of a product is roughly the product of two integrals. One part only cares about the room. The other part only cares about the material.
+
+11
+00:01:17.152 --> 00:01:26.219
+In words, outgoing light is about prefiltered room light, times the base reflectance F zero times a scale S, plus a bias B.
+
+12
+00:01:26.569 --> 00:01:37.043
+And here is the aha. Both parts can be computed once, ahead of time, and stored as tables. At run time the shader just looks up two numbers and multiplies.
+
+13
+00:01:38.243 --> 00:01:45.177
+Table one is the prefiltered room. Imagine blurring a photo of the room by the shape of a rough reflection.
+
+14
+00:01:45.527 --> 00:01:53.868
+A smooth surface needs a sharp room. A rough surface needs a blurry room. So we store a chain of blur levels, called mip levels.
+
+15
+00:01:54.218 --> 00:02:03.605
+Here is the window face. At level zero, the four by five window grid is crisp. Step by step, the bars dissolve into a soft glow.
+
+16
+00:02:03.955 --> 00:02:12.680
+Roughness picks the level. With eight levels, the level is seven times roughness. A simple straight line, chosen so the ladder stays readable.
+
+17
+00:02:13.880 --> 00:02:18.531
+Watch roughness climb on brass, from zero point zero five up to one.
+
+18
+00:02:18.881 --> 00:02:26.155
+The smooth ball shows sharp window bars. As roughness grows, the reflection widens and takes on the brass colour.
+
+19
+00:02:26.505 --> 00:02:35.273
+The same six steps on cream ceramic. Even when rough, a bright rim survives at grazing angles. That rim comes from table two.
+
+20
+00:02:36.473 --> 00:02:45.007
+Table two is a small square image, called the D F G lookup table. One axis is the viewing angle. The other is roughness.
+
+21
+00:02:45.357 --> 00:02:54.935
+It is computed against a plain white room, so the room never enters it. It only stores how much the material reflects, as a scale and a bias.
+
+22
+00:02:55.285 --> 00:03:02.880
+Check the corner where you look straight on at a smooth surface. Scale is one, bias is zero, exactly as it should be.
+
+23
+00:03:03.230 --> 00:03:12.361
+And the blurred room keeps its energy. A plain white room comes out at one point zero zero zero, at all four roughness levels tested.
+
+24
+00:03:13.561 --> 00:03:20.579
+Shiny reflections are only half the story. A ceramic glaze reflects only four percent at face on angles.
+
+25
+00:03:20.929 --> 00:03:33.047
+With the reflection table alone, the vase's sides go dark. With only the soft room light, called irradiance, the vase fills in, but the brass goes black. Metals have no diffuse colour.
+
+26
+00:03:33.397 --> 00:03:41.653
+Together you get the full product shot. On the vase's side, adding irradiance makes it about five point one one times brighter.
+
+27
+00:03:42.853 --> 00:03:53.626
+What if we break the recipe? Use the sharpest level on a rough ball, and it sparkles like sandpaper. Use the blurriest level on a smooth ball, and it becomes a dull blob.
+
+28
+00:03:53.976 --> 00:04:01.763
+Skip the lookup table and pretend everything reflects fully. The metals wash out to grey, and the brass colour vanishes.
+
+29
+00:04:02.113 --> 00:04:10.241
+Clip the room's brightness to one before blurring, and the window highlight collapses. The room must stay in high dynamic range.
+
+30
+00:04:11.441 --> 00:04:21.083
+What this does not prove. The soft room light is distant light only. There is no bounce from the vase onto the brass. That is not global illumination.
+
+31
+00:04:21.433 --> 00:04:30.521
+The split is an approximation, single scattering only. The straight line from roughness to level is a readable choice, not an exact match.
+
+32
+00:04:30.871 --> 00:04:47.213
+The blurred room at sixty four samples still differs from a five hundred twelve sample reference, by an error of zero point seven seven seven to one point four six five, mostly fireflies from the bright window. All twenty five checks passed.
+
+33
+00:04:48.413 --> 00:04:56.626
+The takeaway. Blur the room once, by roughness. Compute the material's response once, against white. Multiply at run time.
+
+34
+00:04:56.976 --> 00:05:00.027
+One expensive integral becomes two cheap lookups.
+
+35
+00:05:00.377 --> 00:05:05.561
+Game engines such as Unreal use this split sum for environment reflections.
+
+36
+00:05:05.911 --> 00:05:15.553
+For further reading, see Karis on real shading in Unreal Engine four, and Walter and colleagues on microfacet models with G G X.
