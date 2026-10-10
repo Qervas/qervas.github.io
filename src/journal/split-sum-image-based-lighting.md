@@ -8,6 +8,11 @@ tags:
   - engine
   - lighting
 math: true
+video:
+  src: /assets/journal/ibl-split-sum/ibl-explainer.mp4
+  poster: /assets/journal/ibl-split-sum/ibl-explainer-poster.jpg
+  vtt: /assets/journal/ibl-split-sum/ibl-explainer.vtt
+  caption: "Animated explainer: how games reflect a whole room by multiplying two pre-computed tables"
 cover: /assets/journal/ibl-split-sum/00_hero.jpg
 ---
 
