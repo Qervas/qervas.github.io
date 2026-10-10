@@ -727,3 +727,8 @@
     padding: 0 12px;
   }
 }
+
+/* video posts */
+.posts-video { margin: 1.25rem 0 1.75rem; }
+.posts-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 8px; background: #0e1116; }
+.posts-video figcaption { margin-top: .5rem; font-size: .85rem; opacity: .75; }
