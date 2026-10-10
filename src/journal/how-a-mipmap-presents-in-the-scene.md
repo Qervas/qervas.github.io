@@ -8,6 +8,11 @@ tags:
   - engine
   - sampling
 math: true
+video:
+  src: /assets/journal/mipmaps/mip-explainer.mp4
+  poster: /assets/journal/mipmaps/mip-explainer-poster.jpg
+  vtt: /assets/journal/mipmaps/mip-explainer.vtt
+  caption: "Animated explainer: why distant textures sparkle without mipmaps, and why the blur is a legal limit"
 cover: /assets/journal/mipmaps/16_cornell.jpg
 ---
 

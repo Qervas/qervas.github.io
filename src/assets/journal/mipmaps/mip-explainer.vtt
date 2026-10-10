@@ -1,0 +1,137 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:10.768
+In a game, look at a wood floor or a brick wall far away. If the texture is not filtered, it sparkles. Patterns crawl and shimmer every time the camera moves.
+
+2
+00:00:11.118 --> 00:00:16.089
+Turn on mipmaps, and the far floor calms down. It goes a little soft instead.
+
+3
+00:00:16.439 --> 00:00:23.969
+Most people say mipmaps blur things because they are far away. That is not really the reason. So what is going on?
+
+4
+00:00:25.169 --> 00:00:30.951
+Here is the same room, from the same camera. On the left, no mipmap. On the right, a mipmap.
+
+5
+00:00:31.301 --> 00:00:40.261
+Without it, the wood grain sparkles, and the small letters on the wall turn into a moire pattern, false wavy lines that are not in the texture.
+
+6
+00:00:40.611 --> 00:00:44.109
+With it, the wood and letters go soft. Soft, but honest.
+
+7
+00:00:44.459 --> 00:00:52.203
+Down a hallway it is the same story. The far tiles crawl on the left. The near doors look identical on both sides.
+
+8
+00:00:53.403 --> 00:01:01.531
+The key number is the footprint, written rho. It is how many texture pixels, called texels, land inside one screen pixel.
+
+9
+00:01:01.881 --> 00:01:12.591
+Up close, one texel covers several pixels. Far away, many texels crowd into one pixel. At rho equals eight, eight texels across share a single pixel.
+
+10
+00:01:12.941 --> 00:01:19.021
+But each pixel only takes one sample. It is like trying to describe eight stripes with a single dot.
+
+11
+00:01:20.221 --> 00:01:29.074
+There is a hard rule for sampling. A grid of pixels can only show patterns up to half a cycle per pixel. That limit is called Nyquist.
+
+12
+00:01:29.424 --> 00:01:37.168
+Anything finer does not just disappear. It folds back, and shows up as a slower, fake pattern. That is called aliasing.
+
+13
+00:01:37.518 --> 00:01:48.526
+In words, a texture frequency folds whenever it is above one over two times rho. At rho of eight, anything finer than one cycle per sixteen texels folds.
+
+14
+00:01:48.876 --> 00:01:58.967
+And that is the aha. The sparkle is not noise. It is real fine detail, folded into fake patterns, because the pixel grid is too coarse to hold it.
+
+15
+00:02:00.167 --> 00:02:04.924
+To see it cleanly, use a test pattern of rings that get finer toward the edge.
+
+16
+00:02:05.274 --> 00:02:10.799
+Shrink it to rho eight with plain sampling, and fake rings appear everywhere. That is pure moire.
+
+17
+00:02:11.149 --> 00:02:15.693
+Smooth sampling between neighbours softens it, but the fake rings are still there.
+
+18
+00:02:16.043 --> 00:02:23.083
+Now use a mipmap. The fake rings are gone. What remains is the part of the pattern a pixel can legally show.
+
+19
+00:02:24.283 --> 00:02:33.350
+So a mipmap is not a distance blur. It is a legal limit. It removes exactly the detail that the pixel grid cannot hold, before sampling.
+
+20
+00:02:33.700 --> 00:02:39.972
+Each level is made by averaging two by two blocks of the level above. That averaging is the filter.
+
+21
+00:02:40.322 --> 00:02:49.837
+If you skip the averaging, and just pick every other texel, you get a smaller picture with the same fake rings. A pyramid without a filter is not a mipmap.
+
+22
+00:02:51.037 --> 00:02:56.413
+We can measure it. Count the energy in the fake patterns, in a measure called A C power.
+
+23
+00:02:56.763 --> 00:03:06.704
+With no mipmap, it is eight hundred ninety eight. Smooth sampling, three hundred seventy nine. With the box filtered mipmap, thirty. About thirty times less.
+
+24
+00:03:07.054 --> 00:03:12.601
+The pyramid without the filter scores eight hundred ninety nine, as bad as no mipmap at all.
+
+25
+00:03:13.801 --> 00:03:19.838
+One control. Up close, when one texel covers a pixel or more, mipmaps must change nothing.
+
+26
+00:03:20.188 --> 00:03:26.097
+Measured difference at rho one, zero. The near doors in the hallway agree for the same reason.
+
+27
+00:03:26.447 --> 00:03:34.554
+As rho climbs from one to sixteen, the folding takes over from rho four onward, and only the mipmapped row stays clean.
+
+28
+00:03:35.754 --> 00:03:44.629
+What this does not prove. This was a software renderer, so no claims about how real graphics cards choose levels, or how fast they are.
+
+29
+00:03:44.979 --> 00:03:49.651
+The room photos only show the effect. The numbers come from the test pattern.
+
+30
+00:03:50.001 --> 00:04:01.307
+And the softness that remains on far floors is real. A round filter blurs the narrow side of a slanted footprint too much. That is the job of anisotropic filtering.
+
+31
+00:04:02.507 --> 00:04:11.595
+The takeaway. A far texture packs more detail than a pixel can hold. Without a filter, that detail folds into sparkle and crawl.
+
+32
+00:04:11.945 --> 00:04:18.644
+A mipmap removes it first, by averaging. The blur you see is the legal limit, not a distance effect.
+
+33
+00:04:18.994 --> 00:04:22.429
+That is why mipmaps are standard in real time graphics.
+
+34
+00:04:22.779 --> 00:04:28.859
+For further reading, see Williams on pyramidal parametrics, and Shannon and Nyquist on sampling.
