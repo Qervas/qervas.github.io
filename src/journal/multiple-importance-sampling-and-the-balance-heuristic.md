@@ -7,6 +7,11 @@ tags:
   - engine
   - lighting
 math: true
+video:
+  src: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/mis-explainer.mp4
+  poster: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/mis-explainer-poster.jpg
+  vtt: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/mis-explainer.vtt
+  caption: "Animated explainer (5 min, English captions): where fireflies come from, and how the balance heuristic tames them. The written note with full metrics follows below."
 cover: /assets/journal/multiple-importance-sampling-and-the-balance-heuristic/00_hero.jpg
 ---
 
