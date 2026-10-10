@@ -1,0 +1,141 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:11.621
+If you have ever watched a path traced render preview, in Blender or a modern game, you have seen it. A grainy image, sprinkled with bright white specks, slowly settling down.
+
+2
+00:00:11.971 --> 00:00:22.190
+Here is a lacquered sphere in a dark gallery, lit by one small spotlight. Look at the felt wall behind it. It sparkles, even though it is plain matte cloth.
+
+3
+00:00:22.540 --> 00:00:33.804
+Now the puzzle. With the same number of rays, one way of aiming them leaves bright speckles on the shiny sphere. Another way cleans the sphere, but leaves dark holes everywhere else.
+
+4
+00:00:34.154 --> 00:00:37.802
+Same scene, same rays. Only the aim changes. Why?
+
+5
+00:00:39.002 --> 00:00:48.069
+A renderer asks, for every pixel, how much light bounces toward the camera. That means adding up light from every direction above the surface.
+
+6
+00:00:48.419 --> 00:00:55.501
+It cannot check every direction, so it picks a few at random and averages them. This is called Monte Carlo.
+
+7
+00:00:55.851 --> 00:01:03.958
+Each random direction contributes the material response, times the incoming light, times a cosine, divided by p.
+
+8
+00:01:04.308 --> 00:01:16.617
+And p is the key. It is the probability of picking that direction. Directions we pick often get divided by a big number. Rare picks get divided by a small one, so the average stays fair.
+
+9
+00:01:16.967 --> 00:01:23.965
+So we may aim the rays any way we like, and the answer stays correct on average. What changes is the noise.
+
+10
+00:01:25.165 --> 00:01:29.538
+We compare two ways to aim. Think of them as two kinds of lottery ticket.
+
+11
+00:01:29.888 --> 00:01:38.571
+The cosine ticket spreads rays over the whole sky above the surface, favouring straight up. It is the perfect match for matte surfaces.
+
+12
+00:01:38.921 --> 00:01:49.395
+The Phong ticket packs rays into a narrow cone around the mirror direction, where a shiny highlight lives. Its sharpness is set by an exponent, here thirty two.
+
+13
+00:01:49.745 --> 00:01:58.001
+Here are the two real densities, measured over the sky. The cosine one is broad and gentle. The Phong one is one hot spot.
+
+14
+00:01:59.201 --> 00:02:06.156
+Now add the spotlight. It is tiny, only three point six degrees across in radius, seen from the sphere.
+
+15
+00:02:06.506 --> 00:02:15.530
+With the cosine ticket, almost every ray misses it. But once in a while a ray hits that very bright light, and p for that direction is small.
+
+16
+00:02:15.880 --> 00:02:24.563
+Bright light divided by a small probability makes one enormous sample. That single pixel blows out to white. That is a firefly.
+
+17
+00:02:24.913 --> 00:02:34.747
+Under the cosine ticket we counted twenty one thousand five hundred thirty six fireflies. Under the Phong ticket, one thousand six hundred fifty three.
+
+18
+00:02:35.097 --> 00:02:42.820
+And the error on the highlight drops from seven point six six to two point zero zero, at sixty four rays per pixel.
+
+19
+00:02:44.020 --> 00:02:49.375
+This is the error map of the highlight, measured, with both tickets on the same colour scale.
+
+20
+00:02:49.725 --> 00:02:55.911
+Under the cosine ticket, a hot blob sits right on the highlight, spiked with red fireflies.
+
+21
+00:02:56.261 --> 00:03:01.659
+Under the Phong ticket, the highlight cools down. The error does not vanish. It moves.
+
+22
+00:03:02.859 --> 00:03:07.104
+So where did it move? Look at the dull plinth and the matte side of the sphere.
+
+23
+00:03:07.454 --> 00:03:16.883
+The Phong ticket sends nearly all its rays toward the mirror direction. The matte surfaces need light from the whole sky, and hardly any rays go there.
+
+24
+00:03:17.233 --> 00:03:26.599
+Their error jumps from zero point one four one under cosine to zero point eight two five under Phong. They starve, and dark holes appear.
+
+25
+00:03:26.949 --> 00:03:40.623
+Here is the aha. Noise is not bad luck. It is the mismatch between where you aim and where the light really comes from. Each ticket wins exactly where its shape matches the material, and loses everywhere else.
+
+26
+00:03:41.823 --> 00:03:54.282
+More rays help, but slowly. Under cosine, the highlight error goes from about twenty eight at four rays, to sixteen, to seven point seven, to three point eight at two hundred fifty six.
+
+27
+00:03:54.632 --> 00:04:01.160
+Four times the rays, half the error. Phong walks the same staircase, but starts about four times lower.
+
+28
+00:04:01.510 --> 00:04:13.905
+The exponent matters too. At eight or thirty two the highlight error stays near two. At one hundred twenty eight it climbs back to seven point three seven. Aim too narrow, and you miss the light again.
+
+29
+00:04:15.105 --> 00:04:26.795
+What this does not prove. It is one sphere, one small light, one direct bounce, rendered offline on a software rasterizer. Not real time, and not hardware ray tracing.
+
+30
+00:04:27.145 --> 00:04:41.183
+One surprise we kept. In a white test room, the combined Phong estimate came out at zero point one nine three, against an expected zero point two nine two. Its far tail was lost to float precision.
+
+31
+00:04:41.533 --> 00:04:49.661
+The cosine estimate hit zero point two nine two three. All twenty four checks passed, and here is the clean reference image.
+
+32
+00:04:50.861 --> 00:04:56.727
+The takeaway. Every way of aiming rays is fair on average. The noise comes from mismatch.
+
+33
+00:04:57.077 --> 00:05:03.008
+Match the cosine for matte surfaces. Match the lobe for shiny ones. Neither matches both.
+
+34
+00:05:03.358 --> 00:05:12.339
+That is why production path tracers blend several strategies with multiple importance sampling, the subject of an earlier video in this series.
+
+35
+00:05:12.689 --> 00:05:21.713
+For further reading, see Lafortune and Willems on the normalized Phong model, and Eric Veach's thesis on robust Monte Carlo rendering.
