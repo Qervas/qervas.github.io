@@ -11,7 +11,7 @@
   <div class="app">
     <main class="feed page" id="main-content">
 {% include "chrome/feed-top.njk" %}
-{% if pageType != "post" %}
+{% if pageType == "work" %}
 {% include "chrome/profile-header.njk" %}
 {% endif %}
 {% include "chrome/tabs.njk" %}
@@ -25,7 +25,9 @@
 {% include "chrome/footer.njk" %}
     </main>
 
+{% if pageType == "work" %}
 {% include "chrome/right-rail.njk" %}
+{% endif %}
   </div>
 
 {% include "chrome/lightbox.njk" %}

@@ -1,69 +1,13 @@
     <aside class="rail-right" aria-label="Sidebar">
-      <div class="aside-card aside-listening is-idle" id="aside-listening">
-        <div class="aside-card-head">
-          <div class="aside-card-title">Listening</div>
-          <span class="aside-listening-live" id="listening-live" hidden>Live</span>
-        </div>
-        <a
-          class="aside-listening-now"
-          id="listening-now"
-          hidden
-          target="_blank"
-          rel="noopener"
-        >
-          <img
-            class="aside-listening-art"
-            id="listening-art"
-            alt=""
-            width="56"
-            height="56"
-            decoding="async"
-          />
-          <div class="aside-listening-copy">
-            <div class="aside-listening-track" id="listening-track"></div>
-            <div class="aside-listening-artist" id="listening-artist"></div>
-          </div>
-        </a>
-        <div class="aside-listening-meter" id="listening-meter" hidden aria-hidden="true">
-          <div class="aside-listening-bar" id="listening-bar"></div>
-        </div>
-        <p class="aside-listening-idle" id="listening-idle">Not playing</p>
-      </div>
-
       <div class="aside-card aside-journal-card">
         <div class="aside-card-head">
-          <div class="aside-card-title">Journal</div>
+          <div class="aside-card-title">Journal videos</div>
           <a class="aside-journal-all" href="/posts/">All →</a>
         </div>
-        {% if collections.journal and collections.journal.length %}
-        <div class="aside-journal-list">
-          {% for post in collections.journal %}
-          <a class="aside-journal-item" href="{{ post.url }}">
-            {% if post.data.cover %}
-            <img class="aside-journal-thumb" src="{{ post.data.cover }}" alt="" loading="lazy" decoding="async" />
-            {% endif %}
-            <div class="aside-journal-copy">
-              <time class="aside-journal-date" datetime="{{ post.date | dateISO }}">{{ post.date | dateDisplay }}</time>
-              <div class="aside-journal-title">{{ post.data.title }}</div>
-              {% if post.data.description %}
-              <p class="aside-journal-dek">{{ post.data.description }}</p>
-              {% endif %}
-              {% if post.data.tags %}
-              <div class="aside-journal-tags">
-                {% for tag in post.data.tags %}
-                  {% if tag != "journal" %}
-                  <span class="posts-tag">{{ tag }}</span>
-                  {% endif %}
-                {% endfor %}
-              </div>
-              {% endif %}
-            </div>
-          </a>
-          {% endfor %}
+        <div class="aside-vlist">
+          {% set cardClass = "vcard-row" %}
+          {% for p in collections.journal | head(6) %}{% include "chrome/video-card.njk" %}{% endfor %}
         </div>
-        {% else %}
-        <p class="aside-journal-empty">No entries yet.</p>
-        {% endif %}
       </div>
 
       <div class="aside-card aside-heatmap" id="aside-heatmap">

@@ -7,16 +7,13 @@ tags:
   - sampling
   - video
 math: true
+video:
+  src: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.mp4
+  poster: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/poster.jpg
+  vtt: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.vtt
 cover: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/00_cover.jpg
 ---
 
-<figure class="post-video">
-<video controls preload="metadata" playsinline width="1920" height="1080" poster="/assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/poster.jpg" style="width:100%;height:auto;border-radius:8px;background:#0e1116">
-<source src="/assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.mp4" type="video/mp4">
-<track kind="captions" srclang="en" label="English" src="/assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.vtt" default>
-Your browser does not support embedded video. <a href="/assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.mp4">Download the MP4</a>.
-</video>
-</figure>
 
 ## Abstract
 
