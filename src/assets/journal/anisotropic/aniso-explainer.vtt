@@ -1,0 +1,121 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:08.592
+Look down a long hallway in an older game. Near your feet the floor tiles are crisp. Farther away, they melt into grey mush.
+
+2
+00:00:08.942 --> 00:00:14.830
+Switch on the setting called anisotropic filtering, and the far floor snaps back into focus.
+
+3
+00:00:15.180 --> 00:00:20.193
+Why does a texture blur when you look along it, and what does that setting actually fix?
+
+4
+00:00:21.393 --> 00:00:24.551
+Start with one pixel on the screen, a tiny square.
+
+5
+00:00:24.901 --> 00:00:34.991
+Now follow it back onto the floor texture. On a floor seen at a low angle, that square lands as a long, thin shape. Long along your view, narrow across it.
+
+6
+00:00:35.341 --> 00:00:43.448
+That shape is called the pixel's footprint. It is an ellipse, and its two radii are named a, the long one, and b, the short one.
+
+7
+00:00:43.798 --> 00:00:54.571
+The math that turns the square into the ellipse is the Jacobian. In words, it records how far the texture moves when you step one pixel right, and one pixel down.
+
+8
+00:00:55.771 --> 00:01:02.513
+Games blur distant textures with mipmaps, a stack of pre shrunk copies. Each level halves the size.
+
+9
+00:01:02.863 --> 00:01:10.521
+The standard rule picks one blur level from the longest side of the footprint. In words, the level is the log base two of a.
+
+10
+00:01:10.871 --> 00:01:18.765
+That blur is round. It blurs every direction by the long radius. Even across the floor, where the footprint was narrow.
+
+11
+00:01:19.965 --> 00:01:27.773
+And here is the aha. The mush is not caused by distance. It is caused by using a circle where the footprint is an ellipse.
+
+12
+00:01:28.123 --> 00:01:34.480
+The extra blur on the short side equals the log base two of a over b, counted in mip levels.
+
+13
+00:01:34.830 --> 00:01:42.873
+For a footprint eight texels long and one texel wide, that is log two of eight, three whole levels of blur that nobody needed.
+
+14
+00:01:43.223 --> 00:01:52.545
+Anisotropic filtering picks the level from the short side instead, and takes several samples along the long side. Sharp across, smooth along.
+
+15
+00:01:53.745 --> 00:02:00.892
+On a real foreshortened floor, the ellipse changes from pixel to pixel. Here, colour shows how stretched it is.
+
+16
+00:02:01.242 --> 00:02:12.549
+Near the camera it is almost a circle. Toward the horizon it stretches more and more. At this marked far pixel, it is about five point four five times longer than wide.
+
+17
+00:02:12.899 --> 00:02:19.064
+Left, the round mip blur. Right, an ellipse aware filter. The check edges stay sharp on the right.
+
+18
+00:02:20.264 --> 00:02:25.427
+To measure it, we shrink a test pattern of rings, with a footprint eight long and one wide.
+
+19
+00:02:25.777 --> 00:02:33.094
+Without any blur, the fine rings fold into false stripes. That is aliasing, the crawling shimmer you see in games.
+
+20
+00:02:33.444 --> 00:02:39.183
+The round mip removes the stripes, but also washes out the rings across the short side.
+
+21
+00:02:39.533 --> 00:02:52.951
+The ellipse filter removes the stripes too, but keeps about twice as much detail across the short side. Eight point four seven eight, against four point two four four, in our minor axis energy measure.
+
+22
+00:02:54.151 --> 00:03:03.751
+Two sanity checks. When the texture is magnified, both radii below one, the two filters must give the same picture. Measured difference, zero.
+
+23
+00:03:04.101 --> 00:03:13.787
+And as the stretch grows from one to sixteen, the gap between round and elliptical filtering grows with it. At one, they are identical circles.
+
+24
+00:03:14.987 --> 00:03:23.221
+What this does not prove. The ellipse filter here is a reference written for the lab, not the exact method inside graphics cards.
+
+25
+00:03:23.571 --> 00:03:32.531
+This software renderer's own sixteen times setting barely changed the image, so we make no claims about real hardware quality or speed.
+
+26
+00:03:32.881 --> 00:03:42.460
+And on the full hallway photo, the difference is subtle, an average of about one percent. The test pattern carries the proof. All forty one checks passed.
+
+27
+00:03:43.660 --> 00:03:48.887
+The takeaway. A pixel's footprint on a slanted surface is an ellipse, not a circle.
+
+28
+00:03:49.237 --> 00:03:57.066
+Round mip blur uses the long radius everywhere, and over blurs the short side by log two of a over b levels.
+
+29
+00:03:57.416 --> 00:04:04.029
+Anisotropic filtering follows the ellipse. That is why turning it on rescues the far floor in games.
+
+30
+00:04:04.379 --> 00:04:14.150
+For further reading, see Williams on mipmaps, Greene and Heckbert on elliptical weighted average filtering, and Heckbert on the fundamentals of texture mapping.
