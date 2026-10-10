@@ -1,0 +1,175 @@
+WEBVTT
+
+00:00.400 --> 00:05.179
+You have seen this. A wet road at sunset, glowing in a long streak of glare.
+
+00:05.529 --> 00:11.310
+Or a metal floor in a game that turns grainy and sparkly the moment the camera drops low.
+
+00:11.660 --> 00:16.289
+Both are rough, shiny surfaces seen at a grazing angle, almost edge on.
+
+00:16.639 --> 00:23.167
+So here is the puzzle. Why does a renderer struggle most exactly there, with the same number of samples?
+
+00:23.517 --> 00:29.469
+By the end, the answer will be one simple idea. Only sample what the viewer can actually see.
+
+00:30.669 --> 00:34.360
+Here is the far lip of a steel sluice gate, rendered twice.
+
+00:34.710 --> 00:38.401
+Same scene, same thirty-two samples per pixel, same seed.
+
+00:38.751 --> 00:42.271
+The only difference is how we choose microfacet normals.
+
+00:42.621 --> 00:49.127
+On the left we sample the distribution of normals. On the right, the distribution of visible normals.
+
+00:49.477 --> 00:53.168
+Let's build up, step by step, why the right side is cleaner.
+
+00:54.368 --> 00:59.573
+Zoom far enough into rough metal, and the surface becomes a field of tiny mirrors.
+
+00:59.923 --> 01:04.979
+Each mirror has its own normal, which we call h. The big surface normal is n.
+
+01:05.329 --> 01:11.751
+G G X describes how those little normals are spread around n, with a density called D of h.
+
+01:12.101 --> 01:18.458
+Here is D of h written out. Alpha is the roughness. For this gate, alpha is zero point two eight.
+
+01:18.808 --> 01:23.779
+Larger alpha spreads the facets wider. Smaller alpha keeps them close to n.
+
+01:24.979 --> 01:29.203
+The textbook sampler is simple. Draw a facet normal h from D.
+
+01:29.553 --> 01:34.097
+Then reflect the view direction v about h, to get the light direction ell.
+
+01:34.447 --> 01:38.521
+Repeat this many times, and we get a fan of reflected directions.
+
+01:38.871 --> 01:41.645
+But D knows nothing about where the camera is.
+
+01:41.995 --> 01:48.971
+Tilt the view, and some of these reflected directions fall below the horizon. Those samples are simply wasted.
+
+01:50.171 --> 01:55.269
+There is one more subtlety. We draw half vectors, but we integrate over light directions.
+
+01:55.619 --> 02:01.827
+Take a small patch of half vector directions. Reflecting through it gives a patch of light directions.
+
+02:02.177 --> 02:08.983
+That patch is bigger. Its area grows by a factor of four times the absolute value of v dot h.
+
+02:09.333 --> 02:12.149
+So the density of ell is the density of h.
+
+02:12.499 --> 02:16.659
+Divided by four times the absolute value of v dot h.
+
+02:17.009 --> 02:24.966
+We checked this numerically. Drop the factor, or use n dot h instead, and the histogram no longer matches the target.
+
+02:26.166 --> 02:31.371
+Now let's tilt the viewer toward grazing, and count facets that face away from v.
+
+02:31.721 --> 02:34.985
+Those facets cost a sample and contribute nothing.
+
+02:35.335 --> 02:42.866
+At eighty-two degrees, with alpha zero point two eight, about twenty-eight percent of naive draws are back facing.
+
+02:43.216 --> 02:46.075
+Sampling visible normals brings that to zero.
+
+02:47.275 --> 02:51.307
+The fix is to sample only the facets the viewer can actually see.
+
+02:51.657 --> 02:59.763
+Each facet counts in proportion to its area as seen from v, which is v dot h, and back facing facets count zero.
+
+03:00.113 --> 03:08.988
+Written out, D sub v of h given v equals G one of v, times the max of zero and v dot h, times D of h.
+
+03:09.338 --> 03:16.805
+All divided by n dot v. G one is Smith's masking term, and it makes the whole thing integrate to one.
+
+03:17.155 --> 03:23.277
+At normal incidence this is the same as before. At grazing, the lobe tilts toward the viewer.
+
+03:24.477 --> 03:32.221
+How do we draw from it? First, stretch the scene so the rough surface becomes a perfect hemisphere, with alpha equal to one.
+
+03:32.571 --> 03:38.843
+A hemispherical mirror lit by a parallel beam reflects it uniformly into a spherical cap.
+
+03:39.193 --> 03:42.287
+So we sample a point on that cap, which is easy.
+
+03:42.637 --> 03:48.013
+Then unstretch, and the half vector lands exactly on the visible normal distribution.
+
+03:48.363 --> 03:54.827
+This is the Dupuy and Benyoub construction, and it matches Heitz's original to within sampling noise.
+
+03:56.027 --> 04:05.307
+Now look at the sample weight. For naive sampling it is F times G two, times v dot h, over n dot v times n dot h.
+
+04:05.657 --> 04:17.177
+That ratio has no upper bound. At eighty-two degrees, about eighteen percent of naive weights exceed one, and the ninety-ninth percentile is about three point seven five.
+
+04:17.527 --> 04:24.268
+For visible normals, almost everything cancels. The weight is just F times G two over G one.
+
+04:24.618 --> 04:34.730
+And G two over G one never exceeds one. So the weight never exceeds F. Across the whole sweep, the largest weight was about zero point seven.
+
+04:35.080 --> 04:48.904
+And that is the aha. The grain on a low angle metal floor comes from wasted samples, plus rare samples with huge weights. Sampling only the visible normals removes the wasted draws and caps the weights.
+
+04:50.104 --> 04:52.323
+Here is what that buys us, measured.
+
+04:52.673 --> 04:58.091
+At normal incidence, the two samplers are identical. The ratio is exactly one.
+
+04:58.441 --> 05:08.852
+At seventy-five degrees, visible normals cut the standard deviation by three point five times. At eighty-two degrees, by five point seven times.
+
+05:09.202 --> 05:12.871
+In variance, that is roughly twelve times, and thirty-two times.
+
+05:14.071 --> 05:15.629
+Now the honest twist.
+
+05:15.979 --> 05:23.765
+In the full ray traced gate, the grazing band is only one point six times cleaner, short of the two times we asked for.
+
+05:24.115 --> 05:29.854
+Real reflections bring scene variance that a better B R D F sampler cannot remove.
+
+05:30.204 --> 05:38.439
+And with an eight times brighter sun right on the mirror direction, visible normals come out slightly worse, at zero point nine three.
+
+05:38.789 --> 05:45.167
+When one bright light dominates, the fix is light sampling, combined with multiple importance sampling.
+
+05:46.367 --> 05:47.711
+So, the takeaway.
+
+05:48.061 --> 05:59.624
+Sample visible normals, apply the half vector Jacobian correctly, and the weight stays bounded. Today this is the standard way modern path tracers sample rough reflections.
+
+05:59.974 --> 06:04.369
+At grazing angles, that turns wasted draws into clean pixels.
+
+06:04.719 --> 06:11.460
+For the details, see Heitz, twenty eighteen, and Dupuy and Benyoub, twenty twenty-three. Thanks for watching.
