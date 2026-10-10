@@ -1,0 +1,165 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:04.347
+If you have ever rendered with a path tracer, you have met fireflies.
+
+2
+00:00:04.697 --> 00:00:11.822
+Single pixels that blaze white, scattered at random, that refuse to go away no matter how long you wait.
+
+3
+00:00:12.172 --> 00:00:17.889
+They love one situation most. A small, bright light, reflected in something glossy.
+
+4
+00:00:18.239 --> 00:00:25.066
+Here is a glaze tile in front of a glowing kiln mouth. The middle of the reflection is peppered with bright specks.
+
+5
+00:00:25.416 --> 00:00:32.947
+Where do these specks come from, and how do renderers make them disappear? The answer is a tiny formula with a big idea.
+
+6
+00:00:34.147 --> 00:00:41.848
+A renderer estimates light by guessing. It picks random directions, asks how much light arrives from each, and averages.
+
+7
+00:00:42.198 --> 00:00:48.747
+But it does not pick directions evenly. Each strategy has a probability for every direction, called p.
+
+8
+00:00:49.097 --> 00:00:55.455
+To stay fair, each sample is divided by its own probability. Value f, divided by p.
+
+9
+00:00:55.805 --> 00:01:04.935
+Usually that is harmless. But if a direction was very unlikely to be picked, and it turns out to be very bright, then f over p is enormous.
+
+10
+00:01:05.285 --> 00:01:10.064
+One giant number in the average. One white pixel. That is a firefly.
+
+11
+00:01:11.264 --> 00:01:15.211
+There are two natural ways to pick directions for a shiny surface.
+
+12
+00:01:15.561 --> 00:01:23.497
+The first follows the material. It sends samples where the glossy reflection points. This is called B S D F sampling.
+
+13
+00:01:23.847 --> 00:01:30.716
+The second follows the light. It picks a random point on the kiln mouth and aims at it. This is light sampling.
+
+14
+00:01:31.066 --> 00:01:35.525
+Both are perfectly correct on average. They just fail in different places.
+
+15
+00:01:36.725 --> 00:01:44.213
+On the highlight, which we call the lip, the glossy lobe is narrow, about zero point zero three nine steradians.
+
+16
+00:01:44.563 --> 00:01:55.357
+The kiln mouth looks about eight times bigger, at zero point three two steradians. So light sampling mostly lands outside the lobe, and only rarely inside it.
+
+17
+00:01:55.707 --> 00:02:01.126
+Those rare hits have a small light probability and a huge glossy value. Fireflies.
+
+18
+00:02:01.476 --> 00:02:10.948
+Away from the highlight, at the point we call the miss, it flips. Glossy samples rarely hit the light at all, and the material strategy turns grainy.
+
+19
+00:02:11.298 --> 00:02:21.133
+So here is the aha. A firefly is not random bad luck. It is a direction that one strategy loves, sampled by the strategy that ignores it.
+
+20
+00:02:22.333 --> 00:02:28.093
+So why not use both strategies, and let each sample ask both of them how likely it was?
+
+21
+00:02:28.443 --> 00:02:36.528
+That is the balance heuristic. The weight for strategy i is its own probability, divided by the sum of both probabilities.
+
+22
+00:02:36.878 --> 00:02:43.619
+Multiply it through, and each sample contributes f, divided by p B S D F plus p light.
+
+23
+00:02:43.969 --> 00:02:52.247
+Now look at that denominator. If either strategy likes this direction, the denominator is big, so the result cannot explode.
+
+24
+00:02:52.597 --> 00:03:07.125
+Right on the reflection at the lip, p B S D F is eleven point six six, and p light is zero point nine six. The material sample keeps about ninety-two percent of the weight. The light sample gets about eight.
+
+25
+00:03:08.325 --> 00:03:14.021
+Now the measurement. These maps show noise on the tile, at sixty-four samples per pixel.
+
+26
+00:03:14.371 --> 00:03:21.795
+Left, material sampling. It is noisy away from the highlight. Middle, light sampling. It is hot right on the highlight.
+
+27
+00:03:22.145 --> 00:03:24.577
+Right, balance. Quiet in both places.
+
+28
+00:03:24.927 --> 00:03:36.063
+On the lip, the average noise is zero point three zero eight for light sampling, zero point one two zero for the material, and zero point one three one for balance.
+
+29
+00:03:36.413 --> 00:03:46.802
+At the miss, the material is at zero point zero seven seven, light sampling at zero point zero one three, and balance at zero point zero one eight.
+
+30
+00:03:48.002 --> 00:03:53.485
+Here is the error as the sample count grows, from sixteen to one thousand twenty-four.
+
+31
+00:03:53.835 --> 00:04:08.043
+At the lip, light sampling starts at zero point seven three and ends at zero point zero seven eight. Balance goes from zero point two seven to zero point zero three nine, just above the material.
+
+32
+00:04:08.393 --> 00:04:16.777
+At the miss, material sampling starts above one. Balance ends at zero point zero three four, just above light sampling.
+
+33
+00:04:17.127 --> 00:04:22.289
+Every curve falls. Balance is never the very best, but it is never the disaster.
+
+34
+00:04:23.489 --> 00:04:24.983
+Now the honest part.
+
+35
+00:04:25.333 --> 00:04:32.885
+At each probe, the winning single strategy still beats balance by a little. Balance buys safety, not perfection.
+
+36
+00:04:33.235 --> 00:04:42.728
+This is one kiln scene, one equal split of samples, on a software renderer. Other weighting rules, like the power heuristic, were not measured here.
+
+37
+00:04:43.078 --> 00:04:51.569
+The pictures are for looking. Every number comes from the estimator itself. The run finishes with fifty-three checks passed and none failed.
+
+38
+00:04:52.769 --> 00:04:54.113
+So, the takeaway.
+
+39
+00:04:54.463 --> 00:05:03.167
+Fireflies come from dividing by a tiny probability. Ask every strategy for its probability, and the denominator stays big.
+
+40
+00:05:03.517 --> 00:05:10.663
+This idea, multiple importance sampling, is at the heart of essentially every modern production path tracer.
+
+41
+00:05:11.013 --> 00:05:16.731
+It comes from Eric Veach and Leonidas Guibas, nineteen ninety-five. Thanks for watching.
