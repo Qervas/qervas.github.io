@@ -90,3 +90,6 @@ body { background: var(--bg); }
   .vcard-row .vcard-thumb { flex-basis:150px; }
   .home-hero { padding:10px; }
 }
+.vcard-preview { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .25s; pointer-events:none; }
+.vcard-preview.is-on { opacity:1; }
+.vcard-thumb .vcard-badge { z-index:1; }

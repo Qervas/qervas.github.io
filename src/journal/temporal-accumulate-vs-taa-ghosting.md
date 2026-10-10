@@ -1,6 +1,7 @@
 ---
 title: "Temporal Accumulate vs TAA Ghosting"
 description: "TAA is a bet that last frame's color is still this pixel. Naive EMA ghosts; neighborhood clamp kills the streak. The ghost is leftover history — not a shutter."
+hook: "The ghostly trails behind moving objects in modern games, and the trick that erases them."
 date: 2026-09-16
 tags:
   - graphics
