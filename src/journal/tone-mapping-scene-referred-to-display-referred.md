@@ -1,6 +1,7 @@
 ---
 title: "Tone Mapping: Scene-Referred to Display-Referred"
 description: "Scene-referred linear through a named curve to display-referred, then the OETF. Clip, Reinhard, ACES, and Khronos PBR Neutral on one loft plate."
+hook: "Why the sun in a photo blows out to flat white, and how renderers squeeze real brightness onto a screen."
 date: 2026-09-16
 tags:
   - graphics

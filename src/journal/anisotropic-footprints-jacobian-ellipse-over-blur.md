@@ -1,6 +1,7 @@
 ---
 title: "Anisotropic Footprints: Jacobian, Ellipse, Over-Blur"
 description: "Mip LOD is not the footprint. Checker graze, then Jacobian ellipse — isotropic over-blur versus CPU-EWA."
+hook: "Why floor textures in games turn to mush when you look along them, and how to keep them sharp."
 date: 2026-09-13
 tags:
   - graphics

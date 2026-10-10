@@ -1,6 +1,7 @@
 ---
 title: "Importance Sampling: Phong Lobe vs Cosine"
 description: "Same integral, two pdfs, one N. Cosine fireflies the crescent; Phong starves the surround."
+hook: "Two ways to aim the same rays: one leaves bright speckles, the other leaves dark holes."
 date: 2026-09-20
 tags:
   - graphics

@@ -1,6 +1,7 @@
 ---
 title: "Split-Sum Image-Based Lighting"
 description: "An HDR loft folded into a GGX-prefiltered cube times a DFG LUT. Distant irradiance fills dielectrics — not local multi-bounce GI."
+hook: "How games make shiny objects reflect a whole room without tracing a single ray."
 date: 2026-09-15
 tags:
   - graphics

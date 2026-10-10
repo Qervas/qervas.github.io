@@ -1,6 +1,7 @@
 ---
 title: "Parallax Occlusion Mapping: Height March, Flat Silhouette"
 description: "The silhouette is still the quad. FLAT, BUMP, and POM at graze, then the XOR that names the lie."
+hook: "Game bricks that look deep head-on turn out to be painted flat once you see them edge-on."
 date: 2026-09-14
 tags:
   - graphics
