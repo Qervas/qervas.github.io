@@ -14,7 +14,7 @@
         c.setAttribute('aria-selected', active ? 'true' : 'false');
       });
       const src = chip.dataset['3dgs'];
-      if (!src || video.src.endsWith(src)) return;
+      if (!src || (video.getAttribute('src') || '').endsWith(src)) return;
       video.pause();
       video.src = src;
       video.load();
@@ -23,6 +23,18 @@
     });
   });
 
-  video.play().catch(() => { /* autoplay blocked; user gesture will start it */ });
+  // Lazy start: load and play only while the video is on screen.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const start = () => {
+    if (!video.getAttribute('src')) video.src = video.dataset.src;
+    if (!reduce) video.play().catch(() => {});
+  };
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) start(); else video.pause(); });
+    }, { rootMargin: '200px 0px' }).observe(video);
+  } else {
+    start();
+  }
 })();
   

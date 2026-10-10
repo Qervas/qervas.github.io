@@ -1,6 +1,7 @@
 ---
 title: How a mipmap presents in the scene
 description: "Not blur-because-far — a legal band-limit. Cornell and hallway photographs, then a zone-plate FFT proof on Mesa llvmpipe."
+hook: "Distant brick walls in games blur on purpose, because the alternative is a crawling, shimmering mess."
 date: 2026-09-11
 tags:
   - graphics

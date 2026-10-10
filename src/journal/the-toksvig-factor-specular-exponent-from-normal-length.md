@@ -1,6 +1,7 @@
 ---
 title: "The Toksvig Factor: Specular Exponent from Normal Length"
 description: "On a grinder-chuck roller, normal length from a box of unit shading normals lowers the cosine-power exponent so one shaded mean tracks the average of the per-texel powers."
+hook: "Why distant metal in games fizzes and sparkles as you move, and how to calm it."
 date: 2026-10-06
 tags:
   - graphics

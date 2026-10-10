@@ -1,6 +1,7 @@
 ---
 title: "Light Sampling and the Area Jacobian"
 description: "Vertical softbox on a night inspection bench. Area sampling without the geometry term biases the estimator; the Jacobian puts the measure back."
+hook: "Aim your rays at a lamp and forget one small factor, and the whole room comes out at the wrong brightness."
 date: 2026-09-25
 tags:
   - graphics
