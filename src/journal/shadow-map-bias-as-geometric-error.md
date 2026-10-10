@@ -7,6 +7,11 @@ tags:
   - engine
   - lighting
 math: true
+video:
+  src: /assets/journal/shadow-map-bias-as-geometric-error/shadow-bias-explainer.mp4
+  poster: /assets/journal/shadow-map-bias-as-geometric-error/shadow-bias-explainer-poster.jpg
+  vtt: /assets/journal/shadow-map-bias-as-geometric-error/shadow-bias-explainer.vtt
+  caption: "Animated explainer (5.5 min, English captions): why shadows stripe and why they float, and how bias as a length along the sun ray explains both. The written note with full metrics follows below."
 cover: /assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg
 ---
 
