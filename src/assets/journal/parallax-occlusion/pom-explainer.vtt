@@ -1,0 +1,133 @@
+WEBVTT
+
+1
+00:00:00.400 --> 00:00:06.715
+Walk up to a brick wall in a game. Head on, the bricks look deep. The mortar sits in real grooves.
+
+2
+00:00:07.065 --> 00:00:16.281
+Now turn and look along the wall, almost edge on. Inside, the bricks still look carved. But the edge of the wall is a perfectly straight line.
+
+3
+00:00:16.631 --> 00:00:23.735
+That wall is a flat rectangle, two triangles. So where did the depth come from, and why does the edge give it away?
+
+4
+00:00:24.935 --> 00:00:29.415
+Here are three ways to paint the same flat wall, under the same raking light.
+
+5
+00:00:29.765 --> 00:00:33.583
+Flat. The brick picture is simply printed on. A painted card.
+
+6
+00:00:33.933 --> 00:00:40.440
+Bump. The lighting is faked from a height map, so grooves get shading. But the bricks never shift as you move.
+
+7
+00:00:40.790 --> 00:00:49.089
+Parallax occlusion mapping. The bricks slide against each other, and front bricks hide the mortar behind them. That is what depth looks like.
+
+8
+00:00:50.289 --> 00:01:01.062
+The idea is simple. Pretend the wall has a thin layer of depth behind its surface, described by a height map. White is the brick face, black is the deepest groove.
+
+9
+00:01:01.412 --> 00:01:08.388
+When your eye ray hits the flat surface, do not stop there. Keep walking the ray into that imaginary layer.
+
+10
+00:01:08.738 --> 00:01:22.583
+The more you look from the side, the farther the ray travels sideways before it lands. In words, the sideways shift equals the view direction along the wall, divided by how straight on you look, times a depth scale.
+
+11
+00:01:22.933 --> 00:01:27.563
+Then read the brick colour at the spot where the ray really lands, not where it entered.
+
+12
+00:01:28.763 --> 00:01:36.272
+To find that spot, the shader marches. It slices the depth into even layers, and steps down one layer at a time.
+
+13
+00:01:36.622 --> 00:01:43.790
+At each step it asks one question. Is the ray now below the height map? The first yes means we have hit something.
+
+14
+00:01:44.140 --> 00:01:51.671
+Then parallax occlusion mapping refines the hit, drawing a straight line between the last two steps to guess where they cross.
+
+15
+00:01:52.021 --> 00:02:05.674
+On a test ridge with thirty two layers, the true crossing is at zero point two five eight. The refined guess lands at zero point two six zero. Plain steps alone land at zero point two eight two.
+
+16
+00:02:06.874 --> 00:02:14.831
+What if we take too few steps? With only eight layers, the ray jumps right over a narrow groove, and hits the next ridge instead.
+
+17
+00:02:15.181 --> 00:02:20.728
+On a real wall, that shows up as staircase bands and grooves that swim as the camera moves.
+
+18
+00:02:21.078 --> 00:02:34.625
+Here are four, eight, sixteen and thirty two layers. Four is a mess. Thirty two is clean. Against an exact test shape, the average error drops from about four in a hundred thousand, to under one in a million.
+
+19
+00:02:35.825 --> 00:02:40.689
+One sanity check. Looking straight on, the ray has no sideways shift at all.
+
+20
+00:02:41.039 --> 00:02:49.487
+So parallax and plain bump mapping must give exactly the same picture. Measured difference, zero. Any depth here would be a bug.
+
+21
+00:02:50.687 --> 00:02:58.495
+Now the edge. Here is a wall whose bricks are truly pushed out of the geometry, next to the parallax wall seen from the side.
+
+22
+00:02:58.845 --> 00:03:06.055
+The real bricks stick out past the outline. The parallax wall does not. Its outline is still the flat rectangle.
+
+23
+00:03:06.405 --> 00:03:13.467
+Red marks every pixel where the two outlines disagree. Fifty seven point five percent of the measured strip.
+
+24
+00:03:13.817 --> 00:03:25.486
+And here is the aha. Parallax only moves which colour each pixel shows. It never adds pixels. The depth lives inside the rectangle, so the edge always tells the truth.
+
+25
+00:03:26.686 --> 00:03:32.361
+Grooves should also be in shadow. That needs a second march, from the hit point toward the light.
+
+26
+00:03:32.711 --> 00:03:43.228
+If anything blocks the way, the spot is shadowed. With thirty two steps, it agrees with a sixty four step march on ninety nine point three percent of the tested pixels.
+
+27
+00:03:44.428 --> 00:03:51.105
+What this does not prove. This was a software renderer, so no claims about speed on real graphics cards.
+
+28
+00:03:51.455 --> 00:03:59.434
+The refined hit is a guess between two steps, not an exact intersection. And a height map cannot make overhangs or caves.
+
+29
+00:03:59.784 --> 00:04:05.843
+The error numbers come from exact test shapes, not from the photographs. All twenty eight checks passed.
+
+30
+00:04:07.043 --> 00:04:14.168
+The takeaway. Parallax occlusion mapping walks your eye ray into a height map, and shows the colour where it lands.
+
+31
+00:04:14.518 --> 00:04:19.574
+It gives real looking depth inside the surface, for the cost of a few texture reads.
+
+32
+00:04:19.924 --> 00:04:27.391
+But it cannot change the outline. When the edge matters, you need real geometry, by displacement or tessellation.
+
+33
+00:04:27.741 --> 00:04:38.599
+For further reading, see Tatarchuk on parallax occlusion mapping, Kaneko and colleagues on parallax mapping, and McGuire and McGuire on steep parallax mapping.
