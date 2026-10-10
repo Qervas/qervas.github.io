@@ -3,52 +3,16 @@ layout: layouts/base.njk
 pageType: journal
 permalink: /posts/
 title: Journal · Frank Yin
-description: Dev-log, WIP notes, and ship logs — not the CV.
+description: Animated explainers on rendering, sampling and real-time graphics, each with its measurements.
 ---
-      <div class="posts-compose">
-        <img class="posts-compose-avatar" src="/assets/profile/avatar.jpg" alt="" width="40" height="40" />
-        <div class="posts-compose-body">
-          <p class="posts-compose-kicker">Public journal</p>
-          <p class="posts-compose-text">What I’m building, shipping, or stuck on — longer than a commit, shorter than a paper.</p>
-        </div>
-      </div>
+      <header class="gallery-head">
+        <p class="gallery-kicker">Journal</p>
+        <h2 class="gallery-title">Rendering, explained visually</h2>
+        <p class="gallery-sub">Short animated explainers on the math behind real-time and offline graphics. Every video comes with its measurements underneath.</p>
+      </header>
 {% if collections.journal and collections.journal.length %}
-      <div class="posts-list" id="posts-list">
-        {% for post in collections.journal %}
-        <a class="posts-card" href="{{ post.url }}">
-          <div class="posts-card-body">
-            <div class="posts-card-head">
-              <span class="posts-card-author">Frank Yin</span>
-              <span class="posts-card-handle">@qervas</span>
-              <span class="posts-card-date">· {{ post.date | dateDisplay }}</span>
-            </div>
-            <h2 class="posts-card-title">{{ post.data.title }}</h2>
-            {% if post.data.excerpt %}
-            <p class="posts-card-excerpt">{{ post.data.excerpt }}</p>
-            {% endif %}
-            {% if post.data.tags and post.data.tags.length %}
-            <div class="posts-card-tags">
-              {% for tag in post.data.tags %}
-                {% if tag != "journal" %}
-                <span class="posts-tag">{{ tag }}</span>
-                {% endif %}
-              {% endfor %}
-            </div>
-            {% endif %}
-          </div>
-          {% if post.data.cover %}
-          <div class="posts-card-media">
-            <img
-              class="posts-card-thumb"
-              src="{{ post.data.cover }}"
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          {% endif %}
-        </a>
-        {% endfor %}
+      <div class="vgrid" id="posts-list">
+        {% for p in collections.journal %}{% include "chrome/video-card.njk" %}{% endfor %}
       </div>
 {% else %}
       <p class="posts-empty" id="posts-empty">The log is empty.</p>

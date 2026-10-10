@@ -145,6 +145,25 @@ function markdownItKatex(md) {
     `<div class="katex-display-block">${renderTex(tokens[idx].content, true)}</div>\n`;
 }
 
+
+import fs from "node:fs";
+import path from "node:path";
+
+/** Read an MP4's duration from its mvhd box (no ffprobe needed in CI). */
+function mp4Duration(src) {
+  try {
+    const buf = fs.readFileSync(path.join("src", src));
+    const i = buf.indexOf("mvhd");
+    if (i < 0) return null;
+    const v = buf[i + 4];
+    let scale, dur;
+    if (v === 1) { scale = buf.readUInt32BE(i + 24); dur = Number(buf.readBigUInt64BE(i + 28)); }
+    else { scale = buf.readUInt32BE(i + 16); dur = buf.readUInt32BE(i + 20); }
+    const t = Math.round(dur / scale);
+    return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`;
+  } catch { return null; }
+}
+
 export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/js");
@@ -211,6 +230,20 @@ export default function (eleventyConfig) {
     return d.toISOString().slice(0, 10);
   });
 
+  const durCache = new Map();
+  eleventyConfig.addFilter("videoDuration", (src) => {
+    if (!src) return null;
+    if (!durCache.has(src)) durCache.set(src, mp4Duration(src));
+    return durCache.get(src);
+  });
+  /** First sentence of a description, for one-line hooks. */
+  eleventyConfig.addFilter("hook", (text) => {
+    if (!text) return "";
+    const m = String(text).match(/^.*?[.!?](\s|$)/);
+    return (m ? m[0] : String(text)).trim();
+  });
+  eleventyConfig.addFilter("cleanTitle", (t) => String(t || "").replace(/^Video:\s*/, ""));
+  eleventyConfig.addFilter("head", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("json", (value) => JSON.stringify(value));
   eleventyConfig.addFilter("urlencode", (value) =>
     encodeURIComponent(String(value ?? ""))
