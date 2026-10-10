@@ -1,6 +1,7 @@
 ---
 title: "Shadow Map Bias as Geometric Error"
 description: "On a service-yard curb, constant shadow-map bias is a length along the sun ray: too short yields acne, too long opens a contact gap. One operating point and one slope-scale mark the trade-off."
+hook: "Why game shadows come out striped or float off people's feet, and the one setting behind both."
 date: 2026-09-27
 tags:
   - graphics
@@ -17,7 +18,7 @@ cover: /assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg
 
 Shadow-map bias is a physical length along the incident light ray, applied immediately before the depth comparison. Too short a length misclassifies an analytically lit receiver as shadowed—surface acne. Too long a length lifts the contact shadow of a thin occluder off its geometric foot—peter-panning. This note measures that trade-off on one map, one sun, and one constant-bias sweep.
 
-Discrete depth encoding, winner-islands, and reverse-Z belong to *[Z-fighting is geometric compression plus quantization](/posts/p/z-fighting-is-geometric-compression-plus-quantization/)*. That note defers the acne-versus-peter-pan distinction here and keeps fight-fraction metrics in its own scope. We fix a single shadow map and do not sweep a depth code. The shared geometric idea is that a depth failure can be stated as a length: there an isolatable interval in front of the camera; here a bias \(b\) in metres along the sun vector.
+Discrete depth encoding, winner-islands, and reverse-Z belong to *Z-fighting is geometric compression plus quantization*. That note defers the acne-versus-peter-pan distinction here and keeps fight-fraction metrics in its own scope. We fix a single shadow map and do not sweep a depth code. The shared geometric idea is that a depth failure can be stated as a length: there an isolatable interval in front of the camera; here a bias \(b\) in metres along the sun vector.
 
 ## Scene
 

@@ -11,7 +11,7 @@
         <div class="home-hero-copy">
           <p class="home-hero-kicker">New explainer · {{ heroPost.data.video.src | videoDuration }}</p>
           <h2 class="home-hero-title"><a href="{{ heroPost.url }}">{{ heroPost.data.title | cleanTitle }}</a></h2>
-          <p class="home-hero-dek">{{ heroPost.data.description | hook }}</p>
+          <p class="home-hero-dek">{{ heroPost.data.hook or (heroPost.data.description | hook) }}</p>
           <a class="home-hero-cta" href="/posts/">Browse all videos →</a>
         </div>
       </section>

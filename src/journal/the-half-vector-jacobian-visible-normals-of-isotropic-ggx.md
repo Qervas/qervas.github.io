@@ -1,6 +1,7 @@
 ---
 title: "Video: The Half-Vector Jacobian — Visible Normals of Isotropic GGX"
 description: "An animated walkthrough of why rough metal turns noisy at grazing angles, and how sampling only the microfacet normals the viewer can see fixes it."
+hook: "Why sunset glare on a wet road is so hard to render cleanly, and the trick that fixes it."
 date: 2026-10-10
 tags:
   - graphics

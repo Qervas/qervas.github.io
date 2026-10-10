@@ -1,6 +1,7 @@
 ---
 title: "Reprojection and Depth Discontinuities"
 description: "Color clamp asks chromatic plausibility; depth reject asks same-surface. Same VP warp — A/B/C on identical current buffers."
+hook: "Why a character moving in front of a wall can leave a smeared trail behind them in games."
 date: 2026-09-17
 tags:
   - graphics

@@ -1,6 +1,7 @@
 ---
 title: "Multiple Importance Sampling and the Balance Heuristic"
 description: "Kiln-mouth glaze shelf. Balance weights two legal arms so neither BSDF nor light sampling alone owns the lip or the miss."
+hook: "Those stray white dots in a noisy render are called fireflies, and one simple blend makes them go away."
 date: 2026-09-26
 tags:
   - graphics

@@ -1,6 +1,7 @@
 ---
 title: "Solid Angle and the Rendering Equation"
 description: "Path tracers sample dω (sr). Irradiance and the RE track projected solid angle. Courtyard skylight and a Lambert card measure the gap."
+hook: "Why a skylight overhead lights a room far more than the same window low on the wall."
 date: 2026-09-22
 tags:
   - graphics
