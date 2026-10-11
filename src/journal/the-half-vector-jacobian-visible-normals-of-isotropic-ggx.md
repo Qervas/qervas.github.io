@@ -9,9 +9,9 @@ tags:
   - video
 math: true
 video:
-  src: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.mp4
+  src: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf-explainer-n2.mp4
   poster: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/poster.jpg
-  vtt: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf.vtt
+  vtt: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/ggx-vndf-explainer-n2.vtt
 cover: /assets/journal/the-half-vector-jacobian-visible-normals-of-isotropic-ggx/00_cover.jpg
 ---
 
