@@ -1,0 +1,161 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:07.355
+You've probably seen this in a game. A shiny metal pipe off in the distance, and its highlight fizzes and sparkles.
+
+00:00:07.705 --> 00:00:13.529
+Move the camera and the sparkle crawls across the surface, like static on an old television.
+
+00:00:13.879 --> 00:00:22.497
+Here's the same thing on a steel roller. On the left the highlight is smooth. Further right the metal gets rougher, and the highlight breaks into glitter.
+
+00:00:22.847 --> 00:00:29.695
+Same roller, same lamp, same texture. One small formula turns that glitter into a soft, wider glow.
+
+00:00:30.045 --> 00:00:33.971
+It's called the Toksvig factor, and it's worth seeing where it comes from.
+
+00:00:35.171 --> 00:00:38.797
+Zoom into the metal and the surface is covered in tiny bumps.
+
+00:00:39.147 --> 00:00:45.974
+Each bump tilts the surface a little. The direction a surface faces is its normal, drawn here as an arrow.
+
+00:00:46.324 --> 00:00:53.364
+From far away, one pixel covers a whole patch of these bumps. Here it's a sixteen by sixteen block of texels.
+
+00:00:53.714 --> 00:01:00.775
+If the pixel only looks at the normal in the middle, it's a coin toss. Either that bump catches the lamp, or it misses.
+
+00:01:01.125 --> 00:01:07.653
+The pixel next door picks a different bump, so the highlight flickers between bright and dark. That's the sparkle.
+
+00:01:08.853 --> 00:01:12.309
+The obvious move is to average all the normals in the patch.
+
+00:01:12.659 --> 00:01:18.462
+Every normal has length one. But when they point different ways, their average comes out a bit shorter.
+
+00:01:18.812 --> 00:01:25.084
+Call that length r. If all the bumps agree, r is one. The more they disagree, the shorter it gets.
+
+00:01:25.434 --> 00:01:28.506
+On our test patch, r is just a hair under one.
+
+00:01:28.856 --> 00:01:34.595
+That barely looks shorter. But this highlight is so tight that even a tiny shortening matters a lot.
+
+00:01:35.795 --> 00:01:43.347
+How tight is the highlight? We take the cosine of the angle between the normal and the half vector, and raise it to a power, s.
+
+00:01:43.697 --> 00:01:50.118
+The half vector points halfway between your eye and the lamp. When the normal lines up with it, you see the highlight.
+
+00:01:50.468 --> 00:01:56.377
+The power s sets the width. A big power gives a small, sharp highlight. Ours is sixty-four.
+
+00:01:56.727 --> 00:02:04.279
+Now, if you average lots of sharp highlights, each from a slightly tilted bump, you get one highlight that's lower and wider.
+
+00:02:05.479 --> 00:02:08.274
+So what should the pixel do with that average normal?
+
+00:02:08.624 --> 00:02:13.445
+One option is to stretch it back to length one and keep the power at sixty-four.
+
+00:02:13.795 --> 00:02:19.897
+The sparkle goes away, but the highlight stays narrow and polished, as if the metal weren't rough at all.
+
+00:02:20.247 --> 00:02:23.959
+Another option is to keep the short normal and keep the power.
+
+00:02:24.309 --> 00:02:30.538
+The peak gets dimmer, but the width doesn't budge. Both curves drop to half at exactly the same angle.
+
+00:02:30.888 --> 00:02:35.240
+Dimming isn't blurring. To widen the highlight, the power has to come down.
+
+00:02:36.440 --> 00:02:41.261
+That's exactly what Toksvig does. He turns the length r into a factor, f.
+
+00:02:41.611 --> 00:02:45.729
+f is r, divided by r plus s times one minus r.
+
+00:02:46.079 --> 00:02:48.916
+Then the new power, s prime, is f times s.
+
+00:02:49.266 --> 00:02:53.746
+When the normals all agree, r is one, f is one, and nothing changes.
+
+00:02:54.096 --> 00:03:00.411
+On the test patch the factor comes out close to a half, so the power drops from sixty-four to the mid thirties.
+
+00:03:00.761 --> 00:03:07.033
+The shortening you can barely see in the arrow is precisely the information that tells the highlight to spread out.
+
+00:03:08.233 --> 00:03:14.355
+There's another way to read r. Take one minus r, divided by r, and call it alpha squared.
+
+00:03:14.705 --> 00:03:20.828
+It behaves like the spread of the bump slopes. It's zero for a mirror, and it grows as the slopes scatter.
+
+00:03:21.178 --> 00:03:27.343
+Written that way the factor is even simpler. f is one, over one plus s times alpha squared.
+
+00:03:27.693 --> 00:03:35.395
+So the power comes down by exactly as much as the normals vary. On the test patch that spread is small, but not zero.
+
+00:03:36.595 --> 00:03:41.715
+Now the measurement. These curves show highlight brightness against angle, for the test patch.
+
+00:03:42.065 --> 00:03:48.337
+The white curve is the truth. We shade every single texel at power sixty-four and average the results.
+
+00:03:48.687 --> 00:03:55.044
+The red curve is the stretched normal. Its peak is almost twice too bright, and it falls off far too early.
+
+00:03:55.394 --> 00:04:00.301
+The orange curve is Toksvig. Its peak lands within a couple of percent of the truth.
+
+00:04:00.651 --> 00:04:06.560
+And it falls to half brightness at almost the same angle. It sits right on top of the white curve.
+
+00:04:07.760 --> 00:04:11.856
+Across the whole roller, from polished to blasted, the picture holds.
+
+00:04:12.206 --> 00:04:16.942
+Shading with a single normal flickers, and its brightness jumps all over the place.
+
+00:04:17.292 --> 00:04:20.428
+Toksvig stays steady, nearly twenty times calmer.
+
+00:04:20.778 --> 00:04:27.391
+And measured against the true average, its error is only a tiny fraction of what the stretched normal gets wrong.
+
+00:04:27.741 --> 00:04:35.101
+The rougher the metal, the lower the factor, and the wider the Toksvig band, just as the averaged truth says it should be.
+
+00:04:36.301 --> 00:04:43.555
+A few limits. This is one slope texture, one sixteen by sixteen box, and a software renderer on the processor.
+
+00:04:43.905 --> 00:04:50.923
+It says nothing about real graphics card mipmaps, stretched footprints, or brushed metal with a grain direction.
+
+00:04:51.273 --> 00:04:58.697
+And one check was nudged. The sparkle threshold was lowered a touch, because the gentlest rough patch landed just under it.
+
+00:04:59.047 --> 00:05:02.589
+That doesn't change the ranking. Every check in the run passed.
+
+00:05:03.789 --> 00:05:05.218
+To put it in one line.
+
+00:05:05.568 --> 00:05:11.499
+The average normal gets shorter, the power drops, the highlight widens, and the sparkle goes away.
+
+00:05:11.849 --> 00:05:21.513
+This idea, usually called specular anti aliasing, is a standard trick in real time rendering, and its descendants are in modern game engines.
+
+00:05:21.863 --> 00:05:28.241
+The original is Michael Toksvig, Mipmapping Normal Maps, from two thousand five. Thanks for watching.
+

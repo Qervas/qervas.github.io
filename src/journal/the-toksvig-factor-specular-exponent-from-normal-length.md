@@ -9,9 +9,9 @@ tags:
   - lighting
 math: true
 video:
-  src: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/toksvig-explainer.mp4
+  src: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/toksvig-explainer-n2.mp4
   poster: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/toksvig-explainer-poster.jpg
-  vtt: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/toksvig-explainer.vtt
+  vtt: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/toksvig-explainer-n2.vtt
   caption: "Animated explainer (6 min, English captions): why distant metal sparkles, and how the Toksvig factor turns normal length into a wider highlight. The written note with full metrics follows below."
 cover: /assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/00_hero.jpg
 ---
