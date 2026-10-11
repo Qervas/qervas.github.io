@@ -9,9 +9,9 @@ tags:
   - lighting
 math: true
 video:
-  src: /assets/journal/solid-angle-and-the-rendering-equation/solid-angle-explainer.mp4
+  src: /assets/journal/solid-angle-and-the-rendering-equation/solid-angle-explainer-n2.mp4
   poster: /assets/journal/solid-angle-and-the-rendering-equation/solid-angle-explainer-poster.jpg
-  vtt: /assets/journal/solid-angle-and-the-rendering-equation/solid-angle-explainer.vtt
+  vtt: /assets/journal/solid-angle-and-the-rendering-equation/solid-angle-explainer-n2.vtt
   caption: "Animated explainer: why a light's size is its projected solid angle"
 cover: /assets/journal/solid-angle-and-the-rendering-equation/00_hero.jpg
 ---
