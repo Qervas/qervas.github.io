@@ -1,0 +1,146 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:02.960
+If you play games, you've seen these two bugs.
+
+00:00:03.310 --> 00:00:10.158
+Floors and walls covered in thin dark stripes, like a bad print. Graphics programmers call it shadow acne.
+
+00:00:10.508 --> 00:00:17.953
+Or the opposite. A character's shadow sits a little away from their feet, as if they were hovering. That one's called Peter Panning.
+
+00:00:18.303 --> 00:00:27.199
+Here are both on the same concrete curb, with the same sun and the same shadow map. The only thing that changes is one setting, the bias.
+
+00:00:27.549 --> 00:00:31.816
+One setting causing both bugs sounds odd, so let's take it apart.
+
+00:00:33.016 --> 00:00:35.576
+First, how does a game decide what's in shadow?
+
+00:00:35.926 --> 00:00:44.737
+It renders the scene once from the sun's point of view, and for each little square, called a texel, it stores how far away the closest surface is.
+
+00:00:45.087 --> 00:00:54.281
+That picture of distances is the shadow map. Ours is about five hundred texels across, and each one covers roughly a finger's width of ground.
+
+00:00:54.631 --> 00:01:01.458
+Later, for every point we shade, we ask one question. Is this point farther from the sun than what the sun saw?
+
+00:01:01.808 --> 00:01:04.795
+If it is, something is in front of it, so it's in shadow.
+
+00:01:05.995 --> 00:01:08.853
+Now look at a tilted surface through those texels.
+
+00:01:09.203 --> 00:01:15.198
+Each texel stores just one depth for its whole square, so the smooth slope gets stored as a staircase.
+
+00:01:15.548 --> 00:01:24.871
+Points on the real surface end up behind the front edge of each step. The comparison says they're farther than what the sun saw, so they shadow themselves.
+
+00:01:25.221 --> 00:01:31.450
+Half of each step comes out wrongly dark and half comes out lit. Step after step, that makes stripes.
+
+00:01:31.800 --> 00:01:36.536
+So shadow acne is really the shadow map's staircase, painted onto the surface.
+
+00:01:36.886 --> 00:01:44.139
+Steeper slopes make taller steps. On the steep wash ramp, each step is about three times taller than on the flat apron.
+
+00:01:45.339 --> 00:01:47.409
+The standard fix is called bias.
+
+00:01:47.759 --> 00:01:51.407
+Before comparing, slide the point a distance b toward the sun.
+
+00:01:51.757 --> 00:01:58.498
+Put simply, the point counts as shadowed only if its depth, minus b, is still greater than the stored depth.
+
+00:01:58.848 --> 00:02:04.352
+If b is taller than the step, every point clears its own staircase and the stripes disappear.
+
+00:02:04.702 --> 00:02:11.059
+Notice what b really is. It's not a magic tuning knob, it's a length, measured along the sun's ray.
+
+00:02:12.259 --> 00:02:15.033
+But the same slide affects real shadows too.
+
+00:02:15.383 --> 00:02:21.761
+Here's a steel plate about a centimetre thick, standing on the ground, with the sun fairly low in the sky.
+
+00:02:22.111 --> 00:02:30.986
+Sliding every ground point toward the sun pulls the points near the plate's foot out of its shadow. A lit gap opens up between the plate and its shadow.
+
+00:02:31.336 --> 00:02:40.189
+For a perfect shadow map, the gap is b times the cosine of the sun's height angle, minus the plate's thickness, and never less than zero.
+
+00:02:40.539 --> 00:02:49.286
+So bias pays for the staircase with a length, and once that length is bigger than the object is thick, the shadow comes loose. That's Peter Panning.
+
+00:02:50.486 --> 00:02:56.267
+So we measured both, sweeping the bias from zero up to about twelve centimetres in small steps.
+
+00:02:56.617 --> 00:03:03.167
+With no bias at all, about half of everything that should be lit is wrongly in shadow, on both surfaces.
+
+00:03:03.517 --> 00:03:09.490
+The gentle apron comes clean quite early. The steep ramp needs more than twice as much bias.
+
+00:03:09.840 --> 00:03:15.792
+Meanwhile the gap keeps growing, from nothing at the start to nearly ten centimetres at the far end.
+
+00:03:16.142 --> 00:03:22.201
+The strips underneath show the same thing in pictures. Stripes on the left, a floating shadow on the right.
+
+00:03:23.401 --> 00:03:31.166
+Where should we stop? We scored each bias by adding the leftover ramp acne and the gap, each measured against its own worst case.
+
+00:03:31.516 --> 00:03:33.820
+The best score lands at a few centimetres.
+
+00:03:34.170 --> 00:03:40.762
+There the apron is clean, a faint trace of acne is left on the ramp, and the gap has just started to open.
+
+00:03:41.112 --> 00:03:46.488
+Any single constant is a compromise, because the ramp and the apron want different lengths.
+
+00:03:47.688 --> 00:03:53.320
+So why use one length everywhere? Give each surface a bias that matches its own step height.
+
+00:03:53.670 --> 00:03:59.579
+This is slope scaled bias. Steep surfaces get a long offset, gentle ones a short one.
+
+00:03:59.929 --> 00:04:05.412
+At its simplest setting, it clears the acne on both surfaces, and the gap stays small.
+
+00:04:05.762 --> 00:04:10.477
+The smallest constant bias that clears the ramp leaves a noticeably bigger gap.
+
+00:04:10.827 --> 00:04:18.037
+That's why graphics interfaces offer a slope scaled depth bias, and most engines put it right next to the constant one.
+
+00:04:19.237 --> 00:04:20.368
+A few limits.
+
+00:04:20.718 --> 00:04:26.969
+This is one sun and one fairly small shadow map with nearest texel lookups, on a software renderer.
+
+00:04:27.319 --> 00:04:37.729
+No filtered soft shadows, no cascades, and no normal offset bias. The gap even grows in little plateaus, because the map is made of discrete steps.
+
+00:04:38.079 --> 00:04:45.098
+Every number comes from the depth comparison itself, never from eyeballing the pictures. Every check in the run passed.
+
+00:04:46.298 --> 00:04:47.727
+To put it in one line.
+
+00:04:48.077 --> 00:04:53.688
+Shadow acne is the shadow map's staircase. Bias is a length that lifts points over it.
+
+00:04:54.038 --> 00:05:01.163
+Too short and you get stripes. Too long and shadows float away. Scaling it with the slope gets you both right at once.
+
+00:05:01.513 --> 00:05:06.847
+Shadow mapping goes back to Lance Williams, in nineteen seventy-eight. Thanks for watching.
+
