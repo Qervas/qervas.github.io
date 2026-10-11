@@ -1,0 +1,104 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:06.971
+In a lot of modern games, when something moves across the screen, it drags a faint ghostly trail behind it.
+
+00:00:07.321 --> 00:00:14.723
+Here's a loft scene. The camera slides sideways, and the bottle and the sideboard leave a comet smeared across the bright window.
+
+00:00:15.073 --> 00:00:18.700
+It looks a lot like motion blur, but it isn't. So what is it?
+
+00:00:19.900 --> 00:00:27.452
+Games blend each new frame with the frames before it. That's temporal anti aliasing, or temporal accumulation.
+
+00:00:27.802 --> 00:00:36.847
+With a still camera it's wonderful. On the left, one frame of a checkerboard, jagged and shimmering. On the right, the blended result, smooth and calm.
+
+00:00:37.197 --> 00:00:43.981
+The rule is simple. The new colour is alpha times the current frame, plus one minus alpha times the history.
+
+00:00:44.331 --> 00:00:49.430
+Here alpha is small. Only a tenth of each pixel is new, and the rest is memory.
+
+00:00:50.630 --> 00:00:58.033
+Now an object moves away from a pixel. The current frame says background, but the history still remembers the object.
+
+00:00:58.383 --> 00:01:03.972
+Each frame the memory keeps most of itself, so the old colour fades away a little at a time.
+
+00:01:04.322 --> 00:01:12.087
+Say a trace stays visible until it's down to a small fraction of its strength. With our setting that takes a few dozen frames.
+
+00:01:12.437 --> 00:01:21.163
+Multiply by how fast the object moves, and you predict a trail a few hundred pixels long. What we measured came within a few percent of that.
+
+00:01:21.513 --> 00:01:29.833
+Motion blur is what the camera saw while the shutter was open. The ghost is what the pixel still remembers after the object has gone.
+
+00:01:31.033 --> 00:01:39.822
+Here's the same effect in a clean test. A still camera, an amber wall, and a dark pillar and a thin cyan stick, both sliding to the left.
+
+00:01:40.172 --> 00:01:46.935
+Behind them, to the right, the trail fades out gradually. Not an even smear like a shutter, but a fading memory.
+
+00:01:48.135 --> 00:01:51.591
+So what if we trust the current frame more? Turn alpha up.
+
+00:01:51.941 --> 00:02:00.986
+The trail shrinks fast. Each step up in alpha cuts the trail down sharply, until at the largest setting it's only a tenth of its original length.
+
+00:02:01.336 --> 00:02:10.915
+The measured points follow the predicted curve. At the smallest alpha our run was too short to catch the whole tail, so that point sits a bit below the curve.
+
+00:02:11.265 --> 00:02:17.707
+But a bigger alpha also throws away the smoothing we wanted. Shorter ghosts, more shimmer. That's the trade.
+
+00:02:18.907 --> 00:02:23.131
+Speed matters too. A slow object leaves a fairly short trail.
+
+00:02:23.481 --> 00:02:32.377
+Make it four times faster and the trail gets about four times longer, and faster still, longer still. The quicker it moves, the longer the ghost.
+
+00:02:33.577 --> 00:02:41.940
+The standard fix is a neighbourhood clamp. Look at the three by three pixels around the current one, and find the range of colours they cover.
+
+00:02:42.290 --> 00:02:48.370
+If the remembered colour falls outside that range, it can't belong here, so pull it back inside.
+
+00:02:48.720 --> 00:02:56.315
+On our test wall it works perfectly. The trail disappears, and the error in the trail region drops all the way to zero.
+
+00:02:57.515 --> 00:03:00.395
+But back in the loft, the clamp only mostly works.
+
+00:03:00.745 --> 00:03:05.246
+The error drops to about a tenth of what it was. Much better, but not zero.
+
+00:03:05.596 --> 00:03:15.431
+Busy textures make the neighbourhood range wide, with window frames, dark wood and bright glass all at once. Some stale colours fit inside and slip through.
+
+00:03:15.781 --> 00:03:21.327
+The clamp asks whether a colour is plausible. It never asks whether the object is still there.
+
+00:03:22.527 --> 00:03:29.866
+A few limits. These are single frames from short offline runs, a few dozen frames each, not a live game.
+
+00:03:30.216 --> 00:03:40.669
+The loft camera moves fast on purpose, to make the ghost easy to see. And this is plain temporal blending, not an upscaler like D L S S or F S R.
+
+00:03:41.019 --> 00:03:47.633
+Very thin objects like this stick still lag, because they're thinner than a pixel. Every check in the run passed.
+
+00:03:48.833 --> 00:03:53.953
+Temporal blending is a bet that the past is still true. Ghosts are what you pay when it isn't.
+
+00:03:54.303 --> 00:03:59.785
+The trail length is roughly the speed, times how many frames it takes the memory to fade out.
+
+00:04:00.135 --> 00:04:07.837
+Clamping cuts most of the ghost. Unreal Engine four made temporal anti aliasing with a neighbourhood clamp its default.
+
+00:04:08.187 --> 00:04:17.936
+For further reading, there's Brian Karis on high quality temporal supersampling, and the survey of temporal anti aliasing by Yang, Liu and Salvi.
+

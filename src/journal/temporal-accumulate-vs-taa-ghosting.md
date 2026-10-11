@@ -9,9 +9,9 @@ tags:
   - temporal
 math: true
 video:
-  src: /assets/journal/taa-ghosting/taa-explainer.mp4
+  src: /assets/journal/taa-ghosting/taa-explainer-n2.mp4
   poster: /assets/journal/taa-ghosting/taa-explainer-poster.jpg
-  vtt: /assets/journal/taa-ghosting/taa-explainer.vtt
+  vtt: /assets/journal/taa-ghosting/taa-explainer-n2.vtt
   caption: "Animated explainer: why moving objects leave ghost trails, and how the clamp cuts them"
 cover: /assets/journal/taa-ghosting/14_real_hero.jpg
 ---
