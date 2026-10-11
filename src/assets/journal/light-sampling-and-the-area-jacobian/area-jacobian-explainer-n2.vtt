@@ -1,0 +1,119 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:06.096
+Every photographer knows this trick. Move a softbox closer, and the light changes completely.
+
+00:00:06.446 --> 00:00:10.990
+The near edge of the panel suddenly dominates, and the far edge barely matters.
+
+00:00:11.340 --> 00:00:15.479
+Here's a softbox in a dark workshop, lighting a white card on a bench.
+
+00:00:15.829 --> 00:00:21.759
+A renderer handles a light like this by picking random points on the panel and adding up their light.
+
+00:00:22.109 --> 00:00:28.488
+But how much should each point count? Get that wrong, and the picture stays wrong no matter how long you render.
+
+00:00:29.688 --> 00:00:33.464
+Cut the panel into equal little squares, all with the same area.
+
+00:00:33.814 --> 00:00:40.022
+Now look at them from the card. The near squares look big. The far squares, seen at a slant, look tiny.
+
+00:00:40.372 --> 00:00:44.596
+How big a patch looks is its solid angle, the amount of sky it covers.
+
+00:00:44.946 --> 00:00:51.538
+The solid angle of a patch is its area, times the cosine of its tilt, divided by the distance squared.
+
+00:00:51.888 --> 00:00:57.371
+That conversion factor, cosine over distance squared, is called the area Jacobian.
+
+00:00:58.571 --> 00:01:06.421
+On this panel the Jacobian changes a lot. Between the nearest corner and the farthest, it differs by more than thirty times.
+
+00:01:06.771 --> 00:01:13.769
+We checked it directly. Divide the sky into equal cells, and count where thousands of random panel points land.
+
+00:01:14.119 --> 00:01:18.876
+Picking points evenly by area, some cells get ten times as many as others.
+
+00:01:19.226 --> 00:01:23.151
+Picking evenly by direction instead, the counts stay pretty even.
+
+00:01:23.501 --> 00:01:30.221
+So equal area isn't equal light. Near the bottom edge, a small piece of panel covers a lot of sky.
+
+00:01:31.421 --> 00:01:36.008
+So a point picked by area has to be reweighted by how much sky it covers.
+
+00:01:36.358 --> 00:01:45.147
+To turn the area probability into a direction probability, multiply by the distance squared, and divide by the cosine of the panel's tilt.
+
+00:01:45.497 --> 00:01:52.921
+Now near points get a big weight, and far, slanted points a small one, exactly matching what the photographer sees.
+
+00:01:53.271 --> 00:01:56.386
+The softbox trick and the formula are the same fact.
+
+00:01:57.586 --> 00:01:59.485
+What happens if you forget a piece?
+
+00:01:59.835 --> 00:02:04.741
+Drop the distance squared, and the answer settles around two thirds too dark, for good.
+
+00:02:05.091 --> 00:02:09.849
+Drop the panel's cosine, and it settles at about twice as bright as it should be.
+
+00:02:10.199 --> 00:02:14.423
+Apply the cosine twice, and it comes out at roughly half the brightness.
+
+00:02:14.773 --> 00:02:20.447
+These curves are flat. More samples don't help, because the estimate is heading to the wrong answer.
+
+00:02:21.647 --> 00:02:24.975
+With the full Jacobian, the yellow curve keeps falling.
+
+00:02:25.325 --> 00:02:30.723
+As the samples go from a handful up to about a thousand, the error shrinks about sixfold.
+
+00:02:31.073 --> 00:02:35.574
+That's what correct looks like. Noise that shrinks, not a floor that stays put.
+
+00:02:36.774 --> 00:02:42.001
+There's one more tempting shortcut. Treat the whole panel as a single point at its centre.
+
+00:02:42.351 --> 00:02:48.879
+But the card sits near the panel's lower edge, and off to one side. The centre is the wrong place to stand.
+
+00:02:49.229 --> 00:02:52.194
+The single point comes out about a fifth too dark.
+
+00:02:52.544 --> 00:02:57.749
+You can see it on the card. The single point simply misses the extra light from the near edge.
+
+00:02:58.949 --> 00:03:00.080
+A few limits.
+
+00:03:00.430 --> 00:03:04.697
+This is one rectangular panel, one matte card, and a software renderer.
+
+00:03:05.047 --> 00:03:11.596
+The pictures are tone mapped for viewing, so every number comes from the estimator itself, not from pixels.
+
+00:03:11.946 --> 00:03:13.610
+Every check in the run passed.
+
+00:03:14.810 --> 00:03:16.239
+To put it in one line.
+
+00:03:16.589 --> 00:03:24.184
+Equal area isn't equal light. Each point on a light covers sky in proportion to its cosine, over the distance squared.
+
+00:03:24.534 --> 00:03:31.638
+Every path tracer that samples area lights applies this factor. Leave it out, and no number of samples will save you.
+
+00:03:31.988 --> 00:03:40.095
+For more, see Shirley, Wang and Zimmerman, Monte Carlo techniques for direct lighting, from nineteen ninety-six. Thanks for watching.
+
