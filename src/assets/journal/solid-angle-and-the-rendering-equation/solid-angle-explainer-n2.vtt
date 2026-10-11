@@ -1,0 +1,116 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:05.755
+Why is noon sunshine so much stronger than evening sunshine, when it's the very same sun?
+
+00:00:06.105 --> 00:00:11.779
+And why does a skylight three times wider make a room almost nine times brighter, not three?
+
+00:00:12.129 --> 00:00:17.185
+Both answers come from one idea, and it sits at the heart of the rendering equation.
+
+00:00:17.535 --> 00:00:25.194
+Here's our test room. A courtyard with a round patch of bright sky overhead, and a white card on the floor measuring the light.
+
+00:00:26.394 --> 00:00:29.274
+First, how big is a light, as seen from the card?
+
+00:00:29.624 --> 00:00:39.373
+Not its size in metres, and not how many pixels it covers. What matters is how much of the sky it fills. That's its solid angle, measured in steradians.
+
+00:00:39.723 --> 00:00:47.510
+A whole sphere of directions is four pi steradians, about twelve and a half. Half a sphere is two pi, a bit over six.
+
+00:00:47.860 --> 00:00:55.817
+Our patch of sky is a round cap. Its solid angle is two pi, times one minus the cosine of its angular radius.
+
+00:00:57.017 --> 00:01:05.871
+Now the skylight test. Same sky brightness, same camera. Only the cap's angular radius changes, from five degrees to fifteen.
+
+00:01:06.221 --> 00:01:09.634
+The cap ends up covering close to nine times as much sky.
+
+00:01:09.984 --> 00:01:13.632
+And the light on the card goes up by almost exactly that much.
+
+00:01:13.982 --> 00:01:21.918
+That's the skylight puzzle. Three times wider in angle means about nine times more sky, so about nine times more light.
+
+00:01:23.118 --> 00:01:27.619
+But the light grows a touch less than the sky does. The reason is a cosine.
+
+00:01:27.969 --> 00:01:35.799
+Light arriving at a slant spreads over more floor, so each direction counts in proportion to the cosine of its angle from straight up.
+
+00:01:36.149 --> 00:01:41.375
+Weight every bit of solid angle by that cosine, and you get the projected solid angle.
+
+00:01:41.725 --> 00:01:48.701
+For the cap, it's pi, times the sine of the radius, squared. Think of it as the cap's shadow, flattened onto the floor.
+
+00:01:49.051 --> 00:01:58.822
+The light on the card doesn't follow the solid angle. It follows the projected solid angle. That cosine is the whole story of noon versus evening sun.
+
+00:02:00.022 --> 00:02:06.977
+We tested that directly. Here's the card's light against projected solid angle, across lots of cap sizes.
+
+00:02:07.327 --> 00:02:13.919
+The measured points sit exactly on a straight line. Light equals sky brightness times projected solid angle.
+
+00:02:14.269 --> 00:02:20.818
+The red ghost line uses plain solid angle, forgetting the cosine, and it drifts away as the cap grows.
+
+00:02:21.168 --> 00:02:30.747
+For a small cap the two measures agree almost perfectly. For the biggest one they're a couple of percent apart. The bigger the light, the more the cosine matters.
+
+00:02:31.947 --> 00:02:36.576
+Now tilt the card instead. Keep the same sky, and lean the card well over.
+
+00:02:36.926 --> 00:02:41.363
+The sky didn't get darker. The card just sees it at a slant, and catches less.
+
+00:02:41.713 --> 00:02:46.151
+The cosine is geometry. It's not a brightness slider you get to tune.
+
+00:02:46.501 --> 00:02:52.005
+It's exactly why winter sun feels weak, and why solar panels are angled toward the sun.
+
+00:02:53.205 --> 00:02:57.279
+One more consequence. A whole hemisphere is two pi steradians.
+
+00:02:57.629 --> 00:03:01.725
+But weight it by the cosine, and the projected hemisphere is just pi.
+
+00:03:02.075 --> 00:03:12.742
+So a uniform sky of brightness L puts L times pi on a flat card, not L times two pi. That pi, in every Lambert formula, comes from right here.
+
+00:03:13.942 --> 00:03:18.251
+Finally, a path tracer estimates this integral with random directions.
+
+00:03:18.601 --> 00:03:28.927
+Sampling evenly over solid angle, or in proportion to the cosine, both get there, as long as each sample is divided by the probability it was drawn with.
+
+00:03:29.277 --> 00:03:34.610
+As the sample count climbs toward a thousand, the noise melts away and the error falls.
+
+00:03:35.810 --> 00:03:36.941
+A few limits.
+
+00:03:37.291 --> 00:03:41.835
+One courtyard, one round sky cap, one matte card, and a software renderer.
+
+00:03:42.185 --> 00:03:49.097
+Every number comes from the exact formulas and the estimator, not from the pictures. Every check in the run passed.
+
+00:03:50.297 --> 00:03:52.067
+To sum it up in three lines.
+
+00:03:52.417 --> 00:03:56.727
+The size of a light means solid angle, not metres, and not pixels.
+
+00:03:57.077 --> 00:04:02.474
+Surfaces respond to projected solid angle, the solid angle weighted by the cosine.
+
+00:04:02.824 --> 00:04:10.568
+That's the cosine inside the rendering equation, written down by James Kajiya in nineteen eighty-six. Thanks for watching.
+
