@@ -9,9 +9,9 @@ tags:
   - sampling
 math: true
 video:
-  src: /assets/journal/anisotropic/aniso-explainer.mp4
+  src: /assets/journal/anisotropic/aniso-explainer-n2.mp4
   poster: /assets/journal/anisotropic/aniso-explainer-poster.jpg
-  vtt: /assets/journal/anisotropic/aniso-explainer.vtt
+  vtt: /assets/journal/anisotropic/aniso-explainer-n2.vtt
   caption: "Animated explainer: why floor textures turn to mush when you look along them, and how anisotropic filtering fixes it"
 cover: /assets/journal/anisotropic/15_hallway.jpg
 ---
