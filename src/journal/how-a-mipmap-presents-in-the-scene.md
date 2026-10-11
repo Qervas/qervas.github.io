@@ -9,9 +9,9 @@ tags:
   - sampling
 math: true
 video:
-  src: /assets/journal/mipmaps/mip-explainer.mp4
+  src: /assets/journal/mipmaps/mip-explainer-n2.mp4
   poster: /assets/journal/mipmaps/mip-explainer-poster.jpg
-  vtt: /assets/journal/mipmaps/mip-explainer.vtt
+  vtt: /assets/journal/mipmaps/mip-explainer-n2.vtt
   caption: "Animated explainer: why distant textures sparkle without mipmaps, and why the blur is a legal limit"
 cover: /assets/journal/mipmaps/16_cornell.jpg
 ---
