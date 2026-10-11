@@ -1,0 +1,95 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:09.296
+In a lot of games, when the camera slides past a pillar or a character, you can catch a faint smear along its edge, a ghost of where it used to be.
+
+00:00:09.646 --> 00:00:18.329
+Here's our test scene, a metro platform with square pillars and a thin railing. Nothing in it moves except the camera, which slides sideways.
+
+00:00:18.679 --> 00:00:25.377
+So why would a perfectly still pillar leave a ghost? It comes down to a question the renderer forgot to ask.
+
+00:00:26.577 --> 00:00:35.281
+Modern renderers save work by reusing the previous frame. Blending old pixels with new ones smooths out jagged edges and noise.
+
+00:00:35.631 --> 00:00:42.245
+The final colour is a weight, w, times the history, plus one minus w times the current shading.
+
+00:00:42.595 --> 00:00:49.741
+Here w is high. Nearly all of each pixel comes from the past. That's powerful, as long as it's the right past.
+
+00:00:50.941 --> 00:00:57.277
+But the camera moved. So for each pixel, the renderer asks where this point was on screen one frame ago.
+
+00:00:57.627 --> 00:01:04.817
+It knows the pixel's depth and both camera positions, so it can trace the point back exactly. That's called reprojection.
+
+00:01:05.167 --> 00:01:09.753
+In our scene, the nearest pillar slides more than a dozen pixels every frame.
+
+00:01:10.953 --> 00:01:17.119
+Now watch the edge of a pillar. As the camera slides, a strip of the wall behind it comes into view.
+
+00:01:17.469 --> 00:01:24.253
+Those pixels show the far wall now. But one frame ago, that same spot on screen was covered by the pillar.
+
+00:01:24.603 --> 00:01:31.963
+So the history that comes back is pillar, not wall. Wrong surface. Blend most of that in, and you paint a ghost of the pillar.
+
+00:01:33.163 --> 00:01:42.336
+The classic safety check is a colour clamp. Look at the three by three pixels around the current one, and squeeze the history colour inside their range.
+
+00:01:42.686 --> 00:01:45.715
+It's asking whether this old colour looks plausible here.
+
+00:01:46.065 --> 00:01:56.135
+But right at a pillar edge, the neighbourhood holds pillar, floor and wall all at once. Pillar colour fits inside that range, so the clamp lets the ghost through.
+
+00:01:57.335 --> 00:02:02.455
+So ask a different question. Not whether it looks right, but whether it's the same surface.
+
+00:02:02.805 --> 00:02:08.927
+Compare the depth stored in history with the depth this point should have had, and take their relative difference.
+
+00:02:09.277 --> 00:02:17.896
+If it's bigger than a small threshold, tau, the old pixel belongs to something else. Set the weight to zero and trust the current frame alone.
+
+00:02:18.246 --> 00:02:27.803
+Colour asks whether the past looks right. Depth asks whether the past is even the same thing. At an edge, only the second question gets the right answer.
+
+00:02:29.003 --> 00:02:37.238
+Here's the measured failure mask. Red marks pixels whose history came from the wrong surface. Blue marks history that slid off screen.
+
+00:02:37.588 --> 00:02:46.889
+The red hugs every pillar outline and the railing. Altogether only a couple of percent of the frame gets rejected, a bit more by depth than off screen.
+
+00:02:47.239 --> 00:02:52.658
+Around those edges, adding the depth test cuts the error of the colour clamp to well under half.
+
+00:02:53.858 --> 00:03:00.215
+What if we change tau? Even making it sixteen times bigger, the rejected fraction barely moves.
+
+00:03:00.565 --> 00:03:09.163
+That's because depth edges are cliffs, not slopes. History from the wrong surface is wildly wrong, so any sensible threshold catches it.
+
+00:03:09.513 --> 00:03:16.403
+And with a still camera, nothing gets rejected at all. Both methods give the same image, just as they should.
+
+00:03:17.603 --> 00:03:26.222
+A few limits. In the final pixels the difference is subtle. The ghost lives in a thin strip, and the numbers show it better than the eye does.
+
+00:03:26.572 --> 00:03:35.276
+Here each pixel reuses one frame, not a long trail of frames. And the thin railing still lags a little, because it's thinner than a pixel.
+
+00:03:35.626 --> 00:03:40.917
+It's an offline software render, not a game benchmark. Every check in the run passed.
+
+00:03:42.117 --> 00:03:47.663
+When you reuse the past, checking that it looks right isn't enough. Check that it's the same surface.
+
+00:03:48.013 --> 00:03:56.077
+Colour clamps catch colours that don't fit. Depth tests catch the wrong object. Temporal techniques in real engines use both.
+
+00:03:56.427 --> 00:04:04.918
+For further reading, there's Nehab and colleagues on reverse reprojection caching, and Brian Karis on high quality temporal supersampling.
+

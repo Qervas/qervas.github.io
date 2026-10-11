@@ -9,9 +9,9 @@ tags:
   - temporal
 math: true
 video:
-  src: /assets/journal/reprojection-depth-discontinuities/rp-explainer.mp4
+  src: /assets/journal/reprojection-depth-discontinuities/rp-explainer-n2.mp4
   poster: /assets/journal/reprojection-depth-discontinuities/rp-explainer-poster.jpg
-  vtt: /assets/journal/reprojection-depth-discontinuities/rp-explainer.vtt
+  vtt: /assets/journal/reprojection-depth-discontinuities/rp-explainer-n2.vtt
   caption: "Animated explainer: why a moving camera leaves ghosts at edges, and the depth test that stops them"
 cover: /assets/journal/reprojection-depth-discontinuities/00_hero.jpg
 ---
