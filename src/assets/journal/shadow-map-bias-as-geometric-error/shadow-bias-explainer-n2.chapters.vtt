@@ -1,31 +1,31 @@
 WEBVTT
 
 00:00:00.000 --> 00:00:32.618
-Intro
+Striped and floating shadows
 
 00:00:32.618 --> 00:01:05.599
-Shadow Map
+How shadow maps work
 
 00:01:05.599 --> 00:01:44.946
-Acne
+Where the stripes come from
 
 00:01:44.946 --> 00:02:11.868
-Bias
+Nudging toward the sun
 
 00:02:11.868 --> 00:02:50.097
-Peter-panning
+Shadows that float away
 
 00:02:50.097 --> 00:03:23.013
-Sweep
+Sweeping the bias
 
 00:03:23.013 --> 00:03:47.302
-Tradeoff
+Finding the sweet spot
 
 00:03:47.302 --> 00:04:18.853
-Slope
+Bias that follows slope
 
 00:04:18.853 --> 00:04:45.915
-What the numbers say
+Limits of this test
 
 00:04:45.915 --> 00:05:07.665
-Takeaway
+What to remember
