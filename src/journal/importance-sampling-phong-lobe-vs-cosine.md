@@ -9,9 +9,9 @@ tags:
   - lighting
 math: true
 video:
-  src: /assets/journal/importance-sampling-phong-lobe-vs-cosine/is-explainer.mp4
+  src: /assets/journal/importance-sampling-phong-lobe-vs-cosine/is-explainer-n2.mp4
   poster: /assets/journal/importance-sampling-phong-lobe-vs-cosine/is-explainer-poster.jpg
-  vtt: /assets/journal/importance-sampling-phong-lobe-vs-cosine/is-explainer.vtt
+  vtt: /assets/journal/importance-sampling-phong-lobe-vs-cosine/is-explainer-n2.vtt
   caption: "Animated explainer: why the way you aim rays decides where the noise goes"
 cover: /assets/journal/importance-sampling-phong-lobe-vs-cosine/00_hero.jpg
 ---
