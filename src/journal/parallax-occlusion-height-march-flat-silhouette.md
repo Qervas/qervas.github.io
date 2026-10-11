@@ -9,9 +9,9 @@ tags:
   - sampling
 math: true
 video:
-  src: /assets/journal/parallax-occlusion/pom-explainer.mp4
+  src: /assets/journal/parallax-occlusion/pom-explainer-n2.mp4
   poster: /assets/journal/parallax-occlusion/pom-explainer-poster.jpg
-  vtt: /assets/journal/parallax-occlusion/pom-explainer.vtt
+  vtt: /assets/journal/parallax-occlusion/pom-explainer-n2.vtt
   caption: "Animated explainer: why game bricks look deep inside but their edges stay perfectly flat"
 cover: /assets/journal/parallax-occlusion/05_graze_3up.jpg
 ---
