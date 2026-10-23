@@ -16,12 +16,14 @@
 {% endif %}
 {% include "chrome/tabs.njk" %}
 {% if pageType == "work" %}
-{% include "chrome/journal-teaser.njk" %}
       <div class="feed-running-head" id="feed-running-head" hidden role="status" aria-live="polite">
         <span class="feed-running-head-tag" id="feed-running-head-tag"></span>
       </div>
 {% endif %}
 {{ content | safe }}
+{% if pageType == "work" %}
+{% include "chrome/journal-teaser.njk" %}
+{% endif %}
 {% include "chrome/footer.njk" %}
     </main>
 
