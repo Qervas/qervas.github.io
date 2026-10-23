@@ -1,15 +1,4 @@
     <aside class="rail-right" aria-label="Sidebar">
-      <div class="aside-card aside-journal-card">
-        <div class="aside-card-head">
-          <div class="aside-card-title">Journal videos</div>
-          <a class="aside-journal-all" href="/posts/">All →</a>
-        </div>
-        <div class="aside-vlist">
-          {% set cardClass = "vcard-row" %}
-          {% for p in collections.journal | head(6) %}{% include "chrome/video-card.njk" %}{% endfor %}
-        </div>
-      </div>
-
       <div class="aside-card aside-heatmap" id="aside-heatmap">
         <div class="aside-card-head">
           <div class="aside-card-title">GitHub</div>
@@ -61,6 +50,17 @@
           View profile on GitHub ↗
         </a>
         <div class="gh-tooltip" id="gh-tooltip" hidden></div>
+      </div>
+
+      <div class="aside-card aside-journal-card">
+        <div class="aside-card-head">
+          <div class="aside-card-title">Journal videos</div>
+          <a class="aside-journal-all" href="/posts/">All →</a>
+        </div>
+        <div class="aside-vlist">
+          {% set cardClass = "vcard-row" %}
+          {% for p in collections.journal | head(3) %}{% include "chrome/video-card.njk" %}{% endfor %}
+        </div>
       </div>
 
       <div class="aside-footer">

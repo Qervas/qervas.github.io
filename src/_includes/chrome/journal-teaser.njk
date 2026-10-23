@@ -1,18 +1,17 @@
 {% set heroPost = null %}
 {% for p in collections.journal %}{% if not heroPost and p.data.video %}{% set heroPost = p %}{% endif %}{% endfor %}
 {% if heroPost %}
-      <section class="home-hero" aria-label="Latest explainer video" id="home-journal-teaser">
-        <div class="home-hero-player">
-          <video controls preload="none" playsinline poster="{{ heroPost.data.video.poster }}" width="1920" height="1080">
-            <source src="{{ heroPost.data.video.src }}" type="video/mp4">
-            {% if heroPost.data.video.vtt %}<track kind="captions" src="{{ heroPost.data.video.vtt }}" srclang="en" label="English">{% endif %}
-          </video>
-        </div>
-        <div class="home-hero-copy">
-          <p class="home-hero-kicker">New explainer · {{ heroPost.data.video.src | videoDuration }}</p>
-          <h2 class="home-hero-title"><a href="{{ heroPost.url }}">{{ heroPost.data.title | cleanTitle }}</a></h2>
-          <p class="home-hero-dek">{{ heroPost.data.hook or (heroPost.data.description | hook) }}</p>
-          <a class="home-hero-cta" href="/posts/">Browse all videos →</a>
+      <section class="home-journal-compact" aria-label="From the journal" id="home-journal-teaser">
+        {% if heroPost.data.video.poster %}
+        <a class="home-journal-compact-thumb" href="{{ heroPost.url }}" aria-label="{{ heroPost.data.title | cleanTitle }}">
+          <img src="{{ heroPost.data.video.poster }}" alt="" width="160" height="90" loading="lazy">
+        </a>
+        {% endif %}
+        <div class="home-journal-compact-copy">
+          <p class="home-journal-compact-kicker">From the journal</p>
+          <h2 class="home-journal-compact-title"><a href="{{ heroPost.url }}">{{ heroPost.data.title | cleanTitle }}</a></h2>
+          <p class="home-journal-compact-hook">{{ heroPost.data.hook or (heroPost.data.description | hook) }}</p>
+          <a class="home-journal-compact-all" href="/posts/">All journal videos →</a>
         </div>
       </section>
 {% endif %}
