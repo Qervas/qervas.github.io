@@ -1,6 +1,6 @@
 ---
 title: "Split-Sum Image-Based Lighting"
-description: "An HDR loft folded into a GGX-prefiltered cube times a DFG LUT. Distant irradiance fills dielectrics — not local multi-bounce GI."
+description: "An HDR loft folded into a GGX-prefiltered cube times a DFG LUT. Distant irradiance fills dielectrics, not local multi-bounce GI."
 hook: "How games make shiny objects reflect a whole room without tracing a single ray."
 date: 2026-09-15
 tags:
@@ -16,15 +16,15 @@ video:
 cover: /assets/journal/ibl-split-sum/00_hero.jpg
 ---
 
-The last note covered tangent-space height marching to make a flat quad read as carved brick, though the silhouette remained completely flat. This note shifts focus away from samplers. Instead, an HDR environment is folded into two specific tables: a GGX-prefiltered specular cube and a DFG lookup table (LUT). The fragment shader simply multiplies them. **Split-sum makes environment lighting display-ready.** Here, toggling irradiance acts as our GI-**shaped** control—providing distant environment fill rather than local multi-bounce illumination.
+The last note covered tangent-space height marching to make a flat quad read as carved brick, though the silhouette remained completely flat. This note shifts focus away from samplers. Instead, an HDR environment is folded into two specific tables: a GGX-prefiltered specular cube and a DFG lookup table (LUT). The fragment shader simply multiplies them. **Split-sum makes environment lighting display-ready.** Here, toggling irradiance acts as our GI-**shaped** control, providing distant environment fill rather than local multi-bounce illumination.
 
-![Cream stoneware bottle and brass sphere on board-formed concrete, loft window behind, full split-sum. Metal carries sharp mullions; glaze picks up a dim rim and colored fill. Khronos PBR Neutral, exposure 1.05. Photograph only — no energy metric.](/assets/journal/ibl-split-sum/00_hero.jpg)
+![Cream stoneware bottle and brass sphere on board-formed concrete, loft window behind, full split-sum. Metal carries sharp mullions; glaze picks up a dim rim and colored fill. Khronos PBR Neutral, exposure 1.05. Photograph only, no energy metric.](/assets/journal/ibl-split-sum/00_hero.jpg)
 
 We placed cream stoneware and measured brass on a shadow catcher, backed by a loft window under full split-sum lighting. The metal accurately reflects sharp mullions. The ceramic glaze picks up a dim rim and colored fill from the room itself, rather than relying on a flat ambient term. The HUD notes `Khronos PBR Neutral exposure=1.05`, `distant environment irradiance, not local multi-bounce GI`, and `photo-only - no metric`. This is a photograph; do not try to hang an energy number on it.
 
 ![Same camera, same exposure, three shaders. Left SPEC IBL ONLY: ceramic flanks dark; brass still shows the window. Middle IRRADIANCE ONLY: ceramic fills; brass black (kD=0). Right FULL SPLIT-SUM. Distant environment ambient, not local multi-bounce GI.](/assets/journal/ibl-split-sum/01_gi_control.jpg)
 
-Using the same camera and exposure, we compare three shader configurations. On the left (**SPEC IBL ONLY**), the ceramic flanks go dark, though the brass still reflects the window. In the middle (**IRRADIANCE ONLY**), the ceramic fills with light, but the brass renders black because \(k_D=0\). On the right (**FULL SPLIT-SUM**), we see the complete distant environment ambient contribution—again, this is not local multi-bounce GI.
+Using the same camera and exposure, we compare three shader configurations. On the left (**SPEC IBL ONLY**), the ceramic flanks go dark, though the brass still reflects the window. In the middle (**IRRADIANCE ONLY**), the ceramic fills with light, but the brass renders black because \(k_D=0\). On the right (**FULL SPLIT-SUM**), we see the complete distant environment ambient contribution, again, this is not local multi-bounce GI.
 
 We rendered the hero shot using Mesa 25.0.7 llvmpipe in a linear working space. 
 
@@ -40,7 +40,7 @@ We rendered the hero shot using Mesa 25.0.7 llvmpipe in a linear working space.
 
 
 ## Scene
-The lighting environment is an authored HDR loft—a procedural latlong rather than a captured EXR. It features plaster, baseboards, timber-style beams, a warm floor, offset backdrop sashes, and a key \(+Z\) factory window with jambs and a 4×5 mullion grid. There are no analytical key lights acting on the hero plates; the environment alone provides the illumination.
+The lighting environment is an authored HDR loft, a procedural latlong rather than a captured EXR. It features plaster, baseboards, timber-style beams, a warm floor, offset backdrop sashes, and a key \(+Z\) factory window with jambs and a 4×5 mullion grid. There are no analytical key lights acting on the hero plates; the environment alone provides the illumination.
 
 **Presentation hook.** This is a \(1920\times 1080\) product still photographed in GL with CPU tone mapping. It showcases glazed ceramic (a dielectric with \(F_0=0.04\) and a glaze roughness between \(0.14\) and \(0.30\)) alongside measured brass with \(F_0=(0.910, 0.778, 0.423)\). Both rest with a soft planar contact on the shadow catcher. This plate is strictly photographic.
 
@@ -52,7 +52,7 @@ Walk the three panels:
 * **Irradiance only.** The distant-environment \(E(\mathbf{n})\) fills out the ceramic. The brass is pitch black because \(k_D=0\). There is no local object bounce, no bottle-reflected-in-sphere, and no floor color bleeding onto the metal.
 * **Full split-sum.** We combine the specular cube \(\times\) DFG with the irradiance. This generates the final plate that passes for a product shot.
 
-![Brass roughness ladder, six rungs r∈{0.05, 0.18, 0.32, 0.48, 0.68, 1.00}. Smooth metal still shows mullions; the lobe widens; highlight tints with F0. Photograph only — no metric.](/assets/journal/ibl-split-sum/02_metal_roughness.jpg)
+![Brass roughness ladder, six rungs r∈{0.05, 0.18, 0.32, 0.48, 0.68, 1.00}. Smooth metal still shows mullions; the lobe widens; highlight tints with F0. Photograph only, no metric.](/assets/journal/ibl-split-sum/02_metal_roughness.jpg)
 
 **Conductor ladder.** We evaluate measured brass across six roughness rungs \(r\in\{0.05, 0.18, 0.32, 0.48, 0.68, 1.00\}\). By keeping this albedo-only, the rung roughness serves as the sole control variable. The smooth metal cleanly reflects the mullions. As roughness increases, the specular lobe widens and the highlight tints with \(F_0\). The material body remains accurate without suffering from an irradiance-albedo mix-up, driven by `lod = roughness * (mips-1)`. This is photographic only.
 
@@ -94,7 +94,7 @@ Instead, we factor the integral into **prefiltered incident radiance** (which de
 
 with \(\mathbf{R}=\mathrm{reflect}(-\mathbf{v},\mathbf{n})\). This multiplication is the core production trick. This note documents the visual results and explicitly names the two stored tables.
 
-### Term A — prefiltered radiance
+### Term A, prefiltered radiance
 
 This term is stored across cubemap mips. We use standard Karis weighting where \(V=N=R\), omitting the second \(G\) in the prefilter:
 
@@ -110,7 +110,7 @@ For this run, our specular cube is **128** square with **8** mips. These are CPU
 
 Given eight mips, we use \(\lambda=7r\). This is explicitly **not** a GGX solid-angle match. It remains the default mapping simply to ensure the roughness ladder is visually readable. The shader implementation is `lod = rough * uMaxMip`.
 
-### Term B — DFG / EnvBRDF LUT
+### Term B, DFG / EnvBRDF LUT
 
 This 2D LUT uses \(X=\mathbf{n}\cdot\mathbf{v}\) and \(Y=\) roughness to handle single-scatter integration. The Schlick \(F\) equation is split into a base \(F_0\) and the white-Fresnel remainder. We use Smith–GGX IBL geometry where:
 
@@ -215,7 +215,7 @@ This strip shows smooth metal, rough metal, and a Lambertian surface with specul
 
 ---
 
-### Mesa / llvmpipe — what this run can claim
+### Mesa / llvmpipe, what this run can claim
 | item | value |
 | :--- | :--- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
@@ -247,7 +247,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 Photoreal gallery, Mesa llvmpipe:
 
@@ -270,7 +270,7 @@ Highlight RMS predictably grows on the first metal rungs, but quickly saturates 
 
 ---
 
-## Appendix B — Assertions
+## Appendix B, Assertions
 
 This run logged: **25 pass / 0 fail**.
 
@@ -290,7 +290,7 @@ We loosened no assertion tolerances to achieve the photoreal plates.
 
 ---
 
-## Appendix C — Fragment lock
+## Appendix C, Fragment lock
 
 ```glsl
 float lod = rough * uMaxMip;                 // linear: r * (mips-1)

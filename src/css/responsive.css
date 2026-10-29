@@ -1,4 +1,4 @@
-/* responsive — collapse X rails on smaller viewports */
+/* responsive, collapse X rails on smaller viewports */
 
 /* Wide desktop: feed + right rail */
 @media (min-width: 1280px) {
@@ -40,7 +40,7 @@
   .rail-right .aside-listening {
     margin-bottom: 12px;
   }
-  /* Lanyard error hides the card — don't leave an empty strip */
+  /* Lanyard error hides the card, don't leave an empty strip */
   .rail-right:has(#aside-listening[hidden]) {
     display: none;
   }

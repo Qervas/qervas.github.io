@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>02 · Hardware · cameras — Neural Capture</title>
-  <meta name="description" content="Hardware · cameras — implementation monograph" />
+  <title>02 · Hardware · cameras, Neural Capture</title>
+  <meta name="description" content="Hardware · cameras, implementation monograph" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
@@ -84,7 +84,7 @@ Must not own turntable motion (ch.03) or session path policy (ch.05).
 }};</pre></div>
       <div class="aside reveal">
         <div class="aside-label">First use · GigE bandwidth</div>
-        <p>Each 4112×3008 frame is on the order of tens of MB. Saturating a 1 Gbps link with overlapping transfers was observed to crash Sapera — hence sequential Snap+Wait.</p>
+        <p>Each 4112×3008 frame is on the order of tens of MB. Saturating a 1 Gbps link with overlapping transfers was observed to crash Sapera, hence sequential Snap+Wait.</p>
       </div>
 
       <div class="section-rule"><h2 id="workflow">End-to-end · CaptureAllCameras</h2></div>
@@ -114,7 +114,7 @@ Must not own turntable motion (ch.03) or session path policy (ch.05).
       <div class="section-rule"><h2 id="bw">War story · bandwidth</h2></div>
       <div class="prose reveal">
         <p>Overlapping transfers caused hard failures in the vendor SDK. The contract is explicit in logs:
-        stagger delays prevent spikes; group delays space bursts. Changing parallel_groups without reading Wait timeouts produces intermittent “Wait timeout” on random cameras — not a clean error every time.</p>
+        stagger delays prevent spikes; group delays space bursts. Changing parallel_groups without reading Wait timeouts produces intermittent “Wait timeout” on random cameras, not a clean error every time.</p>
       </div>
       <div class="decision reveal">
         <div class="decision-head"><span class="decision-tag">Decision</span><h4>Sequential Snap + parallel save</h4></div>
@@ -129,7 +129,7 @@ Must not own turntable motion (ch.03) or session path policy (ch.05).
         </div>
         <figcaption class="plate-cap">
           <span class="plate-id">Fig. HW-1</span>
-          <p><strong>Bandwidth contract plate.</strong> Same loop diagram used in ch.04 — Snap phase is sequential by design.</p>
+          <p><strong>Bandwidth contract plate.</strong> Same loop diagram used in ch.04, Snap phase is sequential by design.</p>
         </figcaption>
       </figure>
 

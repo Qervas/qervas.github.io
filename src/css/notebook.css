@@ -1,4 +1,4 @@
-/* notebook.css — lab notebook gallery. Loaded last. */
+/* notebook.css, lab notebook gallery. Loaded last. */
 
 body {
   background-color: #efe4cf;
@@ -112,7 +112,7 @@ body {
   border-radius: 1px;
   object-fit: cover;
   object-position: center 22%;
-  /* warm snapshot — keep the real photo, drop the funeral grayscale */
+  /* warm snapshot, keep the real photo, drop the funeral grayscale */
   filter: sepia(0.22) saturate(1.08) contrast(0.86) brightness(1.08);
   box-shadow: none;
 }
@@ -254,7 +254,7 @@ body {
   color: var(--muted);
 }
 
-/* quiet the extruded name — it reads as a word in the handle */
+/* quiet the extruded name, it reads as a word in the handle */
 .frank-3d { perspective: none; cursor: text; padding: 0; }
 .frank-3d-stage,
 .profile-masthead .frank-3d-stage {
@@ -948,7 +948,7 @@ body {
   text-decoration: none !important;
   color: inherit;
 }
-/* Shared ink plate on every note — not a per-entry thumbnail. */
+/* Shared ink plate on every note, not a per-entry thumbnail. */
 .vgrid .vcard::before {
   content: "";
   display: block;

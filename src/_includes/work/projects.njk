@@ -5,11 +5,11 @@
 {% include "work/featured-thesis.njk" %}
 
             <article class="project-item">
-              <video class="project-thumb lazy-video" data-src="/assets/proof/taichi_mlsmpm.mp4" poster="/assets/proof/taichi_mlsmpm.jpg" loop muted playsinline preload="none" aria-label="3D Rising Flood — MLS-MPM water around a house mesh, SplashSurf surface + Blender Cycles (Phase 9)"></video>
+              <video class="project-thumb lazy-video" data-src="/assets/proof/taichi_mlsmpm.mp4" poster="/assets/proof/taichi_mlsmpm.jpg" loop muted playsinline preload="none" aria-label="3D Rising Flood, MLS-MPM water around a house mesh, SplashSurf surface + Blender Cycles (Phase 9)"></video>
               <div class="project-body">
                 <h3>MLS-MPM Physics Simulation</h3>
                 <div class="meta">Taichi · MLS-MPM · APIC · SDF collision · SplashSurf · Cycles</div>
-                <p>Series of fluid–structure sims on Taichi (Hu et al. 2018 MLS-MPM). Showcase clip: <strong>Phase 9 3D Rising Flood</strong> — 128³ grid, up to 4M water particles, GLB building → SDF slip boundaries, two-phase injection, PLY → SplashSurf isosurface → Blender Cycles water. Also: 2D dam break, 3D bridge pillars, water wheel, city flood, building fracture (Phase 8).</p>
+                <p>Series of fluid–structure sims on Taichi (Hu et al. 2018 MLS-MPM). Showcase clip: <strong>Phase 9 3D Rising Flood</strong>, 128³ grid, up to 4M water particles, GLB building → SDF slip boundaries, two-phase injection, PLY → SplashSurf isosurface → Blender Cycles water. Also: 2D dam break, 3D bridge pillars, water wheel, city flood, building fracture (Phase 8).</p>
                 <div class="project-tags"><span class="project-tag">Physics</span></div>
                 <a href="https://qervas.github.io/taichi" target="_blank" rel="noopener">Live demos ↗</a>
                 <a href="https://github.com/Qervas/taichi" target="_blank" rel="noopener">Code ↗</a>
@@ -25,9 +25,9 @@
                 </div>
               </div>
               <div class="project-body">
-                <h3>sx-engine — CUDA Path Tracer + Physics</h3>
+                <h3>sx-engine, CUDA Path Tracer + Physics</h3>
                 <div class="meta">CUDA · Taichi · C++ · OIDN · ~3K LOC</div>
-                <p>CUDA path tracer with BVH, Schlick-Fresnel refraction, and optional Intel OIDN denoising. 16 parameterized liquid presets (ocean · honey · lava · milk · blood · crystal …) each with their own IOR and depth-absorption. Paired with a Taichi-GPU Position-Based Dynamics cloth solver — stretch + bend constraints, material-specific stiffness — exporting per-frame OBJ meshes back to the CUDA renderer. 58 production stills shipped.</p>
+                <p>CUDA path tracer with BVH, Schlick-Fresnel refraction, and optional Intel OIDN denoising. 16 parameterized liquid presets (ocean · honey · lava · milk · blood · crystal …) each with their own IOR and depth-absorption. Paired with a Taichi-GPU Position-Based Dynamics cloth solver, stretch + bend constraints, material-specific stiffness, exporting per-frame OBJ meshes back to the CUDA renderer. 58 production stills shipped.</p>
                 <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Physics</span></div>
                 <a href="https://github.com/Qervas/sx-engine" target="_blank" rel="noopener">Repo ↗</a>
               </div>
@@ -37,7 +37,7 @@
               <div class="project-body">
                 <h3>SPH Water Simulation</h3>
                 <div class="meta">C++ · CUDA · OpenGL · BSc thesis</div>
-                <p>GPU-accelerated Smoothed Particle Hydrodynamics solver with Marching Cubes surface extraction and CUDA ↔ OpenGL interop for real-time visualization. Uniform-grid spatial hashing for neighbor search, cubic-spline density kernel with gradient / Laplacian variants for pressure and viscosity forces, plus surface-tension kernel. Bachelor thesis — the foundation my current fluid work builds on.</p>
+                <p>GPU-accelerated Smoothed Particle Hydrodynamics solver with Marching Cubes surface extraction and CUDA ↔ OpenGL interop for real-time visualization. Uniform-grid spatial hashing for neighbor search, cubic-spline density kernel with gradient / Laplacian variants for pressure and viscosity forces, plus surface-tension kernel. Bachelor thesis, the foundation my current fluid work builds on.</p>
                 <div class="project-tags"><span class="project-tag">Physics</span></div>
                 <a href="https://github.com/Qervas/water_simulation" target="_blank" rel="noopener">Repo ↗</a>
                 <a href="https://youtu.be/V2EF1tZfBZM" target="_blank" rel="noopener">Demo video ↗</a>
@@ -45,11 +45,11 @@
             </article>
 
             <article class="project-item">
-              <img class="project-thumb" src="/assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render — final stage of the procedural rust progression" loading="lazy" width="640" height="400" />
+              <img class="project-thumb" src="/assets/proof/tnm084-material-aging/rust_100.png" alt="Fully oxidized metal sphere PBR render, final stage of the procedural rust progression" loading="lazy" width="640" height="400" />
               <div class="project-body">
                 <h3>Real-time Material Aging & Weathering</h3>
                 <div class="meta">OpenGL · GLSL Compute Shaders · PBR · Procedural Noise</div>
-                <p>Compute-shader playground for procedural material decay on a PBR sphere — noise-driven rust progression (0/25/50/75/100%), paint cracking and peel, and a dynamic puddle / weather system that wets and dries the ground in real time. Built around an OpenGL compute pipeline with full BRDF response so albedo and roughness shift together as the surface ages. Coursework for Linköping's TNM084 Procedural Methods.</p>
+                <p>Compute-shader playground for procedural material decay on a PBR sphere, noise-driven rust progression (0/25/50/75/100%), paint cracking and peel, and a dynamic puddle / weather system that wets and dries the ground in real time. Built around an OpenGL compute pipeline with full BRDF response so albedo and roughness shift together as the surface ages. Coursework for Linköping's TNM084 Procedural Methods.</p>
                 <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/aging_shader" target="_blank" rel="noopener">Repo ↗</a>
               </div>
@@ -60,7 +60,7 @@
               <div class="project-body">
                 <h3>Xiàngqí AI with Deep Q-Networks</h3>
                 <div class="meta">C++ · Qt · CUDA · DQN · Self-Play</div>
-                <p>Reinforcement-learning agent for Chinese Chess — full Xiàngqí rules engine in C++/Qt, a Deep Q-Network with experience replay and a target network, and CUDA-accelerated training driven by self-play in the spirit of AlphaZero. Win-rate sweeps against random and self-play opponents, plus a playable GUI to face the agent. TNM114 group project at Linköping with Oskar Tengvall.</p>
+                <p>Reinforcement-learning agent for Chinese Chess, full Xiàngqí rules engine in C++/Qt, a Deep Q-Network with experience replay and a target network, and CUDA-accelerated training driven by self-play in the spirit of AlphaZero. Win-rate sweeps against random and self-play opponents, plus a playable GUI to face the agent. TNM114 group project at Linköping with Oskar Tengvall.</p>
                 <div class="project-tags"><span class="project-tag">Agents</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/cn_chess_ai" target="_blank" rel="noopener">Repo ↗</a>
               </div>
@@ -71,7 +71,7 @@
               <div class="project-body">
                 <h3>Path Tracing & Photon Mapping</h3>
                 <div class="meta">C++ · CUDA · Monte Carlo · KD-Tree</div>
-                <p>Two global-illumination renderers written from scratch for TNCG15. Monte Carlo path tracer with a CUDA backend for per-pixel parallel ray generation and progressive accumulation — real-time-feasible against the CPU baseline. Photon-mapping pass scatters photons from light sources, then estimates radiance via KD-tree nearest-neighbour lookup for sharp caustics and indirect lighting. Comparative study of where each technique wins.</p>
+                <p>Two global-illumination renderers written from scratch for TNCG15. Monte Carlo path tracer with a CUDA backend for per-pixel parallel ray generation and progressive accumulation, real-time-feasible against the CPU baseline. Photon-mapping pass scatters photons from light sources, then estimates radiance via KD-tree nearest-neighbour lookup for sharp caustics and indirect lighting. Comparative study of where each technique wins.</p>
                 <div class="project-tags"><span class="project-tag">Graphics</span><span class="project-tag">Coursework</span></div>
                 <a href="https://github.com/Qervas/path_tracer" target="_blank" rel="noopener">Repo ↗</a>
                 <a href="https://youtu.be/eOWYABBVrMc" target="_blank" rel="noopener">Demo ↗</a>
@@ -83,7 +83,7 @@
               <div class="project-body">
                 <h3>Skiing Action Analysis · OpenPose + ST-GCN</h3>
                 <div class="meta">Python · OpenPose · ST-GCN · Action Recognition</div>
-                <p>Pipeline for classifying skiing techniques from video — OpenPose extracts 2D body keypoints, a Python preprocessor stitches per-frame skeletons into spatial-temporal graphs, and an ST-GCN trains on those graphs to label actions like big-bend carving. Best model (epoch 39, lr 0.1, batch 32) hits 50% Top-1 / 90.9% Top-5. Co-authored, published in <em>Intelligent Computer and Applications</em> Vol. 12 No. 4, April 2022.</p>
+                <p>Pipeline for classifying skiing techniques from video, OpenPose extracts 2D body keypoints, a Python preprocessor stitches per-frame skeletons into spatial-temporal graphs, and an ST-GCN trains on those graphs to label actions like big-bend carving. Best model (epoch 39, lr 0.1, batch 32) hits 50% Top-1 / 90.9% Top-5. Co-authored, published in <em>Intelligent Computer and Applications</em> Vol. 12 No. 4, April 2022.</p>
                 <div class="project-tags"><span class="project-tag">Neural</span><span class="project-tag">Coursework</span></div>
                 <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=0vffxKEAAAAJ&citation_for_view=0vffxKEAAAAJ:u5HHmVD_uO8C" target="_blank" rel="noopener">Paper ↗</a>
               </div>

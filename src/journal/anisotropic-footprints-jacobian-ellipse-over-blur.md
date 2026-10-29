@@ -1,6 +1,6 @@
 ---
 title: "Anisotropic Footprints: Jacobian, Ellipse, Over-Blur"
-description: "Mip LOD is not the footprint. Checker graze, then Jacobian ellipse — isotropic over-blur versus CPU-EWA."
+description: "Mip LOD is not the footprint. Checker graze, then Jacobian ellipse, isotropic over-blur versus CPU-EWA."
 hook: "Why floor textures in games turn to mush when you look along them, and how to keep them sharp."
 date: 2026-09-13
 tags:
@@ -18,17 +18,17 @@ cover: /assets/journal/anisotropic/15_hallway.jpg
 
 Mip LOD is not the footprint, a reality most evident when observing a grazing checkerboard.
 
-Our preceding analysis of mipmaps documented the residual softness inherent to the formulation: the isotropic \(\rho=\max(\rho_x,\rho_y)\) metric successfully band-limits to the major axis but severely over-blurs the minor axis. While that note introduced the artifact conceptually, this manuscript rigorously defines the Jacobian, the corresponding elliptical footprint axes, and a lab-honest anisotropic sample—specifically, a CPU-evaluated elliptical weighted average (EWA) that executes and measures deterministically on OSMesa and llvmpipe.
+Our preceding analysis of mipmaps documented the residual softness inherent to the formulation: the isotropic \(\rho=\max(\rho_x,\rho_y)\) metric successfully band-limits to the major axis but severely over-blurs the minor axis. While that note introduced the artifact conceptually, this manuscript rigorously defines the Jacobian, the corresponding elliptical footprint axes, and a lab-honest anisotropic sample, specifically, a CPU-evaluated elliptical weighted average (EWA) that executes and measures deterministically on OSMesa and llvmpipe.
 
 For our primary evaluated footprint (\(a=\mathbf{8}\), \(b=\mathbf{1}\), \(\mathrm{aniso}=\mathbf{8}\)), the AC power \(P_{\mathrm{ac}}\) measures **979.532** under nearest-neighbor sampling (no mip), **112.848** under isotropic mipmapping, and **98.751** under CPU-EWA. Do **not** mistakenly interpret this metric as asserting "EWA is sharper overall". The residual AC energy persisting in the isotropic filter consists of box-mip sinc lobes strictly aligned along the **major** axis. The actual functional theorem lies within the minor-axis energy (\(E_{\mathrm{minor}}\)): the isotropic approach retains **4.244** while EWA successfully retains **8.478**. EWA preserves substantially more valid signal detail along the short axis, which represents the entire mathematical justification for the technique.
 
-Assertions on this validation run: **41** pass / **0** fail. The scientific magnification Mean Absolute Error (MAE) evaluates to **0**, and the presentation magnification MAE evaluates to **0**. The photographic hero MAE(iso, EWA) measured on the hallway scene is \(\approx\mathbf{0.011}\). For comparative context, evaluating llvmpipe GL AF \(N=\mathbf{1}\) against \(N=\mathbf{16}\) yields an MAE of \(\approx\mathbf{0.0034}\)—a small delta explicitly labeled **NOT hardware 16× AF**, functioning as an architectural reality check rather than the core pedagogical lesson.
+Assertions on this validation run: **41** pass / **0** fail. The scientific magnification Mean Absolute Error (MAE) evaluates to **0**, and the presentation magnification MAE evaluates to **0**. The photographic hero MAE(iso, EWA) measured on the hallway scene is \(\approx\mathbf{0.011}\). For comparative context, evaluating llvmpipe GL AF \(N=\mathbf{1}\) against \(N=\mathbf{16}\) yields an MAE of \(\approx\mathbf{0.0034}\), a small delta explicitly labeled **NOT hardware 16× AF**, functioning as an architectural reality check rather than the core pedagogical lesson.
 
 
 ## Scene
 We observe an identical floor plane processed through three distinct filter kernels. The stimulus is a CPU-authored black and white checkerboard, \(\mathbf{1024}^2\), featuring **64** discrete cells spanning the floor width, while the bounding walls and ceiling remain a diffuse flat gray. There is deliberately no \(\rho\) debug visualization rendered on the HUD.
 
-![Checker hallway graze, 3-up. Left: nearest no-mip — vanishing checks crawl. Middle: isotropic mip — fold gone, floor is mud. Right: CPU-EWA — major limited, checks survive. Photograph only. a=n/a. NOT hardware 16× AF.](/assets/journal/anisotropic/15_hallway.jpg)
+![Checker hallway graze, 3-up. Left: nearest no-mip, vanishing checks crawl. Middle: isotropic mip, fold gone, floor is mud. Right: CPU-EWA, major limited, checks survive. Photograph only. a=n/a. NOT hardware 16× AF.](/assets/journal/anisotropic/15_hallway.jpg)
 
 Analyzing the three compositional panels:
 
@@ -38,7 +38,7 @@ Analyzing the three compositional panels:
 
 The MAE(iso, EWA) calculated on this specific frame is \(\approx \mathbf{0.011}\). One might question why we do not simply utilize Mesa AF for the hero presentation column. On this specific software rasterizer, `GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT=16` operates as a software detail; performing the identical graze utilizing GL \(N=\mathbf{1}\) versus \(N=\mathbf{16}\) yields an MAE of only \(\approx \mathbf{0.0034}\). That mathematical delta is insufficiently large to provide an unmistakable isotropic versus anisotropic instructional lesson, which fundamentally necessitates utilizing our CPU-EWA reference for the \(\mathbf{3}\)-up layout.
 
-Initially, we must verify the near-field reconstruction—magnification behavior must remain exactly invariant.
+Initially, we must verify the near-field reconstruction, magnification behavior must remain exactly invariant.
 
 ![Near checker floor, true magnification. Center (a,b)=(0.138, 0.097), a_max=0.468. Iso vs AF MAE=0. Photograph only.](/assets/journal/anisotropic/16_nearfield_mag.jpg)
 
@@ -92,7 +92,7 @@ Our primary hero construction utilizes \(J=\mathrm{diag}(\mathbf{8},\mathbf{1})\
 
 ![Unique artifact. Same zone-plate UV crop, two Jacobians, both aniso=8. Left: axis-aligned a=8, b=1. Right: sheared θ=35°. AF is an oriented footprint.](/assets/journal/anisotropic/02_footprint_ellipse.jpg)
 
-We additionally visualize the Jacobian *field* mapped on the unprojected floor as \(\log_\mathbf{2}(a/b)\)—utilizing a meaningfully parameterized color scale, rather than a generic rainbow gradient deployed for aesthetic purposes. This evaluation utilizes the identical camera family as our primary theorem photograph.
+We additionally visualize the Jacobian *field* mapped on the unprojected floor as \(\log_\mathbf{2}(a/b)\), utilizing a meaningfully parameterized color scale, rather than a generic rainbow gradient deployed for aesthetic purposes. This evaluation utilizes the identical camera family as our primary theorem photograph.
 
 ![CPU Jacobian field log₂(a/b) on the unproject floor. Marked far pixel a=15.66, b=2.872, aniso=5.451.](/assets/journal/anisotropic/03_aniso_falsecolor.jpg)
 
@@ -104,11 +104,11 @@ The functional gap between these evaluations:
 
 \[\lambda_{\mathrm{iso}}-\lambda_{\mathrm{aniso}}=\log_\mathbf{2}(a/b)\]
 
-This calculable difference represents exactly the magnitude of the over-blur—quantified in discrete mip levels—applied along the minor axis. At the analytically constructed hero footprint, \(\log_\mathbf{2} \mathbf{8}=\mathbf{3}\): three extraneous mip levels of softness are unnecessarily applied to the short spatial axis for no mathematically valid sampling reason. The eccentricity hardware clamp \(A_{\max}=\mathbf{16}\) solely restricts the minor axis (forcing more blur and requiring fewer samples) when the ratio \(a/b>\mathbf{16}\). It strictly does not affect our hero case parameterized at \(a=\mathbf{8},b=\mathbf{1}\).
+This calculable difference represents exactly the magnitude of the over-blur, quantified in discrete mip levels, applied along the minor axis. At the analytically constructed hero footprint, \(\log_\mathbf{2} \mathbf{8}=\mathbf{3}\): three extraneous mip levels of softness are unnecessarily applied to the short spatial axis for no mathematically valid sampling reason. The eccentricity hardware clamp \(A_{\max}=\mathbf{16}\) solely restricts the minor axis (forcing more blur and requiring fewer samples) when the ratio \(a/b>\mathbf{16}\). It strictly does not affect our hero case parameterized at \(a=\mathbf{8},b=\mathbf{1}\).
 
 ### Lab-honest anisotropic sample (CPU EWA-ish)
 
-For each discrete pixel, we extract the UV ellipse geometry \((a,b,\theta)\) directly from the known Jacobian, clamp the operational eccentricity to \(A_{\max}=\mathbf{16}\), select a mipmap level driven exclusively by the **minor** axis (\(\lambda=\log_\mathbf{2} b\)), and accumulate a Gaussian weight distributed over the ellipse across that integer level and the adjacent next level. Under evaluated magnification (\(a\le \mathbf{1}\) and \(b\le \mathbf{1}\)), the filter gracefully falls back to bilinear L0, behaving identically to the standard isotropic path. This implementation serves as **our** strict mathematical reference—it is explicitly not Heckbert’s production filter, it is not OpenGL hardware AF, and it makes absolutely no claims regarding Mesa’s internal sampler behavior. Do not compare this reference model against NVIDIA, AMD, or Intel hardware texel-fetch counts or proprietary LOD transition curves.
+For each discrete pixel, we extract the UV ellipse geometry \((a,b,\theta)\) directly from the known Jacobian, clamp the operational eccentricity to \(A_{\max}=\mathbf{16}\), select a mipmap level driven exclusively by the **minor** axis (\(\lambda=\log_\mathbf{2} b\)), and accumulate a Gaussian weight distributed over the ellipse across that integer level and the adjacent next level. Under evaluated magnification (\(a\le \mathbf{1}\) and \(b\le \mathbf{1}\)), the filter gracefully falls back to bilinear L0, behaving identically to the standard isotropic path. This implementation serves as **our** strict mathematical reference, it is explicitly not Heckbert’s production filter, it is not OpenGL hardware AF, and it makes absolutely no claims regarding Mesa’s internal sampler behavior. Do not compare this reference model against NVIDIA, AMD, or Intel hardware texel-fetch counts or proprietary LOD transition curves.
 
 ### Zone-plate (reuse, do not re-litigate)
 
@@ -125,22 +125,22 @@ Because the instantaneous spatial frequency rises proportionally with the radius
 ### Unique artifact: the ellipse, then the spectrum
 To isolate the filtering behavior, we construct a minification scenario where \(a=8\), \(b=1\), and \(W=128\). We evaluate three filters and their corresponding spectra, visualized using a shared \(\log\vert{}F\vert{}\) scale. The underlying data is acquired via `glReadPixels(..., GL_FLOAT)` from a 32-bit (RGBA32F) frame buffer object (FBO). We apply an interior \(256^2\) crop, mean-subtraction, and a separable Hann window before computing an unnormalized radix-2 discrete Fourier transform (DFT). The spectral power is defined as \(P_{\mathrm{bin}}=\vert{}F\vert{}^2/M^2\). Note that the checkerboard photographs are explicitly excluded from this DFT analysis.
 
-**Nearest, no mip — major-axis fold.**
+**Nearest, no mip, major-axis fold.**
 ![Constructed elliptical minify, nearest no-mip. Disk is a lattice of false vertical rings. P_ac=979.5, E_minor=40.23.](/assets/journal/anisotropic/04_ellip_nearest.jpg)
 
 ![ρ-style nearest log|F|. Fold, hot along k_x. Shared scale with iso/EWA spectra.](/assets/journal/anisotropic/05_ellip_nearest_fft.jpg)
 
-**Isotropic mip \(\lambda=\log_2 a\) — fold gone, minor over-blur.**
+**Isotropic mip \(\lambda=\log_2 a\), fold gone, minor over-blur.**
 ![Same pose, isotropic mip. Soft vertical ellipse in a field of box-mip sinc stripes. E_minor=4.244.](/assets/journal/anisotropic/06_ellip_iso_mip.jpg)
 
 ![Iso log|F|. High-k fold gone; energy is a horizontal band of sinc lobes; minor axis quiet. Shared scale.](/assets/journal/anisotropic/07_ellip_iso_mip_fft.jpg)
 
-**CPU-EWA \(\lambda=\log_2 b\) — major limited, minor kept.**
+**CPU-EWA \(\lambda=\log_2 b\), major limited, minor kept.**
 ![CPU-EWA. Sinc stripes gone; central ellipse keeps more rings. E_minor=8.478.](/assets/journal/anisotropic/08_ellip_ewa.jpg)
 
 ![EWA log|F|. Shared scale with nearest/iso. Orange blob extends farther along k_y than iso. That extra vertical extent is the theorem.](/assets/journal/anisotropic/09_ellip_ewa_fft.jpg)
 
-The non-image artifact — \(P(k)\) overlay and a 1-D cut along the minor axis:
+The non-image artifact, \(P(k)\) overlay and a 1-D cut along the minor axis:
 
 ![P(k) log overlay (red nearest / blue iso / green EWA) plus 1-D minor-axis cut. Iso damps the legal swings; EWA tracks nearest on those without putting the major-axis fold back. HUD: P_ac N=979.5 / iso=112.8 / ewa=98.75; E_minor N=40.23 / iso=4.244 / ewa=8.478.](/assets/journal/anisotropic/12_pk_minor_cut.jpg)
 
@@ -161,7 +161,7 @@ We fix the minor axis scale at \(b=1\) and sweep the anisotropy ratio \(\mathrm{
 
 ![Eccentricity ladder aniso∈{1,2,4,8,16} at fixed b=1. Top: ISO box-mip λ=log₂ a (sinc lobes OK). Bottom: CPU-EWA λ=log₂ b.](/assets/journal/anisotropic/11_eccentricity_ladder.jpg)
 
-### What if: llvmpipe AF — honesty frame, not the hero
+### What if: llvmpipe AF, honesty frame, not the hero
 
 To provide a baseline, we capture the same checker graze using a standard sampler configured with `GL_LINEAR_MIPMAP_LINEAR` and `GL_TEXTURE_MAX_ANISOTROPY_EXT`, comparing \(N=1\) against \(N=16\). While the extension is successfully exposed, the outputs exhibit only a marginal difference (MAE \(\approx 0.0034\)). The far-band standard deviation is \(0.28\) for both cases. We include this measurement solely to document the software anisotropic filtering behavior of the Mesa 25.0.7 llvmpipe driver; it does not represent hardware-accelerated 16× AF quality and is not the primary subject of analysis. The core claims of this article rest entirely on the CPU-EWA reference.
 
@@ -200,7 +200,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 Using our constructed \(a=8\), \(b=1\), crop 256, padded, and clear \(=0.5\):
 

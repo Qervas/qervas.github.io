@@ -1,4 +1,4 @@
-/* media.js — Pause off-screen videos; lazy-load project videos */
+/* media.js, Pause off-screen videos; lazy-load project videos */
 (function () {
   // Featured Ohao orbit video (lazy + pause when offscreen)
   const ohaoOrbit = document.getElementById('ohao-orbit-video');

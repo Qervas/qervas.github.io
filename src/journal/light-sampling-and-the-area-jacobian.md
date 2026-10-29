@@ -28,7 +28,7 @@ As detailed in [Importance Sampling: Phong Lobe vs Cosine](/posts/p/importance-s
 
 To evaluate the area Jacobian empirically, we deploy a physical test configuration: the night inspection bench. The scene consists of a vertical rectangular softbox with an in-frame diffuser, a matte inspection bench, a diffuse white Lambert calibration card, and a matte reference vise inside an unlit enclosure.
 
-![Night inspection bench. Vertical rectangular softbox, the diffuser in frame and the light. Matte bench, white Lambert card, vise for scale, dark closed shop. Legal rectangle lighting plus named shop fill, Khronos PBR Neutral e=1.00, after an 8× linear box. Photograph only — the meter is not this frame.](/assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg)
+![Night inspection bench. Vertical rectangular softbox, the diffuser in frame and the light. Matte bench, white Lambert card, vise for scale, dark closed shop. Legal rectangle lighting plus named shop fill, Khronos PBR Neutral e=1.00, after an 8× linear box. Photograph only, the meter is not this frame.](/assets/journal/light-sampling-and-the-area-jacobian/00_hero.jpg)
 
 
 The diffuse card acts as the planar measurement receiver. Drawing uniform samples across the emitter parameterization yields an area probability density \(p(A)\) in \(\mathrm{m}^{-2}\); mapping this quantity into incoming radiance integration requires scaling by the geometric Jacobian above.
@@ -86,7 +86,7 @@ The spherical occupancy distribution empirically demonstrates the directional ma
 
 \[\Delta\omega=\frac{2\pi}{16\cdot 32}=\frac{2\pi}{512}\,\mathrm{sr}.\]
 
-This uniform grid—enforcing equal \(\Delta\phi\) and equal \(\Delta\cos\theta\)—ensures identical solid angle subtension across all discrete cells, consistent with established derivations for spherical caps.
+This uniform grid, enforcing equal \(\Delta\phi\) and equal \(\Delta\cos\theta\), ensures identical solid angle subtension across all discrete cells, consistent with established derivations for spherical caps.
 
 The evaluation contrasts two distinct spatial sampling populations, each utilizing \(N_{\mathrm{hist}}=\mathbf{16384}\) draws evaluated independently from the irradiance estimator prefixes. The first configuration generates **16384** area-uniform samples directly on the diffuser surface, binning their resulting incident vectors \(\omega_i\). The second configuration generates directions uniformly via \(\mu=U\) and \(\phi=2\pi U\), utilizing ray rejection against the spatial footprint until exactly **16384** valid diffuser intersections are accumulated. A discrete spherical cell is classified strictly as an "interior" cell if all **4** bounding \((\mu,\phi)\) corners maintain geometric intersection with the diffuser. While boundary bins containing partial intersections are rendered, quoted population extrema are rigorously constrained to the interior subset. This verified internal mask encompasses exactly **35** cells. Under the area-uniform generation strategy, the directional occupancy distribution exhibits high density variance spanning **86** to **952** samples. Conversely, the uniform-in-\(\Omega\) strategy maintains a tightly bounded interior occupancy of **314** to **400** samples.
 
@@ -102,9 +102,9 @@ The drastic modulation of the compensatory weight is fundamentally dictated by r
 ### Three failures
 For a planar emitter with uniform exitant radiance \(L_i\) and zero emission from the rear hemisphere, receiver irradiance is defined by integrating incoming radiance weighted by the geometric transfer kernel. The unbiased formulation accounts for both geometric foreshortening and inverse-square falloff. Systemic bias typically arises from three deviations:
 
-* **Failure A — Omission of the inverse-square law (\(r^2\)):** Preserving surface cosines and \(p(A)\) while omitting \(1/r^2\) shifts the Monte Carlo expectation toward \(\int L_i\,\cos_x\,\cos_y\,dA\), altering the physical dimension of the estimator by \(\mathrm{m}^2\). Because \(1/r^2\) contributes maximal weight along the near boundary of the panel, omitting it severely underestimates total flux, yielding a relative mean error of **-0.645746690189** at \(N=1024\).
-* **Failure B — Omission of the emitter foreshortening term (\(\cos_y\)):** Omitting \(\cos_y\) while retaining \(1/r^2\), the receiver cosine \(\cos_x\), and \(p(A)\) converges to \(\int L_i\,(\cos_x/r^2)\,dA\). Because \(L_i\) is already defined per unit projected area at the source, \(\cos_y\) originates strictly from the differential area-to-solid-angle transformation \(d\omega = \cos_y\,dA/r^2\) rather than an emitter scattering lobe. While dimensionally consistent with irradiance, the integral evaluates the incorrect measure, converging to a relative error floor of **+1.04013072615** at \(N=1024\).
-* **Failure C — Single-point centroid approximation:** Approximating the surface integral by evaluating the transfer kernel exclusively at the geometric centroid replaces numerical quadrature with a single distance \(r\) and cosine pair scaled by total area \(A\). Because the measurement card is positioned near the panel's lower boundary and displaced from the center axis, this point-source approximation produces a large discrepancy relative to the true boundary integral, yielding \((E_c-E)/E=\mathbf{-0.194936551657}\) (displayed as **-0.195**).
+* **Failure A, Omission of the inverse-square law (\(r^2\)):** Preserving surface cosines and \(p(A)\) while omitting \(1/r^2\) shifts the Monte Carlo expectation toward \(\int L_i\,\cos_x\,\cos_y\,dA\), altering the physical dimension of the estimator by \(\mathrm{m}^2\). Because \(1/r^2\) contributes maximal weight along the near boundary of the panel, omitting it severely underestimates total flux, yielding a relative mean error of **-0.645746690189** at \(N=1024\).
+* **Failure B, Omission of the emitter foreshortening term (\(\cos_y\)):** Omitting \(\cos_y\) while retaining \(1/r^2\), the receiver cosine \(\cos_x\), and \(p(A)\) converges to \(\int L_i\,(\cos_x/r^2)\,dA\). Because \(L_i\) is already defined per unit projected area at the source, \(\cos_y\) originates strictly from the differential area-to-solid-angle transformation \(d\omega = \cos_y\,dA/r^2\) rather than an emitter scattering lobe. While dimensionally consistent with irradiance, the integral evaluates the incorrect measure, converging to a relative error floor of **+1.04013072615** at \(N=1024\).
+* **Failure C, Single-point centroid approximation:** Approximating the surface integral by evaluating the transfer kernel exclusively at the geometric centroid replaces numerical quadrature with a single distance \(r\) and cosine pair scaled by total area \(A\). Because the measurement card is positioned near the panel's lower boundary and displaced from the center axis, this point-source approximation produces a large discrepancy relative to the true boundary integral, yielding \((E_c-E)/E=\mathbf{-0.194936551657}\) (displayed as **-0.195**).
 
 The receiver foreshortening term \(\cos_x\) remains active across all test cases. An additional evaluation arm testing redundant weighting of \(\cos_y\) introduced a dimensionless attenuation bias, converging to `mean_rel_double_N1024` \(=\mathbf{-0.458986283232}\) at \(N=1024\).
 
@@ -277,7 +277,7 @@ A separate validation verifies the small-angle limit, where the discrete centroi
 
 ---
 
-### Mesa / llvmpipe — what this run can claim
+### Mesa / llvmpipe, what this run can claim
 | Parameter | Specification / Measured State |
 | --- | --- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
@@ -329,7 +329,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 All radiometric quantities are resolved in CPU double-precision before entering the Neutral transform. The pseudorandom seed is strictly defined as **20260924**. The comprehensive operational metrics from this execution are organized into a **2**-column format, tabulated below:
 
@@ -374,7 +374,7 @@ All radiometric quantities are resolved in CPU double-precision before entering 
 Display rounding is employed strictly for visual coherence on the output plates. The bias chart's six-decimal means are printed as: \(+\mathbf{0.007753}\), \(\mathbf{-0.645747}\), and \(+\mathbf{1.040131}\). The centroid callout reads: **-0.195** and `\mathbf{-0.194937}`. The crop headers display: legal **0.446**, centroid **0.362**. The heat map peaks at roughly **0.115**. Our opening RMSE sequence lists: **0.1644**, **0.1089**, **0.06826**, and **0.02638**. The opening panel-to-fill ratio is **22.069**, and the radial distance ratio evaluates to **3.349**. These visual abbreviations never supersede the full precision of the analytic table.
 
 The instrument-pixel headers strictly measure the float-buffer luma corresponding to the photograph. The `Lo_total_Y` value belongs exclusively to the analytic card. Always rely upon the raw numerical metrics to dictate the true values for \(E\), \(\Omega_\perp\), and the biased estimator floors.
-## Appendix B — Assertions
+## Appendix B, Assertions
 
 Execution suite validation: **72 pass / 0 fail**.
 

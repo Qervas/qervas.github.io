@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Structural depth + demo-tour tests for the Neural Capture monograph.
 
-Drives real shipped files under site/ — no hard-coded success without reading them.
+Drives real shipped files under site/, no hard-coded success without reading them.
 """
 from __future__ import annotations
 
@@ -258,7 +258,7 @@ def main() -> int:
         for e in errs:
             print(" -", e)
         return 1
-    print("OK — monograph structure + demo-tour checks passed")
+    print("OK, monograph structure + demo-tour checks passed")
     return 0
 
 

@@ -1,4 +1,4 @@
-/* Interactive 3D “Frank” — mouse / touch / keyboard tilt */
+/* Interactive 3D “Frank”, mouse / touch / keyboard tilt */
 (function () {
   const el = document.getElementById("frank-3d");
   if (!el) return;

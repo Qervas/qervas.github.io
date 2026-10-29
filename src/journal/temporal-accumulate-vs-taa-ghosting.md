@@ -1,6 +1,6 @@
 ---
 title: "Temporal Accumulate vs TAA Ghosting"
-description: "TAA is a bet that last frame's color is still this pixel. Naive EMA ghosts; neighborhood clamp kills the streak. The ghost is leftover history — not a shutter."
+description: "TAA is a bet that last frame's color is still this pixel. Naive EMA ghosts; neighborhood clamp kills the streak. The ghost is leftover history, not a shutter."
 hook: "The ghostly trails behind moving objects in modern games, and the trick that erases them."
 date: 2026-09-16
 tags:
@@ -16,19 +16,19 @@ video:
 cover: /assets/journal/taa-ghosting/14_real_hero.jpg
 ---
 
-The preceding analysis finalized the display operator configuration: a singular RGBA32F evaluation, mapped via a specified curve, followed by the standard sRGB OETF. Temporal dynamics were explicitly excluded from that scope—specifically, treating Temporal Anti-Aliasing (TAA), temporal accumulation, and firefly suppression as functional components of the tone mapping pass. This analysis addresses the mechanics of data reuse **across** successive frames. The history buffer is maintained strictly within the linear Rec.709 color space. The Khronos PBR Neutral operator is evaluated exclusively post-resolve and is never integrated directly into the history buffer.
+The preceding analysis finalized the display operator configuration: a singular RGBA32F evaluation, mapped via a specified curve, followed by the standard sRGB OETF. Temporal dynamics were explicitly excluded from that scope, specifically, treating Temporal Anti-Aliasing (TAA), temporal accumulation, and firefly suppression as functional components of the tone mapping pass. This analysis addresses the mechanics of data reuse **across** successive frames. The history buffer is maintained strictly within the linear Rec.709 color space. The Khronos PBR Neutral operator is evaluated exclusively post-resolve and is never integrated directly into the history buffer.
 
 **TAA operates on the fundamental assumption that the radiometric value from the previous frame remains valid for the current pixel. Ghosting artifacts constitute the deterministic penalty for this variance reduction.**
 
 Critically, **this process does not simulate motion blur.** A physical optical shutter temporally integrates any radiance traversing a pixel’s solid angle over the exposure duration. Conversely, history reuse propagates the evaluated radiance of a surface that has already vacated the geometric boundary.
 
-![Loft still after a camera truck: cream-glaze bottle, brass sphere, oak sideboard, factory mullions. Naive EMA, α=0.10 current-frame weight, clamp off, jitter 0. The bottle and sideboard leave a comet on the newly revealed window. Khronos PBR Neutral e=1.05. Photograph only — no residual RMS.](/assets/journal/taa-ghosting/14_real_hero.jpg)
+![Loft still after a camera truck: cream-glaze bottle, brass sphere, oak sideboard, factory mullions. Naive EMA, α=0.10 current-frame weight, clamp off, jitter 0. The bottle and sideboard leave a comet on the newly revealed window. Khronos PBR Neutral e=1.05. Photograph only, no residual RMS.](/assets/journal/taa-ghosting/14_real_hero.jpg)
 
 We evaluate the established loft environment from the IBL and tone-mapping analyses, rendered during a camera truck translation along \(+X\) while maintaining a fixed look-at target. Executing a naive Exponential Moving Average (EMA) with a current-frame weight of \(\alpha=0.10\), disabled clamping, and zero jitter, the geometry of the bottle and sideboard generates a distinct comet-like artifact across the newly disoccluded window region. The instrumentation HUD specifies: `Khronos PBR Neutral e=1.05`, `camera truck`, and `photo-only - no metric`. Residual RMS metrics must not be derived from this photographic representation.
 
-![Teaching pin. Identical loft St. Left: no temporal. Middle: naive EMA — ghost loud. Right: EMA + 3×3 RGB minmax clamp — comet cut, residual the AABB still accepted. Photograph only.](/assets/journal/taa-ghosting/15_real_3up.jpg)
+![Teaching pin. Identical loft St. Left: no temporal. Middle: naive EMA, ghost loud. Right: EMA + 3×3 RGB minmax clamp, comet cut, residual the AABB still accepted. Photograph only.](/assets/journal/taa-ghosting/15_real_3up.jpg)
 
-**Pin this comparison.** The current loft frame \(S_t\) remains mathematically identical across all three evaluations; only the historical integration policy varies. Left: **no temporal integration**. Middle: **naive EMA** exhibiting severe, structured ghosting. Right: **EMA augmented with a \(3\times 3\) RGB minmax clamp**, which truncates the comet artifact strictly to the residual accepted by the local neighborhood Axis-Aligned Bounding Box (AABB). The plate caption dictates: *identical current loft frame St — only history policy differs.* This visual serves exclusively as qualitative photographic evidence.
+**Pin this comparison.** The current loft frame \(S_t\) remains mathematically identical across all three evaluations; only the historical integration policy varies. Left: **no temporal integration**. Middle: **naive EMA** exhibiting severe, structured ghosting. Right: **EMA augmented with a \(3\times 3\) RGB minmax clamp**, which truncates the comet artifact strictly to the residual accepted by the local neighborhood Axis-Aligned Bounding Box (AABB). The plate caption dictates: *identical current loft frame St, only history policy differs.* This visual serves exclusively as qualitative photographic evidence.
 
 The evaluation was executed on Mesa 25.0.7 llvmpipe utilizing a linear Rec.709 history buffer, with **Khronos PBR Neutral** applied post-resolve: science field exposure \(e=1.00\), loft exposure \(e=1.05\). Within the defined ghost ROI on the synthetic science field, the residual RMS measures: naive 0.26056 versus clamp 0.00000 (\(n=11737\)). For the loft scene, the residual RMS measures: naive 0.20216 versus clamp 0.02162 (\(n=8748\)). The measured thin-stick streak length as a function of \(\alpha\) (naive evaluation, translation velocity \(\vert{}v\vert{}\approx 8.28\) px/frame) yields: 455, 338, 160, and 45 pixels at \(\alpha \in \{0.05, 0.10, 0.20, 0.50\}\), respectively. The loft translation velocity measures \(\vert{}v\vert{}\approx 9.97\) px/frame. The blending function is strictly defined as: \(C=\alpha S+(1-\alpha)\hat{H}\). The clamping heuristic is the \(3\times 3\) RGB minmax operation. The automated assertion suite reports: 42 pass / 0 fail.
 
@@ -70,7 +70,7 @@ Physical motion blur constitutes a continuous radiometric integral evaluated ove
 
 Conversely, Temporal Anti-Aliasing (TAA) does not mathematically simulate an exposure shutter. No continuous exposure interval is evaluated during the resolve pass. Rather, the previously **resolved frame** is sampled at a reprojected coordinate and integrated under the explicit heuristic that the historical color remains valid at the current spatial coordinate. In the event of a disocclusion, that historical color corresponds to geometry that has vacated the sampled solid angle. Integrating this invalid data generates a **ghost** artifact, not a physical motion-blur kernel.
 
-For all primary ghosting evaluations, the subpixel jitter offset is strictly clamped to 0. Under this specific configuration, designating the process as temporal *anti-aliasing* is technically inaccurate; the process evaluates pure temporal **accumulation**—the exponential persistence of previously resolved samples. The single evaluation employing subpixel jitter is the accumulation baseline: a static camera utilizing Halton \(2,3\) offsets to contrast the raw spatial aliasing of the current frame against the converged EMA. This operational trade-off (reducing noise and aliasing) constitutes the core algorithmic bet. The comet artifacts present on the loft truck and the synthetic amber theorem represent the deterministic penalty for this approach.
+For all primary ghosting evaluations, the subpixel jitter offset is strictly clamped to 0. Under this specific configuration, designating the process as temporal *anti-aliasing* is technically inaccurate; the process evaluates pure temporal **accumulation**, the exponential persistence of previously resolved samples. The single evaluation employing subpixel jitter is the accumulation baseline: a static camera utilizing Halton \(2,3\) offsets to contrast the raw spatial aliasing of the current frame against the converged EMA. This operational trade-off (reducing noise and aliasing) constitutes the core algorithmic bet. The comet artifacts present on the loft truck and the synthetic amber theorem represent the deterministic penalty for this approach.
 
 Within this formulation, \(\alpha\) specifies the **current-frame weight**, strictly bounded within the interval \((0,1]\). A higher \(\alpha\) parameter heavily biases the integration toward the current frame, accelerating the decay of ghost artifacts; a lower \(\alpha\) parameter heavily biases the integration toward the history buffer, significantly increasing the persistence of ghosting. This mathematical convention must not be inverted.
 
@@ -85,8 +85,8 @@ Subsequent to coordinate reprojection, neighborhood clamping, and heuristic reje
 
 \[C_t(\mathbf{u}) = \alpha\, S_t(\mathbf{u}) + (1-\alpha)\,\hat{H}_{t-1}(\mathbf{u}_\mathrm{prev}).\]
 
-* \(S_t\) — The currently evaluated shaded sample, expressed in linear RGB.
-* \(\hat{H}\) — The reprojected history sample evaluated after clamping and rejection heuristics (or the unmodified raw history \(H\) when clamping is bypassed).
+* \(S_t\), The currently evaluated shaded sample, expressed in linear RGB.
+* \(\hat{H}\), The reprojected history sample evaluated after clamping and rejection heuristics (or the unmodified raw history \(H\) when clamping is bypassed).
 * The default evaluation parameter: \(\alpha=0.10\).
 
 The blending formulation is strictly locked as: \(C = \alpha S + (1-\alpha)\hat{H}\). This is verified via a discrete unit assertion: \(S=1\), \(H=0\), evaluated at \(\alpha=0.10\) must deterministically yield \(C=0.10\).
@@ -109,7 +109,7 @@ Historical sampling employs bilinear texture filtering to evaluate the color dat
 
 \[\mathbf{p}_\mathrm{prev}^\mathrm{clip} = \mathbf{M}_\mathrm{prev}\, \mathbf{p}_\mathrm{world}, \qquad \mathbf{u}_\mathrm{prev} = \mathrm{ndc\_to\_uv}(\mathbf{p}_\mathrm{prev}), \qquad \mathbf{v} = \mathbf{u}-\mathbf{u}_\mathrm{prev}.\]
 
-The computed motion vector \(\mathbf{v}\) represents a direct UV offset derived from the known transformation matrices—**not** an estimated vector field generated via a hardware motion-vector pass or post-process optical flow algorithm. The sky dome utilizes a fixed far-plane proxy positioned at a depth of 400 units. Crucially, view-dependent specular highlights evaluating on the brass sphere are **not** reprojected (they track strictly with the world-space geometry normal and reflection vector); the resulting temporal smear across the highlight constitutes a mathematically valid artifact of residual history, not a failure of the motion-vector pipeline.
+The computed motion vector \(\mathbf{v}\) represents a direct UV offset derived from the known transformation matrices, **not** an estimated vector field generated via a hardware motion-vector pass or post-process optical flow algorithm. The sky dome utilizes a fixed far-plane proxy positioned at a depth of 400 units. Crucially, view-dependent specular highlights evaluating on the brass sphere are **not** reprojected (they track strictly with the world-space geometry normal and reflection vector); the resulting temporal smear across the highlight constitutes a mathematically valid artifact of residual history, not a failure of the motion-vector pipeline.
 
 ### Neighborhood clamp (named control)
 
@@ -152,7 +152,7 @@ The 3-up comparative panels serve dually as photographic demonstrations of the a
 ## Discussion
 
 ### Unique artifact: streak vs \(\alpha\)
-![Unique artifact. Left: thin cyan stick under naive EMA at α=0.10 — a comet of coverage that already left. Right: measured streak px vs α∈{0.05, 0.10, 0.20, 0.50} plus the analytic v·log ε/log(1−α) curve. Coverage + history, not wrong MV. Quote the CSV.](/assets/journal/taa-ghosting/10_fingerprint.jpg)
+![Unique artifact. Left: thin cyan stick under naive EMA at α=0.10, a comet of coverage that already left. Right: measured streak px vs α∈{0.05, 0.10, 0.20, 0.50} plus the analytic v·log ε/log(1−α) curve. Coverage + history, not wrong MV. Quote the CSV.](/assets/journal/taa-ghosting/10_fingerprint.jpg)
 
 This specific artifact empirically isolates the foundational phenomenon this analysis aims to quantify. The left panel depicts a thin cyan stick evaluated under a naive Exponential Moving Average (EMA) parameterized at \(\alpha=0.10\), generating a trailing comet artifact corresponding to coverage that has already vacated the geometric boundary. The right panel plots the empirically measured streak lengths (in pixels) across the discrete parameter set \(\alpha\in\{0.05, 0.10, 0.20, 0.50\}\), superimposed against the theoretical analytical decay curve \(v\cdot\log\varepsilon/\log(1-\alpha)\). The instrumentation HUD confirms: geometric velocity \(v=8.28\) px/frame, and the visible tail threshold \(\varepsilon=1/64\). The plate caption explicitly reinforces the theorem: *coverage + history, not wrong MV.*
 
@@ -220,7 +220,7 @@ Evaluated utilizing a strictly stationary camera supplemented with Halton \(2,3\
 
 ---
 
-### Mesa / llvmpipe — what this run can claim
+### Mesa / llvmpipe, what this run can claim
 | item | value |
 | --- | --- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
@@ -244,7 +244,7 @@ What it cannot claim: parity with hardware-accelerated TAA implementations, eval
 
 ## Out of scope
 
-Comparative benchmarking of production TAA pipelines (e.g., SMAA+TAA+sharpen, or proprietary implementations within Unreal, Unity, or Godot). Deep learning reconstruction architectures (DLSS, FSR, XeSS). Comprehensive motion-vector generation subsystems (screen-space velocity buffers, skinned geometry vectors, displacement motion vectors, or optical flow). Path-traced spatiotemporal denoising filters (SVGF, ReSTIR spatio-temporal variants, OIDN). Nine-tap Catmull-Rom historical sampling algorithms, YCoCg variance clipping utilizing `clipToAABB` as a generalized baseline, or velocity-weighted blending heuristics. The application of Halton or R2 subpixel jitter sequences on the primary ghost-demonstration heroes. High-frequency specular aliasing mitigation, Toksvig normal filtering, anisotropic GGX distributions, or sRGB versus linear texture decoding evaluations. Re-evaluating alternative tone-mapping operators (clip, Reinhard, ACES, exposure ladders)—Khronos PBR Neutral remains the rigidly fixed display operator inherited from prior documentation. Shadow-map bias tuning optimizations. Dedicated hardware TAA pipelines, 60 Hz display refresh characteristics, GPU thread occupancy, and hardware bandwidth profiling. Theoretical derivations encompassing Karis filtering, split-sum DFG approximations, or the Khronos Neutral transfer curve (refer to earlier documentation for foundational derivations).
+Comparative benchmarking of production TAA pipelines (e.g., SMAA+TAA+sharpen, or proprietary implementations within Unreal, Unity, or Godot). Deep learning reconstruction architectures (DLSS, FSR, XeSS). Comprehensive motion-vector generation subsystems (screen-space velocity buffers, skinned geometry vectors, displacement motion vectors, or optical flow). Path-traced spatiotemporal denoising filters (SVGF, ReSTIR spatio-temporal variants, OIDN). Nine-tap Catmull-Rom historical sampling algorithms, YCoCg variance clipping utilizing `clipToAABB` as a generalized baseline, or velocity-weighted blending heuristics. The application of Halton or R2 subpixel jitter sequences on the primary ghost-demonstration heroes. High-frequency specular aliasing mitigation, Toksvig normal filtering, anisotropic GGX distributions, or sRGB versus linear texture decoding evaluations. Re-evaluating alternative tone-mapping operators (clip, Reinhard, ACES, exposure ladders), Khronos PBR Neutral remains the rigidly fixed display operator inherited from prior documentation. Shadow-map bias tuning optimizations. Dedicated hardware TAA pipelines, 60 Hz display refresh characteristics, GPU thread occupancy, and hardware bandwidth profiling. Theoretical derivations encompassing Karis filtering, split-sum DFG approximations, or the Khronos Neutral transfer curve (refer to earlier documentation for foundational derivations).
 
 ---
 
@@ -252,7 +252,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 All analytical metrics are extracted directly from the uncompressed float buffer evaluated via Mesa llvmpipe. Residual RMS is calculated in the linear RGB domain, evaluated against the current frame \(S_t\) within a strictly defined, static-pixel ghost Region of Interest (ROI):
 
@@ -288,7 +288,7 @@ The reported science clamp RMS metric of 0.00000 is a direct consequence of the 
 
 ---
 
-## Appendix B — Assertions
+## Appendix B, Assertions
 
 Validation status: 42 pass / 0 fail.
 
@@ -309,7 +309,7 @@ All assertion tolerances were rigorously enforced and were not artificially rela
 
 ---
 
-## Appendix C — Resolve lock
+## Appendix C, Resolve lock
 
 ```text
 H     = bilinear(history, u_prev)     // nearest z

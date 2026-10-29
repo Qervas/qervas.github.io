@@ -1,4 +1,4 @@
-# Neural Capture — Implementation Monograph
+# Neural Capture, Implementation Monograph
 
 OHAO-style multipage visual textbook for **CamMatrixCapture** + the thesis evaluation pipeline
 (*Neural Rendering Dataset Collection*, LiU TQDV30, 2025).

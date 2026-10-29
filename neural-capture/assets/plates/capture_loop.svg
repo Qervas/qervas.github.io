@@ -26,6 +26,6 @@
   <text x="40" y="200" fill="#c9a27a" font-size="11" letter-spacing="2">CAMERA BANDWIDTH CONTRACT (CameraManager::CaptureAllCameras)</text>
   <rect x="40" y="220" width="900" height="100" rx="4" fill="#11141a" stroke="#2a3140"/>
   <text x="60" y="250" fill="#ebe4d6" font-size="13">For each group of parallel_groups cameras:</text>
-  <text x="60" y="275" fill="#a39c8e" font-size="13">Phase A — sequential Snap()+Wait(5000) per camera (GigE-safe) · optional stagger_delay_ms between cams</text>
-  <text x="60" y="300" fill="#a39c8e" font-size="13">Phase B — parallel SaveImageFromBuffer to session path · then group_delay_ms before next group</text>
+  <text x="60" y="275" fill="#a39c8e" font-size="13">Phase A, sequential Snap()+Wait(5000) per camera (GigE-safe) · optional stagger_delay_ms between cams</text>
+  <text x="60" y="300" fill="#a39c8e" font-size="13">Phase B, parallel SaveImageFromBuffer to session path · then group_delay_ms before next group</text>
 </svg>

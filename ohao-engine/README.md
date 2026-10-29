@@ -1,4 +1,4 @@
-# OHAO Engine — Demo Booth
+# OHAO Engine, Demo Booth
 
 Interview-ready **visual pitch** for [OHAO Engine](https://github.com/Qervas/ohao_engine).  
 Same format as the Neural Capture demo: scroll story + drag compares + keyboard beats.  
@@ -16,10 +16,10 @@ python3 -m http.server 5180
 
 | Key | Section |
 |-----|---------|
-| 1 | Hero — orbit video + metrics |
-| 2 | Stack — hybrid architecture + beauty stills |
-| 3 | Realtime — ReSTIR / OIDN drag compares |
-| 4 | Inverse lab — quality plates + tables |
+| 1 | Hero, orbit video + metrics |
+| 2 | Stack, hybrid architecture + beauty stills |
+| 3 | Realtime, ReSTIR / OIDN drag compares |
+| 4 | Inverse lab, quality plates + tables |
 | 5 | Interview cheat sheet |
 
 ## Deploy

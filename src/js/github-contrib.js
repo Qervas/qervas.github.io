@@ -1,4 +1,4 @@
-/* GitHub contributions — live count + weekly activity line */
+/* GitHub contributions, live count + weekly activity line */
 (function () {
   const USER = "Qervas";
   const year = new Date().getFullYear();
@@ -268,8 +268,8 @@
   function load(i) {
     if (i >= urls.length) {
       setNums(fallbackTotal);
-      if (streakEl) streakEl.textContent = "—";
-      if (peakEl) peakEl.textContent = "—";
+      if (streakEl) streakEl.textContent = "-";
+      if (peakEl) peakEl.textContent = "-";
       markError();
       return;
     }

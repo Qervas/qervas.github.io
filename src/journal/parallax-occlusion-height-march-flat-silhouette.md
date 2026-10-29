@@ -18,7 +18,7 @@ cover: /assets/journal/parallax-occlusion/05_graze_3up.jpg
 
 Building upon our prior analysis of the single-pixel UV ellipse, this note examines the geometric illusion of depth. Rather than introducing a novel sampler, we offset UV coordinates along the **tangent-space view ray** to simulate volumetric depth on a planar two-triangle quad. The integration of interior parallax and an optional height-field self-shadowing routine closely mimics true geometric displacement. This approach, however, faces a strict physical limitation: the mesh outline remains invariant. Ultimately, **the silhouette is still the quad**.
 
-![Same brick wall, raking light, three shaders. Left FLAT: painted card, mortar wells fully visible. Middle BUMP: grooves shade, grout albedo stays in the wells, bricks do not slide. Right POM N=32: interior bricks slide, mortar hides. Photograph only — no UV-error metric.](/assets/journal/parallax-occlusion/05_graze_3up.jpg)
+![Same brick wall, raking light, three shaders. Left FLAT: painted card, mortar wells fully visible. Middle BUMP: grooves shade, grout albedo stays in the wells, bricks do not slide. Right POM N=32: interior bricks slide, mortar hides. Photograph only, no UV-error metric.](/assets/journal/parallax-occlusion/05_graze_3up.jpg)
 
 Under identical lighting conditions, we observe three distinct rendering regimes across the same brick geometry. Standard rendering utilizing geometric \(\mathbf{n}\) and base UV \(\mathbf{u}_0\) (**FLAT**) produces a painted-card effect where mortar wells remain persistently visible regardless of the incident vector. Applying height-derived normals at the geometric UV (**BUMP**) yields accurate shading, yet the brick elements lack perspective shift as the view angle changes. Conversely, Parallax Occlusion Mapping (**POM**) employing an \(N=32\) roof-hull march achieves correct perspective translation, naturally occluding the mortar within the wells. Note that this visual comparison relies strictly on photographic evaluation rather than formal UV-error metrics.
 
@@ -92,7 +92,7 @@ The ray origin is situated at the geometric hit location on the roof (\(H=1\)), 
 
 A confirmed intersection occurs at the smallest value of \(t\in[0,1]\) satisfying the inequality \(1-t \le h(\mathbf{u}_0-t\boldsymbol{\delta}_{uv})\).
 
-### Offset mapping — named knife, not hero
+### Offset mapping, named knife, not hero
 
 In true parallax mapping (Kaneko-style), which evaluates a single sample, the UV perturbation is formulated as:
 
@@ -100,7 +100,7 @@ In true parallax mapping (Kaneko-style), which evaluates a single sample, the UV
 
 Traditional offset limiting (often associated with Welsh) intentionally omits the \(1/\hat{v}_z\) term, yielding a modified offset vector where \(\boldsymbol{\delta}_{uv}\propto\hat{\mathbf{v}}_{xy}\,s\). At severe grazing angles, the true single-sample offset **explodes** into visual incoherence, whereas the limited offset systematically **under-walks** the surface profile. While both historical methods warrant inclusion in the comparative family strip for context, neither represents the modern standard technique.
 
-### Steep parallax — even layers, first crossing
+### Steep parallax, even layers, first crossing
 
 Steep parallax mapping discretizes the bounding volume into uniform strata:
 
@@ -108,7 +108,7 @@ Steep parallax mapping discretizes the bounding volume into uniform strata:
 
 An intersection is identified at the smallest layer index \(i\ge 1\) where the ray plane descends below the height surface: \(H_i\le h(\mathbf{u}_i)\). This process inherently produces a mathematical staircase artifact in \(t\). Our primary testing configuration employs a fixed step count of \(N=32\), while enforcing a strict compile-time upper bound of \(N_{\mathrm{cap}}=64\).
 
-### POM — linear search + secant lerp (hero)
+### POM, linear search + secant lerp (hero)
 
 After isolating the first height-field crossing between layers \(i-1\) and \(i\), POM refines the intersection precision by interpolating the exact root of \(H-h\). This derivation assumes both functions exhibit linearity with respect to \(t\) across the sampled interval:
 
@@ -142,7 +142,7 @@ To mathematically formalize the visual discrepancy inherent in POM, let \(C_{\ma
 While modulating `gl_FragDepth` based on the derived intersection distance can correctly handle **interior** depth compositing for subsequent post-processing, it fundamentally **cannot** expand the rasterized outline of the underlying mesh. Our operational policy is rigid: **do not** write `gl_FragDepth`, and the current validation run strictly adheres to this constraint.
 
 ### Unique artifacts: the slice, then the XOR
-![Unique artifact. 1-D cosine ridge, view ray, layer planes. N=32 first ridge nested (steep / POM / dense-1D agree). Inset: N=8 skipped well — intentional. CPU science.](/assets/journal/parallax-occlusion/01_march_slice.jpg)
+![Unique artifact. 1-D cosine ridge, view ray, layer planes. N=32 first ridge nested (steep / POM / dense-1D agree). Inset: N=8 skipped well, intentional. CPU science.](/assets/journal/parallax-occlusion/01_march_slice.jpg)
 
 The preceding diagram illustrates the precise geometric artifact this investigation targets. Evaluated via a rigorous CPU-side model, independent of the OpenGL rasterization pipeline, we map a 1-D cosine ridge against the incident view ray intersecting discrete layer planes.
 
@@ -191,9 +191,9 @@ Executing the height march with only \(N=4\) layers critically undersamples deep
 
 The image sequence above delineates the boundaries of self-shadowing evaluation. In the left frame, utilizing only the primary view-march, physically occluded structural wells erroneously receive full unshadowed shading because the view intersection is successful while the incident light vector is ignored. The middle frame introduces the secondary tangent-space light-march, which correctly occludes contact points and deep recesses. The right frame provides the displaced-mesh ground truth, utilizing true triangulated geometry mapped to the identical height field. As emphasized in the caption: this technique is **not a shadow map**. The reported shadow agreement metric of \(0.993\) is derived explicitly by comparing an \(N=32\) march against a denser \(N=64\) march operating on the **same** continuous height field; it is not a comparison against ray-traced geometric triangles. This agreement metric must not be quoted as a validation of true geometric matching.
 
-### What if: Height LOD — one sentence of Jacobian
+### What if: Height LOD, one sentence of Jacobian
 
-![λ=0 aliases vs λ_iso melts. ρ≈3.15, λ_iso≈1.66 from CPU geometric UV Jacobian. Continuity with mipmaps / anisotropic — not a new theorem.](/assets/journal/parallax-occlusion/12_height_lod.jpg)
+![λ=0 aliases vs λ_iso melts. ρ≈3.15, λ_iso≈1.66 from CPU geometric UV Jacobian. Continuity with mipmaps / anisotropic, not a new theorem.](/assets/journal/parallax-occlusion/12_height_lod.jpg)
 
 When the surface is minified under perspective projection, the CPU calculates the geometric UV Jacobian as \(\rho = N \cdot \max(\partial u/\partial x, \partial u/\partial y) \approx 3.15\), which dictates an isotropic Level of Detail (LOD) of \(\lambda_{\mathrm{iso}} = \log_2\rho \approx 1.66\). On the left, clamping to \(\lambda=0\) preserves the high-frequency structural definition of the mortar wells but introduces severe sub-pixel aliasing. On the right, applying \(\lambda_{\mathrm{iso}}\) causes the high-frequency relief to visibly soften and melt. This methodology guarantees perfect continuity with standard hardware mipmapping and anisotropic filtering: it applies an isotropic LOD derived entirely from the **geometric** UV footprint, deliberately ignoring complex along-ray cone expansion calculations. This represents standard industry practice, not a novel rendering theorem, and we intentionally omit extensive Anisotropic Filtering quality analyses.
 
@@ -214,7 +214,7 @@ To ensure stringent experimental reproducibility, the host environment for these
 
 We formalize the following claims: operating within this specific OSMesa / llvmpipe environment, a rigorous **CPU** tangent-space height march evaluated against an authored field successfully offsets UV coordinates along a precisely known vector \(\boldsymbol{\delta}_{uv}\). This technique systematically reduces measurable UV error compared to an analytic sphere as the layer count \(N\) increases, up to the inherent saturation point of the linear-search \(\Delta t\) / secant interpolation model. Implementing a GLSL 330 fragment march, bounded by a fixed step cap and relying on explicit `textureLod` fetches, yields what is fundamentally a **photograph of this specific software rasterizer**. It must not be misconstrued as an evaluation of a discrete GPU’s dedicated POM hardware unit (as no such specialized fixed-function hardware exists). Under perfectly face-on orthographic projection, bump mapping and POM exhibit flawless parity along our scientific evaluation path (\(\mathrm{MAE} = 0\)). At severe grazing angles, the true screen-space **coverage** of the physically displaced grid fiercely contradicts the visual output of the planar 2-triangle POM quad; this resulting XOR delta completely quantifies the silhouette lie. Finally, implementing a secondary tangent-space height-field light-march convincingly occludes structural wells that the primary view ray fails to hide, but this methodology remains strictly a ray march, not a true hardware shadow map.
 
-We explicitly disclaim any evaluation of NVIDIA, AMD, or Intel hardware POM implementations, nor do we attempt to quantify hardware tessellation efficiency or assert that "AAA games execute exactly this many taps." We make no claims regarding the performance parity of our specific llvmpipe loop against modern GPU architectures, justifying the omission of millisecond frame timings. We cannot assert that a shader utilizing `dFdx`/`dFdy` to construct a TBN matrix, or relying on implicit LOD calculations within a dynamic loop, will precisely match dedicated hardware behavior. We do not claim that the standard POM secant interpolation **is** a perfect analytic ray–height intersection. We reject the notion that writing `gl_FragDepth` from the fragment shader magically "fixes" the absence of true geometric displacement—the absolute screen-space coverage is, and always will be, bottlenecked by the base primitive quad. Most critically, we reiterate that a height field is not actual geometry.
+We explicitly disclaim any evaluation of NVIDIA, AMD, or Intel hardware POM implementations, nor do we attempt to quantify hardware tessellation efficiency or assert that "AAA games execute exactly this many taps." We make no claims regarding the performance parity of our specific llvmpipe loop against modern GPU architectures, justifying the omission of millisecond frame timings. We cannot assert that a shader utilizing `dFdx`/`dFdy` to construct a TBN matrix, or relying on implicit LOD calculations within a dynamic loop, will precisely match dedicated hardware behavior. We do not claim that the standard POM secant interpolation **is** a perfect analytic ray–height intersection. We reject the notion that writing `gl_FragDepth` from the fragment shader magically "fixes" the absence of true geometric displacement, the absolute screen-space coverage is, and always will be, bottlenecked by the base primitive quad. Most critically, we reiterate that a height field is not actual geometry.
 
 Honesty, short:
 
@@ -240,7 +240,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 Operating under a locked scale of \(s=0.08\), zero bias \(\beta=0\), and rendered via the Mesa llvmpipe driver, we observe the following measurements:
 

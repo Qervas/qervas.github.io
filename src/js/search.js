@@ -1,4 +1,4 @@
-/* search.js — client-side filter over posts + projects (synced inputs) */
+/* search.js, client-side filter over posts + projects (synced inputs) */
 (function () {
   const inputs = Array.from(document.querySelectorAll('.site-search-input'));
   const hint = document.getElementById('site-search-hint');

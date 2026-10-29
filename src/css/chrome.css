@@ -1,4 +1,4 @@
-/* chrome.css — CTAs, honesty strip, filters, role lens, section nav, reveal */
+/* chrome.css, CTAs, honesty strip, filters, role lens, section nav, reveal */
 
 /* hero primary CTAs */
 .hero-ctas {
@@ -187,7 +187,7 @@
   transform: scaleX(1);
 }
 
-/* scroll reveal — never leave content invisible if JS lags */
+/* scroll reveal, never leave content invisible if JS lags */
 .reveal {
   opacity: 1;
   transform: none;

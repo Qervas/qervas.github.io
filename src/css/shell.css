@@ -1,4 +1,4 @@
-/* shell.css — X-style left rail, profile, tabs, posts, right aside */
+/* shell.css, X-style left rail, profile, tabs, posts, right aside */
 
 /* ═══════════ FLOATING PRIMARY DOCK ═══════════ */
 .nav-dock {
@@ -391,7 +391,7 @@
   color: var(--accent-hover);
 }
 
-/* Pulse ring on CV — hiring CTA */
+/* Pulse ring on CV, hiring CTA */
 .btn-pulse {
   animation: cv-pulse 2.2s var(--ease) infinite;
 }
@@ -475,7 +475,7 @@
   text-shadow: none;
   pointer-events: none;
 }
-/* extruded depth layers along Z — charcoal → near-black */
+/* extruded depth layers along Z, charcoal → near-black */
 .frank-3d-layer:nth-child(1) { transform: translateZ(-2px); color: #2a2a2a; }
 .frank-3d-layer:nth-child(2) { transform: translateZ(-4px); color: #1f1f1f; }
 .frank-3d-layer:nth-child(3) { transform: translateZ(-6px); color: #161616; }
@@ -573,7 +573,7 @@
   margin-top: 8px;
   padding-top: 8px;
 }
-/* 3rd-party profile links — brand colors */
+/* 3rd-party profile links, brand colors */
 .profile-socials {
   display: flex;
   flex-wrap: wrap;
@@ -1035,7 +1035,7 @@
   .post-action-star.is-pop { animation: none; }
 }
 
-/* Section markers — themed stamps live in sections.css */
+/* Section markers, themed stamps live in sections.css */
 
 /* ═══════════ RIGHT RAIL ═══════════ */
 .rail-right {
@@ -1276,7 +1276,7 @@
     0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-/* Today — ring + soft pulse so the slot is obvious */
+/* Today, ring + soft pulse so the slot is obvious */
 .gh-heat .gh-cell.is-today {
   position: relative;
   z-index: 2;

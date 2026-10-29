@@ -1,5 +1,5 @@
 /**
- * Neural Capture monograph — shared jargon dictionary.
+ * Neural Capture monograph, shared jargon dictionary.
  * Keys longest-first matched by glossary.js (window.OHAO_GLOSSARY name kept for chrome compat).
  */
 window.OHAO_GLOSSARY = {

@@ -16,7 +16,7 @@ video:
 cover: /assets/journal/shadow-map-bias-as-geometric-error/00_hero.jpg
 ---
 
-Shadow-map bias is a physical length along the incident light ray, applied immediately before the depth comparison. Too short a length misclassifies an analytically lit receiver as shadowed—surface acne. Too long a length lifts the contact shadow of a thin occluder off its geometric foot—peter-panning. This note measures that trade-off on one map, one sun, and one constant-bias sweep.
+Shadow-map bias is a physical length along the incident light ray, applied immediately before the depth comparison. Too short a length misclassifies an analytically lit receiver as shadowed, surface acne. Too long a length lifts the contact shadow of a thin occluder off its geometric foot, peter-panning. This note measures that trade-off on one map, one sun, and one constant-bias sweep.
 
 Discrete depth encoding, winner-islands, and reverse-Z belong to *Z-fighting is geometric compression plus quantization*. That note defers the acne-versus-peter-pan distinction here and keeps fight-fraction metrics in its own scope. We fix a single shadow map and do not sweep a depth code. The shared geometric idea is that a depth failure can be stated as a length: there an isolatable interval in front of the camera; here a bias \(b\) in metres along the sun vector.
 
@@ -30,7 +30,7 @@ At the operating point \(b^\star=36\,\mathrm{mm}\) (\(0.036000\,\mathrm{m}\)), a
 
 ## Method: bias as a length on one map
 
-A shadow map stores one depth per texel—the front-most surface from the light. The compare asks whether a shaded point lies farther from the light than that stored depth. On a surface tilted relative to the texel plane, continuous shaded points fall deeper than the winning fragment, so the compare fails. Acne is that mismatch: analytic visibility toward the sun is 1, yet the compare marks the sample shadowed.
+A shadow map stores one depth per texel, the front-most surface from the light. The compare asks whether a shaded point lies farther from the light than that stored depth. On a surface tilted relative to the texel plane, continuous shaded points fall deeper than the winning fragment, so the compare fails. Acne is that mismatch: analytic visibility toward the sun is 1, yet the compare marks the sample shadowed.
 
 Under this orthographic frustum, texel slope dominates the 24-bit depth step. Apron slope is \(0.025005\,\mathrm{m}\) per shadow texel; the quantization step is \(4.564028\times 10^{-7}\,\mathrm{m}\). The ratio is \(54787.622775\) (lede \(54788\)), well above the gate floor of \(50\). The acne in the cover sequence is therefore a texel-slope failure; winner-islands stay in the z-fighting note.
 
@@ -42,17 +42,17 @@ The environment is right-handed, \(Y\) up, in metres.
 
 | symbol | meaning | unit |
 | --- | --- | --- |
-| \(s\) | unit vector toward the sun | — |
+| \(s\) | unit vector toward the sun |, |
 | \(\alpha\) | sun altitude, \(32^\circ\) | degree |
 | \(\beta\) | ramp tilt, \(20^\circ\) | degree |
 | \(d(p)\) | light depth, \(-p\cdot s\) | \(\mathrm{m}\) |
 | \(n_l,\,f_l\) | ortho near and far in \(d\) | \(\mathrm{m}\) |
-| \(z_w\) | window depth, \(0\) at \(n_l\), \(1\) at \(f_l\) | — |
+| \(z_w\) | window depth, \(0\) at \(n_l\), \(1\) at \(f_l\) |, |
 | \(t\) | shadow texel, ortho width \(/\,512\) | \(\mathrm{m}\) |
 | \(b\) | constant bias along the ray, toward the sun | \(\mathrm{m}\) |
-| \(k_s\) | slope-scale multiplier | — |
+| \(k_s\) | slope-scale multiplier |, |
 | \(\tau\) | plate thickness, \(0.012\) | \(\mathrm{m}\) |
-| \(A\) | acne fraction | — |
+| \(A\) | acne fraction |, |
 | \(G\) | contact gap along \(+x\) | \(\mathrm{m}\) |
 
 \[s=(-\cos\alpha,\ \sin\alpha,\ 0),\qquad d(p)=-p\cdot s.\]
@@ -83,7 +83,7 @@ CPU meters and the beauty shader share the compare. \(\tilde d\) is the stored w
 
 Both regions are fully analytically lit: ramp \(2703/2703\), apron \(3654/3654\).
 
-**Contact gap.** The plate's downstream face sits at \(x_c=1\) with thickness \(\tau=12\,\mathrm{mm}\) toward the sun. Visible ground is majority-filtered over a \(31\,\mathrm{mm}\) window for boundary finding only—never for \(A\). \(G\) is the start of the longest shadowed run minus \(x_c\). At \(b=0\), the raw compare shadows \(451/451\) transect samples downstream of the plate, so a closed gap is a real contact shadow, not a missing caster.
+**Contact gap.** The plate's downstream face sits at \(x_c=1\) with thickness \(\tau=12\,\mathrm{mm}\) toward the sun. Visible ground is majority-filtered over a \(31\,\mathrm{mm}\) window for boundary finding only, never for \(A\). \(G\) is the start of the longest shadowed run minus \(x_c\). At \(b=0\), the raw compare shadows \(451/451\) transect samples downstream of the plate, so a closed gap is a real contact shadow, not a missing caster.
 
 **Ideal-map oracle.** For this plate and sun altitude,
 
@@ -121,7 +121,7 @@ Same camera and map at the long extreme. Both acne fractions are \(0\), but the 
 
 ### What if slope-scale marks one point instead?
 
-Slope-scale at \(k_s=1\), \(b_c=0\) is one marked point in the same space—not a second ladder. It clears \(A_{\mathrm{ramp}}=0\) and \(A_{\mathrm{apron}}=0\) with \(G=13\,\mathrm{mm}\) (\(0.013000\,\mathrm{m}\)), shorter than \(G(b_{\mathrm{match}})=20\,\mathrm{mm}\) at matched ramp acne. The claim is that inequality, not a product ranking of filtered shadows.
+Slope-scale at \(k_s=1\), \(b_c=0\) is one marked point in the same space, not a second ladder. It clears \(A_{\mathrm{ramp}}=0\) and \(A_{\mathrm{apron}}=0\) with \(G=13\,\mathrm{mm}\) (\(0.013000\,\mathrm{m}\)), shorter than \(G(b_{\mathrm{match}})=20\,\mathrm{mm}\) at matched ramp acne. The claim is that inequality, not a product ranking of filtered shadows.
 
 ![Teaching pin. Ramp acne, apron acne, and contact gap in millimetres against constant bias from 0 to 120 mm. Marker at b-star = 36 mm. Callout: slope-scale ks=1, bc=0, both acne fractions 0, gap 13 mm. Eight contact strips at 0, 24, 48, 72, 96, and 120 mm, then b-star, then slope-scale. The gap staircase is left visible. Authored sRGB of the curves and the contact strips.](/assets/journal/shadow-map-bias-as-geometric-error/03_sweep.jpg)
 
@@ -144,7 +144,7 @@ The teaching pin plots \(A_{\mathrm{ramp}}\), \(A_{\mathrm{apron}}\), and \(G\) 
 
 **Cannot claim.** A discrete GPU, wavefront, or frame-time budget. A filtered shadow, cascade, or soft penumbra. A measured polygon offset, normal-offset bias, or receiver-plane depth. Acne or gap read from a JPEG. A second depth codebook, fight-fraction, or reverse-Z curve. A ranking of this bias length against a product shadow stack.
 
-Honesty notes that stay out of the main argument: the meter uses a 32-bit float color copy of winning fragment \(z\) (attachment **DEPTH_COMPONENT24**; window depth bits **0**); sixteen apron depth-texture texels match that copy; `sampler2DShadow` agrees on 8/8 stable points; probes at \(b=0\) and \(b^\star\) match the CPU test at 16/16 locations. Gate 3 apron median \(d-\tilde d=-0.000350\,\mathrm{m}\) (\(-0.35\,\mathrm{mm}\)) sits under the unquantized floor of 0 because the 8 mm lattice is sunward of \(512^2\) texel centers (projected residual \(-0.349\,\mathrm{mm}\)); the gate accepts any median within \(-2\,\mathrm{mm}\) (an unrendered apron would be about \(-3.3\,\mathrm{m}\)). Specular on the lit plate face is masked by the binary shadow and does not enter \(A\) or \(G\). The 31 mm majority filter is boundary-only; pass requires \(G(b_{\max})>G(0)\), and \(G\) rises monotonically from 0 to \(0.091\,\mathrm{m}\) even if individual staircase steps plateau. One map, one checksum—mismatch stops the run. The ideal-map oracle checks metric code; the raster curve checks the shadow map.
+Honesty notes that stay out of the main argument: the meter uses a 32-bit float color copy of winning fragment \(z\) (attachment **DEPTH_COMPONENT24**; window depth bits **0**); sixteen apron depth-texture texels match that copy; `sampler2DShadow` agrees on 8/8 stable points; probes at \(b=0\) and \(b^\star\) match the CPU test at 16/16 locations. Gate 3 apron median \(d-\tilde d=-0.000350\,\mathrm{m}\) (\(-0.35\,\mathrm{mm}\)) sits under the unquantized floor of 0 because the 8 mm lattice is sunward of \(512^2\) texel centers (projected residual \(-0.349\,\mathrm{mm}\)); the gate accepts any median within \(-2\,\mathrm{mm}\) (an unrendered apron would be about \(-3.3\,\mathrm{m}\)). Specular on the lit plate face is masked by the binary shadow and does not enter \(A\) or \(G\). The 31 mm majority filter is boundary-only; pass requires \(G(b_{\max})>G(0)\), and \(G\) rises monotonically from 0 to \(0.091\,\mathrm{m}\) even if individual staircase steps plateau. One map, one checksum, mismatch stops the run. The ideal-map oracle checks metric code; the raster curve checks the shadow map.
 
 ## Out of scope
 
@@ -154,7 +154,7 @@ The cover is the operating point. The sweep is the teaching figure. Bias is a ge
 
 ---
 
-## Appendix A — Constant-bias sweep and lede map
+## Appendix A, Constant-bias sweep and lede map
 
 Metrics are CPU double precision before Neutral. The 31-sample ladder is \(b=0, 4, \ldots, 120\,\mathrm{mm}\); selected rows:
 
@@ -183,7 +183,7 @@ Lede abbreviations map to this run's unrounded tokens:
 
 Contact strips on the teaching pin: 0, 24, 48, 72, 96, 120 mm, then \(b^\star\), then slope-scale. Sweep plot authored sRGB of the curves and strips.
 
-## Appendix B — Full meter table
+## Appendix B, Full meter table
 
 | item | value |
 | --- | --- |
@@ -210,7 +210,7 @@ Contact strips on the teaching pin: 0, 24, 48, 72, 96, 120 mm, then \(b^\star\),
 
 Renderer row: llvmpipe, OSMesa core 3.3 request; **RGBA32F** copy of winning fragment \(z\); attachment **DEPTH_COMPONENT24**; window depth bits **0**; sixteen apron texels match the color copy; hardware compare 8/8; encode \(K=3.40\), Neutral \(e=1.00\), sRGB OETF on the CPU; map checksum **a816326e2dbe2366**.
 
-## Appendix C — Assertions and formula cheat sheet
+## Appendix C, Assertions and formula cheat sheet
 
 Printed: **11 pass / 0 fail**. The eleven checks cover window depth, the regime ratio, the apron median, lit and covered regions, the ideal-map gap, probes and the checksum, frame projection, falling acne, a rising gap, an interior operating point, and the slope-scale gap.
 

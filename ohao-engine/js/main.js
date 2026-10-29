@@ -136,7 +136,7 @@
 
   $("[data-copy]")?.addEventListener("click", async () => {
     const text =
-      "OHAO Engine — solo Vulkan 1.3 hybrid renderer (path tracer + deferred + inverse lab). Demo: https://qervas.github.io/ohao-engine/";
+      "OHAO Engine, solo Vulkan 1.3 hybrid renderer (path tracer + deferred + inverse lab). Demo: https://qervas.github.io/ohao-engine/";
     try {
       await navigator.clipboard.writeText(text);
       showToast("Copied interview one-liner");

@@ -1,5 +1,5 @@
 /**
- * Demo tour controller — single-stop presentation mode.
+ * Demo tour controller, single-stop presentation mode.
  * Keyboard: 1–5 jump, ←/→ or n/p step, Home/End ends.
  * UI: sticky bar buttons + Prev/Next.
  * Media paths stay relative under site/assets/.

@@ -1,4 +1,4 @@
-/* nav-active.js — dock + tabs + running head follow the section in view */
+/* nav-active.js, dock + tabs + running head follow the section in view */
 (function () {
   const NAMES = {
     "featured-work": "Agents",

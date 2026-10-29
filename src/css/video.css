@@ -1,4 +1,4 @@
-/* video.css — journal gallery, watch page, compact note card */
+/* video.css, journal gallery, watch page, compact note card */
 
 /* wide single column on journal + watch pages */
 .page-journal .app, .page-post .app { grid-template-columns: minmax(0,1fr) !important; max-width: 1640px; }

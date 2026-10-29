@@ -84,7 +84,7 @@
       (post.querySelector(".post-title") && post.querySelector(".post-title").textContent) ||
       "Frank Yin";
     const url = shareUrl(post);
-    const text = title + " — " + url;
+    const text = title + ", " + url;
 
     if (navigator.share) {
       try {
