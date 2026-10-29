@@ -1190,3 +1190,22 @@ button:focus-visible {
 [data-theme="dark"] .profile-plate::before {
   background: rgba(143, 207, 196, 0.28);
 }
+
+/* Godot MCP sits under the NIUA cover as a proof note, not a second hero. */
+#featured-work .niua-proof {
+  margin: 0 10px 4px 22px;
+  padding: 12px 14px 14px;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+#featured-work .niua-proof::before,
+#featured-work .niua-proof::after {
+  content: none;
+  display: none;
+}
+#featured-work .niua-proof h3 {
+  font-size: 1.15rem;
+}
+#featured-work .niua-proof:hover {
+  transform: none;
+}

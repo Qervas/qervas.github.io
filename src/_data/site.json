@@ -4,9 +4,9 @@
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "I build tool-using agents: an open-source Godot MCP (182 tools, playtest evidence) and the generation queue for a product under NDA. MSc Linköping. Open to full-time agent-systems roles.",
-  "ogDescription": "Agents, tools, and the systems they run. Godot MCP · generation queues. MSc Linköping.",
+  "description": "NIUA is an agent harness: tools in, a receipt you can check on the way out. Godot MCP is the open proof. MSc Linköping. Open to full-time agent-systems roles.",
+  "ogDescription": "NIUA · agent harness · run receipts. Godot MCP is the open proof. MSc Linköping.",
   "ogImage": "https://qervas.github.io/assets/proof/niua_godot_mcp_product.jpg",
-  "ogImageAlt": "NIUA Godot MCP — an agent driving a Godot editor through tools",
+  "ogImageAlt": "NIUA — an agent harness returning evidence from a running editor",
   "author": "Shaoxuan (Frank) Yin"
 }
