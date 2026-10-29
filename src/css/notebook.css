@@ -1,17 +1,23 @@
 /* notebook.css — lab notebook gallery. Loaded last. */
 
 body {
-  background-color: var(--bg);
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 31px,
-    var(--rule-line) 32px
-  );
+  background-color: #efe4cf;
+  background-image:
+    url("/assets/paper-grain.svg"),
+    linear-gradient(rgba(112, 84, 42, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112, 84, 42, 0.06) 1px, transparent 1px);
+  background-size: 240px 240px, 22px 22px, 22px 22px;
   color: var(--ink);
   font-family: var(--sans);
   font-size: 16.5px;
   line-height: 1.55;
+}
+[data-theme="dark"] body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(243, 232, 214, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(243, 232, 214, 0.03) 1px, transparent 1px);
+  background-size: 22px 22px, 22px 22px;
 }
 
 .app {
@@ -44,8 +50,10 @@ body {
 
 /* ── Identity column ── */
 .lab-mark {
-  display: inline-block;
-  margin-bottom: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
   font-family: var(--mono);
   font-size: 0.72rem;
   font-weight: 500;
@@ -53,6 +61,12 @@ body {
   text-transform: uppercase;
   color: var(--muted);
   text-decoration: none !important;
+}
+.lab-mark::before {
+  content: "";
+  width: 22px;
+  height: 1px;
+  background: currentColor;
 }
 .lab-mark:hover { color: var(--accent); }
 
@@ -67,15 +81,55 @@ body {
   align-items: flex-start;
   gap: 14px;
 }
+.profile-plate {
+  position: relative;
+  width: 108px;
+  margin: 10px 0 2px 4px;
+  padding: 7px 7px 18px;
+  background: #fbf6ec;
+  border: 1px solid rgba(90, 64, 32, 0.18);
+  box-shadow:
+    0 1px 0 rgba(255, 252, 245, 0.8) inset,
+    0 10px 16px rgba(70, 48, 20, 0.14);
+  transform: rotate(-3.5deg);
+}
+.profile-plate::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 46px;
+  height: 14px;
+  transform: translateX(-50%) rotate(4deg);
+  background: rgba(214, 186, 112, 0.62);
+  box-shadow: 0 1px 1px rgba(80, 55, 20, 0.12);
+}
 .profile-avatar {
-  width: 148px;
-  height: 172px;
-  border-radius: 2px;
-  border: 1px solid var(--rule-strong);
+  display: block;
+  width: 100%;
+  height: 96px;
+  border: none;
+  border-radius: 1px;
   object-fit: cover;
-  object-position: center 18%;
-  filter: grayscale(1) sepia(0.22) contrast(1.06);
-  box-shadow: var(--shadow-card);
+  object-position: center 22%;
+  /* warm snapshot — keep the real photo, drop the funeral grayscale */
+  filter: sepia(0.22) saturate(1.08) contrast(0.86) brightness(1.08);
+  box-shadow: none;
+}
+[data-theme="dark"] .profile-plate {
+  background: #2a241e;
+  border-color: rgba(243, 232, 214, 0.16);
+}
+[data-theme="dark"] .profile-avatar {
+  filter: sepia(0.18) saturate(0.95) contrast(0.94) brightness(0.98);
+}
+.lab-sketch {
+  display: block;
+  width: 148px;
+  height: 48px;
+  margin-top: 14px;
+  color: var(--accent);
+  opacity: 0.85;
 }
 .profile-copy-top {
   display: flex;
@@ -296,12 +350,12 @@ body {
   backdrop-filter: none;
 }
 .feed-top-title {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 560;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink);
 }
 .posts-top-sub {
   margin-top: 4px;
@@ -374,12 +428,41 @@ body {
 /* ── Notebook covers ── */
 .post {
   display: block;
-  margin: 0 0 16px;
-  padding: 16px 16px 14px;
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  position: relative;
+  margin: 14px 0 22px;
+  padding: 18px 18px 16px 26px;
+  background-color: #faf6ee;
+  background-image: url("/assets/paper-grain.svg");
+  background-size: 180px 180px;
+  border: 1px solid rgba(90, 70, 40, 0.16);
+  border-radius: 3px 14px 14px 3px;
+  box-shadow:
+    0 1px 0 rgba(255, 252, 245, 0.75) inset,
+    3px 4px 0 #e7dcc6,
+    0 16px 28px rgba(62, 42, 18, 0.14);
+}
+.post::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 13px;
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(90deg, rgba(92, 64, 32, 0.2), rgba(92, 64, 32, 0.05) 72%, transparent);
+  pointer-events: none;
+}
+.post::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 36px;
+  width: 58px;
+  height: 16px;
+  background: rgba(214, 186, 112, 0.58);
+  transform: rotate(3deg);
+  box-shadow: 0 1px 1px rgba(80, 55, 20, 0.1);
+  pointer-events: none;
 }
 .post:hover,
 [data-theme="light"] .post:hover { background: var(--card-bg); }
@@ -512,26 +595,57 @@ body {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  padding: 0 0 8px;
+  gap: 26px 18px;
+  padding: 12px 4px 12px;
 }
 .project-item,
 [data-theme="light"] .project-item {
   display: flex;
   flex-direction: column;
+  position: relative;
   gap: 0;
-  padding: 12px 12px 14px;
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  padding: 14px 12px 16px 18px;
+  background-color: #faf6ee;
+  background-image: url("/assets/paper-grain.svg");
+  background-size: 160px 160px;
+  border: 1px solid rgba(90, 70, 40, 0.16);
+  border-radius: 2px 12px 12px 2px;
+  box-shadow:
+    0 1px 0 rgba(255, 252, 245, 0.7) inset,
+    0 12px 20px rgba(62, 42, 18, 0.13);
 }
-.project-item::before { content: none; display: none; }
+.project-item::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  border-radius: 2px 0 0 2px;
+  background: linear-gradient(90deg, rgba(92, 64, 32, 0.22), transparent);
+  pointer-events: none;
+}
+.project-item::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e07a72, #9a342e 62%, #5e1e1c);
+  box-shadow: 1px 2px 2px rgba(40, 20, 10, 0.28);
+  pointer-events: none;
+  z-index: 2;
+}
+.project-grid .project-item:nth-child(odd) { transform: rotate(-0.7deg); }
+.project-grid .project-item:nth-child(even) { transform: rotate(0.55deg); }
 .project-item:hover,
 [data-theme="light"] .project-item:hover {
-  background: var(--card-bg);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background-color: #faf6ee;
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow: 0 18px 28px rgba(62, 42, 18, 0.16);
 }
 .project-item > .project-thumb,
 .project-item > video.project-thumb,
@@ -744,8 +858,8 @@ body {
 .gallery-sub { max-width: 58ch; line-height: 1.5; }
 .vgrid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  padding: 12px 0 36px;
+  gap: 22px 16px;
+  padding: 14px 2px 36px;
 }
 .vgrid .vcard-thumb,
 .watch-next .vcard-thumb,
@@ -761,15 +875,48 @@ body {
 .aside-vlist .vcard {
   display: flex;
   flex-direction: column;
+  position: relative;
   gap: 6px;
   padding: 14px 14px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  box-shadow: var(--shadow-card);
+  background-color: #faf6ee;
+  background-image: url("/assets/paper-grain.svg");
+  background-size: 160px 160px;
+  border: 1px solid rgba(90, 70, 40, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 10px 18px rgba(62, 42, 18, 0.12);
   text-decoration: none !important;
   color: inherit;
 }
+/* Shared ink plate on every note — not a per-entry thumbnail. */
+.vgrid .vcard::before {
+  content: "";
+  display: block;
+  height: 104px;
+  margin: -14px -14px 8px;
+  border-bottom: 1px solid rgba(90, 70, 40, 0.14);
+  background: url("/assets/sketch-curve.svg") center 58% / 72% no-repeat #f6f0e3;
+}
+.vgrid .vcard:nth-child(3n+2)::before {
+  background-image: url("/assets/sketch-axes.svg");
+}
+.vgrid .vcard:nth-child(3n)::before {
+  background-image: url("/assets/sketch-dots.svg");
+}
+.vgrid .vcard::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e07a72, #9a342e 62%, #5e1e1c);
+  box-shadow: 1px 2px 2px rgba(40, 20, 10, 0.25);
+  pointer-events: none;
+}
+.vgrid .vcard:nth-child(odd) { transform: rotate(-0.45deg); }
+.vgrid .vcard:nth-child(even) { transform: rotate(0.4deg); }
+.vgrid .vcard:hover { transform: rotate(0deg) translateY(-3px); }
 .vcard-title {
   font-family: var(--serif);
   font-weight: 560;
@@ -851,10 +998,14 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .profile-plate,
   .project-item,
   .vcard,
+  .project-grid .project-item,
+  .vgrid .vcard,
   .project-item:hover,
-  .vcard:hover { transform: none; transition: none; }
+  .vcard:hover,
+  .vgrid .vcard:hover { transform: none; transition: none; }
 }
 
 @media (max-width: 1000px) {
@@ -883,14 +1034,28 @@ button:focus-visible {
 
   .profile-masthead {
     display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-columns: 96px minmax(0, 1fr);
     gap: 8px 12px;
     align-items: start;
   }
-  .profile-avatar {
-    width: 72px;
-    height: 88px;
+  .profile-plate {
+    width: 88px;
+    margin: 6px 0 0;
+    padding: 5px 5px 12px;
     grid-row: span 2;
+    transform: rotate(-2deg);
+  }
+  .profile-avatar {
+    width: 100%;
+    height: 74px;
+  }
+  .project-grid .project-item:nth-child(odd),
+  .project-grid .project-item:nth-child(even),
+  .vgrid .vcard:nth-child(odd),
+  .vgrid .vcard:nth-child(even),
+  .project-item:hover,
+  .vgrid .vcard:hover {
+    transform: none;
   }
   .profile-name { font-size: 1.7rem; }
   .profile-bio {
@@ -940,4 +1105,27 @@ button:focus-visible {
 @media (max-width: 720px) {
   .entry-head { flex-direction: column; }
   .post-title { font-size: 1.45rem; }
+}
+
+[data-theme="dark"] .post,
+[data-theme="dark"] .project-item,
+[data-theme="dark"] .project-item:hover,
+[data-theme="dark"] .vgrid .vcard,
+[data-theme="dark"] .watch-next .vcard,
+[data-theme="dark"] .aside-vlist .vcard {
+  background-color: var(--card-bg);
+  background-image: none;
+  border-color: var(--rule);
+  box-shadow: var(--shadow-card);
+}
+[data-theme="dark"] .post {
+  box-shadow: var(--shadow-card);
+}
+[data-theme="dark"] .vgrid .vcard::before {
+  background-color: #f3ead8;
+  filter: none;
+}
+[data-theme="dark"] .post::after,
+[data-theme="dark"] .profile-plate::before {
+  background: rgba(143, 207, 196, 0.28);
 }
