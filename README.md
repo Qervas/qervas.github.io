@@ -2,7 +2,7 @@
 
 Portfolio for [Shaoxuan (Frank) Yin](https://qervas.github.io/). Built with [Eleventy 3](https://www.11ty.dev/). Source lives in `src/`; the site is compiled to `_site/`.
 
-The public site is a lab-notebook gallery: warm paper, an identity column, and work as cover cards. The homepage leads with agent systems already in the repo (NIUA Godot MCP, NocturneAI). Graphics and the thesis stay further down as earlier records. Journal entries at `/posts/` are text notes — list pages do not show per-entry thumbnails. A Lanyard card on the homepage shows Spotify listening from Discord presence.
+The public site is a lab-notebook gallery: warm paper, an identity column, and work as cover cards. The homepage leads with NIUA Godot MCP. Graphics and the thesis stay further down as earlier records. Journal entries at `/posts/` are text notes — list pages do not show per-entry thumbnails. A Lanyard card on the homepage shows Spotify listening from Discord presence.
 
 ## Preview locally
 

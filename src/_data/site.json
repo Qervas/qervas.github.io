@@ -4,8 +4,8 @@
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "I build tool-using agents: an open-source Godot MCP (182 tools, playtest evidence), a multi-agent CLI, and the generation queue for a product under NDA. MSc Linköping. Open to full-time agent-systems roles.",
-  "ogDescription": "Agents, tools, and the systems they run. Godot MCP · multi-agent CLI · generation queues. MSc Linköping.",
+  "description": "I build tool-using agents: an open-source Godot MCP (182 tools, playtest evidence) and the generation queue for a product under NDA. MSc Linköping. Open to full-time agent-systems roles.",
+  "ogDescription": "Agents, tools, and the systems they run. Godot MCP · generation queues. MSc Linköping.",
   "ogImage": "https://qervas.github.io/assets/proof/niua_godot_mcp_product.jpg",
   "ogImageAlt": "NIUA Godot MCP — an agent driving a Godot editor through tools",
   "author": "Shaoxuan (Frank) Yin"
