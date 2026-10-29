@@ -1,4 +1,4 @@
-/* Apply theme before paint. Prefer dark (X aesthetic) when unset. */
+/* Apply theme before paint. Paper notebook unless a choice is stored. */
 
 (function () {
   try {
@@ -9,15 +9,14 @@
     } else if (mode === 'system') {
       resolved = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     } else {
-      // First visit: dark-first for X shell
-      mode = 'dark';
-      resolved = 'dark';
+      mode = 'light';
+      resolved = 'light';
     }
     document.documentElement.setAttribute('data-theme', resolved);
     document.documentElement.setAttribute('data-theme-mode', mode);
     document.documentElement.style.colorScheme = resolved;
   } catch (e) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.documentElement.setAttribute('data-theme-mode', 'dark');
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.setAttribute('data-theme-mode', 'light');
   }
 })();

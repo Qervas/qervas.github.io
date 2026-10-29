@@ -1,6 +1,4 @@
-/* video.css — YouTube-style journal: gallery, watch page, compact journal card */
-:root:not([data-theme="light"]) { --bg:#0b0d12; --paper:#0b0d12; --bg-elevated:#0b0d12; --surface:#151922; --surface-hover:#1c212c; --rule:#222834; --accent:#58c4dd; --accent-hover:#7fd3e6; --accent-soft:rgba(88,196,221,.12); --nav-bg:rgba(11,13,18,.85); --body-bg-top:#0b0d12; --body-bg-mid:#0b0d12; --body-bg-bot:#0b0d12; }
-body { background: var(--bg); }
+/* video.css — journal gallery, watch page, compact note card */
 
 /* wide single column on journal + watch pages */
 .page-journal .app, .page-post .app { grid-template-columns: minmax(0,1fr) !important; max-width: 1640px; }

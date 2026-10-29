@@ -1,12 +1,12 @@
 {
-  "title": "Shaoxuan (Frank) Yin · @qervas",
+  "title": "Shaoxuan (Frank) Yin · Agent systems",
   "name": "Shaoxuan Yin",
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "Builder of a 75K-line Vulkan engine, a 209 GB neural rendering dataset, an open-source Godot MCP server, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate.",
-  "ogDescription": "Vulkan · CUDA · neural rendering · agents. MSc Linköping. Remote · open to relocate.",
-  "ogImage": "https://qervas.github.io/assets/proof/ohao_helmet.jpg",
-  "ogImageAlt": "Ohao Engine — real-time path-traced helmet",
+  "description": "I build tool-using agents: an open-source Godot MCP (182 tools, playtest evidence), a multi-agent CLI, and the generation queue for a product under NDA. MSc Linköping. Open to full-time agent-systems roles.",
+  "ogDescription": "Agents, tools, and the systems they run. Godot MCP · multi-agent CLI · generation queues. MSc Linköping.",
+  "ogImage": "https://qervas.github.io/assets/proof/niua_godot_mcp_product.jpg",
+  "ogImageAlt": "NIUA Godot MCP — an agent driving a Godot editor through tools",
   "author": "Shaoxuan (Frank) Yin"
 }
