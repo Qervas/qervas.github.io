@@ -798,9 +798,70 @@ body {
   border: 1px solid var(--rule);
   border-radius: 8px;
 }
-.aside-heatmap .gh-heat-days,
-[data-theme="light"] .aside-heatmap .gh-heat-days {
-  background: linear-gradient(90deg, var(--card-bg) 72%, transparent) !important;
+.gh-line-wrap {
+  padding: 0 12px 4px;
+}
+.gh-line {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.gh-line-stroke {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.7;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.gh-line-fill {
+  fill: var(--accent);
+  opacity: 0.1;
+  stroke: none;
+}
+.gh-line-axis {
+  fill: none;
+  stroke: rgba(92, 68, 36, 0.35);
+  stroke-width: 1;
+}
+[data-theme="dark"] .gh-line-axis {
+  stroke: rgba(243, 232, 214, 0.28);
+}
+.gh-line-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  fill: var(--muted);
+}
+.gh-line-dot {
+  fill: var(--card-bg);
+  stroke: var(--accent);
+  stroke-width: 1.4;
+}
+.gh-line-caption {
+  margin: 0 2px 8px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.gh-line.is-loading .gh-line-axis {
+  stroke-dasharray: 3 4;
+}
+.aside-heatmap .gh-tooltip,
+[data-theme="light"] .aside-heatmap .gh-tooltip {
+  background: var(--card-bg);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  box-shadow: var(--shadow-sm);
+}
+.aside-heatmap .gh-tooltip strong,
+[data-theme="light"] .aside-heatmap .gh-tooltip strong {
+  color: var(--ink);
+}
+.aside-heatmap .gh-tooltip span,
+[data-theme="light"] .aside-heatmap .gh-tooltip span {
+  color: var(--muted);
 }
 .gh-cell.l0,
 [data-theme="light"] .gh-cell.l0 { background: #e6dece !important; box-shadow: none !important; }

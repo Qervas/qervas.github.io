@@ -37,32 +37,17 @@
           </div>
         </div>
         <p class="gh-year-line"><span id="gh-heatmap-year">2026</span> · public activity</p>
-        <div class="gh-heat-wrap">
-          <div class="gh-heat-scroll" id="gh-heat-scroll">
-            <div class="gh-heat-track" id="gh-heat-track">
-              <div class="gh-heat-months" id="gh-heat-months" aria-hidden="true"></div>
-              <div class="gh-heat-body">
-                <div class="gh-heat-days" aria-hidden="true">
-                  <span>Mon</span><span>Wed</span><span>Fri</span>
-                </div>
-                <div
-                  class="gh-heat is-loading"
-                  id="gh-heat"
-                  role="img"
-                  aria-label="GitHub contribution heatmap for @Qervas"
-                ></div>
-              </div>
-            </div>
-          </div>
-          <div class="gh-heat-legend">
-            <span class="gh-heat-legend-label">Less</span>
-            <span class="gh-cell l0" title="0"></span>
-            <span class="gh-cell l1" title="low"></span>
-            <span class="gh-cell l2" title="mid"></span>
-            <span class="gh-cell l3" title="high"></span>
-            <span class="gh-cell l4" title="peak"></span>
-            <span class="gh-heat-legend-label">More</span>
-          </div>
+        <div class="gh-line-wrap">
+          <svg
+            id="gh-line"
+            class="gh-line is-loading"
+            viewBox="0 0 260 118"
+            role="img"
+            aria-label="GitHub activity by week for @Qervas"
+          >
+            <path class="gh-line-axis" d="M8 96 H252" />
+          </svg>
+          <p class="gh-line-caption">Contributions per week</p>
         </div>
         <a class="aside-heatmap-caption" href="https://github.com/Qervas" target="_blank" rel="noopener">
           View profile on GitHub ↗
