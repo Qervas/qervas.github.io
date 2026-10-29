@@ -6,7 +6,7 @@
   "url": "https://qervas.github.io",
   "description": "NIUA is AI fullstack I ship: an AI that does a job with tools and comes back with proof you can check. The public piece connects to Godot. MSc Linköping. Open to full-time AI fullstack roles.",
   "ogDescription": "NIUA · AI fullstack. The AI does the job, then shows you the proof. MSc Linköping.",
-  "ogImage": "https://qervas.github.io/assets/proof/niua_godot_mcp_product.jpg",
-  "ogImageAlt": "NIUA — an AI doing the job and showing proof from the editor",
+  "ogImage": "https://qervas.github.io/assets/profile/avatar.jpg",
+  "ogImageAlt": "Shaoxuan Yin",
   "author": "Shaoxuan (Frank) Yin"
 }
