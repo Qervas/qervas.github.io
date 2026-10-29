@@ -2,7 +2,7 @@
 
 Portfolio for [Shaoxuan (Frank) Yin](https://qervas.github.io/). Built with [Eleventy 3](https://www.11ty.dev/). Source lives in `src/`; the site is compiled to `_site/`.
 
-The public site is a lab-notebook gallery: warm paper, an identity column, and work as cover cards. The homepage leads with NIUA, the agent harness. Godot MCP is the open proof under that card, not the title. Graphics and the thesis stay further down as earlier records. Journal entries at `/posts/` are text notes — list pages do not show per-entry thumbnails. A Lanyard card on the homepage shows Spotify listening from Discord presence.
+The public site is a lab-notebook gallery: warm paper, an identity column, and work as cover cards. The homepage leads with NIUA as AI fullstack. Godot MCP is the smaller public piece under that card, not the title. Graphics and the thesis stay further down as earlier records. Journal entries at `/posts/` are text notes — list pages do not show per-entry thumbnails. A Lanyard card on the homepage shows Spotify listening from Discord presence.
 
 ## Preview locally
 

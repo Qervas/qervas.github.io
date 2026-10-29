@@ -1,12 +1,12 @@
 {
-  "title": "Shaoxuan (Frank) Yin · Agent systems",
+  "title": "Shaoxuan (Frank) Yin · AI fullstack",
   "name": "Shaoxuan Yin",
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "NIUA is an agent harness: tools in, a receipt you can check on the way out. Godot MCP is the open proof. MSc Linköping. Open to full-time agent-systems roles.",
-  "ogDescription": "NIUA · agent harness · run receipts. Godot MCP is the open proof. MSc Linköping.",
+  "description": "NIUA is AI fullstack I ship: an AI that does a job with tools and comes back with proof you can check. The public piece connects to Godot. MSc Linköping. Open to full-time AI fullstack roles.",
+  "ogDescription": "NIUA · AI fullstack. The AI does the job, then shows you the proof. MSc Linköping.",
   "ogImage": "https://qervas.github.io/assets/proof/niua_godot_mcp_product.jpg",
-  "ogImageAlt": "NIUA — an agent harness returning evidence from a running editor",
+  "ogImageAlt": "NIUA — an AI doing the job and showing proof from the editor",
   "author": "Shaoxuan (Frank) Yin"
 }
