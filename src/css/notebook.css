@@ -759,7 +759,7 @@ body {
   line-height: 1.55;
 }
 
-/* ── Side cards: listening, heatmap, notes ── */
+/* ── Side cards: heatmap, notes ── */
 .rail-right {
   position: static;
   width: 100%;
@@ -779,8 +779,7 @@ body {
   overflow-wrap: anywhere;
 }
 .aside-card,
-.aside-card.aside-heatmap,
-.aside-card.aside-listening {
+.aside-card.aside-heatmap {
   background: var(--card-bg);
   border: 1px solid var(--rule);
   border-radius: 16px;
@@ -878,8 +877,6 @@ body {
 [data-theme="dark"] .gh-cell.l2 { background: #2d655c !important; }
 [data-theme="dark"] .gh-cell.l3 { background: #4d9a8c !important; }
 [data-theme="dark"] .gh-cell.l4 { background: #b7e4db !important; }
-.aside-listening-art:not([src]),
-.aside-listening-art[src=""] { visibility: hidden; }
 .aside-footer {
   padding: 0 2px;
   font-family: var(--mono);
@@ -1077,17 +1074,7 @@ button:focus-visible {
     padding: 16px 16px 36px !important;
   }
   .lab-col { display: contents; }
-  .rail-right {
-    order: -1;
-    position: static;
-    width: 100%;
-    height: auto;
-    padding: 0;
-    border: none;
-    background: transparent;
-  }
-  .rail-right > :not(.aside-listening) { display: none !important; }
-  .rail-right:has(#aside-listening[hidden]) { display: none; }
+  .rail-right { display: none !important; }
   .lab-side { order: 0; }
   .feed { order: 1; }
   .page-journal .app,
