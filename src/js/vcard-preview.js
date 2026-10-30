@@ -4,6 +4,7 @@
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   document.querySelectorAll('.vgrid .vcard[data-preview]').forEach((card) => {
     const thumb = card.querySelector('.vcard-thumb');
+    if (!thumb) return;
     let v, timer;
     card.addEventListener('mouseenter', () => {
       timer = setTimeout(() => {

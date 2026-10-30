@@ -1,4 +1,4 @@
-/* Listening — Lanyard presence for Frank's Spotify (no Spotify secrets) */
+/* Listening, Lanyard presence for Frank's Spotify (no Spotify secrets) */
 (function () {
   const DISCORD_ID = "819941445712478250";
   const ENDPOINT = "https://api.lanyard.rest/v1/users/" + DISCORD_ID;
@@ -129,7 +129,7 @@
     const end = spotify.timestamps && spotify.timestamps.end;
     startProgress(start || 0, end || 0);
 
-    const label = [song, artist].filter(Boolean).join(" — ");
+    const label = [song, artist].filter(Boolean).join(", ");
     if (label) card.setAttribute("aria-label", "Listening to " + label);
   }
 

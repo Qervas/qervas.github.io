@@ -1,4 +1,4 @@
-/* posts feed — listing + article pages on the X shell */
+/* posts feed, listing + article pages on the X shell */
 
 .posts-top-sub {
   font-family: var(--mono);
@@ -155,7 +155,7 @@
   }
 }
 
-/* article page — long-form reading */
+/* article page, long-form reading */
 .posts-article {
   padding: 0 0 64px;
 }
@@ -670,7 +670,7 @@
   .posts-article-body h3 {
     font-size: 1.02rem;
   }
-  /* Edge-to-edge lab frames on phone — captions stay padded */
+  /* Edge-to-edge lab frames on phone, captions stay padded */
   .posts-article-body .posts-figure {
     margin-left: -14px;
     margin-right: -14px;

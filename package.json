@@ -2,7 +2,7 @@
   "name": "qervas.github.io",
   "private": true,
   "type": "module",
-  "description": "Shaoxuan (Frank) Yin — portfolio, built with Eleventy",
+  "description": "Shaoxuan (Frank) Yin, portfolio, built with Eleventy",
   "scripts": {
     "build": "eleventy",
     "start": "eleventy --serve",

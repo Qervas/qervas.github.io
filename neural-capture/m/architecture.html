@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>01 · Architecture — Neural Capture</title>
-  <meta name="description" content="Architecture — implementation monograph" />
+  <title>01 · Architecture, Neural Capture</title>
+  <meta name="description" content="Architecture, implementation monograph" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet" />
@@ -106,11 +106,11 @@ Must not own Sapera Snap details (ch.02) or RC evaluation (ch.09).
       <div class="section-rule"><h2 id="thread">Threading model</h2></div>
       <div class="prose reveal workflow-section">
         <ul>
-          <li><strong>UI thread</strong> — WinUI dispatcher; never blocks on Snap</li>
-          <li><strong>Capture worker</strong> — <code>AutomatedCaptureController</code> std::thread walks positions</li>
-          <li><strong>Camera ops</strong> — sync Snap/Wait in C++; async wrappers via Task.Run / CaptureAllCamerasAsync</li>
-          <li><strong>BLE</strong> — WinRT async / co_await style device IO</li>
-          <li><strong>Status</strong> — UI polls <code>CamMatrix_GetCaptureState</code> every ~200–500 ms</li>
+          <li><strong>UI thread</strong>, WinUI dispatcher; never blocks on Snap</li>
+          <li><strong>Capture worker</strong>, <code>AutomatedCaptureController</code> std::thread walks positions</li>
+          <li><strong>Camera ops</strong>, sync Snap/Wait in C++; async wrappers via Task.Run / CaptureAllCamerasAsync</li>
+          <li><strong>BLE</strong>, WinRT async / co_await style device IO</li>
+          <li><strong>Status</strong>, UI polls <code>CamMatrix_GetCaptureState</code> every ~200–500 ms</li>
         </ul>
       </div>
       <div class="algo reveal">
@@ -125,7 +125,7 @@ Must not own Sapera Snap details (ch.02) or RC evaluation (ch.09).
       </div>
       <div class="aside ray reveal">
         <div class="aside-label">Invariant</div>
-        <p>Capture and rotation must not interleave without the state machine. Invalid events are <strong>rejected</strong> (logged <code>REJECTED: Event …</code>) rather than silently applied — see ch.04.</p>
+        <p>Capture and rotation must not interleave without the state machine. Invalid events are <strong>rejected</strong> (logged <code>REJECTED: Event …</code>) rather than silently applied, see ch.04.</p>
       </div>
 
       <div class="section-rule"><h2 id="decisions">Design decisions that landed</h2></div>

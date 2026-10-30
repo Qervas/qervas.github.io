@@ -22,7 +22,7 @@ Isotropic texture footprints and UV ellipses dictate how a mipmap presents in a 
 
 ## Scene
 
-The cover is a grinder-chuck roller: a steel plug, \(120\,\mathrm{mm}\) long with a \(28\,\mathrm{mm}\) radius, rests on a surface-grinder chuck with its axis along \(+X\) under a single lamp and one dark panel. Specular response is confined to the cylindrical face; the chuck, panel, and end caps stay diffuse, and contact darkening between roller and chuck is a diffuse term on every operator frame. There is no shadow map. Four stations lock amplitude—polished at \(\sigma=0\), ramp at \(0.06\), hero at \(0.12\), and blasted at \(0.18\). The hero station uses exponent \(s=64\), a \(256^2\) slope tile, a \(16\) texel box, and a texel pitch of `1e-5` m. Highlight azimuth is \(32^\circ\) with a view–lamp split of \(18^\circ\). Other scenes (loft bottle, metro colonnade, gallery lacquer sphere, courtyard, kiln mouth, night inspection bench, service-yard curb, grazing hallway) are excluded.
+The cover is a grinder-chuck roller: a steel plug, \(120\,\mathrm{mm}\) long with a \(28\,\mathrm{mm}\) radius, rests on a surface-grinder chuck with its axis along \(+X\) under a single lamp and one dark panel. Specular response is confined to the cylindrical face; the chuck, panel, and end caps stay diffuse, and contact darkening between roller and chuck is a diffuse term on every operator frame. There is no shadow map. Four stations lock amplitude, polished at \(\sigma=0\), ramp at \(0.06\), hero at \(0.12\), and blasted at \(0.18\). The hero station uses exponent \(s=64\), a \(256^2\) slope tile, a \(16\) texel box, and a texel pitch of `1e-5` m. Highlight azimuth is \(32^\circ\) with a view–lamp split of \(18^\circ\). Other scenes (loft bottle, metro colonnade, gallery lacquer sphere, courtyard, kiln mouth, night inspection bench, service-yard curb, grazing hallway) are excluded.
 
 ![Cover. Grinder-chuck roller: a 120 mm steel plug of 28 mm radius on a surface-grinder chuck under one lamp and one dark panel, axis along +X. Toksvig operator, s=64, sigma 0 to 0.18 across the stations. HUD reads TOKSVIG, S 64, SIGMA 0..0.18, FT(HERO) 0.528. The highlight band stays continuous and widens and dims toward the rougher lands. Khronos PBR Neutral, K=1.00.](/assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/00_hero.jpg)
 
@@ -34,18 +34,18 @@ The environment is right-handed with \(Y\) up, in metres; the roller axis is \(+
 
 | symbol | meaning | unit |
 |---|---|---|
-| \(s\) | material cosine-power exponent, \(64\) | — |
-| \(\sigma\) | slope amplitude on that tile | — |
-| \(n_i\) | unit shading normal of one texel | — |
-| \(\bar n\) | mean of the unit normals in the box | — |
-| \(r\) | \(\lvert\bar n\rvert\) | — |
-| \(\hat n\) | \(\bar n/r\) | — |
-| \(\alpha^2\) | variance roughness \((1-r)/r\) | — |
-| \(f_t\) | Toksvig factor | — |
-| \(s'\) | \(f_t\, s\) | — |
-| \(h\) | unit half-vector | — |
+| \(s\) | material cosine-power exponent, \(64\) |, |
+| \(\sigma\) | slope amplitude on that tile |, |
+| \(n_i\) | unit shading normal of one texel |, |
+| \(\bar n\) | mean of the unit normals in the box |, |
+| \(r\) | \(\lvert\bar n\rvert\) |, |
+| \(\hat n\) | \(\bar n/r\) |, |
+| \(\alpha^2\) | variance roughness \((1-r)/r\) |, |
+| \(f_t\) | Toksvig factor |, |
+| \(s'\) | \(f_t\, s\) |, |
+| \(h\) | unit half-vector |, |
 | \(\gamma\) | angle of \(h\) off the reference normal | degree |
-| \(S\) | cosine-power factor, before \(k_s E\) | — |
+| \(S\) | cosine-power factor, before \(k_s E\) |, |
 
 Normal length, the variance proxy from earlier mipmapping work, and the Toksvig factor are
 
@@ -63,7 +63,7 @@ Beauty shading uses the cylinder geometric normal for Lambertian, so all three o
 
 ## Three operators on one roller
 
-Averaging the box shortens the mean whenever the underlying slopes disagree. The three beauty operators—and the short-normal plate curve—answer four structural questions on the same camera, tile, lamp, and exposure.
+Averaging the box shortens the mean whenever the underlying slopes disagree. The three beauty operators, and the short-normal plate curve, answer four structural questions on the same camera, tile, lamp, and exposure.
 
 ### What if the mean is already aligned?
 
@@ -71,7 +71,7 @@ On this tile, renormalization corrects only a minor tilt. Across hero windows th
 
 ### What if you renormalize and keep \(s\)?
 
-\(S_{\mathrm{ren}}\) discards \(r\) and shades \((\hat n\cdot h)^s\) at the unaltered material exponent. The band stays continuous in the photograph, but the half-angle refuses to track \(\sigma\). Gate 14 keeps the renormalized half-angle at \(8.417^\circ\) on ramp, hero, and blasted land alike. Absolute angular error against the averaged power is \(3.2227^\circ\) at the hero (gate 13), against Toksvig's \(0.0719^\circ\). MAE is \(0.472362\)—orders worse than Toksvig's \(0.011407\). Renormalization is quiet (window std \(0.003122\)), yet it produces the wrong lobe: continuity without the right width.
+\(S_{\mathrm{ren}}\) discards \(r\) and shades \((\hat n\cdot h)^s\) at the unaltered material exponent. The band stays continuous in the photograph, but the half-angle refuses to track \(\sigma\). Gate 14 keeps the renormalized half-angle at \(8.417^\circ\) on ramp, hero, and blasted land alike. Absolute angular error against the averaged power is \(3.2227^\circ\) at the hero (gate 13), against Toksvig's \(0.0719^\circ\). MAE is \(0.472362\), orders worse than Toksvig's \(0.011407\). Renormalization is quiet (window std \(0.003122\)), yet it produces the wrong lobe: continuity without the right width.
 
 ![Renorm. Same camera, same tile, renormalized mean at exponent s. The band is continuous but keeps the narrow polished half-angle across every land. HUD reads RENORM, S 64, SIGMA 0..0.18. Photograph only.](/assets/journal/the-toksvig-factor-specular-exponent-from-normal-length/02_renorm.jpg)
 
@@ -120,7 +120,7 @@ The mean vector shortens. The exponent drops. The lobe widens. Dense meters foll
 
 ---
 
-## Appendix A — Hero and station metrics
+## Appendix A, Hero and station metrics
 
 Metrics are from the metrics log, CPU double precision, before Neutral tone mapping. Each station row aggregates one \(\sigma\) across the tile. Peak \(S(0)\) uses the tile mean normal. MAE and window standard deviations use non-overlapping boxes with half-vector fixed to the geometric normal. Quote these tables if a metrics-snapshot line is clipped; do not quote beauty photographs as meters.
 
@@ -135,7 +135,7 @@ Hero header half-angles: exact \(11.64^\circ\), Toksvig \(11.57^\circ\), renorma
 
 Hero dump (also in the opening prose): \(r=0.986210\), \(f_t=0.527737\), \(s'=33.775156\); half-angles \(11.64^\circ\), \(11.57^\circ\), \(8.42^\circ\); MAE \(0.011407\) / \(0.472362\) (ratio \(0.0241\)); std \(0.277901\) / \(0.015002\) (ratio \(18.524\)); asserts \(14\) pass / \(0\) fail. Gate 13 hero half-angles: \(11.5682^\circ\), \(11.6401^\circ\), \(8.4174^\circ\).
 
-## Appendix B — Hero lobe table
+## Appendix B, Hero lobe table
 
 Full-tile lobe; \(\gamma\) in degrees.
 
@@ -157,7 +157,7 @@ Full-tile lobe; \(\gamma\) in degrees.
 | 26 | 0.015654 | 0.014562 | 0.001082 | 0.000445 |
 | 28 | 0.008841 | 0.007985 | 0.000347 | 0.000143 |
 
-## Appendix C — Assertions and run tokens
+## Appendix C, Assertions and run tokens
 
 Printed by the execution: **14 pass / 0 fail**.
 
@@ -173,7 +173,7 @@ Std-floor history: floor set to \(\mathrm{std}(S_{\mathrm{point}})\ge 0.149\) on
 
 Schema for the metrics figure: `00` cover, `01` and `02` the two failures of the same box, `03` the factor plate. HUD cover abbreviates \(f_t\) as \(0.528\).
 
-## Appendix D — Formula cheat sheet
+## Appendix D, Formula cheat sheet
 
 ```text
 r        = |n_bar|

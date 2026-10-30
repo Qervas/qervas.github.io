@@ -20,15 +20,15 @@ Our previous note addressed a common Monte Carlo sampling mismatch: evaluating t
 
 Path tracers inherently sample \(d\omega\). Irradiance and the rendering equation, however, track the projected solid angle, \(\Omega_\perp\). A direction is simply a point on the hemisphere, weighted in steradians. Flux passing through a flat surface depends on this projected solid angle, defined mathematically as \(\Omega_\perp=\int(n\cdot\omega)\,d\omega\). Relying on source area, pixel counts, or manipulating \(L_i\) as an arbitrary brightness scalar are fundamentally incorrect approaches.
 
-The core of our [importance-sampling](/posts/p/importance-sampling-phong-lobe-vs-cosine/) discussion evaluated a finite disk with an angular radius of **3.600°**. The exact solid angle subtended by that disk—which the previous note omitted—is:
+The core of our [importance-sampling](/posts/p/importance-sampling-phong-lobe-vs-cosine/) discussion evaluated a finite disk with an angular radius of **3.600°**. The exact solid angle subtended by that disk, which the previous note omitted, is:
 
 \[\Omega(3.600^\circ)=2\pi\bigl(1-\cos 3.600^\circ\bigr)=0.012398431\,\mathrm{sr}.\]
 
 Evaluating a full-hemisphere pdf against a spherical cap this small demonstrates exactly why a cosine sample produces fireflies in a highlight. The detailed cosine-versus-Phong comparison remains in that earlier note.
 
-![Presentation. Sunlit courtyard / skylight atrium: four walls, square skylight with jamb, matte limewash floor, low bench. Analytic sky disk α=15°, white Lambert card. Photograph only — do not hang EB/EA on this frame.](/assets/journal/solid-angle-and-the-rendering-equation/00_hero.jpg)
+![Presentation. Sunlit courtyard / skylight atrium: four walls, square skylight with jamb, matte limewash floor, low bench. Analytic sky disk α=15°, white Lambert card. Photograph only, do not hang EB/EA on this frame.](/assets/journal/solid-angle-and-the-rendering-equation/00_hero.jpg)
 
-We introduce a new photographic family for this analysis: a sunlit courtyard and skylight atrium. This setup trades the dark oak and lacquer of previous scenes for four walls, a square skylight with a visible jamb, a matte limewash floor, and a single low bench for scale. An **analytic sky disk** sits in the opening—a spherical cap with a locked half-angle of \(\alpha=15^\circ\) and uniform radiance. On the floor below rests our primary instrument: a white Lambertian card (\(\rho=0.80\), normal \(n=+Y\), emission \(L_e=0\)). While the HUD accurately states `path tracers sample d omega  E tracks Omega_perp`, do not attempt to derive \(E_B/E_A\) visually from this photograph.
+We introduce a new photographic family for this analysis: a sunlit courtyard and skylight atrium. This setup trades the dark oak and lacquer of previous scenes for four walls, a square skylight with a visible jamb, a matte limewash floor, and a single low bench for scale. An **analytic sky disk** sits in the opening, a spherical cap with a locked half-angle of \(\alpha=15^\circ\) and uniform radiance. On the floor below rests our primary instrument: a white Lambertian card (\(\rho=0.80\), normal \(n=+Y\), emission \(L_e=0\)). While the HUD accurately states `path tracers sample d omega  E tracks Omega_perp`, do not attempt to derive \(E_B/E_A\) visually from this photograph.
 
 ![Teaching pin. Same camera, same exposure, same Li. Left α=5° | right α=15°. Only Omega changes; brightness change IS the lesson. EB/EA=8.818616. Photograph only.](/assets/journal/solid-angle-and-the-rendering-equation/01_size.jpg)
 
@@ -48,33 +48,33 @@ The incident radiance \(L_i=(12.0,\,13.2,\,16.0)\) remains bit-identical between
 ## Scene
 Our working color space is scene-referred linear Rec.709. The environment consists of one courtyard, one analytic cap, and one Lambertian card. Display parameters are inherited from previous work: the Khronos PBR Neutral operator evaluated at \(e=1.00\), followed by the IEC 61966-2-1 sRGB OETF applied on the CPU. We emphasize that the tone curve does not create lighting, and the Neutral operator does not author irradiance (\(E\)). We refer readers to the [tone-mapping](/posts/p/tone-mapping-scene-referred-to-display-referred/) and [split-sum IBL](/posts/p/split-sum-image-based-lighting/) notes for full display-pipeline context.
 
-**Hero — presentation hook.** The atrium features the visible disk, white card, and low bench at \(\alpha=15^\circ\). This plate establishes the aesthetic baseline, but the final JPEG artifacts are not the measurement tool.
+**Hero, presentation hook.** The atrium features the visible disk, white card, and low bench at \(\alpha=15^\circ\). This plate establishes the aesthetic baseline, but the final JPEG artifacts are not the measurement tool.
 
-**Size A/B — teaching pin.** Comparing setups A and B, we maintain the exact same \(L_i\) and shared exposure across \(\alpha=5^\circ\) versus \(15^\circ\). Precision analysis must rely on the tabular metrics rather than visual perception.
+**Size A/B, teaching pin.** Comparing setups A and B, we maintain the exact same \(L_i\) and shared exposure across \(\alpha=5^\circ\) versus \(15^\circ\). Precision analysis must rely on the tabular metrics rather than visual perception.
 
 ![Failure B. Same α=15° disk fixed in world. Left card n=+Y, β=0 | right tilted β=60°. Li frozen. (n·ω) is geometry, not a brightness slider. Photograph only.](/assets/journal/solid-angle-and-the-rendering-equation/02_cosine.jpg)
 
-**Cosine tilt — Failure B.** The \(\alpha=15^\circ\) disk remains fixed in world space. On the left, the Lambertian card is flat (\(n=+Y\), \(\beta=0^\circ\)). On the right, the card is tilted to \(\beta=60^\circ\) while incident radiance \(L_i\) remains frozen. The geometric projection \((n\cdot\omega)\) strictly governs this behavior; it cannot be treated as an artistic brightness slider.
+**Cosine tilt, Failure B.** The \(\alpha=15^\circ\) disk remains fixed in world space. On the left, the Lambertian card is flat (\(n=+Y\), \(\beta=0^\circ\)). On the right, the card is tilted to \(\beta=60^\circ\) while incident radiance \(L_i\) remains frozen. The geometric projection \((n\cdot\omega)\) strictly governs this behavior; it cannot be treated as an artistic brightness slider.
 
 ![The measure. Unit hemisphere over the card. Equal-Ω cells, sky cap as a spherical polygon. Not a latlong unwrap.](/assets/journal/solid-angle-and-the-rendering-equation/03_grid.jpg)
 
-**Grid — the measure.** A unit hemisphere is projected over the card and discretized into equal-\(\Omega\) cells. The sky cap is treated geometrically as a spherical polygon. This visualizes the true solid angle measure, avoiding the distortions of a lat-long unwrap.
+**Grid, the measure.** A unit hemisphere is projected over the card and discretized into equal-\(\Omega\) cells. The sky cap is treated geometrically as a spherical polygon. This visualizes the true solid angle measure, avoiding the distortions of a lat-long unwrap.
 
 ![Identity. Irradiance vs Ω⊥. Cyan: disk E=LiY Ω⊥. Gold: disk plus named fill. Red ghost: LiY Ω, cosine missing. Squares: cosine-arm N=256.](/assets/journal/solid-angle-and-the-rendering-equation/04_E_vs_Omega.jpg)
 
-**\(E\) vs \(\Omega_\perp\) — the identity.** The horizontal axis tracks \(\Omega_\perp\) in steradians. The cyan line plots the analytic disk irradiance \(E=L_{iY}\Omega_\perp\), while the gold line includes the disk alongside named ambient fill. The red ghost trace plots \(L_{iY}\Omega\), visually demonstrating the resulting error when the cosine term is incorrectly omitted. The square markers plot our cosine-arm estimator at \(N=256\), inverted through the Lambertian BRDF. The core mathematical identity is upheld: irradiance directly tracks projected solid angle.
+**\(E\) vs \(\Omega_\perp\), the identity.** The horizontal axis tracks \(\Omega_\perp\) in steradians. The cyan line plots the analytic disk irradiance \(E=L_{iY}\Omega_\perp\), while the gold line includes the disk alongside named ambient fill. The red ghost trace plots \(L_{iY}\Omega\), visually demonstrating the resulting error when the cosine term is incorrectly omitted. The square markers plot our cosine-arm estimator at \(N=256\), inverted through the Lambertian BRDF. The core mathematical identity is upheld: irradiance directly tracks projected solid angle.
 
 ![The article. Same cap twice, side view. Left: steradians on the sphere. Right: foreshortened patch. At 5° they almost agree; at 15° the article appears.](/assets/journal/solid-angle-and-the-rendering-equation/05_wedge.jpg)
 
-**Wedge — the article.** We view the same spherical cap twice in profile. The left side visualizes steradians mapped on the unit sphere, whereas the right side shows the foreshortened patch. At a narrow \(5^\circ\), the two measures nearly agree; at \(15^\circ\), the mathematical divergence becomes highly pronounced.
+**Wedge, the article.** We view the same spherical cap twice in profile. The left side visualizes steradians mapped on the unit sphere, whereas the right side shows the foreshortened patch. At a narrow \(5^\circ\), the two measures nearly agree; at \(15^\circ\), the mathematical divergence becomes highly pronounced.
 
 ![Estimator. Card center, α=15°, N=16/64/256/1024. Uniform-Ω (cyan) and cosine-Ω⊥ (gold), same ξ stream. Not an IS bake-off; rel_err must fall.](/assets/journal/solid-angle-and-the-rendering-equation/06_mc_n.jpg)
 
-**MC-\(N\) — estimator of that integral.** Sampled at the card center using \(\alpha=15^\circ\), we evaluate the rendering equation at \(N=16\), \(64\), \(256\), and \(1024\) samples. The thumbnails depict the cosine-\(\Omega_\perp\) instrument. The plot tracks both uniform-\(\Omega\) (cyan) and cosine-\(\Omega_\perp\) (gold) integration using the same \(\xi\) random stream. This is not an importance-sampling performance comparison; the requirement is that `rel_err` reliably converges. Traces may oscillate at \(N=256\), but strict error reduction is gated at \(N=1024\).
+**MC-\(N\), estimator of that integral.** Sampled at the card center using \(\alpha=15^\circ\), we evaluate the rendering equation at \(N=16\), \(64\), \(256\), and \(1024\) samples. The thumbnails depict the cosine-\(\Omega_\perp\) instrument. The plot tracks both uniform-\(\Omega\) (cyan) and cosine-\(\Omega_\perp\) (gold) integration using the same \(\xi\) random stream. This is not an importance-sampling performance comparison; the requirement is that `rel_err` reliably converges. Traces may oscillate at \(N=256\), but strict error reduction is gated at \(N=1024\).
 
 ![Instrument. Science plate of the float-buffer metrics. Quote the table, not the JPEG. Not a cover.](/assets/journal/solid-angle-and-the-rendering-equation/07_metrics.jpg)
 
-**Metrics strip — the meter snapshot.** This is the science plate capturing the float-buffer measurements. Data must be quoted from the text table, not inferred from the JPEG.
+**Metrics strip, the meter snapshot.** This is the science plate capturing the float-buffer measurements. Data must be quoted from the text table, not inferred from the JPEG.
 
 Maintain a strict separation between these two artifact categories:
 
@@ -227,7 +227,7 @@ While the physical size plate provides an intuitive visual demonstration of the 
 ### Three Failures
 Radiance \(L_i\) represents power per unit area per steradian. Irradiance on a surface is defined as radiance scaled by the **projected** solid angle of the source. Expanding a spherical cap while maintaining a constant \(L_i\) increases the incident irradiance, thereby brightening the receiving surface. Conversely, tilting the surface while holding both \(L_i\) and the cap geometry fixed decreases the irradiance, as the geometric attenuation term \((n\cdot\omega)\) changes. In neither scenario does the source radiance inherently increase.
 
-**Failure A — Area Versus \(\Omega\).** This distinction is demonstrated in the size A/B experimental plate. The left configuration utilizes a half-angle of \(\alpha=5.000^\circ\) and the right \(\alpha=15.000^\circ\). Both setups maintain a constant source radiance of \(L_i=(12.0,\,13.2,\,16.0)\), an exposure of \(e=1.00\), and a surface albedo of \(\rho=0.80\). The right surface appears brighter strictly because the projected solid angle \(\Omega_\perp\) increases from **0.023863926** sr to **0.210446804** sr. Consequently, the observed disk irradiance ratio is \(E_B/E_A=\mathbf{8.818616}\). A naive quadratic approximation based solely on the angle ratio, \((15/5)^2=9\), is demonstrably inaccurate.
+**Failure A, Area Versus \(\Omega\).** This distinction is demonstrated in the size A/B experimental plate. The left configuration utilizes a half-angle of \(\alpha=5.000^\circ\) and the right \(\alpha=15.000^\circ\). Both setups maintain a constant source radiance of \(L_i=(12.0,\,13.2,\,16.0)\), an exposure of \(e=1.00\), and a surface albedo of \(\rho=0.80\). The right surface appears brighter strictly because the projected solid angle \(\Omega_\perp\) increases from **0.023863926** sr to **0.210446804** sr. Consequently, the observed disk irradiance ratio is \(E_B/E_A=\mathbf{8.818616}\). A naive quadratic approximation based solely on the angle ratio, \((15/5)^2=9\), is demonstrably inaccurate.
 
 The plate caption further details an area-control experiment. For an on-axis disk of radius \(R\) at distance \(d\), the subtended half-angle is \(\alpha=\arctan(R/d)\), which yields the solid angle:
 
@@ -242,9 +242,9 @@ Evaluating this for \(R=1\) and an area of \(\pi\) across two distances:
 
 Although the physical disk area remains constant in both configurations, the measured solid angle ratio is **3.536**. Applying a standard inverse-square law derived solely from distance would incorrectly predict a ratio of \((4/2)^2=4\). Uniformly scaling both \(R\) and \(d\) by a factor \(k\) preserves \(\Omega\) while scaling the physical area by \(k^2\). Therefore, equivalent area does not guarantee equivalent solid angle.
 
-**Failure B — The Missing Cosine.** The cosine-tilt plate and the red ghost curve on the \(E\) versus \(\Omega_\perp\) plot illustrate the error of omitting the geometric term. Integrating \(L_i\,d\omega\) without the \((n\cdot\omega)\) factor incorrectly accumulates flux, effectively treating the receiving surface as a spherical probe rather than a flat plate. The rendering equation for an opaque surface explicitly requires this cosine term to account for the foreshortening of the incoming beam; it serves neither as an arbitrary brightness adjustment nor as a component of the BSDF. On the tilt plate, the right card correctly darkens at \(\beta=60^\circ\) despite \(L_i\) remaining constant. Artificially increasing \(L_i\) to offset this darkening would violate fundamental radiometric principles.
+**Failure B, The Missing Cosine.** The cosine-tilt plate and the red ghost curve on the \(E\) versus \(\Omega_\perp\) plot illustrate the error of omitting the geometric term. Integrating \(L_i\,d\omega\) without the \((n\cdot\omega)\) factor incorrectly accumulates flux, effectively treating the receiving surface as a spherical probe rather than a flat plate. The rendering equation for an opaque surface explicitly requires this cosine term to account for the foreshortening of the incoming beam; it serves neither as an arbitrary brightness adjustment nor as a component of the BSDF. On the tilt plate, the right card correctly darkens at \(\beta=60^\circ\) despite \(L_i\) remaining constant. Artificially increasing \(L_i\) to offset this darkening would violate fundamental radiometric principles.
 
-**Failure C — Pixels Versus Steradians.** Pixel coverage is merely a rasterized projection of the source, whereas the solid angle evaluated in the rendering equation is continuous and defined relative to the receiving surface. These quantities are decoupled. For example, the metric `pixels_disk_A` captures **910** pixels for a linear \(\alpha=5^\circ\) source evaluated at a \(628\times 720\) resolution. Conversely, `pixels_disk_B` records **7242** pixels for an \(\alpha=15^\circ\) source rendered at \(1280\times 720\). Both values are appropriately flagged as `omega_from_pixels_illegal`. Due to the disparities in frame size and aspect ratio, the ratio of these discrete pixel counts provides no rigorous estimate of \(\Omega_B/\Omega_A\). A \(5^\circ\) spherical cap subtends precisely \(\Omega=0.023909417\,\mathrm{sr}\), irrespective of its projected raster footprint.
+**Failure C, Pixels Versus Steradians.** Pixel coverage is merely a rasterized projection of the source, whereas the solid angle evaluated in the rendering equation is continuous and defined relative to the receiving surface. These quantities are decoupled. For example, the metric `pixels_disk_A` captures **910** pixels for a linear \(\alpha=5^\circ\) source evaluated at a \(628\times 720\) resolution. Conversely, `pixels_disk_B` records **7242** pixels for an \(\alpha=15^\circ\) source rendered at \(1280\times 720\). Both values are appropriately flagged as `omega_from_pixels_illegal`. Due to the disparities in frame size and aspect ratio, the ratio of these discrete pixel counts provides no rigorous estimate of \(\Omega_B/\Omega_A\). A \(5^\circ\) spherical cap subtends precisely \(\Omega=0.023909417\,\mathrm{sr}\), irrespective of its projected raster footprint.
 
 The importance-sampling reference from our prior note demonstrates Failure A at a micro-scale: a **3.600^\circ** spherical cap subtends exactly **0.012398431** sr. A cosine-weighted probability density function distributes its mass across the entire hemisphere oriented around \(n\), not solely over this small restricted solid angle.
 
@@ -260,7 +260,7 @@ Drawing from the untilted disk cap metrics:
 | \(\Omega\) [sr] | 0.023909417 | 0.214094348 | **8.954394** |
 | \(\Omega_\perp\) [sr] | 0.023863926 | 0.210446804 | **8.818616** |
 | \(E\) (disk only, \(L_{iY}\Omega_\perp\)) | 0.313739973 | 2.766752422 | **8.818616** |
-| \((\alpha_B/\alpha_A)^2\) | — | — | **9.000000** (Rejected approximation) |
+| \((\alpha_B/\alpha_A)^2\) |, |, | **9.000000** (Rejected approximation) |
 
 Implementing the equivalent-\(R\) area control dictates a completely distinct scaling relationship: fixing the radius at \(R=1\) with variable distances \(d\in\{2,4\}\) yields solid angles of \(\Omega\in\{0.663334,\,0.187600\}\,\mathrm{sr}\), resulting in a solid angle ratio of **3.536**.
 
@@ -340,7 +340,7 @@ Crucially, the incident radiance vector \(L_i\) is maintained bit-identical betw
 
 ---
 
-### Mesa / llvmpipe — What This Run Can Claim
+### Mesa / llvmpipe, What This Run Can Claim
 | Component | Value |
 | --- | --- |
 | `GL_VERSION` | 4.5 (Core Profile) Mesa 25.0.7-2+deb13u1 |
@@ -370,7 +370,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 All baseline metrics are derived directly from the floating-point buffer evaluated on the Mesa llvmpipe software rasterizer. Quantities including \(\Omega\), \(\Omega_\perp\), \(E\), \(L_o\), and `rel_err` are extracted strictly from the linear Rec.709 color space prior to the application of the Khronos PBR Neutral tonemapping operator. The Monte Carlo estimator is driven by a PCG hash utilizing the fixed seed **1352782172**. The exposure value for the Neutral tonemapper is maintained at \(e=1.00\).
 
@@ -404,7 +404,7 @@ The definitive mathematical parameters established by this experiment are precis
 
 ---
 
-## Appendix B — Assertions
+## Appendix B, Assertions
 
 This specific test run validates **28 pass / 0 fail**.
 
@@ -428,7 +428,7 @@ Zero tolerances within the testing suite were deliberately bypassed to forcibly 
 
 ---
 
-## Appendix C — Measure Lock
+## Appendix C, Measure Lock
 
 ```text
 Omega(alpha)       = 2 pi (1 - cos alpha)

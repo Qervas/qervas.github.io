@@ -1,4 +1,22 @@
     <aside class="rail-right" aria-label="Sidebar">
+      <div class="aside-card aside-listening is-idle" id="aside-listening">
+        <div class="aside-card-head">
+          <div class="aside-card-title">Listening</div>
+          <span class="aside-listening-live" id="listening-live" hidden>Now</span>
+        </div>
+        <a class="aside-listening-now is-static" id="listening-now">
+          <img class="aside-listening-art" id="listening-art" alt="" width="56" height="56" />
+          <span class="aside-listening-copy">
+            <span class="aside-listening-track" id="listening-track"></span>
+            <span class="aside-listening-artist" id="listening-artist"></span>
+          </span>
+        </a>
+        <div class="aside-listening-meter" id="listening-meter" hidden>
+          <div class="aside-listening-bar" id="listening-bar"></div>
+        </div>
+        <p class="aside-listening-idle" id="listening-idle">Nothing playing right now.</p>
+      </div>
+
       <div class="aside-card aside-heatmap" id="aside-heatmap">
         <div class="aside-card-head">
           <div class="aside-card-title">GitHub</div>
@@ -6,45 +24,30 @@
         </div>
         <div class="gh-stats" aria-label="Contribution stats">
           <div class="gh-stat">
-            <span class="gh-stat-n" id="gh-heatmap-num">—</span>
+            <span class="gh-stat-n" id="gh-heatmap-num">-</span>
             <span class="gh-stat-l">contribs</span>
           </div>
           <div class="gh-stat">
-            <span class="gh-stat-n" id="gh-streak">—</span>
+            <span class="gh-stat-n" id="gh-streak">-</span>
             <span class="gh-stat-l">streak</span>
           </div>
           <div class="gh-stat">
-            <span class="gh-stat-n" id="gh-peak">—</span>
+            <span class="gh-stat-n" id="gh-peak">-</span>
             <span class="gh-stat-l">peak</span>
           </div>
         </div>
         <p class="gh-year-line"><span id="gh-heatmap-year">2026</span> · public activity</p>
-        <div class="gh-heat-wrap">
-          <div class="gh-heat-scroll" id="gh-heat-scroll">
-            <div class="gh-heat-track" id="gh-heat-track">
-              <div class="gh-heat-months" id="gh-heat-months" aria-hidden="true"></div>
-              <div class="gh-heat-body">
-                <div class="gh-heat-days" aria-hidden="true">
-                  <span>Mon</span><span>Wed</span><span>Fri</span>
-                </div>
-                <div
-                  class="gh-heat is-loading"
-                  id="gh-heat"
-                  role="img"
-                  aria-label="GitHub contribution heatmap for @Qervas"
-                ></div>
-              </div>
-            </div>
-          </div>
-          <div class="gh-heat-legend">
-            <span class="gh-heat-legend-label">Less</span>
-            <span class="gh-cell l0" title="0"></span>
-            <span class="gh-cell l1" title="low"></span>
-            <span class="gh-cell l2" title="mid"></span>
-            <span class="gh-cell l3" title="high"></span>
-            <span class="gh-cell l4" title="peak"></span>
-            <span class="gh-heat-legend-label">More</span>
-          </div>
+        <div class="gh-line-wrap">
+          <svg
+            id="gh-line"
+            class="gh-line is-loading"
+            viewBox="0 0 260 118"
+            role="img"
+            aria-label="GitHub activity by week for @Qervas"
+          >
+            <path class="gh-line-axis" d="M8 96 H252" />
+          </svg>
+          <p class="gh-line-caption">Contributions per week</p>
         </div>
         <a class="aside-heatmap-caption" href="https://github.com/Qervas" target="_blank" rel="noopener">
           View profile on GitHub ↗
@@ -54,11 +57,12 @@
 
       <div class="aside-card aside-journal-card">
         <div class="aside-card-head">
-          <div class="aside-card-title">Journal videos</div>
+          <div class="aside-card-title">Notes</div>
           <a class="aside-journal-all" href="/posts/">All →</a>
         </div>
         <div class="aside-vlist">
           {% set cardClass = "vcard-row" %}
+          {% set hideMedia = true %}
           {% for p in collections.journal | head(3) %}{% include "chrome/video-card.njk" %}{% endfor %}
         </div>
       </div>
@@ -66,8 +70,7 @@
       <div class="aside-footer">
         <a href="https://www.linkedin.com/in/sxyin/" target="_blank" rel="noopener">LinkedIn</a> ·
         <a href="https://x.com/FrankYin17" target="_blank" rel="noopener">X</a> ·
-        <a href="/posts/">Journal</a> ·
-        <a href="/ohao-engine/">Ohao booth</a><br />
+        <a href="/posts/">Notes</a><br />
         © Frank Yin
       </div>
     </aside>

@@ -25,7 +25,7 @@ Workflow: `.github/workflows/pages.yml` (repo root or site parent).
 
 Project URL shape: `https://<user>.github.io/<repo>/` or copy `site/` into `qervas.github.io/neural-capture/`.
 
-Use **relative** asset links (`../styles.css`, `m/…`) — no root-absolute `/styles.css`.
+Use **relative** asset links (`../styles.css`, `m/…`), no root-absolute `/styles.css`.
 
 ## Public scope
 

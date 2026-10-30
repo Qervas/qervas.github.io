@@ -1,5 +1,5 @@
 ---
-title: "Video: The Penumbra Condition — Radiance Cascades in Flatland"
+title: "Video: The Penumbra Condition, Radiance Cascades in Flatland"
 description: "An animated walkthrough of radiance cascades on a neon-lit laundromat floor plan: why shadows are sharp near an object and soft far away, how stacked probe shells exploit that, and where this run honestly falls short."
 hook: "Why a shadow is crisp at the washer drum and blurry down the aisle, and the global-illumination trick built on that."
 date: 2026-10-11

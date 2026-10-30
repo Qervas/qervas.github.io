@@ -1,8 +1,9 @@
-/* GitHub contributions — live count + exquisite client-side heatmap */
+/* GitHub contributions, live count + weekly activity line */
 (function () {
   const USER = "Qervas";
   const year = new Date().getFullYear();
   const fallbackTotal = "7.1K";
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const numEls = [
     document.getElementById("gh-contrib-num"),
@@ -12,9 +13,7 @@
     document.getElementById("gh-contrib-year"),
     document.getElementById("gh-heatmap-year"),
   ].filter(Boolean);
-  const heatEl = document.getElementById("gh-heat");
-  const monthsEl = document.getElementById("gh-heat-months");
-  const trackEl = document.getElementById("gh-heat-track");
+  const lineEl = document.getElementById("gh-line");
   const streakEl = document.getElementById("gh-streak");
   const peakEl = document.getElementById("gh-peak");
   const tipEl = document.getElementById("gh-tooltip");
@@ -32,54 +31,27 @@
   }
 
   function parseDate(s) {
-    // YYYY-MM-DD as local noon to avoid TZ edge flips
     const p = s.split("-");
     return new Date(+p[0], +p[1] - 1, +p[2], 12, 0, 0);
   }
 
-  function formatDate(s) {
-    const d = parseDate(s);
-    return d.toLocaleDateString(undefined, {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+  function isoDay(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
   }
 
-  // Absolute bands work poorly for high-throughput accounts (peak 100+).
-  // Build thresholds from the non-zero distribution so the grid uses full range.
-  function makeLeveler(contributions) {
-    const nonzero = contributions
-      .map(function (c) { return c.count | 0; })
-      .filter(function (n) { return n > 0; })
-      .sort(function (a, b) { return a - b; });
-
-    if (!nonzero.length) {
-      return function () { return 0; };
-    }
-
-    function pct(p) {
-      const i = Math.min(nonzero.length - 1, Math.floor((nonzero.length - 1) * p));
-      return nonzero[i];
-    }
-
-    // 4 active bands at ~25 / 50 / 75 percentiles of busy days
-    const t1 = Math.max(1, pct(0.25));
-    const t2 = Math.max(t1 + 1, pct(0.5));
-    const t3 = Math.max(t2 + 1, pct(0.75));
-
-    return function (count) {
-      if (count <= 0) return 0;
-      if (count <= t1) return 1;
-      if (count <= t2) return 2;
-      if (count <= t3) return 3;
-      return 4;
-    };
+  function formatRange(start, end) {
+    const a = parseDate(start);
+    const b = parseDate(end);
+    const opts = { month: "short", day: "numeric" };
+    const left = a.toLocaleDateString(undefined, opts);
+    const right = b.toLocaleDateString(undefined, opts);
+    return left === right ? left : left + " – " + right;
   }
 
   function computeStreak(days) {
-    // longest consecutive days with count > 0
     let best = 0;
     let cur = 0;
     for (let i = 0; i < days.length; i++) {
@@ -101,231 +73,204 @@
     return peak;
   }
 
-  function buildGrid(contributions) {
-    if (!heatEl || !contributions || !contributions.length) return;
-
-    const levelOf = makeLeveler(contributions);
-
-    // Map date -> {count, level}
+  function weekly(contributions) {
     const byDate = Object.create(null);
     contributions.forEach(function (c) {
-      const count = c.count | 0;
-      byDate[c.date] = {
-        count: count,
-        level: levelOf(count),
-      };
+      byDate[c.date] = c.count | 0;
     });
-
-    // Use API range: pad to full weeks (Sun–Sat or Mon–Sun). GitHub uses Sun start.
     const first = parseDate(contributions[0].date);
     const last = parseDate(contributions[contributions.length - 1].date);
-
-    // Align start to Sunday
     const start = new Date(first);
     start.setDate(start.getDate() - start.getDay());
-
-    // Align end to Saturday
     const end = new Date(last);
     end.setDate(end.getDate() + (6 - end.getDay()));
 
-    const cells = [];
-    const dayCursor = new Date(start);
-    while (dayCursor <= end) {
-      const y = dayCursor.getFullYear();
-      const m = String(dayCursor.getMonth() + 1).padStart(2, "0");
-      const d = String(dayCursor.getDate()).padStart(2, "0");
-      const key = y + "-" + m + "-" + d;
-      const hit = byDate[key];
-      const count = hit ? hit.count : 0;
-      const level = hit ? Math.min(4, Math.max(0, hit.level)) : 0;
-      cells.push({
-        date: key,
+    const weeks = [];
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      let count = 0;
+      const weekStart = isoDay(cursor);
+      for (let i = 0; i < 7; i++) {
+        const key = isoDay(cursor);
+        if (byDate[key]) count += byDate[key];
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      const endDay = new Date(cursor);
+      endDay.setDate(endDay.getDate() - 1);
+      weeks.push({
+        start: weekStart,
+        end: isoDay(endDay),
         count: count,
-        level: level,
-        month: dayCursor.getMonth(),
-        year: y,
-        dow: dayCursor.getDay(),
+        month: parseDate(weekStart).getMonth(),
       });
-      dayCursor.setDate(dayCursor.getDate() + 1);
     }
+    return weeks;
+  }
 
-    const weeks = Math.ceil(cells.length / 7);
-    heatEl.style.setProperty("--gh-weeks", String(weeks));
-    if (trackEl) trackEl.style.setProperty("--gh-weeks", String(weeks));
-    if (monthsEl) monthsEl.style.setProperty("--gh-weeks", String(weeks));
-    heatEl.innerHTML = "";
-    heatEl.classList.remove("is-loading");
-    heatEl.classList.add("is-ready");
-
-    // Local YYYY-MM-DD for "today"
-    const now = new Date();
-    const todayKey =
-      now.getFullYear() +
-      "-" +
-      String(now.getMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(now.getDate()).padStart(2, "0");
-
-    // Document fragment for speed
-    const frag = document.createDocumentFragment();
-    let todayEl = null;
-    cells.forEach(function (cell, i) {
-      const week = Math.floor(i / 7);
-      const dow = i % 7;
-      const el = document.createElement("span");
-      el.className = "gh-cell l" + cell.level;
-      el.style.gridColumn = String(week + 1);
-      el.style.gridRow = String(dow + 1);
-      el.dataset.date = cell.date;
-      el.dataset.count = String(cell.count);
-      if (cell.date === todayKey) {
-        el.classList.add("is-today");
-        el.setAttribute("data-today", "1");
-        todayEl = el;
-      }
-      el.setAttribute(
-        "aria-label",
-        (cell.date === todayKey ? "Today · " : "") +
-          cell.count +
-          " contribution" +
-          (cell.count === 1 ? "" : "s") +
-          " on " +
-          formatDate(cell.date)
-      );
-      frag.appendChild(el);
+  function svgEl(name, attrs) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+    Object.keys(attrs).forEach(function (key) {
+      el.setAttribute(key, attrs[key]);
     });
-    heatEl.appendChild(frag);
+    return el;
+  }
 
-    // Month labels — first week of each month, skip if too close to previous
-    if (monthsEl) {
-      monthsEl.innerHTML = "";
-      monthsEl.style.setProperty("--gh-weeks", String(weeks));
-      const labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      let prevMonth = -1;
-      let prevLabelWeek = -99;
-      for (let w = 0; w < weeks; w++) {
-        // Use mid-week cell (Wed) so month edge is more stable
-        const cell = cells[w * 7 + 3] || cells[w * 7];
-        if (!cell) continue;
-        if (cell.month !== prevMonth && w - prevLabelWeek >= 3) {
-          prevMonth = cell.month;
-          prevLabelWeek = w;
-          const span = document.createElement("span");
-          span.className = "gh-month";
-          span.textContent = labels[cell.month];
-          span.style.gridColumn = String(w + 1);
-          monthsEl.appendChild(span);
-        } else if (cell.month !== prevMonth) {
-          prevMonth = cell.month; // track month without stacking labels
-        }
-      }
+  function buildChart(contributions) {
+    if (!lineEl || !contributions || !contributions.length) return;
+    const weeks = weekly(contributions);
+    if (!weeks.length) return;
+
+    const W = 260;
+    const H = 118;
+    const padL = 8;
+    const padR = 8;
+    const padT = 10;
+    const padB = 22;
+    const innerW = W - padL - padR;
+    const innerH = H - padT - padB;
+    const max = weeks.reduce(function (m, w) { return Math.max(m, w.count); }, 1);
+    const n = weeks.length;
+
+    function xAt(i) {
+      if (n === 1) return padL + innerW / 2;
+      return padL + (i / (n - 1)) * innerW;
+    }
+    function yAt(count) {
+      return padT + (1 - count / max) * innerH;
     }
 
-    // Scroll so today's cell lands in view (slightly right of center)
-    const scrollEl = document.getElementById("gh-heat-scroll");
-    if (scrollEl) {
-      const pinToday = function () {
-        const target = todayEl || heatEl.querySelector(".gh-cell.is-today");
-        if (!target) {
-          scrollEl.scrollLeft = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
-          return;
-        }
-        const sRect = scrollEl.getBoundingClientRect();
-        const cRect = target.getBoundingClientRect();
-        const x = cRect.left - sRect.left + scrollEl.scrollLeft;
-        // ~65% across viewport: past weeks left, today obvious
-        const desired = x - scrollEl.clientWidth * 0.65 + cRect.width / 2;
-        const max = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
-        scrollEl.scrollLeft = Math.max(0, Math.min(max, desired));
-      };
-      requestAnimationFrame(function () {
-        pinToday();
-        requestAnimationFrame(pinToday);
+    const pts = weeks.map(function (w, i) {
+      return { x: xAt(i), y: yAt(w.count), week: w };
+    });
+    const line = pts.map(function (p, i) {
+      return (i === 0 ? "M" : "L") + p.x.toFixed(1) + " " + p.y.toFixed(1);
+    }).join(" ");
+    const baseY = (padT + innerH).toFixed(1);
+    const area = line +
+      " L" + pts[pts.length - 1].x.toFixed(1) + " " + baseY +
+      " L" + pts[0].x.toFixed(1) + " " + baseY + " Z";
+
+    lineEl.innerHTML = "";
+    lineEl.classList.remove("is-loading", "is-error");
+    lineEl.classList.add("is-ready");
+    lineEl.setAttribute(
+      "aria-label",
+      "GitHub activity by week for @Qervas, peak week " + max + " contributions"
+    );
+
+    lineEl.appendChild(svgEl("path", {
+      class: "gh-line-fill",
+      d: area,
+    }));
+    lineEl.appendChild(svgEl("path", {
+      class: "gh-line-axis",
+      d: "M" + padL + " " + baseY + " H" + (W - padR),
+    }));
+    lineEl.appendChild(svgEl("path", {
+      class: "gh-line-stroke",
+      d: line,
+    }));
+
+    let prevLabel = -99;
+    pts.forEach(function (p, i) {
+      const show = i === 0 || (p.week.month !== pts[i - 1].week.month && p.x - prevLabel > 28);
+      if (!show) return;
+      prevLabel = p.x;
+      const label = svgEl("text", {
+        class: "gh-line-label",
+        x: String(p.x),
+        y: String(H - 4),
       });
-      setTimeout(pinToday, 50);
-      setTimeout(pinToday, 200);
-    }
+      label.textContent = MONTHS[p.week.month];
+      lineEl.appendChild(label);
+    });
 
-    // Stats from in-range contributions only
+    const last = pts[pts.length - 1];
+    lineEl.appendChild(svgEl("circle", {
+      class: "gh-line-dot",
+      cx: last.x.toFixed(1),
+      cy: last.y.toFixed(1),
+      r: "2.6",
+    }));
+
+    const hit = svgEl("g", { class: "gh-line-hits" });
+    const slot = n > 1 ? innerW / (n - 1) : innerW;
+    pts.forEach(function (p) {
+      const rect = svgEl("rect", {
+        x: String(Math.max(0, p.x - slot / 2)),
+        y: "0",
+        width: String(slot),
+        height: String(H),
+        fill: "transparent",
+      });
+      rect.dataset.count = String(p.week.count);
+      rect.dataset.label = formatRange(p.week.start, p.week.end);
+      hit.appendChild(rect);
+    });
+    lineEl.appendChild(hit);
+
     const active = contributions.map(function (c) {
       return { count: c.count | 0, date: c.date };
     });
     if (streakEl) streakEl.textContent = String(computeStreak(active));
     if (peakEl) peakEl.textContent = String(computePeak(active));
-
     bindTooltip();
   }
 
   function bindTooltip() {
-    if (!heatEl || !tipEl || !cardEl) return;
+    if (!lineEl || !tipEl || !cardEl || lineEl.dataset.tipBound) return;
+    lineEl.dataset.tipBound = "1";
 
     function hide() {
       tipEl.hidden = true;
     }
 
-    heatEl.addEventListener("pointerover", function (e) {
-      const cell = e.target.closest(".gh-cell");
-      if (!cell || !cell.dataset.date) return;
-      const count = +cell.dataset.count || 0;
+    lineEl.addEventListener("pointermove", function (e) {
+      const hit = e.target.closest("rect");
+      if (!hit || hit.dataset.count == null) {
+        hide();
+        return;
+      }
+      const count = +hit.dataset.count || 0;
       tipEl.hidden = false;
       tipEl.innerHTML =
-        "<strong>" +
-        count +
-        "</strong> contribution" +
-        (count === 1 ? "" : "s") +
-        "<br><span>" +
-        formatDate(cell.dataset.date) +
-        "</span>";
-
+        "<strong>" + count + "</strong> this week<br><span>" + hit.dataset.label + "</span>";
       const cardRect = cardEl.getBoundingClientRect();
-      const cellRect = cell.getBoundingClientRect();
+      const hitRect = hit.getBoundingClientRect();
       const tipW = tipEl.offsetWidth || 120;
-      let left = cellRect.left - cardRect.left + cellRect.width / 2 - tipW / 2;
+      let left = hitRect.left - cardRect.left + hitRect.width / 2 - tipW / 2;
       left = Math.max(8, Math.min(left, cardRect.width - tipW - 8));
-      const top = cellRect.top - cardRect.top - tipEl.offsetHeight - 8;
       tipEl.style.left = left + "px";
-      tipEl.style.top = Math.max(4, top) + "px";
+      tipEl.style.top = "8px";
     });
-
-    heatEl.addEventListener("pointerout", function (e) {
-      if (!e.relatedTarget || !heatEl.contains(e.relatedTarget)) hide();
-    });
-    heatEl.addEventListener("pointerleave", hide);
+    lineEl.addEventListener("pointerleave", hide);
   }
 
-  function skeleton() {
-    if (!heatEl) return;
-    heatEl.classList.add("is-loading");
-    // ~53 weeks × 7 placeholder cells
-    const weeks = 53;
-    heatEl.style.setProperty("--gh-weeks", String(weeks));
-    heatEl.innerHTML = "";
-    for (let i = 0; i < weeks * 7; i++) {
-      const el = document.createElement("span");
-      el.className = "gh-cell l0";
-      el.style.gridColumn = String(Math.floor(i / 7) + 1);
-      el.style.gridRow = String((i % 7) + 1);
-      heatEl.appendChild(el);
-    }
-  }
-
-  skeleton();
-
-  // Prefer current calendar year; fall back to last 365 days (no y=)
   const urls = [
     "https://github-contributions-api.jogruber.de/v4/" + USER + "?y=" + year,
     "https://github-contributions-api.jogruber.de/v4/" + USER,
   ];
 
+  function markError() {
+    if (!lineEl) return;
+    lineEl.classList.remove("is-loading");
+    lineEl.classList.add("is-error");
+    lineEl.innerHTML = "";
+    const note = svgEl("text", {
+      class: "gh-line-label",
+      x: "8",
+      y: "58",
+    });
+    note.textContent = "Activity unavailable";
+    lineEl.appendChild(note);
+  }
+
   function load(i) {
     if (i >= urls.length) {
       setNums(fallbackTotal);
-      if (streakEl) streakEl.textContent = "—";
-      if (peakEl) peakEl.textContent = "—";
-      if (heatEl) {
-        heatEl.classList.remove("is-loading");
-        heatEl.classList.add("is-error");
-      }
+      if (streakEl) streakEl.textContent = "-";
+      if (peakEl) peakEl.textContent = "-";
+      markError();
       return;
     }
     fetch(urls[i], { cache: "no-store" })
@@ -345,7 +290,7 @@
         if (!contribs.length && !total) throw new Error("empty");
 
         setNums(total > 0 ? fmt(total) : fallbackTotal);
-        buildGrid(contribs);
+        buildChart(contribs);
       })
       .catch(function () {
         load(i + 1);

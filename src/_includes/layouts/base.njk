@@ -7,13 +7,19 @@
   <script src="/js/js-flag.js"></script>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
-{% include "chrome/nav-dock.njk" %}
   <div class="app">
+    <div class="lab-col">
+      <aside class="lab-side">
+        <a class="lab-mark" href="/">FY / Notes</a>
+{% include "chrome/profile-header.njk" %}
+{% include "chrome/nav-dock.njk" %}
+      </aside>
+{% if pageType == "work" %}
+{% include "chrome/right-rail.njk" %}
+{% endif %}
+    </div>
     <main class="feed page" id="main-content">
 {% include "chrome/feed-top.njk" %}
-{% if pageType == "work" %}
-{% include "chrome/profile-header.njk" %}
-{% endif %}
 {% include "chrome/tabs.njk" %}
 {% if pageType == "work" %}
       <div class="feed-running-head" id="feed-running-head" hidden role="status" aria-live="polite">
@@ -26,10 +32,6 @@
 {% endif %}
 {% include "chrome/footer.njk" %}
     </main>
-
-{% if pageType == "work" %}
-{% include "chrome/right-rail.njk" %}
-{% endif %}
   </div>
 
 {% include "chrome/lightbox.njk" %}

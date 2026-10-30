@@ -1,6 +1,7 @@
 {# expects `p` (a journal collection item) and optional `cardClass` #}
 {% set dur = p.data.video.src | videoDuration if p.data.video else null %}
-<a class="vcard {{ cardClass }}" href="{{ p.url }}"{% if p.data.video %} data-preview="{{ p.data.video.src }}"{% endif %}>
+<a class="vcard {{ cardClass }}" href="{{ p.url }}"{% if p.data.video and not hideMedia %} data-preview="{{ p.data.video.src }}"{% endif %}>
+  {% if not hideMedia %}
   <span class="vcard-thumb">
     <img src="{{ p.data.video.poster if p.data.video else p.data.cover }}" alt="" loading="lazy" decoding="async" width="640" height="360" />
     {% if p.data.video %}
@@ -10,6 +11,7 @@
     <span class="vcard-badge vcard-badge-soon">Video coming</span>
     {% endif %}
   </span>
+  {% endif %}
   <span class="vcard-body">
     <span class="vcard-title">{{ p.data.title | cleanTitle }}</span>
     <span class="vcard-hook">{{ p.data.hook or (p.data.description | hook) }}</span>

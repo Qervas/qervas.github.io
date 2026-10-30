@@ -1,12 +1,12 @@
 {
-  "title": "Shaoxuan (Frank) Yin · @qervas",
+  "title": "Shaoxuan (Frank) Yin · AI fullstack",
   "name": "Shaoxuan Yin",
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "Builder of a 75K-line Vulkan engine, a 209 GB neural rendering dataset, an open-source Godot MCP server, and CUDA-accelerated systems. MSc Linköping — open to remote / relocate.",
-  "ogDescription": "Vulkan · CUDA · neural rendering · agents. MSc Linköping. Remote · open to relocate.",
-  "ogImage": "https://qervas.github.io/assets/proof/ohao_helmet.jpg",
-  "ogImageAlt": "Ohao Engine — real-time path-traced helmet",
+  "description": "I'm doing AI fullstack, the model, the tools, and proof the work happened. NIUA is that product. I'm open to full-time AI fullstack roles.",
+  "ogDescription": "I'm doing AI fullstack. NIUA is that product. Open to full-time AI fullstack roles.",
+  "ogImage": "https://qervas.github.io/assets/profile/avatar.jpg",
+  "ogImageAlt": "Shaoxuan Yin",
   "author": "Shaoxuan (Frank) Yin"
 }

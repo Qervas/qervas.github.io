@@ -20,7 +20,6 @@ pageType: post
           <h1 class="watch-title">{{ title | cleanTitle }}</h1>
           <div class="watch-bar">
             <div class="watch-meta">
-              <img class="watch-avatar" src="/assets/profile/avatar.jpg" alt="" width="36" height="36" />
               <span><strong>Frank Yin</strong><br><time datetime="{{ date | dateISO }}">{{ date | dateDisplay }}</time>{% if video %} · {{ video.src | videoDuration }}{% endif %}</span>
             </div>
 {% include "chrome/post-share.njk" %}
@@ -41,6 +40,7 @@ pageType: post
         <aside class="watch-next" aria-label="Up next">
           <h2 class="watch-next-title">Up next</h2>
           {% set cardClass = "vcard-row" %}
+          {% set hideMedia = true %}
           {% for p in collections.journal %}{% if p.url != page.url %}{% include "chrome/video-card.njk" %}{% endif %}{% endfor %}
           <a class="watch-all" href="/posts/">All videos →</a>
         </aside>

@@ -2,16 +2,17 @@
 layout: layouts/base.njk
 pageType: journal
 permalink: /posts/
-title: Journal · Frank Yin
-description: Animated explainers on rendering, sampling and real-time graphics, each with its measurements.
+title: Notes · Frank Yin
+description: Lab notes. The public entries are measured graphics explainers from earlier work, each with its numbers.
 ---
       <header class="gallery-head">
-        <p class="gallery-kicker">Journal</p>
-        <h2 class="gallery-title">Rendering, explained visually</h2>
-        <p class="gallery-sub">Short animated explainers on the math behind real-time and offline graphics. Every video comes with its measurements underneath.</p>
+        <p class="gallery-kicker">Notes</p>
+        <h2 class="gallery-title">Lab notes</h2>
+        <p class="gallery-sub">Process notes from earlier graphics work. Each entry keeps its measurements. The agent systems are on the work page.</p>
       </header>
 {% if collections.journal and collections.journal.length %}
       <div class="vgrid" id="posts-list">
+        {% set hideMedia = true %}
         {% for p in collections.journal %}{% include "chrome/video-card.njk" %}{% endfor %}
       </div>
 {% else %}

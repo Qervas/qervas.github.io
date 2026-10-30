@@ -1,4 +1,4 @@
-/* base.css — X shell: body, app grid, skip-link */
+/* base.css, X shell: body, app grid, skip-link */
 
 html {
   scroll-behavior: smooth;
@@ -49,7 +49,7 @@ a:focus-visible {
 .feed {
   width: 100%;
   min-width: 0;
-  /* fills the growing middle grid track — wider posts */
+  /* fills the growing middle grid track, wider posts */
   background: var(--paper);
   border-left: 1px solid var(--rule);
   border-right: 1px solid var(--rule);

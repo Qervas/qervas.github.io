@@ -1,4 +1,4 @@
-/* reveal.js — Scroll reveal with reduced-motion + safety net */
+/* reveal.js, Scroll reveal with reduced-motion + safety net */
 (function () {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const revs = Array.from(document.querySelectorAll('.reveal'));

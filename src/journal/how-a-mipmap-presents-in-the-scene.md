@@ -1,6 +1,6 @@
 ---
 title: How a mipmap presents in the scene
-description: "Not blur-because-far — a legal band-limit. Cornell and hallway photographs, then a zone-plate FFT proof on Mesa llvmpipe."
+description: "Not blur-because-far, a legal band-limit. Cornell and hallway photographs, then a zone-plate FFT proof on Mesa llvmpipe."
 hook: "Distant brick walls in games blur on purpose, because the alternative is a crawling, shimmering mess."
 date: 2026-09-11
 tags:
@@ -18,7 +18,7 @@ cover: /assets/journal/mipmaps/16_cornell.jpg
 
 The conventional heuristic suggests that mipmapping primarily blurs surface details as a function of distance. This characterization misidentifies the underlying signal processing mechanism.
 
-In practice, a mipmap functions as the strict **legal band-limit** for the texture data supported by the discrete pixel grid. In the absence of a mip chain, high-frequency spatial details—such as wood grain, brickwork, small glyphs, and tiling—inject frequencies that exceed the Nyquist limit of a single sample per pixel. Consequently, these unsupported frequencies alias and fold into lower bands. Distant floors begin to exhibit specular sparkle, structural crawl, and moiré patterns, while metallic highlights aggressively glitter. By evaluating a box-filtered pyramid via a trilinear sampler, these aliased structures are attenuated, yielding a legally band-limited representation of the underlying materials. Critically, the near field—operating in the magnification regime—must remain mathematically identical.
+In practice, a mipmap functions as the strict **legal band-limit** for the texture data supported by the discrete pixel grid. In the absence of a mip chain, high-frequency spatial details, such as wood grain, brickwork, small glyphs, and tiling, inject frequencies that exceed the Nyquist limit of a single sample per pixel. Consequently, these unsupported frequencies alias and fold into lower bands. Distant floors begin to exhibit specular sparkle, structural crawl, and moiré patterns, while metallic highlights aggressively glitter. By evaluating a box-filtered pyramid via a trilinear sampler, these aliased structures are attenuated, yielding a legally band-limited representation of the underlying materials. Critically, the near field, operating in the magnification regime, must remain mathematically identical.
 
 The subsequent photographic evaluations of a Cornell box and hallway geometry demonstrate this mechanism physically. Afterward, a zone-plate Fast Fourier Transform (FFT) analysis proves that the missing energy undergoes aliasing rather than artistic blurring.
 
@@ -26,11 +26,11 @@ The subsequent photographic evaluations of a Cornell box and hallway geometry de
 
 ## Scene
 
-The presentation scene is a Cornell box and a brick hallway under analytic lights, a ceiling emitter, and a low-cost IBL lobe—not a path tracer—on Mesa llvmpipe. Cook-Torrance GGX shading, linear color, ACES display, and CPU 2×2 box SSAA. Quantitative heroes are the zone-plate / chirp ladder at fixed footprint \(\rho\); the photographs below are photo-only. Dense meters live in the appendix.
+The presentation scene is a Cornell box and a brick hallway under analytic lights, a ceiling emitter, and a low-cost IBL lobe, not a path tracer, on Mesa llvmpipe. Cook-Torrance GGX shading, linear color, ACES display, and CPU 2×2 box SSAA. Quantitative heroes are the zone-plate / chirp ladder at fixed footprint \(\rho\); the photographs below are photo-only. Dense meters live in the appendix.
 
 Observe the Cornell box rendered from identical camera coordinates.
 
-![Cornell box, PBR, same camera. Left: NEAREST no-mip — wood sparkles, glyphs moiré. Right: CPU box-mip trilinear — soft legal wood, soft legal glyphs. Photograph only — no ρ, no AF.](/assets/journal/mipmaps/16_cornell.jpg)
+![Cornell box, PBR, same camera. Left: NEAREST no-mip, wood sparkles, glyphs moiré. Right: CPU box-mip trilinear, soft legal wood, soft legal glyphs. Photograph only, no ρ, no AF.](/assets/journal/mipmaps/16_cornell.jpg)
 
 Under `GL_NEAREST` sampling without a mipmap (left), high-frequency authoring in the satin wood planks, letter-grid wallpaper, and brushed metal exceeds the spatial resolution of the distant pixel grid. As a result, the floor exhibits specular sparkle, small glyphs degrade into moiré interference, and metallic surfaces glitter. Conversely, applying a CPU-generated **2**\(\times\)**2** box pyramid to both the albedo and roughness maps via `GL_LINEAR_MIPMAP_LINEAR` resolves these artifacts (right). The false high-frequency patterns collapse into the true, legally representable wood texture. Because the geometric distance to both the tall and short boxes remains within the near field, their vertical surfaces maintain distinct readability. This demonstrates the fundamental presentation of a mipmap: it is a mathematically pre-band-limited level of detail, rather than a distance-based fog or blurring heuristic.
 
@@ -42,7 +42,7 @@ The frequency folding artifact is most pronounced on the vanishing floor plane. 
 
 A distance strip explicitly separates the minification and magnification regimes, prominently visible within the wood grain:
 
-![PBR Cornell floor. Top MIP, bottom NO-MIP. Columns NEAR / MID / FAR. NEAR is the mag control — spec hotspot matches. FAR is the fold.](/assets/journal/mipmaps/19_floor_distance.jpg)
+![PBR Cornell floor. Top MIP, bottom NO-MIP. Columns NEAR / MID / FAR. NEAR is the mag control, spec hotspot matches. FAR is the fold.](/assets/journal/mipmaps/19_floor_distance.jpg)
 
 The NEAR column serves as the magnification control and must match exactly; a softer "mip" rendering in the near field indicates a flawed implementation. The FAR column isolates the frequency fold: the non-mip grain exhibits structural crawl, whereas the mipmapped evaluation properly resolves into the band-limited plank.
 
@@ -54,7 +54,7 @@ Proximity analysis of the metallic box isolates the geometric brush stroke textu
 
 ![Metal box + wood floor, same L/R pair. Photograph only.](/assets/journal/mipmaps/20_cornell_pbr_closeup.jpg)
 
-Shading is governed by a Cook-Torrance GGX microfacet model to approximate physical photographic conditions rather than a sterile Lambertian test environment. Scene illumination is provided by analytic point lights, a rectangular ceiling emitter, and a low-cost image-based lighting (IBL) lobe—the renderer is **not a path tracer**. Computations occur in a linear color space followed by an ACES display transform. A CPU **2**\(\times\) box supersampling anti-aliasing (SSAA) pass ensures clean geometric silhouettes. These specific frames are excluded from the quantitative CSV dataset and do not undergo FFT analysis. The diagnostic HUD explicitly outputs: `PBR photo-only … GGX … rho=n/a`. Quantitative hero metrics remain restricted to the subsequent chirp evaluations.
+Shading is governed by a Cook-Torrance GGX microfacet model to approximate physical photographic conditions rather than a sterile Lambertian test environment. Scene illumination is provided by analytic point lights, a rectangular ceiling emitter, and a low-cost image-based lighting (IBL) lobe, the renderer is **not a path tracer**. Computations occur in a linear color space followed by an ACES display transform. A CPU **2**\(\times\) box supersampling anti-aliasing (SSAA) pass ensures clean geometric silhouettes. These specific frames are excluded from the quantitative CSV dataset and do not undergo FFT analysis. The diagnostic HUD explicitly outputs: `PBR photo-only … GGX … rho=n/a`. Quantitative hero metrics remain restricted to the subsequent chirp evaluations.
 
 That establishes the visual presentation. The subsequent analysis provides mathematical proof that the missing energy undergoes frequency folding.
 
@@ -73,7 +73,7 @@ A given texture spatial frequency \(f_{\mathrm{tex}}\) (cycles/texel) maps to th
 
 \[f_{\mathrm{tex}} > \frac{1}{2\rho}.\]
 
-At the prescribed \(\rho=\mathbf{8}\) boundary, any spatial frequency exceeding \(\tfrac{1}{\mathbf{16}}\) cycle/texel surpasses the localized Nyquist limit. High-frequency authoring characteristics—such as wood grain, brick mortar lines, glyph boundaries, and tile grout—occupy this spectral domain as the projected surface area diminishes. Dictated by the sampling theorem, these frequencies cannot undergo spontaneous truncation; they fold into lower wavenumbers \(k\). This induced lower \(k\) structure physically manifests as the observed specular sparkle and structural crawl.
+At the prescribed \(\rho=\mathbf{8}\) boundary, any spatial frequency exceeding \(\tfrac{1}{\mathbf{16}}\) cycle/texel surpasses the localized Nyquist limit. High-frequency authoring characteristics, such as wood grain, brick mortar lines, glyph boundaries, and tile grout, occupy this spectral domain as the projected surface area diminishes. Dictated by the sampling theorem, these frequencies cannot undergo spontaneous truncation; they fold into lower wavenumbers \(k\). This induced lower \(k\) structure physically manifests as the observed specular sparkle and structural crawl.
 
 The analytical zone-plate is structured as a Fresnel chirp, constrained by a radial disk mask, and evaluated precisely at pixel centers:
 
@@ -96,9 +96,9 @@ To isolate radial aliasing without planar cross-contamination, a 1-D chirp serve
 ---
 
 ### What the PBR path actually is
-The shading pipeline evaluates a Cook-Torrance GGX microfacet model utilizing a metalness-roughness workflow implemented in GLSL **330**. Specifically, the normal distribution function \(D\) evaluates GGX (Trowbridge-Reitz), the geometric masking-shadowing function \(G\) evaluates Smith utilizing the Schlick-GGX approximation, and the Fresnel term \(F\) evaluates the Schlick approximation. The rendering framework relies entirely upon direct analytical lighting—it is explicitly not a path tracer. Normal variance mapping (Toksvig mapping) is excluded. Both the semantic albedo textures and the ORM material parameter maps are prefiltered using the identical CPU **2**\(\times\)**2** box convolution. The display mapping pipeline applies the ACES (Narkowicz) curve followed by a \(\gamma=\) **2.2** inverse electro-optical transfer function applied to the linear framebuffer output.
+The shading pipeline evaluates a Cook-Torrance GGX microfacet model utilizing a metalness-roughness workflow implemented in GLSL **330**. Specifically, the normal distribution function \(D\) evaluates GGX (Trowbridge-Reitz), the geometric masking-shadowing function \(G\) evaluates Smith utilizing the Schlick-GGX approximation, and the Fresnel term \(F\) evaluates the Schlick approximation. The rendering framework relies entirely upon direct analytical lighting, it is explicitly not a path tracer. Normal variance mapping (Toksvig mapping) is excluded. Both the semantic albedo textures and the ORM material parameter maps are prefiltered using the identical CPU **2**\(\times\)**2** box convolution. The display mapping pipeline applies the ACES (Narkowicz) curve followed by a \(\gamma=\) **2.2** inverse electro-optical transfer function applied to the linear framebuffer output.
 
-The primary room photographs were acquired at a high gallery resolution of **2560**\(\times\)**1440**, utilizing a CPU **2**\(\times\) box supersampling anti-aliasing (SSAA) pass in lieu of hardware GL MSAA. This dedicated SSAA pass operates strictly on geometric boundaries—attenuating discrete rasterization steps along the boxes, the ceiling light quad, door frames, and vanishing hallway trajectories. While this spatial filtering slightly averages the high-frequency non-mipmapped aliasing ("sparkle"), the fundamental phenomenological distinction between spectral folding and mathematical band-limiting remains unambiguous. The analytical zone-plate and corresponding FFT frames are strictly locked to **1280**\(\times\)**720**, evaluating a **512**\(^2\) FBO extraction.
+The primary room photographs were acquired at a high gallery resolution of **2560**\(\times\)**1440**, utilizing a CPU **2**\(\times\) box supersampling anti-aliasing (SSAA) pass in lieu of hardware GL MSAA. This dedicated SSAA pass operates strictly on geometric boundaries, attenuating discrete rasterization steps along the boxes, the ceiling light quad, door frames, and vanishing hallway trajectories. While this spatial filtering slightly averages the high-frequency non-mipmapped aliasing ("sparkle"), the fundamental phenomenological distinction between spectral folding and mathematical band-limiting remains unambiguous. The analytical zone-plate and corresponding FFT frames are strictly locked to **1280**\(\times\)**720**, evaluating a **512**\(^2\) FBO extraction.
 
 The Cornell Box configuration provides a standardized structural *layout*; it is not deployed here as a global illumination benchmark metric. The visual aesthetic is strictly defined by the combination of an area emitter, localized bounce approximations, and a gradient IBL environment. Ultimately, evaluating the scene via physical-based rendering (PBR) does not alter the fundamental signal processing mathematics governing the core theorem.
 
@@ -119,9 +119,9 @@ Applying bilinear filtering without a supporting mip chain is insufficient to co
 
 Evaluating the same footprint using a CPU **2**\(\times\)**2** box pyramid paired with `GL_LINEAR_MIPMAP_LINEAR` resolves the aliasing. For analytical comparison, the right column demonstrates a pyramid constructed without a low-pass filter, operating strictly as a point-subsampled hierarchy.
 
-![Left: box-mip trilinear, false rings gone — the legal disk, the lab version of the soft wood. Right: point-subsample pyramid, no low-pass — aliases remain.](/assets/journal/mipmaps/08_rho8_mip_box.jpg)
+![Left: box-mip trilinear, false rings gone, the legal disk, the lab version of the soft wood. Right: point-subsample pyramid, no low-pass, aliases remain.](/assets/journal/mipmaps/08_rho8_mip_box.jpg)
 
-The left column demonstrates the legally band-limited disk—the analytical equivalent of the soft wood rendering. The right column merely produces a lower-resolution image preserving identical aliases. **A mip chain generated without an appropriate low-pass filter does not constitute a valid mipmap.** This specific control column confirms that generating hierarchical levels must mathematically equate to band-limiting the signal. If the Cornell scene were evaluated using a point-sampled pyramid, the floor would retain its specular sparkle.
+The left column demonstrates the legally band-limited disk, the analytical equivalent of the soft wood rendering. The right column merely produces a lower-resolution image preserving identical aliases. **A mip chain generated without an appropriate low-pass filter does not constitute a valid mipmap.** This specific control column confirms that generating hierarchical levels must mathematically equate to band-limiting the signal. If the Cornell scene were evaluated using a point-sampled pyramid, the floor would retain its specular sparkle.
 
 ---
 
@@ -214,7 +214,7 @@ Because the isotropic footprint \(\rho=\max(\rho_x,\rho_y)\) strictly enforces a
 ### What this box actually measured
 Host Environment: OSMesa, Mesa **25.0**.**7**-**2**+deb13u1, llvmpipe (LLVM **19.1**.**7**, **256** bits). The framebuffer utilizes a strict **RGBA32F** target, ensuring that an **8**-bit quantization fallback is **not hit**. Neither hardware sRGB conversions nor MSAA are applied to the analytical FBO. Texture wrapping behavior is rigidly set to `CLAMP_TO_EDGE`. Across all automated internal assertions, **27** pass / **0** fail. This validation suite encompasses the DFT integrity self-test, verifying that the \(\rho=\) **1** MAE identically evaluates to **0**, and ensuring that the measured \(\rho=\) **8** \(P_{\mathrm{ac}}\) for nearest-neighbor sampling exceeds **5**\(\times\) the equivalent mipmapped output (specifically, **898** vs **30**). The semantic PBR scene renders function purely as supplementary qualitative visualizations; they are formally decoupled from the core numerical scientific checks.
 
-We can establish the following claims: Operating on this specific software rasterizer architecture, minifying a frequency-authored chirp without a hierarchical mip chain forces signal energy into an aliasing fold. Evaluating a CPU-generated box pyramid in conjunction with trilinear sampling mathematically eliminates the vast majority of that spurious AC spectral power. This attenuation was measured directly utilizing the binary's internal DFT, evaluated from a high-precision floating-point readback. Furthermore, the qualitative sampler visualizations—encompassing both the PBR Cornell box and the hallway geometry—represent mathematically accurate outputs for this specific rasterizer configuration.
+We can establish the following claims: Operating on this specific software rasterizer architecture, minifying a frequency-authored chirp without a hierarchical mip chain forces signal energy into an aliasing fold. Evaluating a CPU-generated box pyramid in conjunction with trilinear sampling mathematically eliminates the vast majority of that spurious AC spectral power. This attenuation was measured directly utilizing the binary's internal DFT, evaluated from a high-precision floating-point readback. Furthermore, the qualitative sampler visualizations, encompassing both the PBR Cornell box and the hallway geometry, represent mathematically accurate outputs for this specific rasterizer configuration.
 
 We cannot establish the following claims: the behavior of hardware LOD heuristics, the quality of hardware anisotropy algorithms, texture cache hit-rate performance, memory bandwidth consumption, shader occupancy metrics, or a definitive assertion that "this represents standardized commercial GPU operation." We cannot assert that the continuous zone-plate functions as a mathematically perfect ideal low-pass filter (LPF) source. We cannot validate executing an arbitrary FFT against the compressed output PNG and classifying the resultant data as rigorous scientific measurement. Finally, we cannot directly correlate the numerical \(P_{\mathrm{ac}}\) reductions to the subjective visual softness of the rendered wood floor geometry.
 
@@ -227,7 +227,7 @@ Dense meters follow.
 
 ---
 
-## Appendix A — Meters (quote tables, not photographs)
+## Appendix A, Meters (quote tables, not photographs)
 
 Radial metrics are defined as:
 
@@ -251,7 +251,7 @@ The scalar \(P_{\mathrm{ac}}\) directly quantifies the integrated sum of \(P_{\m
 
 ![P(k) overlay at ρ=8, log y, Nyquist tick. HUD: P_ac N=898 / M=29.8.](/assets/journal/mipmaps/11_pk_overlay.jpg)
 
-When the projected quad dimensions fall below the evaluation crop window (\(W=\mathbf{128}\) or **64**), the unpopulated framebuffer region is initialized to a strict **0.5** clear color—precisely matching the analytical mean of the zone-plate. Consequently, upon executing mean-subtraction, the padded exterior collapses exactly to zero (`padded=`**1** in the resulting CSV dataset). Enforcing a rigid rectangular boundary cut would have injected a pervasive **2**-D sinc distribution capable of overpowering the filter responses across the entire test matrix.
+When the projected quad dimensions fall below the evaluation crop window (\(W=\mathbf{128}\) or **64**), the unpopulated framebuffer region is initialized to a strict **0.5** clear color, precisely matching the analytical mean of the zone-plate. Consequently, upon executing mean-subtraction, the padded exterior collapses exactly to zero (`padded=`**1** in the resulting CSV dataset). Enforcing a rigid rectangular boundary cut would have injected a pervasive **2**-D sinc distribution capable of overpowering the filter responses across the entire test matrix.
 
 The analytical Hann window applied across every discrete evaluation crop inherently introduces its own spectral footprint, ensuring its orthogonal cross-axial structure is not erroneously interpreted as genuine signal aliasing:
 

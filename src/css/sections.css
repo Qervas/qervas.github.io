@@ -1,4 +1,4 @@
-/* sections.css — homepage Work feed: one accent per section + running head */
+/* sections.css, homepage Work feed: one accent per section + running head */
 
 .feed-section {
   --section-accent: var(--accent);
@@ -75,7 +75,7 @@
   background: var(--muted);
 }
 
-/* Magazine running head — floats while the in-flow stamp is off-screen */
+/* Magazine running head, floats while the in-flow stamp is off-screen */
 .feed-running-head {
   position: sticky;
   top: var(--feed-chrome);

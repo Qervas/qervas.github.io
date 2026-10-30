@@ -1,4 +1,4 @@
-/* summary-more.js — Expand/collapse summary detail */
+/* summary-more.js, Expand/collapse summary detail */
 (function () {
   const moreBtn = document.getElementById('summary-more-btn');
   const moreEl = document.getElementById('summary-more');
