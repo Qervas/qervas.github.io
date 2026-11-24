@@ -1,11 +1,11 @@
 {
-  "title": "Shaoxuan (Frank) Yin · AI fullstack",
+  "title": "Shaoxuan (Frank) Yin · 3D, GPU Physics & Agent Systems",
   "name": "Shaoxuan Yin",
   "aka": "Frank",
   "handle": "@qervas",
   "url": "https://qervas.github.io",
-  "description": "I'm doing AI fullstack, the model, the tools, and proof the work happened. NIUA is that product. I'm open to full-time AI fullstack roles.",
-  "ogDescription": "I'm doing AI fullstack. NIUA is that product. Open to full-time AI fullstack roles.",
+  "description": "I build 3D engines, GPU physics pipelines, and agent systems that verify their own work — from C++/Vulkan/CUDA and 3DGS+MLS-MPM to OpenUSD/MuJoCo verification tooling (NIUA, my open-source side project). Open to full-time Graphics, Simulation, Physical AI, or AI Systems roles.",
+  "ogDescription": "3D engines, GPU physics (C++/Vulkan/CUDA/Warp/3DGS), and verifiable agent tooling (OpenUSD/MuJoCo). Open to full-time engineering roles.",
   "ogImage": "https://qervas.github.io/assets/profile/avatar.jpg",
   "ogImageAlt": "Shaoxuan Yin",
   "author": "Shaoxuan (Frank) Yin"
